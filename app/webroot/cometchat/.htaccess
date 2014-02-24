@@ -1,0 +1,29 @@
+<IfModule mod_rewrite.c>
+ RewriteEngine Off
+</IfModule>
+
+<IfModule mod_headers.c>
+ <FilesMatch "\.(gif|jpg|png|css|swf|php)$">
+  Header add "Expires" "Mon, 28 Jul 2014 23:30:00 GMT"
+  Header add "Cache-Control" "max-age=31536000"
+ </FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+ ExpiresActive On
+ ExpiresDefault A604800
+ ExpiresByType text/css A604800
+ ExpiresByType image/gif A604800
+ ExpiresByType image/png A604800
+ ExpiresByType image/jpeg A604800
+ ExpiresByType application/x-shockwave-flash A604800
+</IfModule>
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} /(.*)/desktop/(.*)/? [NC]
+RewriteRule .* %1/extensions/desktop/%2 
+
+

@@ -1,0 +1,140 @@
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #000000 !important;
+  background-color: #000000;
+}
+
+#pluginContainer{
+    width: 1px;
+    height: 1px;
+}
+
+.content-wrapper {
+    padding-top: 5%;
+}
+
+.feeds-wrapper {
+	float: left;
+    background: #000000;
+    border: 1px solid #000000;
+}
+
+.feed-wrapper object {
+    width: 100%;
+    height: 100%;
+}
+
+.clearer {
+    clear: both;
+}
+
+#pluginContainer {
+    width: 1px;
+    height: 1px;
+}
+
+.error {
+    color: red;
+}
+#logContainer li {
+    list-style: none;
+}
+
+#installBtn, #disconnectBtn {
+    display: none;
+}
+
+#settings {
+	left: 25%;
+    position: absolute;
+    top: 5%;
+}
+
+#settingbar {
+	bottom: 0;
+    position: absolute;
+	float:left;
+	background:#000000;
+	height: 37px;
+	width:100%;
+}
+
+#settingbody {
+	padding: 10px;
+}
+
+#VDlist {
+	margin-left: 0px;
+}
+
+.block{
+	display:block;
+	width:93px;
+}
+
+.none{
+	display:none;
+	width:93px;
+}
+
+#VDlist li {
+	float: left;
+    list-style: none;
+    margin: 2px;
+    width: 320px;
+    height: 240px;
+}
+
+.checkbox {
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+#installBtn {
+	margin: 0 !important;
+	text-align: center;
+    width: 90px !important;
+	float: right;
+}
+
+.installBtn {
+	-moz-box-shadow:inset 0px 1px 0px 0px #f29c93;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #f29c93;
+	box-shadow:inset 0px 1px 0px 0px #f29c93;
+	background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #fe1a00), color-stop(1, #ce0100) );
+	background: -moz-linear-gradient( center top, #fe1a00 5%, #ce0100 100% );
+	background: -ms-linear-gradient( center top, #ce0100 5%, #fe1a00 100% );
+	background: -o-linear-gradient( center top, #ce0100 5%, #fe1a00 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fe1a00', endColorstr='#ce0100');
+	background-color:#fe1a00;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #d83526;
+	display:inline-block;
+	color:#ffffff;
+	font-family:arial;
+	font-size:12px;
+	font-weight:bold;
+	padding:4px 15px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #b23e35;
+}
+
+.installBtn:hover {
+	background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ce0100), color-stop(1, #fe1a00) );
+	background: -moz-linear-gradient( center top, #ce0100 5%, #fe1a00 100% );
+	background: -ms-linear-gradient( center top, #ce0100 5%, #fe1a00 100% );
+	background: -o-linear-gradient( center top, #ce0100 5%, #fe1a00 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ce0100', endColorstr='#fe1a00');
+	background-color:#ce0100;
+}
+
+.installBtn:active {
+	position:relative;
+	top:1px;
+}
+

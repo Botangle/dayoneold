@@ -1,0 +1,20 @@
+# App
+Config/database.php
+Config/settings.json
+Vendor/Simpletest/
+View/Themed/
+webroot/uploads/
+*.bak
+*.swp
+
+# Cake cache
+tmp/
+
+# Others
+.DS_Store
+./Plugin/*
+!./Plugin/Acl
+!./Plugin/Extensions
+!./Plugin/Example
+!./Plugin/Install
+!./Plugin/Translate

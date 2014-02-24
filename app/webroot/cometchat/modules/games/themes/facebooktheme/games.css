@@ -1,0 +1,458 @@
+/*
+* CometChat 
+* Copyright (c) 2012 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+
+html, body {
+	overflow: hidden;
+	background: <?php echo $themeSettings['tab_background'];?>;
+	direction: <?php echo $dir;?>;
+}
+
+ul {
+	float: left;
+	width: 100%; 
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	padding-top: 20px;
+}
+
+li {  
+	float: left;
+	width: 120px;
+	margin: 0;
+	cursor: pointer;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-left: 15px;
+	padding-right: 10px;
+	list-style: none;
+	text-transform: capitalize !important;
+} 
+
+li:hover {
+	background-color: <?php echo $themeSettings['bar_border_light'];?>;
+	color: <?php echo $themeSettings['bar_color'];?>;
+}
+
+.catselected {
+	background-color: <?php echo $themeSettings['tab_title_backgroud_light'];?> !important;
+	color: <?php echo $themeSettings['bar_color'];?> !important;
+	font-weight: bold !important;
+}
+
+#container {
+	<?php if (!$rtl):?>
+	margin-right: 2px;
+	<?php endif;?>
+}
+
+#categories {
+	height: 268px;
+	overflow-y:auto;
+	overflow-x:hidden;
+	float: left;
+	padding-top: 2px;
+	border-right: 1px dotted <?php echo $themeSettings['bar_border_light'];?>;
+}
+
+.gamecontainer {
+	float:left;
+	height:300px;
+	<?php if (!$sleekScroller):?>
+	width: 358px;
+	<?php endif;?>
+}
+
+#games {
+	width: 353px;
+	float: left;
+	margin-left:6px;
+	overflow-y:auto;
+	overflow-x:hidden;
+	position:relative;
+	height: 270px;
+	border-bottom: 1px dotted <?php echo $themeSettings['bar_border_light'];?>;
+}
+
+.leftarrowdiv {
+	width:20px;
+	min-height:20px; 
+	color: #686868;
+	padding:2px;
+	position:relative;
+	float:left;
+	cursor: pointer;
+}
+
+.rightarrowdiv {
+	width:20px;
+	min-height:20px; 
+	color: #686868;
+	padding:2px;
+	position:relative;
+	float:right;
+	cursor: pointer;
+}
+
+.paginator {
+	float: left;
+	clear: left;
+	width: 95px;
+	height: 25px;
+	margin-left: 114px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 2px;
+	padding-bottom: 1px;
+}
+
+.pageno {
+	float: left;
+	padding: 3px;
+	margin-left: 18px;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	padding-top: 4px;
+	font-weight: bold;
+}
+
+#games img {
+	width: 80px;
+	height: 80px;
+	margin-bottom: 2px;
+}
+
+#leftcont {
+	width: 140px;
+	float: left;
+}
+
+.leadtitle {
+	cursor: pointer;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	padding: 7px 15px;
+	list-style: none;
+	font-weight: bold;
+	background-color: <?php echo $themeSettings['tab_background'];?>;
+	float:left;
+	width:115px;
+	border-top: 1px dotted <?php echo $themeSettings['bar_border_light'];?>;
+	border-right: 1px dotted <?php echo $themeSettings['bar_border_light'];?>;
+}
+
+.leadtitle img {
+	float: left;
+}
+
+.leadtitle span {
+	margin-left: 10px;
+	margin-top: 1px;
+	float: left;
+}
+
+.leadtitle:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.gamelist {	
+	<?php if ($sleekScroller):?>	
+	padding:2px;
+	<?php endif;?>	
+	margin:5px 2px 0px 8px;
+	text-align: center;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size_small'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	float: left;
+	width: 100px;
+	height: 100px;
+	cursor: pointer;
+	position:relative;
+}
+
+.gamelist:hover {
+	filter: alpha(opacity=60);
+	-moz-opacity: 0.6;
+	opacity: 0.6;
+}
+
+.gameslist:hover {
+	background-color: <?php echo $themeSettings['bar_border_light'];?>;
+}
+
+#loader {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	background-image: url(themes/default/images/loader.gif);
+	width: 16px;
+	height: 16px;
+	display: none;
+}
+
+.gamename {
+	line-height:20px;
+	vertical-align:middle;
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	font-family:<?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	border-bottom: 1px dotted <?php echo $themeSettings['bar_border_light'];?>;
+	float:left;
+	width: 200px;
+	padding: 7px;
+}
+
+.gamescore {
+	line-height:20px;
+	vertical-align:middle;
+	white-space:nowrap;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	font-family:<?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	border-bottom:  1px dotted <?php echo $themeSettings['bar_border_light'];?>;
+	float:left;
+	padding:7px;
+	width: 100px;
+	text-align: right;
+}
+
+.scorepro {
+	cursor: pointer;
+	padding: 5px;
+	margin: 0px;
+	border-bottom: 1px dotted <?php echo $themeSettings['bar_border'];?>;
+}
+
+.scoreprotitle {
+	font-weight: bold;
+}
+
+.avatarf {
+	float: left;
+	margin-left: 10px;
+	margin-top: 2px;
+	width: 25px !important;
+	height: 25px !important;
+	border: 1px solid <?php echo $themeSettings['bar_border'];?>;
+	border-radius: 2px;
+}
+
+.fname {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: left;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	float:left;
+	width: 125px;
+	margin-left: 10px;
+	text-transform: capitalize;
+	padding: 8px;
+}
+
+.fscore {
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	padding: 8px;
+	float:left;
+	width: 60px;
+	text-align: center;
+}
+
+.ftot {
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	padding: 8px;
+	float:left;
+	width: 50px;
+	text-align: center;
+}
+
+.titlegame {
+	cursor:pointer;
+	width: 180px;
+	margin: 0;
+	cursor: pointer;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-left: 15px;
+	padding-right: 10px;
+	background-color: <?php echo $themeSettings['tab_title_backgroud_light'];?>;
+}
+
+.avatar {
+	float: left;
+	margin-left: 5px;
+	margin-top: 5px;
+}
+
+.scorepro:hover {
+	filter: alpha(opacity=60);
+	-moz-opacity: 0.6;
+	opacity: 0.6;
+}
+
+.scoreprotitle:hover {
+	filter: alpha(opacity=1000);
+	-moz-opacity: 1.0;
+	opacity: 1.0;
+}
+
+.userleft {
+	float: left;
+	width: 200px;
+	margin-bottom: 20px;
+	margin-top: 5px;
+}
+
+.username {
+	overflow:hidden;
+	text-overflow:ellipsis;
+	float:left;
+	width: 200px;
+	font-family: <?php echo $themeSettings['tab_title_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_title_font_size_large'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	text-transform: capitalize;
+	margin-left: 10px;
+	font-weight: bold;
+	margin-top: 4px;
+}
+
+.score {
+	float: left;
+	margin-top: 4px;
+	margin-left: 10px;
+	width: 90px;
+	font-family: <?php echo $themeSettings['tab_title_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_title_font_size_large'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+}
+
+.tot {
+	margin-top: 4px;
+	float: left;
+	width: 70px;
+	margin-left: 30px;
+	font-family: <?php echo $themeSettings['tab_title_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_title_font_size_large'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+}
+
+.highest {
+	float: left;
+	width: 100%;
+}
+
+.latest {
+	float: left;
+	width: 100%;
+}
+
+.avtrimg {
+	width: 40px !important;
+	height: 40px !important;
+	border: 1px solid <?php echo $themeSettings['bar_border'];?>;
+	border-radius: 5px;
+}
+
+.leadtitle2 {
+	border-radius: 2px;
+	overflow:hidden;
+	float: left;
+	font-family: <?php echo $themeSettings['tab_title_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_title_font_size_large'];?>;
+	color: <?php echo $themeSettings['tab_title_color'];?>;
+	padding: 5px;
+	width: 90%;
+	background-color: <?php echo $themeSettings['tab_title_background'];?> !important;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='<?php echo $themeSettings['tab_title_gradient_start'];?>', endColorstr='<?php echo $themeSettings['tab_title_gradient_end'];?>');
+	background: -webkit-gradient(linear, left top, left bottom, from(<?php echo $themeSettings['tab_title_gradient_start'];?>), to(<?php echo $themeSettings['tab_title_gradient_end'];?>));
+	background: -moz-linear-gradient(top, <?php echo $themeSettings['tab_title_gradient_start'];?>, <?php echo $themeSettings['tab_title_gradient_end'];?>);
+	background: -ms-linear-gradient(top, <?php echo $themeSettings['tab_title_gradient_start'];?>, <?php echo $themeSettings['tab_title_gradient_end'];?>);
+	background: -o-linear-gradient(top, <?php echo $themeSettings['tab_title_gradient_start'];?>, <?php echo $themeSettings['tab_title_gradient_end'];?>);
+	border-right: 1px dotted <?php echo $themeSettings['bar_border_light'];?>;
+	margin-left: 0px;
+}
+
+.title {
+	white-space:nowrap;
+	width:100px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+.profilebox {
+	padding: 5px;
+}
+
+.leadicon {
+	height:16px !important;
+	width:16px !important;
+	position:absolute;
+	right:11px;
+	bottom:19px;
+	border-radius:2px;
+	background-color: #ffffff;
+	padding:4px;
+}
+
+#leftcont .slimScrollBar {
+	margin-right:1px;
+}
+
+.norecords {
+	overflow:visible !important;
+	text-align: left;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	float:left;
+	width: 310px;
+	line-height:25px;
+	margin-left: 10px;
+	text-transform: capitalize;
+	padding: 8px;
+}

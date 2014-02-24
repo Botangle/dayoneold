@@ -1,0 +1,9 @@
+.node-type-page h2{
+    color: #2B2B2B;
+    font-family: 'robotomedium',Arial,Helvetica,sans-serif;
+    font-size: 33px;
+    margin: 20px 0;
+    text-align: left;
+}
+.error {color: #FF0000;
+    margin-top: 10px;}

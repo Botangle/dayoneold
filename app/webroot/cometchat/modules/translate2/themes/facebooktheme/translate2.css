@@ -1,0 +1,64 @@
+/*
+ * CometChat 
+ * Copyright (c) 2012 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+
+
+html, body {
+	background: <?php echo $themeSettings['tab_background'];?>;
+	direction: <?php echo $dir;?>;
+}
+
+ul {
+  float: left;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  list-style-image: url(themes/default/images/bullet.png);
+  padding-<?php echo $left;?>: 15px;
+}
+
+li {
+  float: left;
+  width: 119px;
+  margin: 0;
+  height: 20px;
+  cursor: pointer;
+} 
+
+.container {
+	font-weight:normal;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	padding: 10px 8px;
+	padding-<?php echo $right;?>: 0px;
+	width: 255px !important;
+}
+
+.container a {
+	color: <?php echo $themeSettings['tab_link_color'];?>;
+}
+
+.translating {
+	display: none;
+}

@@ -1,0 +1,413 @@
+-------------------------------------------------------------
+ CometChat Change Log
+-------------------------------------------------------------
+
+-------------------------------------------------------------
+ 5.1.0
+-------------------------------------------------------------
+
+Features
+
++ New support for Memcache (drastic load reduce!)
++ Added support for file caching mechanism alternatively
++ Integration with Realtime.co (third party transport)
++ Ability to execute and customize cronjobs through administration panel 
+
+Enhancements
+
++ Mobile tab now works with CometService
++ Desktop Messenger now works with APE server
++ Chat history now works for guests
++ Ability to monitor & log guest messages from administration panel
++ Responsive mobile tab based on mobile device resolution
++ Optimized code for audio/video & broadcast plugin
++ Improved CometService code
+
+Fixes
+
++ No missing messages when using multiple devices
++ Fixed issues when CometChat is used in cross-domain configuration
++ Fixed freezing issue in Mac OS in screensharing plugin
++ Fixed smiles issue in save conversation plugin
++ Fixed issues with handwrite plugin
++ Miscellaneous code & administration panel fixes
+
+-------------------------------------------------------------
+ 5.0.0
+-------------------------------------------------------------
+
+Features
+
++ Free native mobile app for iOS and Android devices
++ Support for white-labelled mobile apps (i.e. app with your site name,logo, icon, colors)
++ New Broadcast plugin enables your users to broadcast their audio & video to other users
++ New AddLive partnership for audio/video chat and screensharing
++ Ability for guest to change name
+
+Enhancements
+
++ Seamless login for Gtalk chat feature (using Google OAuth2)
++ Friendly upgrade mechanism (no longer removes chatrooms)
++ Ability for moderators to join password-protected rooms
++ CometService is now enabled for chatrooms as well
++ Ability to ban users by IP
++ Ability to modify colors/language of Desktop Messenger & Native App directly via Administration Panel
++ Logs updated to show chatroom logs as well
++ Added "Manage blocked users" option in lightweight chat
++ Code clean-up
+
+Fixes
+
++ Fixed issue of dropped/repeat messages on page reload
++ Security fixes and enhancements
++ Improved handling of special characters in usernames
++ Fixed invite functionality in chatrooms/video-chat
++ Chat history fix for CometService
+
+-------------------------------------------------------------
+ 4.6.0
+-------------------------------------------------------------
+
+Features
++ Chatrooms support in mobile web apps
++ Kick/ban and moderators features added to chatrooms
++ Guests mode enabled for chatrooms
++ Chat history support for chatrooms
++ Ability to resize plugin windows from Administration Panel
+
+Enhancements
++ Added leaderboard for single player games
++ User avatars added in chatrooms
++ Improved caching mechanism for mobile web app
++ Added sleek scroller in Announcements, Real time translate, Page translate and Twitter modules
++ LinkedIn option added to Share module
++ RED5 and FMS support for screenshare, whiteboard and audio/video chat
+
+Fixes
++ New message notification fix for IE
++ Real time translate and Transliterate fixes for Chatrooms
++ Smilies fix in embedded chatrooms
++ Directory separator issue fix
+
+-------------------------------------------------------------
+ 4.4.0
+-------------------------------------------------------------
+
+Features
++ Jabber/XMPP support
++ Inline popups for plugins/extensions
++ Desktop Messenger support
++ CometService/BeaconPush/APE enabled for chatrooms
++ Facebook chat login with your own Facebook application keys
++ Enhanced and simplified theming
++ Sleeker scroller
+
+Enhancements
++ Real-time translation now works with CometService (beta)
++ Facebook/Gtalk chat tweaks and fixes
++ Google+ option added to Share module
++ Block plugin does not allow messages to be sent
++ Peer-to-peer option for audio/video chat
++ Re-written Twitter plugin (reduced server load)
++ New admin enhancements in themes & language
++ Groups feature (user categories) for standalone integration
++ New set of smileys :)
++ Improved caching mechanism
+
+Fixes
++ Facebook Fan Page fix
++ Mobile web-app fix
++ open_basedir issue fix
+
+-------------------------------------------------------------
+ 4.0.0
+-------------------------------------------------------------
+
+Enhancements
++ Improved SSL support
++ Ad extension now accepts Google Adsense code
++ Enhanced and enabled Guests feature
+
+Bug Fixes
++ Transport fixes
++ jQuery 1.6.X compatibility
++ Facebook/Gtalk chat fixes
++ Miscellaneous bug fixes
+
+-------------------------------------------------------------
+ 4.0.0 BETA 1
+-------------------------------------------------------------
+
+Features
++ Facebook and Gtalk chat support
++ Android and other mobile platforms generic webapp
++ Single link for chat webapp (auto-detection)
++ Basic Advertisements plugin
++ Guests functionality
++ Ability to select color in chatrooms
++ Report conversations plugin
++ Block user plugin
++ Alternative page translation module
+
+Enhancements
++ Sound notification in chatrooms
++ Improvement in friends list fetching
++ Lazy loading of avatar images to reduce bandwidth usage
++ Enhanced CometService to avoid dropping messages
++ Enabled private announcements/notifications feature
+
+Bug Fixes
++ File transfer plugin fix for file names with spaces
++ Banned words filter fix
++ Duplicate status message fix
++ Long status message fix
+
+-------------------------------------------------------------
+ 3.0.9
+-------------------------------------------------------------
+
++ Version release cancelled
+
+-------------------------------------------------------------
+ 3.0.9 BETA
+-------------------------------------------------------------
+
+Features
++ Cross-domain update
+
+-------------------------------------------------------------
+ 3.0.1
+-------------------------------------------------------------
+
+Features
++ Multi-transport support
++ Cross-domain auto-detect
+
+Bug fixes
++ Alert popup fix
++ Brower compatibility fixes
+
+-------------------------------------------------------------
+ 3.0.0 RC2
+-------------------------------------------------------------
+
+Features
++ APE Server support
++ Cross-domain support
++ Blackberry web-app
++ Improved video chat
++ Many minor tweaks and fixes
+
+New Modules/Plugins
++ Write-board plugin
+
+Enhancements
++ Auto-connect if network connection fails
++ Speed enhancements in light version
+
+-------------------------------------------------------------
+ 3.0.0 RC1
+-------------------------------------------------------------
+
+Features
++ Improved Chatroom module (ability to use plugins in chatrooms)
++ Light version of CometChat
++ Improved iPhone web-app
++ Improved CRON functionality
++ Ability to change sound notification
++ JavaScript code optimization
++ Ability to display text next to modules icon
++ Many minor tweaks and fixes
+
+New Modules/Plugins
++ Translate conversations (on-the-fly) module
++ White-board plugin
+
+Admin Features
++ Language management and creation
++ Theme management and creation
++ Ability to remove games based on keywords
++ Embed links for chatrooms and modules
+
+Bug fixes
++ Auto join chatrooms on page change
++ Session destroy fix
+
+-------------------------------------------------------------
+ 2.0.4
+-------------------------------------------------------------
+
+Features
++ iPhone/iPad web app for Premium/Platinum Edition
++ Improved screensharing plugin (Platinum Edition)
+
+Bug fixes
++ Special characters fix for announcements
++ Create custom tray icon fix
++ Auto linking bug fix
++ Admin session fix
+
+-------------------------------------------------------------
+ 2.0.3
+-------------------------------------------------------------
+
+Features
++ Ability to update base URL using administration panel
+
+Bug fixes
++ Miscellaneous bug fixes
+
+-------------------------------------------------------------
+ 2.0.2
+-------------------------------------------------------------
+
+Features
++ CometService compatible
+
+-------------------------------------------------------------
+ 2.0.0
+-------------------------------------------------------------
+
+Features
++ Streamlined installation procedure
++ Ability to hide CometChat bar (by user and for non-logged in users)
++ Improved themes
++ Ability to send announcements in real-time
++ Enhanced support for RTL languages
++ Full UTF-8 support
++ Popup notification when user comes online/goes offline
++ Ability for users to disable notification
++ Improved licensing technology
++ Improved support for Internet Explorer 6
++ Improved hyperlinking of domains in messages
++ Improved status messages feature
++ Better notification of new messages when user is away
++ Option to show bar above flash objects
++ Ability to switch between friends and online users
++ JavaScript speed enhancements & optimizations
++ Enhanced JS API
++ Miscellaneous bug fixes
++ Database optimization
++ Improved CRONJOB
++ Advanced administration panel
+
+Plugins
++ Ability transfer files in any format
++ New Screen Sharing plugin
++ Ability to save conversations
++ New smileys plugin
++ New transliterate plugin
+
+Modules
++ Advanced chatrooms module
++ Improved single player games module
++ Improved share this functionaliy
++ Improved Facebook Fan Page
++ Scroll to top module
+
+-------------------------------------------------------------
+ 1.6.0
+-------------------------------------------------------------
+
+Features
++ Plugins pre-loaded with CometChat
+
+-------------------------------------------------------------
+ 1.5.123
+-------------------------------------------------------------
+
+Bug fixes
++ Chatrooms functionality
++ Simplified installation process
+
+-------------------------------------------------------------
+ 1.5.112
+-------------------------------------------------------------
+
+Enhancements
++ Streamlined installation process
+
+Bug fixes
++ YouTube link feature
++ Chatrooms functionality
++ Miscellaneous reported bugs
+
+-------------------------------------------------------------
+ 1.5.0
+-------------------------------------------------------------
+
+Features
++ Avatar support 
++ Gravatar support for sites with no avatars
++ Ability to go to user profile on clicking of name (in chatbox)
++ Youtube video integration
++ Ability to display first name only in chat conversations
++ Overall chat speed enhancements
++ Ability to login by clicking on yellow alert icon
++ Title-bar update when new message arrives
++ Different colors for incoming and outgoing messages
++ Improved synchronization with multiple open windows
++ Plugins/modules support
++ Themes support
+
+Themes
++ Default theme
++ Dark theme
+
+Administration features
++ Spy: View users chatting in real-time!
++ Logs: View conversation logs of users
++ Chatrooms: Ability to specify default chatrooms
+
+Bundled Modules
++ Chatroom module
+
+Bundled Plugins
++ Timestamp Plugin: Display time when messages arrive
++ Send File Plugin: Ability to send files to users
++ Clear Chat History Plugin: Ability to clear chat window
++ View History Plugin: View user chat logs
+
+API
++ chatWith: Allows you to add a link on your page to chat with users (including users not part of friends list)
++ sendMessage: Allows you to send a message to a user (from the logged-in user)
+
+Bug fixes
++ Auto-linking bug fix
++ Better support for Internet Explorer
++ Miscellaneous bug fixes
+
+-------------------------------------------------------------
+ 1.2
+-------------------------------------------------------------
+
+Fix: 10x Speed Enhancements
+Feature: Custom popup boxes
+
+-------------------------------------------------------------
+ 1.1
+-------------------------------------------------------------
+
+Feature: Custom icons feature (left-side)
+Feature: Auto-parsing of links
+Feature: Smileys
+Feature: Bad-word filter
+Feature: Internationalization option
+Feature: Sound alerts (user-level disable feature)
+Feature: Auto-popup of boxes feature
+Feature: Added various customization options (fine-tweaking)
+Bug: Charset fix
+Bug: Newline character fix
+
+-------------------------------------------------------------
+ 1.0.1
+-------------------------------------------------------------
+
+Bug: \' slashes bug
+Bug: Slowing of script due to large number of friends
+
+-------------------------------------------------------------
+ 1.0.0
+-------------------------------------------------------------
+
+Initial release of script

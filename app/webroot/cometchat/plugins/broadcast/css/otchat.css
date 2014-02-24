@@ -1,0 +1,152 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+
+object {
+	float: left;
+}
+
+#videobar {
+	float: top;	
+}
+
+#publisher-controls {
+	display: none;
+}
+
+#push-to-talk {
+	padding-top: 5px;
+	display: none;
+}
+
+#devicePanelContainer {
+	position: absolute;
+	left: 250px;
+	top: 10px;
+	display:none;
+}
+
+#devicePanelCloseButton {
+	position: relative;
+	z-index: 10;
+	margin-left: 285px;
+	margin-right: 12px;
+	padding: 3px;
+	text-align: center;
+	font-size: 11px;
+	background-color: lightgrey;
+}
+
+#devicePanelBackground {
+	background-color: lightgrey;
+	width: 340px;
+	height: 230px;
+}
+
+#devicePanelInset #devicePanel {
+	position: relative;
+	top: -74px;
+	left: -9px;
+}
+
+a.settingsClose:link,
+a.settingsClose:visited,
+a.settingsClose:hover {
+	text-decoration: none;
+	cursor: pointer;
+}
+
+table {
+	clear: both;
+}
+
+td {
+	vertical-align: top;
+	padding-right: 15px;
+}
+
+.publisherContainer {
+	float: left;
+}
+
+.subscriberContainer {
+	width: 264px;
+	margin-left: 4px;
+	float:left;
+}
+
+html, body {
+	margin: 0px;
+	padding: 0px;
+	background: #000;
+	overflow: hidden;
+}
+
+#navigation {
+	position: fixed;
+	bottom: 0px;
+	background: #333;
+	width: 100%;
+	left: 0px;
+	padding: 0px;
+	display: none;
+}
+
+#navigation img {
+	border: 0;
+	float: right;
+	margin-left: 5px;
+}
+
+#navigation_elements {
+	margin: 5px;
+	height: 20px;
+}
+
+#unpublishLink {
+	display: none;
+}
+
+#loading {
+	width: 100%;
+	position:absolute;
+	top:48%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+#canvas {
+	margin: 0 auto;
+	display: none;
+}
+
+#myCamera, #otherCamera {
+	float: left;
+}
+
+.camera {
+}
+
+#endcall {
+	width: 100%;
+	position:absolute;
+	top:48%;
+	margin: 0 auto;
+	text-align: center;
+	display: none;
+}
