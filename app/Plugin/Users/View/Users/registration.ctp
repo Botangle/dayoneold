@@ -100,10 +100,10 @@
                 <div class="controls">
 				  <?php echo $this->Form->input('password',array('label' => false,'class'=>'textbox','type'=>'password','placeholder'=>__('Password')));?>              
                 </div>
-                <div class="controls">
+               <!-- <div class="controls">
                 <div class="password-security">
-                  <img src="images/password-security.jpg" alt="password" align="absmiddle"><?php echo __("Level of Security")?></div>
-                </div>
+                  <img src="images/password-security.jpg" alt="password" align="absmiddle"><?php //echo __("Level of Security")?></div>
+                </div>-->
               </div>
               <div class="control-group required">
                 <label class="control-label" for="confirmPassword"><?php echo __("Confirm Password")?>:</label>

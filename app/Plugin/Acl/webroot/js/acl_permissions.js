@@ -7,7 +7,7 @@ var AclPermissions = {};
 
 // row/cell templates
 AclPermissions.templates = {
-/*
+
 	permissionRow: _.template('<tr data-parent_id="<%= id %>" class="<%= classes %>"> <%= text %> </tr>'),
 
 
@@ -25,7 +25,7 @@ AclPermissions.templates = {
 </td>'),
 
 	editLinks: _.template('<td><div class="item-actions"><%= up %> <%= down %> <%= edit %> <%= del %> </div></td>')
-*/
+
 };
 
 /**
@@ -91,10 +91,10 @@ AclPermissions.tableToggle = function() {
 				var classes = children > 0 ? 'controller perm-expand' : '';
 				classes += " level-" + data.level;
 				text += AclPermissions.templates.controllerCell({
-					/*id: acoId,
+					id: acoId,
 					alias: alias,
 					level: data.level,
-					classes: classes.trim()*/
+					classes: classes.trim()
 				});
 				if (Croogo.params.controller == 'acl_permissions') {
 					text += renderRoles(data.aros, acoId, aco);

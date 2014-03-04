@@ -67,23 +67,27 @@ echo $this->Layout->js();
 		));
 		?>
 		<script>
-		
-		
+var suburl = "/demos/botangle/subject/search";
+if(document.URL.indexOf('127.0.0.1')>=0){
+var suburl = "/botangle/subject/search"
+} 	
 		var $j = jQuery.noConflict();
-	 
+datasubject = "";	 
 jQuery(function() {
-jQuery.getJSON( "/demos/botangle/subject/search",function(response){
-data = response;
-
-$j( "#searchvalue" ).autocomplete({
+jQuery.getJSON( suburl,function(response){
+datasubject = response;
+console.log(datasubject)
+$j( "#searchvalue,#LessonSubject").autocomplete({
 minLength: 0,
-source: data,
+source: datasubject,
 focus: function( event, ui ) {
-$j( "#searchvalue" ).val( ui.item.label );
+ 
+$j( "#searchvalue,#LessonSubject" ).val( ui.item.label );
 return false;
 },
 select: function( event, ui ) {  
-$j( "#searchvalue" ).val( ui.item.label ); 
+ 
+$j( "#searchvalue,#LessonSubject" ).val( ui.item.label ); 
 return false;
 }
 })
@@ -92,7 +96,28 @@ return $j( "<li>" )
 .append( "<a>" + item.label + "</a>" )
 .appendTo( ul );
 };
+if(document.URL.indexOf('createlesson')>=0){
+$j( "#LessonSubject").autocomplete({
+minLength: 0,
+source: data,
+focus: function( event, ui ) {
+console.log(this.id)
+$j( "#LessonSubject" ).val( ui.item.label );
+return false;
+},
+select: function( event, ui ) {  
+console.log(this.id)
+$j( "#LessonSubject" ).val( ui.item.label ); 
+return false;
+}
 })
+.data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+return $j( "<li>" )
+.append( "<a>" + item.label + "</a>" )
+.appendTo( ul );
+};}
+})
+
 });
  
 	</script>

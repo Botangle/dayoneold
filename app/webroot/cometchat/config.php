@@ -11,6 +11,7 @@ include dirname(__FILE__).DIRECTORY_SEPARATOR.'integration.php';
 /* BASE URL START */
 
 define('BASE_URL','/demos/botangle/app/webroot/cometchat/');
+define('BASE_URL_IMAGE','/demos/botangle/uploads/');
 
 /* BASE URL END */
 

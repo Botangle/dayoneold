@@ -6,24 +6,21 @@
         <div class="service-img"><img src="<?php echo $this->webroot?>images/join-img.png" alt="Join"></div>
         <div class="service-text" onclick="window.location.href=('<?php echo $this->webroot?>register')">
           <h2>Join Botangle</h2>
-          <p>Lorem ipsum dolor sit amet, <br>
-            consectetur adipisicing elit.</p>
+          <p>lets you connect with one of the<br/> best online tutors the moment you'd like a hand.</p>
         </div>
       </div>
       <div class="span4 Servicebox"  onclick="window.location.href=('<?php echo $this->webroot?>user/search')">
         <div class="service-img"><img src="<?php echo $this->webroot?>images/search-tutor.png" alt="Join"></div>
         <div class="service-text">
           <h2>Search Tutors</h2>
-          <p>Lorem ipsum dolor sit amet, <br>
-            consectetur adipisicing elit.</p>
+          <p>Work with someone instantly or schedule<br/> a lesson with your preferred tutor at a convenient time. </p>
         </div>
       </div>
       <div class="span4 Servicebox"  onclick="window.location.href=('<?php echo $this->webroot?>user/search')">
         <div class="service-img"><img src="<?php echo $this->webroot?>images/learn-class.png" alt="Join"></div>
         <div class="service-text">
           <h2>Learn in Class</h2>
-          <p>Lorem ipsum dolor sit amet, <br>
-            consectetur adipisicing elit.</p>
+          <p>You'll be able to chat, use video, upload<br/> documents and write on a shared whiteboard.</p>
         </div>
       </div>
     </div>
@@ -70,7 +67,12 @@
         </div>
         <div class="tutor-bio">
           <p><?php echo $user['User']['extracurricular_interests']?></p>
-          <div class="social"><?php echo $this->Html->image('/croogo/img/social.png',array('class'=>'img-circle')); ?></div>
+          <div class="social">
+		  	  <a href="#"><?php echo $this->Html->image('/croogo/img/facebook.png',array('class'=>'img-circle-left')); ?></a>
+			  <a href="#"><?php echo $this->Html->image('/croogo/img/twitter.png',array('')); ?></a>
+			  <a href="#"><?php echo $this->Html->image('/croogo/img/google.png',array('')); ?></a>
+			  <a href="#"><?php echo $this->Html->image('/croogo/img/trumbler.png',array('class'=>'img-circle-right')); ?></a>
+		  </div>
         </div>
       </div>
 	  <?php }

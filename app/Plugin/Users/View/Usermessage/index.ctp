@@ -1,9 +1,18 @@
+<script>
+  $(document).ready(function() {
  
+     $(".Message-lists").niceScroll({cursorborder:"",cursorcolor:"#F38918",boxzoom:true}); // First scrollable DIV
+	 
+	 var $t = $('.Message-lists');
+    $t.animate({"scrollTop": $('.Message-lists')[0].scrollHeight}, "slow");
+ });
+</script>
 <?php 
  echo $this->Layout->js();
 		echo $this->Html->script(array(
 			'/croogo/js/fileupload',
 			'/croogo/js/jquery/bootstrap',
+			'/croogo/js/jquery.nicescroll.min',
 			));
 echo $this->element("breadcrame",array('breadcrumbs'=>
 	array(__('My Messages')=>__('My Messages')))
@@ -22,7 +31,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
     <div class="row-fluid">
     <?php echo $this->Element("myaccountleft") ?> 
       <div class="span9">
-      <h2 class="page-title">Messages <p class="pull-right"><button class="btn btn-primary btn-primary1" type="submit">Send New Messages</button></p></h2>
+     <!-- <h2 class="page-title">Messages <p class="pull-right"><button class="btn btn-primary btn-primary1" type="submit">Send New Messages</button></p></h2> -->
       <div class="StaticPageRight-Block">
       <div class="row-fluid">
       <div class="span4 Message-List-Block">
@@ -32,8 +41,12 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		if(!empty($userData)){ 
 				foreach($userData as $k=>$v){
 				 
-			?>
-			<div class="Message-row active">
+			 ?>
+			
+			
+			<a class="" title="jaindeepak" href="/demos/botangle/users/messages/<?php echo $v['User']['username']; ?>">
+			
+			<div class="Message-row">
 			<div class="row-fluid">
         	<div class="span4 sender-img">
 			<?php 
@@ -45,20 +58,25 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		 <?php } ?>
 			</div>
             <div class="span8 sender-name"> 
-			<?php echo $this->Html->link(__($v['User']['username']), '/users/messages/'.$v['User']['username'],
-		array('class' => '', 'title' => __($v['User']['username'])));
-		?>
+			<?php /* echo $this->Html->link(__($v['User']['username']), '/users/messages/'.$v['User']['username'],
+		array('class' => '', 'title' => __($v['User']['username']))); */?>
+		
+		  <?php echo $v['User']['username']; ?>
 			 
 <br><span class="FontStyle11"><?php echo $this->User->GettimedifferencedayBase($v['Usermessage']['date']);?></span></div>             
             </div>
             </div>
+			
+		</a>	
 		<? }
 		}
 		?>
 			
          
      </div>
-        <div class="span8 Message-detail-Block">
+	 
+	 
+        <div class="span8 Message-detail-Block" id="boxscroll">
         <div class="Message-lists">
 		<?php
 		

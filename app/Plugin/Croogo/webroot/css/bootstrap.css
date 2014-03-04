@@ -4714,57 +4714,40 @@ transition: color 400ms ease-out;
 }
 
 /* Menu Icons */
-.navbar-default .navbar-nav > li > a.home { background: url(../images/menu-icons.png) no-repeat 28px 12px;  font-family: 'Roboto', sans-serif;  font-weight:200; }
-.navbar-default .navbar-nav > li > a.home:hover, .navbar-default .navbar-nav > li > a.home.active  { background: url(../images/menu-icons.png) no-repeat 28px -108px; color: #f38918; -webkit-transition: background 400ms linear; font-family: 'Roboto', sans-serif;  font-weight:300;
--moz-transition: background 400ms linear;
--ms-transition: background 400ms linear;
--o-transition: background 400ms linear;
-transition: background 400ms linear;  }
+.navbar-default .navbar-nav > li > a.home { color:#000;  font-family: 'Roboto', sans-serif;  font-weight:200;   background: url(../images/menu-icons.png) no-repeat  28px 12px;}
+.navbar-default .navbar-nav > li > a.home:hover, .navbar-default .navbar-nav > li > a.home.active  { font-family: 'Roboto', sans-serif;  font-weight:300; color:#000;  background: url(../images/menu-icons.png) no-repeat 28px -108px; color: #f38918 !important; 
+  }
+  
+  
 
-.navbar-default .navbar-nav > li > a.category { background: url(../images/menu-icons.png) no-repeat 43px -227px; -webkit-transition: background 400ms linear;
--moz-transition: background 400ms linear; font-family: 'Roboto', sans-serif;  font-weight:300;
--ms-transition: background 400ms linear;
--o-transition: background 400ms linear;
-transition: background 400ms linear;  }
+.navbar-default .navbar-nav > li > a.category { background: url(../images/menu-icons.png) no-repeat 43px -227px; 
+font-family: 'Roboto', sans-serif;  font-weight:300;
+
+ }
 .navbar-default .navbar-nav > li > a.category:hover { background: url(../images/menu-icons.png) no-repeat 43px -348px; font-family: 'Roboto', sans-serif;  font-weight:300;  }
 .navbar-default .navbar-nav > li > a.category.active { background: url(../images/menu-icons.png) no-repeat 43px -348px; font-family: 'Roboto', sans-serif;  font-weight:300; color: #f38918 !important;  }
 
-.navbar-default .navbar-nav > li > a.myaccount { background: url(../images/menu-icons.png) no-repeat 43px -1180px; -webkit-transition: background 400ms linear;
--moz-transition: background 400ms linear;
--ms-transition: background 400ms linear; font-family: 'Roboto', sans-serif;  font-weight:300;
--o-transition: background 400ms linear;
-transition: background 400ms linear;  }
+.navbar-default .navbar-nav > li > a.myaccount { background: url(../images/menu-icons.png) no-repeat 43px -1180px;  font-family: 'Roboto', sans-serif;  font-weight:300;
+ }
 .navbar-default .navbar-nav > li > a.myaccount:hover, .navbar-default .navbar-nav > li > a.myaccount.active { background: url(../images/menu-icons.png) no-repeat 43px -1294px; font-family: 'Roboto', sans-serif;  font-weight:300;   color: #f38918 !important; }
 
 
 .navbar-default .navbar-nav > li > a.chart { background: url(../images/menu-icons.png) no-repeat 46px -468px;  }
-.navbar-default .navbar-nav > li > a.chart:hover, .navbar-default .navbar-nav > li > a.chart.active { background: url(../images/menu-icons.png) no-repeat 46px -587px;-webkit-transition: background 400ms linear; font-family: 'Roboto', sans-serif;  font-weight:300;
--moz-transition: background 400ms linear;
--ms-transition: background 400ms linear;
--o-transition: background 400ms linear;
-transition: background 400ms linear;  color: #f38918 !important; }
+.navbar-default .navbar-nav > li > a.chart:hover, .navbar-default .navbar-nav > li > a.chart.active { background: url(../images/menu-icons.png) no-repeat 46px -587px; font-family: 'Roboto', sans-serif;  font-weight:300;
+  color: #f38918 !important; }
 
 .navbar-default .navbar-nav > li > a.about { background: url(../images/menu-icons.png) no-repeat 43px -703px;  font-family: 'Roboto', sans-serif;  font-weight:300;}
-.navbar-default .navbar-nav > li > a.about:hover, .navbar-default .navbar-nav > li > a.about.active { background: url(../images/menu-icons.png) no-repeat 43px -823px;-webkit-transition: background 400ms linear;
--moz-transition: background 400ms linear;
--ms-transition: background 400ms linear; font-family: 'Roboto', sans-serif;  font-weight:300;
--o-transition: background 400ms linear;
-transition: background 400ms linear; color: #f38918 !important;  }
+.navbar-default .navbar-nav > li > a.about:hover, .navbar-default .navbar-nav > li > a.about.active { background: url(../images/menu-icons.png) no-repeat 43px -823px; font-family: 'Roboto', sans-serif;  font-weight:300;
+ color: #f38918 !important;  }
 
 .navbar-default .navbar-nav > li > a.signin { background: url(../images/menu-icons.png) no-repeat 28px -943px; font-family: 'Roboto', sans-serif;  font-weight:300; }
- .navbar-default .navbar-nav > li > a.signin:hover, .navbar-default .navbar-nav > li > a.signin.active { background: url(../images/menu-icons.png) no-repeat 28px -1064px;-webkit-transition: background 400ms linear; font-family: 'Roboto', sans-serif;  font-weight:300;
--moz-transition: background 400ms linear;
--ms-transition: background 400ms linear;
--o-transition: background 400ms linear;
-transition: background 400ms linear;  color: #f38918 !important;  }
+ .navbar-default .navbar-nav > li > a.signin:hover, .navbar-default .navbar-nav > li > a.signin.active { background: url(../images/menu-icons.png) no-repeat 28px -1064px; font-family: 'Roboto', sans-serif;  font-weight:300;
+  color: #f38918 !important;  }
 
 
 .navbar-default .navbar-nav > li > a.Report_Bug { background: url(../images/menu-icons.png) no-repeat 50px -1409px; font-family: 'Roboto', sans-serif;  font-weight:300; }
  .navbar-default .navbar-nav > li > a.Report_Bug:hover, .navbar-default .navbar-nav > li > a.Report_Bug.active { background: url(../images/menu-icons.png) no-repeat 50px -1522px;-webkit-transition: background 400ms linear; font-family: 'Roboto', sans-serif;  font-weight:300;
--moz-transition: background 400ms linear;
--ms-transition: background 400ms linear;
--o-transition: background 400ms linear;
-transition: background 400ms linear; color: #f38918 !important;  }
+ color: #f38918 !important;  }
 
 
 .navbar-default .navbar-nav > .active > a,

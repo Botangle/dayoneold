@@ -1,3 +1,4 @@
+<div class="topadvheader">Register As Tutor And Get $10 Free!</div>
 <?php 
 $homecls = $categoriescls = $topchart = $aboutclas=$reportbug =$logincls= $myaccountcls = "";
 if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
@@ -15,10 +16,8 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
 }else if($this->params['controller']=='users' && $this->params['action']=='index'){
 	$myaccountcls = "active";
 }
-
- 
 ?>
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default navbar-fixed-top  cbp-af-header" role="navigation">
   <div class="container">
     <div class="navbar-header">
     <div class="Beta-tag">&nbsp;</div>
@@ -90,3 +89,11 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
     <!--/.nav-collapse --> 
   </div>
 </div>
+<?php echo $this->Html->script(array('/croogo/js/cbpAnimatedHeader.min.js','/croogo/js/classie.js','/croogo/js/modernizr.custom.js','/croogo/js/jquery.jqtransform.js',)); 
+?>
+<script type="text/javascript">
+$(function() {
+    //find all form with class jqtransform and apply the plugin
+    $("form.jqtransform").jqTransform();
+});
+</script>

@@ -9,14 +9,15 @@ echo $this->Html->css(array(
 		));
 echo $this->Html->script(array(
 			'/croogo/js/bootstrap-datetimepicker',
-			));		
+			));
+ 	
 			?>
-<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="left:40%; width:auto; right:20%">
+    <div class="StaticPageRight-Block">
   <div class="PageLeft-Block">
         <p class="FontStyle20 color1"><?php echo __("Update Lesson Meeting")?></p>
         
          <?php echo $this->Form->create('Lesson',array('class'=>'form-horizontal'));
-		 /*echo $this->Form->input('id',array('class'=>'textbox','placeholder'=>"Student Name",'label' => false,'value'=>$Lesson['Lesson']['id']));*/
+		  
 		 if($Lesson['Lesson']['parent_id'] == 0){
 			$Lesson['Lesson']['parent_id'] =  $Lesson['Lesson']['id'];
 		 }
@@ -61,9 +62,17 @@ echo $this->Html->script(array(
               
               <div class="control-group">
                 <label class="control-label" for="inputEmail">Duration:</label>
-                <div class="controls">
-                <?php echo $this->Form->input('duration',array('class'=>'textbox','placeholder'=>"Duration",'label' => false,'value'=>$Lesson['Lesson']['duration']));?>
-                  
+                <div class="controls"> 
+                  <select name="data[Lesson][duration]" id="Lessonduration">
+				  <?php for($i=0;$i<24;$i=$i+.5){
+						$sel = "";
+						if($Lesson['Lesson']['duration']==$i){
+							$sel = 'selected="selected"';
+						}
+				  ?>
+					<option value="<?php echo $i?>" <?php echo $sel?> ><?php echo $i?></option>
+				  <?php } ?>
+				  </select>
                 </div>
               </div>
               <div class="control-group">
@@ -99,12 +108,12 @@ echo $this->Html->script(array(
 			echo $this->Form->button('Cancel', array('type' => 'reset','class'=>'btn btn-reset', 'data-dismiss'=>'modal','aria-hidden'=>'true'	));?>
               
             </div>
-           <?php echo $this->Form->end();?>
+           <?php echo $this->Form->end(); ?>
        </div>
+        </div>
        
-       </div>
 <script type="text/javascript">
-jQuery(".modal-backdrop").remove().append('<div class="modal-backdrop in"></div>')
+//jQuery(".modal-backdrop").remove().append('<div class="modal-backdrop in"></div>')
 jQuery('[data-dismiss="modal"]').click(function(e) {
 	jQuery(".modal-backdrop").remove();
 })

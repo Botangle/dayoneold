@@ -11,7 +11,7 @@ echo $this->Html->script(array(
     font-size: 25px;
 }
 </style>
-<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="left:40%; width:auto; right:20%; height:320px; overflow:hidden; top:25%">
+ 
 
  <div class="PageLeft-Block">
         <p class="FontStyle20 color1"><?php echo __("Would you like to rate")?></p>
@@ -40,7 +40,7 @@ echo $this->Html->script(array(
               
             </div>
            <?php echo $this->Form->end();?>
-</div>
+ 
 <script>
 jQuery(document).ready(function(){ 
  jQuery('.lessonrating').find('span').click(function(e){

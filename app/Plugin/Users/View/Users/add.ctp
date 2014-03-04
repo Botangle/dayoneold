@@ -8,7 +8,7 @@ if($this->Session->check("type")){
 	if($this->Session->read("type")=='tutor'){
 		$default = "2";
 	}else if($this->Session->read("type")=='student'){
-		$default = "3";
+		$default = "4";
 	}
 }
 
@@ -109,7 +109,7 @@ if($this->Session->check("type")){
 			}
 			 
  
-			$options = array('2' => 'Tutor','4' => ' Student');
+			$options = array('2' => 'Tutor','4' => 'Student');
 			$attributes = array('legend' => false,'checked' => $default,'value'=>$default,
 			'onclick'=>'update(this.value)',
 			'label' => array(
@@ -120,7 +120,7 @@ if($this->Session->check("type")){
               <div class="control-group">
                 <label class="control-label" for="postalAddress">Subject:</label>
                 <div class="controls">
-                <?php echo $this->Form->textarea('subject',array('class'=>'textarea','placeholder'=>'type your subjects','rows'=>3));?>
+                <?php echo $this->Form->textarea('subject',array('class'=>'textarea','placeholder'=>'Type Your Subjects','rows'=>3));?>
                   
                   <br>
                   <span class="FontStyle11"><em><?php echo __("Separate Subjects with commas")?></em></span> </div>
@@ -149,7 +149,7 @@ if($this->Session->check("type")){
               <div class="control-group">
                 <label class="control-label" for="postalAddress"><?php echo __("Qualification:")?></label>
                 <div class="controls">
-               <?php echo $this->Form->textarea('qualification',array('class'=>'textarea','placeholder'=>"type your Qualification"));?>
+               <?php echo $this->Form->textarea('qualification',array('class'=>'textarea','placeholder'=>"Type Your Qualification"));?>
                 
                  </div>
               </div>
@@ -216,7 +216,7 @@ if($this->Session->check("type")){
                 <label class="checkbox">
                   
 				  <?php echo $this->Form->checkbox('terms', array('hiddenField' => false));?>
-                  <?php echo __("I agree with Botangle's <a href='#'>Terms of Use and Privacy Policy.</a>")?>.</label>
+                  <?php echo __("&nbsp;I agree with Botangle's <a href='/demos/botangle/privacy'>Terms of Use and Privacy Policy.</a>")?>.</label>
               </div>
             </div>
             <div class="control-group form-actions">
@@ -227,7 +227,7 @@ if($this->Session->check("type")){
             </div>
          <?php echo $this->Form->end();?>
         </div>
-        <? } else if($default==3){ ?>
+        <? } else if($default==4){ ?>
 		  <div class="Signup">
          
          <?php echo $this->Form->create('User',array('class'=>'form-horizontal'));?>
@@ -240,12 +240,12 @@ if($this->Session->check("type")){
 				if($this->Session->read("type")=='tutor'){
 					$default = "2";
 				}else if($this->Session->read("type")=='student'){
-					$default = "3";
+					$default = "4";
 				}
 			}
 			 
  
-			$options = array('2' => 'Tutor','3' => ' Student');
+			$options = array('2' => 'Tutor','4' => ' Student');
 			$attributes = array('legend' => false,'checked' => $default,'value'=>$default,
 			'onclick'=>'update(this.value)',
 			'label' => array(
@@ -296,7 +296,7 @@ if($this->Session->check("type")){
                <label class="checkbox">
                   
 				  <?php echo $this->Form->checkbox('terms', array('hiddenField' => false));?>
-                  <?php echo __("I agree with Botangle's <a href='#'>Terms of Use and Privacy Policy.</a>.")?></label>
+                  <?php echo __("&nbsp;I agree with Botangle's <a href='/demos/botangle/privacy'>Terms of Use and Privacy Policy.</a>.")?></label>
               </div>
             </div>
             <div class="control-group form-actions">

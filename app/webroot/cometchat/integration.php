@@ -37,7 +37,7 @@ define('DB_USERTABLE',				"users"									);
 define('DB_USERTABLE_USERID',		"id"								    );
 define('DB_USERTABLE_NAME',			"username"								);
 define('DB_AVATARTABLE',            " "										);
-define('DB_AVATARFIELD',		    " ".TABLE_PREFIX.DB_USERTABLE.".image ");
+define('DB_AVATARFIELD',		    "users.profilepic");
 define('DB_USERTABLE_LASTACTIVITY',	"lastactivity"							);
 define('ADD_LAST_ACTIVITY',         '1'										);
 
@@ -128,10 +128,11 @@ function fetchLink($link) {
 }
 
 function getAvatar($image) {
-	if ($image) {
-		 return BASE_URL.'../img/'.$image;
+	if ($image && $image !="") {
+		
+		 return BASE_URL_IMAGE.'img/default_avatar.gif';
 	} else {	
-		return BASE_URL.'../img/default_avatar.gif';
+		return BASE_URL_IMAGE.'img/default_avatar.gif';
 	}
 }
 

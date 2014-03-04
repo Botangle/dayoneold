@@ -15,7 +15,9 @@
           <?php echo $this->Html->image('/croogo/img/twitter-update.png');?></div>
         <div class="facebook-box">
           <p class="title1">Likes on Facebook</p>
-          <?php echo $this->Html->image('/croogo/img/facebook-like.png'); ?></div>
+          
+		  <iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphelixportfolio.com%2Fdemos%2Fbotangle%2F&amp;width=401&amp;layout=standard&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:401px; height:35px;" allowTransparency="true"></iframe>
+		  </div>
       </div>
 <?php
 

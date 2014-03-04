@@ -117,7 +117,7 @@ body {
 	-o-transition: all 1s ease-in-out; 
 	-ms-transition: all 1s ease-in-out; 
 }
-.Servicebox .service-img img:hover {
+.Servicebox:hover .service-img img {
 	-webkit-transform: rotate(360deg); 
 	-moz-transform: rotate(360deg); 
 	-o-transform: rotate(360deg);
@@ -140,24 +140,25 @@ body {
 	font-weight: normal;
 	font-family: 'Roboto', sans-serif;  font-weight:200;
 }
-.Servicebox .service-text:hover{ color:#333; -webkit-transition: all 1s ease-in-out;
+.Servicebox:hover .service-text{ color:#333; -webkit-transition: all 1s ease-in-out;
 	-moz-transition: all 1s ease-in-out; 
 	-o-transition: all 1s ease-in-out; 
 	-ms-transition: all 1s ease-in-out;
 	}
 .Search-main1 {
-	background:url(../images/search-box-bg.png) no-repeat;
-	width:490px;
-	height:82px;
-	padding: 16px 10px;
-	float:left;
+	 background: url("../images/search-box-bg.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    float: left;
+    height: 79px;
+    margin-top: 14px;
+    padding: 2px 10px;
+    width: 490px;
 }
 .Search-main1 input[type="text"] {
 	border:0px;
 	font-family: 'Roboto', sans-serif;  font-weight:200;
 	font-size:22px;
 	color:#b3b3b3;
-	height: 46px !important;
+	height: 40px !important;
 	width: 96%;
 	border-radius:0px;
 	-webkit-box-shadow:none;
@@ -209,7 +210,7 @@ body {
 a.join-btn{ display:block; background:#e27807; color:#fff; text-decoration:none; font-family: 'Roboto', sans-serif;  font-weight:200;font-size:20px; text-align:center; width:100%; height:42px; padding:11px 0px; }
 a.join-btn:hover{ display:block; background:#2d2d2d; color:#fff; text-decoration:none; font-family: 'Roboto', sans-serif;  font-weight:200;font-size:20px; text-align:center; width:100%; height:42px; padding:11px 0px; }
 
-.QuoteBlock{ width:70%; margin:20px auto; padding:15px;  background:rgba(243, 124, 37, 0.7); }
+.QuoteBlock{ width:70%; margin:20px auto; padding:15px;  background:rgba(243, 124, 24, 0.8); }
 .QuoteBlock p {font-size:20px; color:#fff; line-height:35px; font-family: 'Roboto', sans-serif;  font-weight:200;  }
 .QuoteBlock span.left{ font-size:50px; font-style: italic; float:left; color:#fff; }
 .QuoteBlock span.right{ font-size:50px; font-style: italic; float:right; color:#fff; }
@@ -292,6 +293,9 @@ h2.page-title{font-family:'robotomedium', Arial, Helvetica, sans-serif; font-siz
 .PageLeft-Block{ height:auto; background:#fff; padding:20px 20px; border-top:4px solid #e27807; box-shadow:#ccc 0px 0 5px ; margin-bottom:30px; }
 
 .PageRight-Block{ height:auto; background:#fff; padding:20px 20px; border-top:4px solid #e27807; 
+box-shadow:#ccc 0px 0 5px ; margin-bottom:30px; }
+
+.PageRight-Block-Cal{ height:auto; background:#fff; padding:0px 0px; border-top:4px solid #e27807; 
 box-shadow:#ccc 0px 0 5px ; margin-bottom:30px; }
 
 .FontStyle11{ font-size:11px; font-family: 'Roboto', sans-serif;  font-weight:200; }
@@ -735,3 +739,29 @@ input.textbox{ width:80%; }
 }	
 .search-result-box{  margin:0px; margin-bottom:80px !important; }
 }
+
+#flashMessage.success { background:#6C3; padding:10px; color:#FFF; text-align:center; margin-top:10px; border-radius:20px;}
+#flashMessage.error {background:#F30; padding:10px; color:#FFF !important; text-align:center; margin-top:10px; border-radius:20px; }
+
+#booklesson { font-size:18px; padding:5px 10px; border:1px solid #fff;}
+.controls .radio{display: inline; line-height:10px; padding-left:5px; padding-right:20px;}
+.controls  input[type="radio"]{display: inline-block;}
+.tab-content a { cursor:default;}
+
+.search-result-img img {
+    border: 1px solid #DDDDDD;
+}
+
+.container #authMessage{background:#F30; padding:10px; color:#FFF !important; text-align:center; margin-top:10px; border-radius:20px; }
+.message-tutor{ padding-top:0px;}
+
+
+.cbp-af-header-shrink .navbar-nav > li > a{ background:none !important; padding-top:0px !important; line-height: 40px !important;}
+.cbp-af-header-shrink .navbar-brand{ padding-top:15px !important;}
+.cbp-af-header-shrink .navbar-brand img { height:25px!important; width:120px !important;}
+.cbp-af-header-shrink .navbar-header .Beta-tag { height:37px!important;background: url("../images/shrinkbeta.png") no-repeat scroll left center rgba(0, 0, 0, 0) !important;     left: -15px !important;}
+.cbp-af-header-shrink .navbar-collapse { height:35px !important;}
+.cbp-af-header-shrink{ min-height:45px !important; }
+
+.topadvheader { postion:fixed; width:100%; color:#fff; height:40px; position:fixed; top:0px; background-color:#2D2D2D; text-align:center;  font-size: 16px; padding-top: 10px; padding-bottom:10px; z-index:100;}
+

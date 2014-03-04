@@ -8,6 +8,8 @@ echo $this->Layout->js();
 			'/croogo/css/autocomplete/themes/base/jquery.ui.all', '/croogo/css/autocomplete/demos', 
 		));
 		?>
+		
+		
 		<script>
 		 
  

@@ -48,7 +48,11 @@
        <p class="FontStyle20">Not a member? Sign Up here</p>
         <p>Get a Free Account for 7 days. Sign Up here.</p><br>
 <br>
-<button type="submit" class="btn btn-primary">Sign Up</button>
+<?php 
+echo $this->Html->link(__("Sign Up"), array('action'=> 'registration','tutor'), array( 'class' => 'btn btn-primary'))
+/*
+<button type="submit" class="btn btn-primary">Sign Up</button> */
+?>
       </div>
     </div>
     <!-- @end .row --> 

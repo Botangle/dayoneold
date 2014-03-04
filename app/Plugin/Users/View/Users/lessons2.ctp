@@ -19,8 +19,9 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
     <div class="row-fluid">
     <?php echo $this->Element("myaccountleft") ?> 
       <div class="span9">
-	  <?php  if($this->Session->read('Auth.User.role_id')==2){ ?>
-     <h2 class="page-title"><?php echo __("Lesson");?> <p class="pull-right">
+	  <?php 
+	  if($this->Session->read('Auth.User.role_id')==2){ ?>
+     <!--<h2 class="page-title"><?php echo __("Lesson");?> <p class="pull-right">
 	 <?php
 		echo $this->Html->link(
     __('+  Add New Lesson'),	'/users/createlessons'
@@ -28,7 +29,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 	array('title'=>__('+  Add New Lesson') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
 );
 	   ?> 
-	  </p></h2> <?php  } ?>
+	  </p></h2>--> <?php  } ?>
       <div class="StaticPageRight-Block">
 	 
 	  
@@ -109,42 +110,53 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
               <div class="span1 time"><?php echo date('H:m',strtotime($v['Lesson']['lesson_time'])) ?></div>
                <div class="span1 mins"> <?php echo $v['Lesson']['duration'] ?> </div>
                 <div class="span2 subject"> <?php echo $v['Lesson']['subject'] ?>  </div>
-                <div class="span2 mark">  <?php
-		echo $this->Html->link(
-    __('Change'),	'/users/changelesson/'.$v['Lesson']['id']
-     ,
-	array('title'=>__('Change') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal"  )
-);
-	   ?>  </div> 
-                <div class="span2 mark"> 
-				<?php if($this->Session->read('Auth.User.role_id')==2){ 
-				if($v['Lesson']['id'] == $v['Lesson']['parent_id']){
-				$calss = "disabled='disabled'";
-				$url =  "javascript:void(0)";
-					 
-				if($v['Lesson']['lesson_date'] == $currentdate){
-					$calss =  "";
-					$url =   $this->webroot.'users/whiteboarddata/'.$v['Lesson']['id'] ;
-				}
 				
-				?>
-				<a href="<?php echo $url?>" class="btn btn-primary btn-primary3" <?php echo $calss; $url?>>Go To Lesson </a>
-				<?php }else{ ?>
-				<button class="btn btn-primary btn-primary3" type="submit">Confirmed</button>
-				<?php 
-				}
-				}else{ ?>
-				<?php
-		echo $this->Html->link(
-    __('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id']
-     ,
-	array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
-);
-	   ?> 
-				<?php } ?>
-				</div>         
-            </div>
-            </div>
+			<?php  
+			if($this->Session->read('Auth.User.role_id')==2 && $v['Lesson']['is_confirmed']==0){ 
+			echo '<div class="span2 mark"> ';
+			echo $this->Html->link(
+				__('Change'),	'/users/changelesson/'.$v['Lesson']['id']
+				,
+				array('title'=>__('Change') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal"  )
+			);
+			echo '</div>';
+			echo '<div class="span2 mark">'; 
+			echo $this->Html->link(
+				__('Confirmed'),	'/users/confirmedbytutor/'.$v['Lesson']['id']
+				,
+				array('title'=>__('Confirmed') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
+			);
+			echo ' </div>'; } 
+				if($this->Session->read('Auth.User.role_id')==2){ 
+					if($v['Lesson']['id'] == $v['Lesson']['parent_id'] || $v['Lesson']['is_confirmed']==1){
+						$calss = "disabled='disabled'";
+						$url =  "javascript:void(0)";
+
+						if($v['Lesson']['lesson_date'] == $currentdate){
+						$calss =  "";
+						$url =   $this->webroot.'users/whiteboarddata/'.$v['Lesson']['id'] ;
+						}
+
+						?>   
+						<a href="<?php echo $url?>" class="btn btn-primary btn-primary3" <?php echo $calss; $url?>>Go To Lesson </a>
+				<?php } 
+				}else{  echo '<div class="span2 mark"> ';
+					echo $this->Html->link(
+						__('Change'),	'/users/changelesson/'.$v['Lesson']['id']
+						,
+						array('title'=>__('Change') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal"  )
+					);
+					echo '</div><div class="span2 mark"> ';
+						echo $this->Html->link(
+						__('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id']
+						,
+						array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
+						); echo '</div>';
+				} ?>
+
+
+			</div></div>
+		    
 	<?php }
 	
 		} ?>
@@ -207,6 +219,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
   <!-- @end .container --> 
 </div>
 <!--Wrapper main-content Block End Here--> 
+
 <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="left:40%; width:auto; right:20%; height:320px; overflow:hidden; top:25%"></div>
 <?php
 echo $this->Html->script(array(
@@ -231,16 +244,17 @@ jQuery('[data-toggle="modal"]').click(function(e) {
    var currentclass = jQuery(this).hasClass('reviews')
   var url = jQuery(this).attr('href'); 
   jQuery.get(url, function(data) {   
-     // jQuery(data).modal();
+   
 	 jQuery('body').append('<div class="modal-backdrop in"></div>')
 	 jQuery("#myModal").html(data).css({'display':'block','height':'auto','top':'25%','position':'absolute'});
-	 console.log(jQuery('#myModal').outerHeight())
-	 jQuery('#myModal').css('height',jQuery('#myModal').outerHeight()+120)
+	 console.log(jQuery('.StaticPageRight-Block').outerHeight())
+	  jQuery('#myModal').css('height',jQuery('.StaticPageRight-Block').outerHeight()+300)
+	 jQuery('.PageLeft-Block').css({'border-top':0,'box-shadow':'none'}).parent('div.span9').css({width:825+'px'})
 	 if(currentclass){
 	  callRate();
 	  updateRating();
 	  }
-	// jQuery(".modal-backdrop").not(':first').remove();
+	 
 	  
   });
 });

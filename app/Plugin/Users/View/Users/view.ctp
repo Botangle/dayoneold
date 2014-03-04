@@ -25,21 +25,21 @@ $subject = explode(",",$user['User']['subject']);
 		 if(file_exists(WWW_ROOT . DS . 'uploads' . DS . $user['User']['id']. DS . 'profile'. DS  .$user['User']['profilepic']) && $user['User']['profilepic']!=""){ ?>
 		  <img src="<?php echo $this->webroot. 'uploads/'.$user['User']['id'].'/profile/'.$user['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 		<?php }else{		 ?>
-		 <img src="<?php echo $this->webroot?>images/profile-img01.png" class="img-circle" alt="student">
+		 <img src="<?php echo $this->webroot?>images/botangle-default-pic.jpg" class="img-circle" alt="student">
 		 <?php } ?>
 		 </div>
         <div class="span8">
         <p class="pull-right">Rate : <span class="FontStyle16 color1"><strong>$
 		
 		<?php 
-		if(!empty($userRate)){
-		if($userRate['UserRate']['price_type']=='permin')
-		{ $userRatePrice='min';} else  { $userRatePrice= $userRate['UserRate']['price_type'];}
-		}
+		
 		
 		if(!empty($userRate)){
+		if($userRate['UserRate']['price_type']=='permin')
+		{ $userRatePrice='min';} else  { $userRatePrice= $userRate['UserRate']['price_type'];} 
+		
 		echo $userRate['UserRate']['rate']."/". $userRatePrice; } else{ echo 0; } ?></strong></span></p>
-        <p class="FontStyle28 color1"><?php echo $user['User']['username']?>
+        <p class="FontStyle28 color1"><?php echo ucfirst($user['User']['username']);?>
 		<?php if($user['User']['is_online'] == 1){ ?>
 		<img src="<?php echo $this->webroot?>images/online.png" alt="online">
 		<?php } else { ?>
@@ -62,9 +62,16 @@ $subject = explode(",",$user['User']['subject']);
       <div class="span3"><span class="color1"><?php echo count($userReviews) ?> <?php echo __("Reviews")?></span></div>
       <div class="span3"><span class="color1">20 Classes</span></div>
       </div>
-      <div class="row-fluid Rate-this-tutor">
+      <div class="row-fluid Rate-this-tutor message-tutor">
       <!--<div class="span6"><span class="pull-left">Give your Rating: &nbsp; </span> <input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="remove"/></div>-->
       <!--<div class="span6"><span class="color1" style="line-height:20px;"><a href="#"><i class=" icon-comment"></i>Place your Review</a></span></div>-->
+	    <p class="option-msg">
+				    <?php
+		echo $this->Html->link(
+    __(''),	'/users/messages/'.$user['User']['username'],
+	array('data-toggle'=>'Message','title'=>__('Message') ));
+	   ?>
+				   </p>
       
       </div>
       
@@ -172,7 +179,7 @@ $subject = explode(",",$user['User']['subject']);
       </div>
       </div>
       
-      <div class="span3 PageRight-Block PageRight-TopBlock">
+      <div class="span3 PageRight-Block-Cal PageRight-TopBlock">
       <div class="calendar">
       
                     <script>
@@ -272,3 +279,38 @@ echo $this->Html->script(array(
 			));	
 			
 ?>	
+
+
+<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="left:40%; width:auto; right:20%; height:320px; overflow:hidden; top:25%">
+<?php include('lessoncreate.ctp') ?>
+</div>
+<?php
+echo $this->Html->script(array(
+			'/croogo/js/bootstrap-rating-input.min',
+			));	
+			
+?>	
+<script type="text/javascript">
+function callPopup(){  
+  
+   var currentclass = jQuery(this).hasClass('reviews')
+  var url = Croogo.basePath+'users/createlessons/ajax/<?php echo $user['User']['id']?>'; 
+	 jQuery('body').append('<div class="modal-backdrop in"></div>')
+	 jQuery("#myModal").css({'display':'block','height':'auto','top':'25%','position':'absolute'});
+	 
+	 jQuery('#myModal').css('height',jQuery('.StaticPageRight-Block').outerHeight()+120)
+	 jQuery('.PageLeft-Block').css({'border-top':0,'box-shadow':'none'}).parent('div.span9').css({width:825+'px'})
+	 jQuery('label[for="tutorname"]').html('Tutor'); 
+	jQuery('.ui-autocomplete').css({'z-index':'999999'})
+  
+	 jQuery('button[type="reset"]').click(function(){
+		jQuery(".modal-backdrop").remove();
+		jQuery("#myModal").css('display','none');
+	 })
+ 
+} 
+function removebackground(){ 
+ jQuery(".modal-backdrop").remove();
+ jQuery("#myModal").html('').css('display','none');
+}
+</script> 

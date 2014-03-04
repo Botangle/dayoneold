@@ -1,8 +1,5 @@
 <?php
-/*
- * Why is this class empty...?
- *
- */
+
 App::uses('CroogoAppHelper', 'Croogo.View/Helper');
 
 /**

@@ -39,7 +39,7 @@
 			  <div class="control-group">
                 <label class="control-label" for="postalAddress"><?php echo __("Payment Amount")?></label>
                 <div class="controls">
-                 <input type="text" value="100" name="payamount" />
+                 <input type="text" value="<?php echo $paymentamount?>" name="payamount" />
                   <input type="hidden" value="" name="lname" />
                 </div>
               </div>

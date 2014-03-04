@@ -16,7 +16,14 @@ CroogoRouter::connect('/users/lessons', array('plugin' => 'users', 'controller' 
 
 CroogoRouter::connect('/users/createlessons', array('plugin' => 'users', 'controller' => 'users', 'action' => 'lessons_add'));
 
+CroogoRouter::connect('/users/users/createlessons', array('plugin' => 'users', 'controller' => 'users', 'action' => 'lessons_add'));
+
+CroogoRouter::connect('/users/createlessons/:type/:tutorname', array('plugin' => 'users', 'controller' => 'users', 'action' => 'lessons_add'),array('pass'=>array('type','tutorname')));
+
 CroogoRouter::connect('/users/searchstudent', array('plugin' => 'users', 'controller' => 'users', 'action' => 'searchstudent')); 
+
+CroogoRouter::connect('/users/updateremaining/', array('plugin' => 'users', 'controller' => 'users', 'action' => 'updateremaining')); 
+CroogoRouter::connect('/users/paymentmade/', array('plugin' => 'users', 'controller' => 'users', 'action' => 'paymentmade')); 
 
 CroogoRouter::connect('/users/changelesson/:lessonid', array('plugin' => 'users', 'controller' => 'users', 'action' => 'changelesson'),array('pass'=>array('lessonid')));
 CroogoRouter::connect('/users/lessonreviews/:lessonid', array('plugin' => 'users', 'controller' => 'users', 'action' => 'lessonreviews'),array('pass'=>array('lessonid')));

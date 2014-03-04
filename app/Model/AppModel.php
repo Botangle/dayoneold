@@ -1,10 +1,5 @@
 <?php
 
-/*
- * Why is this empty?
- */
-
-
 App::uses('CroogoAppModel', 'Croogo.Model');
 
 /**

@@ -2,11 +2,7 @@
 <div id="HomeServices">
   <div class="container">
     <div class=" row-fluid">
-	<div class="span12">
-		 
-			
-					 
-	</div>
+	
 <?php $userurlname = "all";
 if(isset($categoryname) && ($categoryname!="")){
 	$userurlname = $categoryname;
@@ -20,7 +16,7 @@ if(isset($categoryname) && ($categoryname!="")){
       <div class="span3 pull-right" >
         <label class="checkbox online-checkbox">
           <input type="checkbox" id="isonline" <?php if(isset($online) && ($online!="")) { echo "checked='checked'"; } ?>>
-          <?php echo __("Online Tutors")?></label>
+          <?php echo __("&nbsp;Online Tutors")?></label>
       </div>
     </div>
   </div>
@@ -74,7 +70,7 @@ if(isset($categoryname) && ($categoryname!="")){
 						  <img src="<?php echo $this->webroot. 'uploads/'.$user['User']['id'].'/profile/'.$user['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 						 
 						<?php }else{		 ?>
-						 <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="people">
+						 <img src="<?php echo $this->webroot?>images/default.png" class="img-circle" alt="people">
 						 <?php } ?>
 							   </a>
 							  </div>
