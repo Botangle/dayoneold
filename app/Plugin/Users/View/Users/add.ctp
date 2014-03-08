@@ -12,64 +12,43 @@ if($this->Session->check("type")){
 	}
 }
 
-  
-	echo $this->Html->script(array( '/croogo/js/autocomplete/jquery-1.9.1',
-			'/croogo/js/autocomplete/jquery.ui.core','/croogo/js/autocomplete/jquery.ui.widget','/croogo/js/autocomplete/jquery.ui.position','/croogo/js/autocomplete/jquery.ui.menu','/croogo/js/autocomplete/jquery.ui.autocomplete',
-			));
- 
- echo $this->Html->css(array(
-			'/croogo/css/autocomplete/themes/base/jquery.ui.all', '/croogo/css/autocomplete/demos', 
-		));
+   
 ?>
-
+  
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script>
-	$(function() {
-		 
-		function split( val ) {
-			return val.split( /,\s*/ );
-		}
-		function extractLast( term ) {
-			return split( term ).pop();
-		}
-
-		$( "#UserSubject" )
-			// don't navigate away from the field on tab when selecting an item
-			.bind( "keydown", function( event ) {
-				if ( event.keyCode === $.ui.keyCode.TAB &&
-						$( this ).data( "ui-autocomplete" ).menu.active ) {
-					event.preventDefault();
-				}
-			})
-			.autocomplete({
-				source: function( request, response ) {
-					$.getJSON( "/botangle/subject/search", {
-						term: extractLast( request.term )
-					}, response );
-				},
-				search: function() {
-					// custom minLength
-					var term = extractLast( this.value );
-					if ( term.length < 2 ) {
-						return false;
-					}
-				},
-				focus: function() {
-					// prevent value inserted on focus
-					return false;
-				},
-				select: function( event, ui ) {
-					var terms = split( this.value );
-					// remove the current input
-					terms.pop();
-					// add the selected item
-					terms.push( ui.item.value );
-					// add placeholder to get the comma-and-space at the end
-					terms.push( "" );
-					this.value = terms.join( ", " );
-					return false;
-				}
-			});
-	});
+	jQuery(function() {
+		  function split( val ) {
+return val.split( /,\s*/ );
+}
+function extractLast( term ) {
+return split( term ).pop();
+}
+jQuery( "#UserSubject" ).autocomplete({
+minLength: 0,
+source: function( request, response ) {
+// delegate back to autocomplete, but extract the last term
+response( $.ui.autocomplete.filter(
+datasubject, extractLast( request.term ) ) );
+},
+focus: function() {
+// prevent value inserted on focus
+return false;
+},
+select: function( event, ui ) {
+	var terms = split( this.value );
+	// remove the current input
+	terms.pop();
+	// add the selected item
+	terms.push( ui.item.value );
+	// add placeholder to get the comma-and-space at the end
+	terms.push( "" );
+	this.value = terms.join( ", " );
+	return false;
+}
+});
+});
+	 
 	</script>
 <style>
 .security {background-image:url(images/password-security.jpg)}
@@ -125,16 +104,23 @@ if($this->Session->check("type")){
                   <br>
                   <span class="FontStyle11"><em><?php echo __("Separate Subjects with commas")?></em></span> </div>
               </div>
+			   <div class="control-group">
+                <label class="control-label" for="firstName"><?php echo __("Username:")?></label>
+                <div class="controls">
+           <?php echo $this->Form->input('username',array('class'=>'textbox','placeholder'=>"Username",'label' => false));?>
+                </div>
+				</div>
+				
               <div class="control-group">
                 <label class="control-label" for="firstName"><?php echo __("First Name:")?></label>
                 <div class="controls">
-           <?php echo $this->Form->input('username',array('class'=>'textbox','placeholder'=>"First Name",'label' => false));?>
+           <?php echo $this->Form->input('name',array('class'=>'textbox','placeholder'=>"First Name",'label' => false));?>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label" for="lastName"><?php echo __("Last Name:")?></label>
                 <div class="controls">
-                <?php echo $this->Form->input('name',array('class'=>'textbox','placeholder'=>"Last Name",'label' => false));?>
+                <?php echo $this->Form->input('lname',array('class'=>'textbox','placeholder'=>"Last Name",'label' => false));?>
                 </div>
               </div>
               <div class="control-group">
@@ -216,7 +202,7 @@ if($this->Session->check("type")){
                 <label class="checkbox">
                   
 				  <?php echo $this->Form->checkbox('terms', array('hiddenField' => false));?>
-                  <?php echo __("&nbsp;I agree with Botangle's <a href='/demos/botangle/privacy'>Terms of Use and Privacy Policy.</a>")?>.</label>
+                   <label><?php echo __("&nbsp;I agree with Botangle's <a href='/demos/botangle/privacy'>Terms of Use and Privacy Policy.</a>")?>.</label></label>
               </div>
             </div>
             <div class="control-group form-actions">
@@ -258,16 +244,23 @@ if($this->Session->check("type")){
                    <?php echo $this->Form->input('email',array('class'=>'textbox','placeholder'=>"email@email.com",'label' => false));?>
                 </div>
               </div>
+			  
+			   <div class="control-group">
+                <label class="control-label" for="firstName"><?php echo __("Username:")?></label>
+                <div class="controls">
+           <?php echo $this->Form->input('username',array('class'=>'textbox','placeholder'=>"Username",'label' => false));?>
+                </div>
+			  
               <div class="control-group">
                 <label class="control-label" for="firstName"><?php echo __("First Name:")?></label>
                 <div class="controls">
-                  <?php echo $this->Form->input('username',array('class'=>'textbox','placeholder'=>"First Name",'label' => false));?>
+                  <?php echo $this->Form->input('name',array('class'=>'textbox','placeholder'=>"First Name",'label' => false));?>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label" for="lastName"><?php echo __("Last Name:")?></label>
                 <div class="controls">
-                 <?php echo $this->Form->input('name',array('class'=>'textbox','placeholder'=>"Last Name",'label' => false));?>
+                 <?php echo $this->Form->input('lname',array('class'=>'textbox','placeholder'=>"Last Name",'label' => false));?>
                 </div>
               </div>
              
@@ -293,10 +286,10 @@ if($this->Session->check("type")){
             </div>
             <div class="control-group">
               <div class="controls">
-               <label class="checkbox">
+               <label class="checkbox termcls">
                   
 				  <?php echo $this->Form->checkbox('terms', array('hiddenField' => false));?>
-                  <?php echo __("&nbsp;I agree with Botangle's <a href='/demos/botangle/privacy'>Terms of Use and Privacy Policy.</a>.")?></label>
+                  <label><?php echo __("&nbsp;I agree with Botangle's <a href='/demos/botangle/privacy'>Terms of Use and Privacy Policy.</a>.")?></label></label>
               </div>
             </div>
             <div class="control-group form-actions">
@@ -341,7 +334,10 @@ echo $this->Html->link(__("Sign In"), array('action'=> 'login'), array( 'class' 
 		}
 		location.href= "'.$this->webroot.'registration/"+type;
 	};
-	jQuery(document).ready(function(){ 
+	jQuery(document).ready(function(){  
+	jQuery(".btn-reset").click(function(){
+			jQuery(".security").removeClass().addClass("security");
+		})
 		 jQuery("#UserPassword").keyup(function(){
 		 
 			jQuery(".security").addClass(checkStrength(jQuery("#UserPassword").val()))

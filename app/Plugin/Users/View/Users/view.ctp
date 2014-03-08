@@ -60,7 +60,7 @@ $subject = explode(",",$user['User']['subject']);
       <div class="row-fluid">
       <div class="span6"><span class="pull-left">Botangle Star: &nbsp; </span> <input type="number" name="your_awesome_parameter" id="some_id" class="rating" value="<?php echo round($userRating[0]['avg'])?>" readonly="isReadonly"/></div>
       <div class="span3"><span class="color1"><?php echo count($userReviews) ?> <?php echo __("Reviews")?></span></div>
-      <div class="span3"><span class="color1">20 Classes</span></div>
+      <div class="span3"><span class="color1"><?php echo $lessonClasscount[0][0]['totalrecords']?> <?php echo __("Classes")?></span></div>
       </div>
       <div class="row-fluid Rate-this-tutor message-tutor">
       <!--<div class="span6"><span class="pull-left">Give your Rating: &nbsp; </span> <input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="remove"/></div>-->
@@ -135,11 +135,16 @@ $subject = explode(",",$user['User']['subject']);
               </div>
               <div class="tab-pane fade" id="profile">
                <div class="class-timeinfo">
-               Total Classes: 14 &nbsp; &nbsp;   | &nbsp; &nbsp;   Total Time of Classes: 200 hours
+               Total Classes: <?php
+	
+			   echo $lessonClasscount[0][0]['totalrecords']?> &nbsp; &nbsp;   | &nbsp; &nbsp;   Total Time of Classes: <?php echo $lessonClasscount[0][0]['totalduration']?> hours
                </div>
 			   
-			   <?php if(!empty($userReviews)) { 
-				foreach($userReviews as $k=>$review){ ?>
+			   <?php 
+			   if(!empty($userReviews)) { 
+				foreach($userReviews as $k=>$review){
+					 
+				?>
                <div class="Myclass-list row-fluid">
                	<div class="span2">
 				 <?php 
@@ -151,22 +156,24 @@ $subject = explode(",",$user['User']['subject']);
 		 <?php } ?>
 			   </div>
                	<div class="span3">
-                <p class="FontStyle16">Class: <a href="#">Alzebra 1</a></p>
+                <p class="FontStyle16">Class: <a href="#"><?php echo $review['Lesson']['subject']?></a></p>
 <p class="FontStyle11">Student: <strong><?php echo $review['User']['username']?></strong></p>
                 </div>
                	<div class="span5">
                 <?php echo $review['Review']['reviews']?>
                 </div>
                 <div class="span2">
-               		<p><input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="remove" value="<?php echo $review['Review']['rating']?>"/></p>
-				 <button class="btn btn-primary btn-primary3" type="submit">Review</button> 	
+               		<p><input type="number" name="your_awesome_parameter" id="some_id" class="rating"   value="<?php echo $review['Review']['rating']?>"/></p>
+				 <!--<button class="btn btn-primary btn-primary3" type="submit">Review</button> 	-->
                 </div>
                 
                 
                </div>
                <?php } 
-			   } ?>
-		  
+			   }else{ ?>
+			    <div class="Myclass-list row-fluid">
+               	<div class="span2"><?php echo __("No reviews yet")?></div></div>
+			<?php } ?>
               </div>
               
             </div>

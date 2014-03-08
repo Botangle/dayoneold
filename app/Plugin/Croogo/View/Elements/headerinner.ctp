@@ -10,7 +10,7 @@
           <span>&nbsp;</span></p>
       </div>
       <div class="span3 pull-right">
-      <div class="Header-Account-info"><span> Welcome <?php echo $this->Session->read('Auth.User.username')?>.  </span>  |  <?php
+      <div class="Header-Account-info"><span> Welcome <?php echo ucfirst($this->Session->read('Auth.User.username')) ?>  </span>  |  <?php
 		
 		 echo $this->Html->link(__('Sign Out'), '/logout',
 		array('class' => 'signin', 'title' => __('Sign Out')));

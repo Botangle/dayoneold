@@ -167,7 +167,7 @@ debug($log); */
 	}
 	public function search(){
 		$this->Category->recursive = 0;	
-		$cond= array('status'=>"1"); 
+		$cond= array('status'=>"1",'parent_id !='=>'NULL'); 
 		$c = $this->Category->find('list',array('conditions'=> $cond),array('fields'=>array('id','name')));
 		$result = array();
 		foreach ($c as $key=>$value) {  

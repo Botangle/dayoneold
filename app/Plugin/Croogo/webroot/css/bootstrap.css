@@ -4746,7 +4746,7 @@ font-family: 'Roboto', sans-serif;  font-weight:300;
 
 
 .navbar-default .navbar-nav > li > a.Report_Bug { background: url(../images/menu-icons.png) no-repeat 50px -1409px; font-family: 'Roboto', sans-serif;  font-weight:300; }
- .navbar-default .navbar-nav > li > a.Report_Bug:hover, .navbar-default .navbar-nav > li > a.Report_Bug.active { background: url(../images/menu-icons.png) no-repeat 50px -1522px;-webkit-transition: background 400ms linear; font-family: 'Roboto', sans-serif;  font-weight:300;
+ .navbar-default .navbar-nav > li > a.Report_Bug:hover, .navbar-default .navbar-nav > li > a.Report_Bug.active { background: url(../images/menu-icons.png) no-repeat 50px -1522px; font-family: 'Roboto', sans-serif;  font-weight:300;
  color: #f38918 !important;  }
 
 

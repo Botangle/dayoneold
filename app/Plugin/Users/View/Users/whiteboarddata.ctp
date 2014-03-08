@@ -24,22 +24,30 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
       <div class="PageLeft-Block">
         
         <div class="Lesson-row active">
-		
-		 <div class="row-fluid">
+         <div class="row-fluid">
         	 <?php
 			 $remainingduration = 	$lesson['Lesson']['remainingduration'];
 			 $twiddlaid = $lesson['Lesson']['twiddlameetingid'];
-			 $timeduration = $lesson['Lesson']['duration'] * 60 * 60;
-			  $timeduration = $timeduration - $remainingduration; 
+			echo "<BR>". $timeduration = $lesson['Lesson']['duration'] * 60 * 60;
+			echo "<BR>". $timeduration = $timeduration - $remainingduration; 
 			  if($timeduration <= 0 ){ ?>
 				<form method="get" action="<?php echo $this->webroot?>users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson['Lesson']['id']?>">
-					<input type="text" name="tutor" value="<?php echo $lesson['Lesson']['created']?>" />
-					<input type="text" name="lessonid" value="<?php echo $lesson['Lesson']['id']?>" />
+					<input type="hidden" name="tutor" value="<?php echo $lesson['Lesson']['created']?>" />
+					<input type="hidden" name="lessonid" value="<?php echo $lesson['Lesson']['id']?>" />
 					<button type="submit">Make Payment</button>
 				</form>
-			  <?php }else{ ?>
-			  <div style="text-align:middle;">
-			  <script type="application/javascript">
+			  <?php }else{
+			  if($this->Session->read('Auth.User.role_id')==4){ ?>
+				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&controltype=2&loginusername=deepakjain&password=123456789" frameborder="0" width="617" height="600" style="border:solid 1px #555;"></iframe> 
+			 <?php } else {?>
+				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&controltype=1&loginusername=deepakjain&password=123456789&guestname=deep" frameborder="0" width="617" height="600" style="border:solid 1px #555;"></iframe> 
+			 <?php }
+			}?>
+            </div>
+            </div>
+        
+        
+<script type="application/javascript">
 var remainingtime = <?php echo $timeduration?>;
 var myCountdown1 = new Countdown({
 				time: <?php echo $timeduration?>, // 86400 seconds = 1 day
@@ -62,20 +70,7 @@ if(remainingtime > 0){
 		})
 	},60000)
  };
-</script></div><br/>
-			  
-			  
-			  <?php if($this->Session->read('Auth.User.role_id')==4){ ?>
-				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&controltype=2&loginusername=deepakjain&password=123456789" frameborder="0" width="785" height="600" style="border:solid 1px #555;"></iframe> 
-			 <?php } else {?>
-				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&controltype=1&loginusername=deepakjain&password=123456789&guestname=deep" frameborder="0" width="785" height="600" style="border:solid 1px #555;"></iframe> 
-			 <?php }
-			}?>
-            </div>
-            </div>
-        
-        
-
+</script>
         
        </div>
         

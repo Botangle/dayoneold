@@ -54,7 +54,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
               <div class="control-group">
                 <label class="control-label" for="postalAddress">About Me:</label>
                 <div class="controls">
-				<?php echo $this->Form->textarea('aboutme',array('class'=>'textarea','placeholder'=>"type About yourself",'value'=>$this->request->data['aboutme'],'rows'=>3));?>
+				<?php echo $this->Form->textarea('aboutme',array('class'=>'textarea','placeholder'=>"Type About yourself",'value'=>$this->request->data['aboutme'],'rows'=>3));?>
                   
                 </div>
               </div>
@@ -62,7 +62,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
                 <label class="control-label" for="postalAddress">My Interests:</label>
                 <div class="controls">
                  
-				   <?php echo $this->Form->textarea('extracurricular_interests',array('class'=>'textarea','placeholder'=>"type your Interests",'value'=>$this->request->data['extracurricular_interests'],'rows'=>3));?>
+				   <?php echo $this->Form->textarea('extracurricular_interests',array('class'=>'textarea','placeholder'=>"Type your Interests",'value'=>$this->request->data['extracurricular_interests'],'rows'=>3));?>
                 </div>
               </div>
               

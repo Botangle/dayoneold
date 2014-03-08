@@ -56,3 +56,6 @@ CroogoRouter::connect('/users/messages', array('plugin' => 'users', 'controller'
 CroogoRouter::connect('/users/joinuser/:id', array('plugin' => 'users', 'controller' => 'users', 'action' => 'joinuser'),array('pass'=>array('id')));
 
 CroogoRouter::connect('/users/invite', array('plugin' => 'users', 'controller' => 'invite', 'action' => 'index'));
+
+CroogoRouter::connect('/users/paymentnotmade', array(
+	'plugin' => 'users', 'controller' => 'users', 'action' => 'paymentnotmade'));

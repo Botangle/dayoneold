@@ -259,7 +259,7 @@ a.join-btn:hover{ display:block; background:#2d2d2d; color:#fff; text-decoration
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
 	height: auto;
-	padding: 20px 0;
+	padding: 50px 0;
 	width: 100%;
 }
 
@@ -759,9 +759,12 @@ input.textbox{ width:80%; }
 .cbp-af-header-shrink .navbar-nav > li > a{ background:none !important; padding-top:0px !important; line-height: 40px !important;}
 .cbp-af-header-shrink .navbar-brand{ padding-top:15px !important;}
 .cbp-af-header-shrink .navbar-brand img { height:25px!important; width:120px !important;}
-.cbp-af-header-shrink .navbar-header .Beta-tag { height:37px!important;background: url("../images/shrinkbeta.png") no-repeat scroll left center rgba(0, 0, 0, 0) !important;     left: -15px !important;}
+.cbp-af-header-shrink .navbar-header .Beta-tag { height:37px!important;background: url("../images/shrinkbeta.png") no-repeat scroll left center rgba(0, 0, 0, 0) !important;     left: -50px !important;}
 .cbp-af-header-shrink .navbar-collapse { height:35px !important;}
 .cbp-af-header-shrink{ min-height:45px !important; }
 
-.topadvheader { postion:fixed; width:100%; color:#fff; height:40px; position:fixed; top:0px; background-color:#2D2D2D; text-align:center;  font-size: 16px; padding-top: 10px; padding-bottom:10px; z-index:100;}
+.topadvheader { postion:fixed; width:100%; color:#2D2D2D; height:40px; position:fixed; top:0px; background-color:#fff; text-align:center;  font-size: 16px; padding-top: 10px; padding-bottom:10px; z-index:100;}
+
+.termcls { line-height:12px;}
+
 

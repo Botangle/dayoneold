@@ -54,7 +54,7 @@ class NewsController extends NewsAppController {
 		 $this->Security->csrfCheck = false;
 		 
 		 $this->Security->unlockedActions = array('index');
-		 $this->Auth->allow('index'); 
+		 $this->Auth->allow('index','detail'); 
 	}
 
 /**

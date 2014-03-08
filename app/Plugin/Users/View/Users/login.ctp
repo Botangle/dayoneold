@@ -38,7 +38,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
        </div>
        <div class="checkbox span12 mar0">
             <label>
-              <input type="checkbox"> Remember me
+              <input type="checkbox"><label>Remember me</label>
             </label>
       </div>
       <div class="span12 mar0">

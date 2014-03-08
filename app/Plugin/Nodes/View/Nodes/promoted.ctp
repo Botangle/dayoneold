@@ -62,7 +62,7 @@
 		
 		</div>
         <div class="tutor-title">
-          <h3><a href="<?php echo $this->webroot?>user/<?php echo $user['User']['username']?>"><?php echo $user['User']['username']?></a></h3>
+          <h3><a href="<?php echo $this->webroot?>user/<?php echo $user['User']['username']?>"><?php echo ucfirst($user['User']['username']) ?></a></h3>
           <p><?php echo $user['User']['qualification']?></p>
         </div>
         <div class="tutor-bio">

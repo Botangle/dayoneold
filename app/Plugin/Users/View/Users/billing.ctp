@@ -32,6 +32,8 @@
 			 echo $this->Form->input('userid',array('value'=>$this->request->data['id'],'type'=>'hidden'));
 			 $pchecked = "checked='checked'";
 			 $phchecked= "";
+			 $rate="";
+			 if(!empty($ratedata)) {
 			 if($ratedata['UserRate']['price_type'] == 'permin'){
 				$pchecked = "checked='checked'";
 			 }
@@ -40,6 +42,7 @@
 				$pchecked = "";
 			 }
 			 $rate = ($ratedata['UserRate']['rate'])?$ratedata['UserRate']['rate']:"";
+			 }
 		 ?>
             <div class="control-group">
               <label class="control-label span5"><?php echo __("Rate:")?></label>

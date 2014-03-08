@@ -6,7 +6,16 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 	);
 	$currentdate = date('Y-m-d');
 	?>
-
+<style>
+.successnew {
+    background: none repeat scroll 0 0 #66CC33;
+    border-radius: 20px;
+    color: #FFFFFF;
+    margin: 10px 0;
+    padding: 10px;
+    text-align: center;
+}
+</style>
 
 <!--Wrapper main-content Block Start Here-->
 <div id="main-content">
@@ -19,9 +28,9 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
     <div class="row-fluid">
     <?php echo $this->Element("myaccountleft") ?> 
       <div class="span9">
-	  <?php 
-	  if($this->Session->read('Auth.User.role_id')==2){ ?>
-     <!--<h2 class="page-title"><?php echo __("Lesson");?> <p class="pull-right">
+	  <?php  
+	  if($this->Session->read('Auth.User.role_id')==2){  ?>
+     <h2 class="page-title"><?php  echo __("Lesson");?> <p class="pull-right">
 	 <?php
 		echo $this->Html->link(
     __('+  Add New Lesson'),	'/users/createlessons'
@@ -29,20 +38,31 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 	array('title'=>__('+  Add New Lesson') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
 );
 	   ?> 
-	  </p></h2>--> <?php  } ?>
+	  </p></h2><!----> <?php  } ?>
       <div class="StaticPageRight-Block">
-	 
+	  
+		<div id="newmsgdata"></div>
 	  
       <div class="PageLeft-Block">
         <p class="FontStyle20 color1"><?php echo __("Active Lesson Proposal")?></p>
 		 
-		 <?php if(!empty($activelesson)){  
+		 <?php 
+		 $newMsg = array();
+		 $conditionstype = "";
+		 if(!empty($activelesson)){  
 		foreach($activelesson as $k=>$v){ ?>
         <div class="Lesson-row active">
          <div class="row-fluid">
         	<div class="span1 tutorimg">
 			<?php 
-		 
+		  if($this->Session->read('Auth.User.role_id')==2 && $v['Lesson']['laststatus_tutor']==1){
+			$newMsg[] = $v['Lesson']['id'];
+			$conditionstype = 'laststatus_tutor';
+		  }
+		  if($this->Session->read('Auth.User.role_id')==4 && $v['Lesson']['laststatus_student']==1){
+			$newMsg[] = $v['Lesson']['id'];
+			$conditionstype = 'laststatus_student';
+		  }
 		 if(file_exists(WWW_ROOT . DS . 'uploads' . DS . $v['User']['id']. DS . 'profile'. DS  .$v['User']['profilepic']) && $v['User']['profilepic']!=""){ ?>
 		  <img src="<?php echo $this->webroot. 'uploads/'.$v['User']['id'].'/profile/'.$v['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 		<?php }else{		 ?>
@@ -50,7 +70,10 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		 <?php } ?> </div>
             <div class="span2 tutor-name"> <a href="#"><?php echo $v['User']['username']?></a></div>
              <div class="span1 date"> <?php echo date('M d',strtotime($v['Lesson']['lesson_date'])) ?></div>
-              <div class="span1 time"> <?php echo date('H:m',strtotime($v['Lesson']['lesson_time'])) ?></div>
+              <div class="span1 time"> <?php 
+			 
+			  $hr = explode(":",$v['Lesson']['lesson_time']);
+			  echo $hr[0].":".$hr[1]  ?></div>
                <div class="span1 mins"> <?php echo $v['Lesson']['duration'] ?> </div>
                 <div class="span2 subject"> <?php echo $v['Lesson']['subject'] ?>  </div>
 				 
@@ -107,7 +130,8 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		 <?php } ?> </div>
             <div class="span2 tutor-name"> <a href="#"><?php echo $v['User']['username']?></a></div>
              <div class="span1 date"><?php echo date('M d',strtotime($v['Lesson']['lesson_date'])) ?></div>
-              <div class="span1 time"><?php echo date('H:m',strtotime($v['Lesson']['lesson_time'])) ?></div>
+              <div class="span1 time"><?php   $hr = explode(":",$v['Lesson']['lesson_time']);
+			  echo $hr[0].":".$hr[1]  ?></div>
                <div class="span1 mins"> <?php echo $v['Lesson']['duration'] ?> </div>
                 <div class="span2 subject"> <?php echo $v['Lesson']['subject'] ?>  </div>
 				
@@ -147,10 +171,13 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 						array('title'=>__('Change') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal"  )
 					);
 					echo '</div><div class="span2 mark"> ';
+					$usedisabled = "disabled";
+					if($v['Lesson']['is_confirmed']==1){
+						$usedisabled = "";
+					}
 						echo $this->Html->link(
-						__('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id']
-						,
-						array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
+						__('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id'] ,
+						array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','disabled'=>$usedisabled)
 						); echo '</div>';
 				} ?>
 
@@ -178,7 +205,8 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		 <?php } ?> </div>
             <div class="span2 tutor-name"> <a href="#"><?php echo $v['User']['username']?></a></div>
              <div class="span1 date"><?php echo date('M d',strtotime($v['Lesson']['lesson_date'])); ?></div>
-              <div class="span1 time"><?php echo date('H:m',strtotime($v['Lesson']['lesson_time'])); ?></div>
+              <div class="span1 time"><?php   $hr = explode(":",$v['Lesson']['lesson_time']);
+			  echo $hr[0].":".$hr[1]   ?></div>
                <div class="span1 mins"> <?php echo $v['Lesson']['duration'] ?> </div>
                 <div class="span2 subject"> <?php echo $v['Lesson']['subject'] ?>  </div>
 				<div class="span2 mark lessonrating"> <?php
@@ -222,6 +250,10 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 
 <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="left:40%; width:auto; right:20%; height:320px; overflow:hidden; top:25%"></div>
 <?php
+if(!empty($newMsg)){
+	$this->User->updateUserReadLesson($newMsg,$conditionstype); 
+	echo '<input type="text" value=1 id="newmsg" />' ;
+}
 echo $this->Html->script(array(
 			'/croogo/js/bootstrap-rating-input.min',
 			));	
@@ -230,7 +262,9 @@ echo $this->Html->script(array(
    
 <script type="text/javascript">
 jQuery(document).ready(function(){ 
-
+	if(jQuery('#newmsg').length>0){
+		jQuery('#newmsgdata').addClass('successnew').html('You have New Lesson.');
+	}
 })
 function updateRating(){  
  jQuery('.lessonratingdata').find('span').click(function(e){
@@ -254,6 +288,9 @@ jQuery('[data-toggle="modal"]').click(function(e) {
 	  callRate();
 	  updateRating();
 	  }
+	  jQuery('.btn-reset').click(function(e){
+		removebackground();
+	  })
 	 
 	  
   });

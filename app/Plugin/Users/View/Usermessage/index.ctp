@@ -61,7 +61,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 			<?php /* echo $this->Html->link(__($v['User']['username']), '/users/messages/'.$v['User']['username'],
 		array('class' => '', 'title' => __($v['User']['username']))); */?>
 		
-		  <?php echo $v['User']['username']; ?>
+		  <?php echo ucfirst($v['User']['username']); ?>
 			 
 <br><span class="FontStyle11"><?php echo $this->User->GettimedifferencedayBase($v['Usermessage']['date']);?></span></div>             
             </div>
@@ -95,7 +95,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		 <?php } ?></div>
        <div class="span10 sender-text">
        <div id="tip-left">&nbsp;</div>
-      	<p class="sender-name"><?php echo $v['User']['username']?></p>
+      	<p class="sender-name"><?php echo ucfirst($v['User']['username']) ?></p>
         <p class="msg-content">
         <?php echo nl2br($v['Usermessage']['body'])?></p>
         <p class="msg-time"><?php echo $this->User->Gettimedifference($v['Usermessage']['date']);?></p>
@@ -108,7 +108,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
      
        <div class="span10 sender-text">
        <div id="tip-right">&nbsp;</div>
-      	<p class="sender-name"><?php echo $v['User']['username']?></p>
+      	<p class="sender-name"><?php echo ucfirst($v['User']['username']) ?></p>
         <p class="msg-content">
         <?php echo nl2br($v['Usermessage']['body'])?></p>
         <p class="msg-time"><?php echo $this->User->Gettimedifference($v['Usermessage']['date']);?></p>

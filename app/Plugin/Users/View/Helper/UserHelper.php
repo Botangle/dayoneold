@@ -139,5 +139,14 @@ class UserHelper extends AppHelper {
 			return 0;
 			}
 	}
+	function updateUserReadLesson($lessonids,$field){
+		 App::import("Model", "Users.Lesson");  
+		$model = new Lesson(); 
+		if($field==""){
+		return;
+		}
+		 
+		 return $model->query(" UPDATE `lessons` SET `$field` = 0 WHERE id IN( '".implode($lessonids)."')");  
+	}
 	
 }

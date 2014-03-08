@@ -34,3 +34,22 @@
     </div>
   </div>
 </div>
+
+
+<?php echo $this->Html->script(array('/croogo/js/prettyCheckable.js',)); 
+?>
+<?php
+ echo $this->Html->css(array(
+			'/croogo/css/prettyCheckable.css', 
+		));
+		?>
+<script>
+$().ready(function(){
+
+  $('input:checkbox').prettyCheckable({
+    color: 'red'
+	
+  });
+  
+});
+</script>		

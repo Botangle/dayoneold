@@ -32,7 +32,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
           </div>
           <div class="form-group span6">
             <label class="sr-only" for="emial">Email Address</label>
-            <input type="email" class="form-control textbox1" id="emial" placeholder="Message" name="data[Invite][email]" required="required">
+            <input type="email" class="form-control textbox1" id="emial" placeholder="Frined's Email" name="data[Invite][email]" required="required">
           </div>
           </div>
             
