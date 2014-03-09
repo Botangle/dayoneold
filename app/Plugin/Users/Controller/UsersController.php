@@ -403,7 +403,6 @@ class UsersController extends UsersAppController
                     $filename = str_replace(" ", "_", basename($this->request->data['User']['profilepic']['name']));
                     $dir = WWW_ROOT . 'uploads' . DS . $this->request->data['User']['id'];
                     $profiledir = WWW_ROOT . 'uploads' . DS . $this->request->data['User']['id'] . DS . "profile";
-                    $profiledir = WWW_ROOT . 'uploads' . DS . $this->request->data['User']['id'] . DS . "profile";
 
                     if (!is_dir($dir)) {
                         mkdir($dir, 0777);
