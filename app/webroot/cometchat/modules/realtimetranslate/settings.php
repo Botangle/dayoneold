@@ -53,30 +53,33 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
+if (!defined('CCADMIN')) {
+    echo "NO DICE";
+    exit;
+}
 
 if (empty($_GET['process'])) {
-	global $getstylesheet;
-	require dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php';
-	
-	$dy = '';
-	$dn = '';
+    global $getstylesheet;
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
 
-	$errorMsg = '';
-	$innercontent = '"';
+    $dy = '';
+    $dn = '';
 
-	if ($useGoogle == 1) {
-		$dy = "checked";
-	} else {
-		$dn = "checked";
-	}
+    $errorMsg = '';
+    $innercontent = '"';
 
-	if(!checkcURL()) {
-		$errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for Translate Conversations.</h2>";
-		$innercontent = ';display:none;"';
-	}
+    if ($useGoogle == 1) {
+        $dy = "checked";
+    } else {
+        $dn = "checked";
+    }
 
-echo <<<EOD
+    if (!checkcURL()) {
+        $errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for Translate Conversations.</h2>";
+        $innercontent = ';display:none;"';
+    }
+
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 $getstylesheet
@@ -111,12 +114,12 @@ $getstylesheet
 </form>
 EOD;
 } else {
-	
-	$data = '';
-	foreach ($_POST as $field => $value) {
-		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
-	}
 
-	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
-	header("Location:?module=dashboard&action=loadexternal&type=module&name=realtimetranslate");
+    $data = '';
+    foreach ($_POST as $field => $value) {
+        $data .= '$' . $field . ' = \'' . $value . '\';' . "\r\n";
+    }
+
+    configeditor('SETTINGS', $data, 0, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php');
+    header("Location:?module=dashboard&action=loadexternal&type=module&name=realtimetranslate");
 }

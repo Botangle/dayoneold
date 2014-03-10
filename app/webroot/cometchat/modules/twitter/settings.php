@@ -1,9 +1,12 @@
 <?php
 $errorjs = '';
-if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
+if (!defined('CCADMIN')) {
+    echo "NO DICE";
+    exit;
+}
 
 if (isset($_SESSION['cometchat']['error']) && !empty($_SESSION['cometchat']['error'])) {
-		$errorjs = <<<EOD
+    $errorjs = <<<EOD
 <script>
 	jqcc(document).ready(function() {
 		jqcc.fancyalert('{$_SESSION['cometchat']['error']}');
@@ -35,22 +38,22 @@ if (isset($_SESSION['cometchat']['error']) && !empty($_SESSION['cometchat']['err
 	})(jqcc);
 </script>
 EOD;
-	unset($_SESSION['cometchat']['error']);
+    unset($_SESSION['cometchat']['error']);
 }
-	
-if (empty($_GET['process'])) {
-	global $getstylesheet;
-	require dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php';
-	
-	$errorMsg = '';
-	$innercontent = '"';
-	
-	if (!checkcURL()) {
-		$errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for Translate Conversations.</h2>";
-		$innercontent = 'display:none;"';
-	}
 
-echo <<<EOD
+if (empty($_GET['process'])) {
+    global $getstylesheet;
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
+
+    $errorMsg = '';
+    $innercontent = '"';
+
+    if (!checkcURL()) {
+        $errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for Translate Conversations.</h2>";
+        $innercontent = 'display:none;"';
+    }
+
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 $getstylesheet
@@ -105,28 +108,28 @@ $getstylesheet
 $errorjs
 EOD;
 } else {
-	$dataerror = 0;
-	$data = '';
-	$_POST['notweets'] = $_POST['notweets'] ? $_POST['notweets'] : 0;
-	foreach ($_POST as $field => $value) {
-		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
-		if(empty($value) && !$dataerror && $field != 'notweets') {
-			$dataerror = 1;
-		}
-	}
-	
-	if($dataerror) {
-		$_SESSION['cometchat']['error'] = 'Please enter all the configuration details.';		
-	} else {
-		require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'twitteroauth'.DIRECTORY_SEPARATOR.'twitteroauth.php';
-		$connection = new TwitterOAuth($_POST['consumerkey'], $_POST['consumersecret'], $_POST['accesstoken'], $_POST['accesstokensecret']);
-		$followers = $connection->get("https://api.twitter.com/1.1/followers/list.json?cursor=-1&screen_name=".$_POST['twitteruser']."&count=1");
-		if(isset($followers->errors)) {
-			$_SESSION['cometchat']['error'] = 'Twitter authentication failed.';		
-		} else {
-			$_SESSION['cometchat']['error'] = 'Twitter details updated successfully.';
-			configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');				
-		}		
-	}
-	header("Location:?module=dashboard&action=loadexternal&type=module&name=twitter");
+    $dataerror = 0;
+    $data = '';
+    $_POST['notweets'] = $_POST['notweets'] ? $_POST['notweets'] : 0;
+    foreach ($_POST as $field => $value) {
+        $data .= '$' . $field . ' = \'' . $value . '\';' . "\r\n";
+        if (empty($value) && !$dataerror && $field != 'notweets') {
+            $dataerror = 1;
+        }
+    }
+
+    if ($dataerror) {
+        $_SESSION['cometchat']['error'] = 'Please enter all the configuration details.';
+    } else {
+        require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'twitteroauth' . DIRECTORY_SEPARATOR . 'twitteroauth.php';
+        $connection = new TwitterOAuth($_POST['consumerkey'], $_POST['consumersecret'], $_POST['accesstoken'], $_POST['accesstokensecret']);
+        $followers = $connection->get("https://api.twitter.com/1.1/followers/list.json?cursor=-1&screen_name=" . $_POST['twitteruser'] . "&count=1");
+        if (isset($followers->errors)) {
+            $_SESSION['cometchat']['error'] = 'Twitter authentication failed.';
+        } else {
+            $_SESSION['cometchat']['error'] = 'Twitter details updated successfully.';
+            configeditor('SETTINGS', $data, 0, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php');
+        }
+    }
+    header("Location:?module=dashboard&action=loadexternal&type=module&name=twitter");
 }

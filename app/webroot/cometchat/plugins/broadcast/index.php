@@ -53,74 +53,74 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
-if (!file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."broadcast".$rtl.".css")) {
-	$theme = "default";
+if (!file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "themes" . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . "broadcast" . $rtl . ".css")) {
+    $theme = "default";
 }
 
-if ($p_<4) exit;
+if ($p_ < 4) exit;
 
-if(!checkcURL() && $videoPluginType == '2') {
-	echo "<div style='background:white;'>Please contact your site administrator to configure this plugin.</div>";
-	exit;
+if (!checkcURL() && $videoPluginType == '2') {
+    echo "<div style='background:white;'>Please contact your site administrator to configure this plugin.</div>";
+    exit;
 }
 
-if($videoPluginType == '2') {
-	require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'sdk'.DIRECTORY_SEPARATOR.'API_Config.php';
-	require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'sdk'.DIRECTORY_SEPARATOR.'OpenTokSDK.php';
-	
-	$apiKey = '348501';
-	$apiSecret = '1022308838584cb6eba1fd9548a64dc1f8439774';
-	$apiServer = 'https://api.opentok.com/hl';
-	$apiObj = new OpenTokSDK($apiKey, $apiSecret);
-	if (empty($_SESSION['avchat_token'])) {
-		$_SESSION['avchat_token'] = $apiObj->generate_token();
-	}
+if ($videoPluginType == '2') {
+    require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'API_Config.php';
+    require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'OpenTokSDK.php';
+
+    $apiKey = '348501';
+    $apiSecret = '1022308838584cb6eba1fd9548a64dc1f8439774';
+    $apiServer = 'https://api.opentok.com/hl';
+    $apiObj = new OpenTokSDK($apiKey, $apiSecret);
+    if (empty($_SESSION['avchat_token'])) {
+        $_SESSION['avchat_token'] = $apiObj->generate_token();
+    }
 }
 
 if ($_REQUEST['action'] == 'request') {
-	if($videoPluginType == '2') {
-		$location = time();
-		$session = $apiObj->create_session($location);
-		$grp = $session->getSessionId();		
-	} else {
-		$grp = time();
-	}
-	
-	sendMessageTo($_REQUEST['to'],$broadcast_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccbroadcast.accept('".$userid."','".$grp."');\">".$broadcast_language[3]."</a> ".$broadcast_language[4]);
+    if ($videoPluginType == '2') {
+        $location = time();
+        $session = $apiObj->create_session($location);
+        $grp = $session->getSessionId();
+    } else {
+        $grp = time();
+    }
 
-	sendSelfMessage($_REQUEST['to'],$broadcast_language[5]);
+    sendMessageTo($_REQUEST['to'], $broadcast_language[2] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccbroadcast.accept('" . $userid . "','" . $grp . "');\">" . $broadcast_language[3] . "</a> " . $broadcast_language[4]);
 
-	if (!empty($_REQUEST['callback'])) {
-		header('content-type: application/json; charset=utf-8');
-		echo $_REQUEST['callback'].'()';
-	}
+    sendSelfMessage($_REQUEST['to'], $broadcast_language[5]);
+
+    if (!empty($_REQUEST['callback'])) {
+        header('content-type: application/json; charset=utf-8');
+        echo $_REQUEST['callback'] . '()';
+    }
 }
 
 if ($_REQUEST['action'] == 'call') {
-	$grp = $_REQUEST['grp'];
+    $grp = $_REQUEST['grp'];
 }
 
-if($videoPluginType < '2') {		
-	$sender = $_REQUEST['type'];
-	if (!empty($_REQUEST['chatroommode'])) {
-		if (empty($_REQUEST['join'])) {
-			sendChatroomMessage($grp,$broadcast_language[17]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccbroadcast.join('".$_REQUEST['grp']."');\">".$broadcast_language[16]."</a>");
-		}
-	}
-	ini_set('display_errors', 0);
-	$mode = 3;
-	$flashvariables = '{grp:"'.$grp.'",connectUrl: "'.$connectUrl.'",name:"",quality: "'. $quality. '",bandwidth: "'.$bandwidth.'",fps:"'.$fps.'",mode: "'.$mode.'",maxP: "'.$maxP.'",camWidth: "'.$camWidth.'",camHeight: "'.$camHeight.'",soundQuality: "'.$soundQuality.'",sender: "'.$sender.'"}';
-	$file = '_fms';
-	
-	echo <<<EOD
+if ($videoPluginType < '2') {
+    $sender = $_REQUEST['type'];
+    if (!empty($_REQUEST['chatroommode'])) {
+        if (empty($_REQUEST['join'])) {
+            sendChatroomMessage($grp, $broadcast_language[17] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccbroadcast.join('" . $_REQUEST['grp'] . "');\">" . $broadcast_language[16] . "</a>");
+        }
+    }
+    ini_set('display_errors', 0);
+    $mode = 3;
+    $flashvariables = '{grp:"' . $grp . '",connectUrl: "' . $connectUrl . '",name:"",quality: "' . $quality . '",bandwidth: "' . $bandwidth . '",fps:"' . $fps . '",mode: "' . $mode . '",maxP: "' . $maxP . '",camWidth: "' . $camWidth . '",camHeight: "' . $camHeight . '",soundQuality: "' . $soundQuality . '",sender: "' . $sender . '"}';
+    $file = '_fms';
+
+    echo <<<EOD
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html>
 		<head>
@@ -172,69 +172,69 @@ if($videoPluginType < '2') {
 		</body>
 	</html>
 EOD;
-	} else {
+} else {
 
-	if (!empty($_REQUEST['chatroommode'])) {
-		if (empty($_REQUEST['join'])) {
-			sendChatroomMessage($grp,$broadcast_language[9]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccbroadcast.join('".$grp."');\">".$broadcast_language[10]."</a>");
-		}
+    if (!empty($_REQUEST['chatroommode'])) {
+        if (empty($_REQUEST['join'])) {
+            sendChatroomMessage($grp, $broadcast_language[9] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccbroadcast.join('" . $grp . "');\">" . $broadcast_language[10] . "</a>");
+        }
 
-		$sql = ("select vidsession from cometchat_chatrooms where id = '".mysql_real_escape_string($grp)."'");
-		$query = mysql_query($sql);
-		$chatroom = mysql_fetch_array($query);
+        $sql = ("select vidsession from cometchat_chatrooms where id = '" . mysql_real_escape_string($grp) . "'");
+        $query = mysql_query($sql);
+        $chatroom = mysql_fetch_array($query);
 
-		if (empty($chatroom['vidsession'])) {
-			$session = $apiObj->create_session(time());
-			$newsessionid = $session->getSessionId();
+        if (empty($chatroom['vidsession'])) {
+            $session = $apiObj->create_session(time());
+            $newsessionid = $session->getSessionId();
 
-			$sql = ("update cometchat_chatrooms set  vidsession = '".mysql_real_escape_string($newsessionid)."' where id = '".mysql_real_escape_string($grp)."'");
-			$query = mysql_query($sql);
-			$grp = $newsessionid;
-		} else {
-			$grp = $chatroom['vidsession'];
-		}
-	}
+            $sql = ("update cometchat_chatrooms set  vidsession = '" . mysql_real_escape_string($newsessionid) . "' where id = '" . mysql_real_escape_string($grp) . "'");
+            $query = mysql_query($sql);
+            $grp = $newsessionid;
+        } else {
+            $grp = $chatroom['vidsession'];
+        }
+    }
 
-	$name = "";
-	$sql = getUserDetails($userid);
-	if ($guestsMode && $userid >= 10000000) {
-		$sql = getGuestDetails($userid);
-	}
+    $name = "";
+    $sql = getUserDetails($userid);
+    if ($guestsMode && $userid >= 10000000) {
+        $sql = getGuestDetails($userid);
+    }
 
-	$result = mysql_query($sql);
-	if($row = mysql_fetch_array($result)) {		
-		if (function_exists('processName')) {
-			$row['username'] = processName($row['username']);
-		}
-		$name = $row['username'];
-	}
-	$name = urlencode($name);
+    $result = mysql_query($sql);
+    if ($row = mysql_fetch_array($result)) {
+        if (function_exists('processName')) {
+            $row['username'] = processName($row['username']);
+        }
+        $name = $row['username'];
+    }
+    $name = urlencode($name);
 
-	$baseUrl = BASE_URL;
-	$embed = '';
-	$embedcss = '';
-	$resize = 'window.resizeTo(';
-	$invitefunction = 'window.open';
+    $baseUrl = BASE_URL;
+    $embed = '';
+    $embedcss = '';
+    $resize = 'window.resizeTo(';
+    $invitefunction = 'window.open';
 
-	if (!empty($_REQUEST['embed']) && $_REQUEST['embed'] == 'web') {
-		$embed = 'web';
-		$resize = "parent.resizeCCPopup('broadcast',";
-		$embedcss = 'embed';
-		$invitefunction = 'parent.loadCCPopup';
-	}
-	if (!empty($_REQUEST['embed']) && $_REQUEST['embed'] == 'desktop') {
-		$embed = 'desktop';
-		$resize = "parentSandboxBridge.resizeCCPopupWindow('broadcast',";
-		$embedcss = 'embed';
-		$invitefunction = 'parentSandboxBridge.loadCCPopupWindow';
-	}
+    if (!empty($_REQUEST['embed']) && $_REQUEST['embed'] == 'web') {
+        $embed = 'web';
+        $resize = "parent.resizeCCPopup('broadcast',";
+        $embedcss = 'embed';
+        $invitefunction = 'parent.loadCCPopup';
+    }
+    if (!empty($_REQUEST['embed']) && $_REQUEST['embed'] == 'desktop') {
+        $embed = 'desktop';
+        $resize = "parentSandboxBridge.resizeCCPopupWindow('broadcast',";
+        $embedcss = 'embed';
+        $invitefunction = 'parentSandboxBridge.loadCCPopupWindow';
+    }
 
-	$publish = "";
-	$control = "";
-	
-	if ($_REQUEST['type'] == 1) {
-		$publish = "publish();";
-		$control = '<div id="navigation">
+    $publish = "";
+    $control = "";
+
+    if ($_REQUEST['type'] == 1) {
+        $publish = "publish();";
+        $control = '<div id="navigation">
 			<div id="navigation_elements">
 				<a href="#" onclick="javascript:inviteUser()" id="inviteLink"><img src="res/invite.png"></a>
 				<a href="#" onclick="javascript:publish()" id="publishLink"><img src="res/turnonvideo.png"></a>
@@ -243,9 +243,9 @@ EOD;
 			</div>
 			<div style="clear:both"></div>
 		</div>';
-	}
+    }
 
-	echo <<<EOD
+    echo <<<EOD
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html>
 		<head>

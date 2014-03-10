@@ -53,7 +53,10 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
+if (!defined('CCADMIN')) {
+    echo "NO DICE";
+    exit;
+}
 
 $navigation = <<<EOD
 	<div id="leftnav">
@@ -62,69 +65,69 @@ $navigation = <<<EOD
 	</div>
 EOD;
 
-function index() {
-	global $db;
-	global $body;	
-	global $plugins;
-	global $navigation;
-	global $lang;
+function index()
+{
+    global $db;
+    global $body;
+    global $plugins;
+    global $navigation;
+    global $lang;
 
-	$aplugins = array();
-	
-	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'init.js')) {
-				$aplugins[] = $file;
-			}
-		}
-		closedir($handle);
-	}
+    $aplugins = array();
 
-	$pluginslist = '';
-	
-	foreach ($aplugins as $plugin) {
-		require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$plugin.DIRECTORY_SEPARATOR.'code.php';
-		
-		$pluginhref = 'href="?module=plugins&action=addplugin&data='.$plugininfo[0].'&token='.$_SESSION['token'].'"';
-		if (in_array($plugin, $plugins)) {
-			$pluginhref = 'href="javascript: void(0)" style="opacity: 0.5;cursor: default;"';
-		}
-		
-		$pluginslist .= '<li class="ui-state-default"><img src="../plugins/'.$plugininfo[0].'/icon.png" style="margin:0;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;width:100px">'.$plugininfo[1].'</span><span style="font-size:11px;float:right;margin-top:2px;margin-right:5px;"><a '.$pluginhref.' id="'.$plugininfo[0].'">add</a></span><div style="clear:both"></div></li>';
-	}
+    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'init.js')) {
+                $aplugins[] = $file;
+            }
+        }
+        closedir($handle);
+    }
 
-	$activeplugins = '';
-	$no_plugins = '';
-	$no = 0;
+    $pluginslist = '';
 
-	foreach ($plugins as $ti) {
+    foreach ($aplugins as $plugin) {
+        require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $plugin . DIRECTORY_SEPARATOR . 'code.php';
 
-		$title = ucwords($ti);
+        $pluginhref = 'href="?module=plugins&action=addplugin&data=' . $plugininfo[0] . '&token=' . $_SESSION['token'] . '"';
+        if (in_array($plugin, $plugins)) {
+            $pluginhref = 'href="javascript: void(0)" style="opacity: 0.5;cursor: default;"';
+        }
 
-		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$ti.DIRECTORY_SEPARATOR.'code.php')) {
-			require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$ti.DIRECTORY_SEPARATOR.'code.php';
-			$title = $plugininfo[1];
-		}
+        $pluginslist .= '<li class="ui-state-default"><img src="../plugins/' . $plugininfo[0] . '/icon.png" style="margin:0;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;width:100px">' . $plugininfo[1] . '</span><span style="font-size:11px;float:right;margin-top:2px;margin-right:5px;"><a ' . $pluginhref . ' id="' . $plugininfo[0] . '">add</a></span><div style="clear:both"></div></li>';
+    }
 
-		++$no;
+    $activeplugins = '';
+    $no_plugins = '';
+    $no = 0;
 
-		$config = '';
+    foreach ($plugins as $ti) {
 
-		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$ti.DIRECTORY_SEPARATOR.'settings.php')) {
-			$config = ' <a href="javascript:void(0)" onclick="javascript:plugins_configplugin(\''.$ti.'\')" style="margin-right:5px"><img src="images/config.png" title="Configure Plugin"></a>';
-		}
-		
-		$activeplugins .= '<li class="ui-state-default" id="'.$no.'" d1="'.$ti.'" rel="'.$ti.'"><img src="../plugins/'.$ti.'/icon.png" style="margin:0;margin-right:5px;margin-top:2px;float:left;"></img><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="'.$ti.'_title">'.stripslashes($title).'</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"> '.$config.'<a href="javascript:void(0)" onclick="javascript:plugins_removeplugin(\''.$no.'\')"><img src="images/remove.png" title="Remove Plugin"></a></span><div style="clear:both"></div></li>';
-	}
+        $title = ucwords($ti);
 
-	if(!$activeplugins){
-		$no_plugins .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">You haven\'t activated any CometChat Plugin yet. To activate a plugin, please add the plugin from the list of available plugins.</div>';
-	}
-	else{
-		$activeplugins = '<ul id="modules_liveplugins">'.$activeplugins.'</ul>';
-	}
+        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $ti . DIRECTORY_SEPARATOR . 'code.php')) {
+            require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $ti . DIRECTORY_SEPARATOR . 'code.php';
+            $title = $plugininfo[1];
+        }
 
-	$body = <<<EOD
+        ++$no;
+
+        $config = '';
+
+        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $ti . DIRECTORY_SEPARATOR . 'settings.php')) {
+            $config = ' <a href="javascript:void(0)" onclick="javascript:plugins_configplugin(\'' . $ti . '\')" style="margin-right:5px"><img src="images/config.png" title="Configure Plugin"></a>';
+        }
+
+        $activeplugins .= '<li class="ui-state-default" id="' . $no . '" d1="' . $ti . '" rel="' . $ti . '"><img src="../plugins/' . $ti . '/icon.png" style="margin:0;margin-right:5px;margin-top:2px;float:left;"></img><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="' . $ti . '_title">' . stripslashes($title) . '</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"> ' . $config . '<a href="javascript:void(0)" onclick="javascript:plugins_removeplugin(\'' . $no . '\')"><img src="images/remove.png" title="Remove Plugin"></a></span><div style="clear:both"></div></li>';
+    }
+
+    if (!$activeplugins) {
+        $no_plugins .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">You haven\'t activated any CometChat Plugin yet. To activate a plugin, please add the plugin from the list of available plugins.</div>';
+    } else {
+        $activeplugins = '<ul id="modules_liveplugins">' . $activeplugins . '</ul>';
+    }
+
+    $body = <<<EOD
 	$navigation
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -157,119 +160,121 @@ function index() {
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function updateorder() {
-	checktoken();
+function updateorder()
+{
+    checktoken();
 
-	$icons = '';
+    $icons = '';
 
-	if (!empty($_POST['order'])) {
+    if (!empty($_POST['order'])) {
 
-		$plugindata = '$plugins = array(';
+        $plugindata = '$plugins = array(';
 
-		$plugindata .= $_POST['order'];
+        $plugindata .= $_POST['order'];
 
-		$plugindata = substr($plugindata,0,-1).');';
-	
-		configeditor('PLUGINS',$plugindata);
-	} else {
+        $plugindata = substr($plugindata, 0, -1) . ');';
 
-		$plugindata = '$plugins = array();';
-		configeditor('PLUGINS',$plugindata);
+        configeditor('PLUGINS', $plugindata);
+    } else {
 
-	}
+        $plugindata = '$plugins = array();';
+        configeditor('PLUGINS', $plugindata);
 
-	echo "1";
+    }
+
+    echo "1";
 
 }
 
-function addplugin() {
-	checktoken();
+function addplugin()
+{
+    checktoken();
 
-	global $plugins;
+    global $plugins;
 
-	if (!empty($_GET['data'])) {
-	
-		$plugindata = '$plugins = array(';
+    if (!empty($_GET['data'])) {
 
-		foreach ($plugins as $plugin) {
-			$plugindata .= "'$plugin',";
-		}
+        $plugindata = '$plugins = array(';
 
-		$plugindata .= "'{$_GET['data']}',";
-
-		$plugindata = substr($plugindata,0,-1).');';
-	
-		configeditor('PLUGINS',$plugindata);
-	}
-
-	header("Location:?module=plugins");
-}
-
-
-function chatroomplugins() {
-	global $db;
-	global $body;	
-	global $crplugins;
-	global $navigation;
-	global $lang;
-
-	$aplugins = array();
-	
-	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'crcompatible.php')) {
-				$aplugins[] = $file;
-			}
-		}
-		closedir($handle);
-	}
-
-	$pluginslist = '';
-
-	foreach ($aplugins as $plugin) {
-		require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$plugin.DIRECTORY_SEPARATOR.'code.php';
-		$crpluginhref = 'href="?module=plugins&action=addchatroomplugin&data='.$plugininfo[0].'&token='.$_SESSION['token'].'"';
-        if (in_array($plugin, $crplugins)) {
-           $crpluginhref = 'href="javascript: void(0)" style="opacity: 0.5;cursor: default;"';
+        foreach ($plugins as $plugin) {
+            $plugindata .= "'$plugin',";
         }
-        $pluginslist .= '<li class="ui-state-default"><img src="../plugins/'.$plugininfo[0].'/icon.png" style="margin:0;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">'.$plugininfo[1].'</span><span style="font-size:11px;float:right;margin-top:2px;margin-right:5px;"><a '.$crpluginhref.' id="'.$plugininfo[0].'">add</a></span><div style="clear:both"></div></li>';
-	}
 
-	$activeplugins = '';
-	$no_plugins = '';
-	$no = 0;
+        $plugindata .= "'{$_GET['data']}',";
 
-	foreach ($crplugins as $ti) {
+        $plugindata = substr($plugindata, 0, -1) . ');';
 
-		$title = ucwords($ti);
+        configeditor('PLUGINS', $plugindata);
+    }
 
-		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$ti.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.'en.php')) {
-			require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$ti.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.'en.php';
-			$title = ${$ti."_language"}[0];
-		}
+    header("Location:?module=plugins");
+}
 
-		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$ti.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
-			require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$ti.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php';
-			$title = ${$ti."_language"}[0];
-		}
 
-		++$no;
-		
-		$activeplugins .= '<li class="ui-state-default" id="'.$no.'" d1="'.$ti.'" rel="'.$ti.'"><img src="../plugins/'.$ti.'/icon.png" style="margin:0;margin-top:2px;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="'.$ti.'_title">'.stripslashes($title).'</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="javascript:void(0)" onclick="javascript:plugins_removechatroomplugin(\''.$no.'\')"><img src="images/remove.png" title="Remove Plugin"></a></span><div style="clear:both"></div></li>';
-	}
-	
-	if(!$activeplugins){
-		$no_plugins .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">You haven\'t activated any Chatroom Plugin yet. To activate a Chatroom plugin, please add the plugin from the list of available plugins.</div>';
-	}
-	else{
-		$activeplugins = '<ul id="modules_liveplugins">'.$activeplugins.'</ul>';
-	}
+function chatroomplugins()
+{
+    global $db;
+    global $body;
+    global $crplugins;
+    global $navigation;
+    global $lang;
 
-	$body = <<<EOD
+    $aplugins = array();
+
+    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'crcompatible.php')) {
+                $aplugins[] = $file;
+            }
+        }
+        closedir($handle);
+    }
+
+    $pluginslist = '';
+
+    foreach ($aplugins as $plugin) {
+        require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $plugin . DIRECTORY_SEPARATOR . 'code.php';
+        $crpluginhref = 'href="?module=plugins&action=addchatroomplugin&data=' . $plugininfo[0] . '&token=' . $_SESSION['token'] . '"';
+        if (in_array($plugin, $crplugins)) {
+            $crpluginhref = 'href="javascript: void(0)" style="opacity: 0.5;cursor: default;"';
+        }
+        $pluginslist .= '<li class="ui-state-default"><img src="../plugins/' . $plugininfo[0] . '/icon.png" style="margin:0;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">' . $plugininfo[1] . '</span><span style="font-size:11px;float:right;margin-top:2px;margin-right:5px;"><a ' . $crpluginhref . ' id="' . $plugininfo[0] . '">add</a></span><div style="clear:both"></div></li>';
+    }
+
+    $activeplugins = '';
+    $no_plugins = '';
+    $no = 0;
+
+    foreach ($crplugins as $ti) {
+
+        $title = ucwords($ti);
+
+        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $ti . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'en.php')) {
+            require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $ti . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'en.php';
+            $title = ${$ti . "_language"}[0];
+        }
+
+        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $ti . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
+            require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $ti . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php';
+            $title = ${$ti . "_language"}[0];
+        }
+
+        ++$no;
+
+        $activeplugins .= '<li class="ui-state-default" id="' . $no . '" d1="' . $ti . '" rel="' . $ti . '"><img src="../plugins/' . $ti . '/icon.png" style="margin:0;margin-top:2px;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="' . $ti . '_title">' . stripslashes($title) . '</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="javascript:void(0)" onclick="javascript:plugins_removechatroomplugin(\'' . $no . '\')"><img src="images/remove.png" title="Remove Plugin"></a></span><div style="clear:both"></div></li>';
+    }
+
+    if (!$activeplugins) {
+        $no_plugins .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">You haven\'t activated any Chatroom Plugin yet. To activate a Chatroom plugin, please add the plugin from the list of available plugins.</div>';
+    } else {
+        $activeplugins = '<ul id="modules_liveplugins">' . $activeplugins . '</ul>';
+    }
+
+    $body = <<<EOD
 	$navigation
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -302,54 +307,56 @@ function chatroomplugins() {
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function updatechatroomorder() {
-	checktoken();
+function updatechatroomorder()
+{
+    checktoken();
 
-	$icons = '';
+    $icons = '';
 
-	if (!empty($_POST['order'])) {
+    if (!empty($_POST['order'])) {
 
-		$plugindata = '$crplugins = array(';
+        $plugindata = '$crplugins = array(';
 
-		$plugindata .= $_POST['order'];
+        $plugindata .= $_POST['order'];
 
-		$plugindata = substr($plugindata,0,-1).');';
-	
-		configeditor('CHATROOMPLUGINS',$plugindata);
-	} else {
-		
-		$plugindata = '$crplugins = array();';	
-		configeditor('CHATROOMPLUGINS',$plugindata);
+        $plugindata = substr($plugindata, 0, -1) . ');';
 
-	}
+        configeditor('CHATROOMPLUGINS', $plugindata);
+    } else {
 
-	echo "1";
+        $plugindata = '$crplugins = array();';
+        configeditor('CHATROOMPLUGINS', $plugindata);
+
+    }
+
+    echo "1";
 
 }
 
-function addchatroomplugin() {
-	checktoken();
+function addchatroomplugin()
+{
+    checktoken();
 
-	global $crplugins;
+    global $crplugins;
 
-	if (!empty($_GET['data'])) {
-	
-		$plugindata = '$crplugins = array(';
+    if (!empty($_GET['data'])) {
 
-		foreach ($crplugins as $plugin) {
-			$plugindata .= "'$plugin',";
-		}
+        $plugindata = '$crplugins = array(';
 
-		$plugindata .= "'{$_GET['data']}',";
+        foreach ($crplugins as $plugin) {
+            $plugindata .= "'$plugin',";
+        }
 
-		$plugindata = substr($plugindata,0,-1).');';
-	
-		configeditor('CHATROOMPLUGINS',$plugindata);
-	} 
+        $plugindata .= "'{$_GET['data']}',";
 
-	header("Location:?module=plugins&action=chatroomplugins");
+        $plugindata = substr($plugindata, 0, -1) . ');';
+
+        configeditor('CHATROOMPLUGINS', $plugindata);
+    }
+
+    header("Location:?module=plugins&action=chatroomplugins");
 }

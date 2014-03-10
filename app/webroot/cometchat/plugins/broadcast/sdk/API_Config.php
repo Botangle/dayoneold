@@ -8,8 +8,9 @@
 *
 */
 
-class API_Config {
+class API_Config
+{
 
-	const SDK_VERSION = "tbphp-v0.91.2011-02-14";
+    const SDK_VERSION = "tbphp-v0.91.2011-02-14";
 
 }

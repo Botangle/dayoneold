@@ -53,67 +53,70 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
+if (!defined('CCADMIN')) {
+    echo "NO DICE";
+    exit;
+}
 
 if (empty($_GET['process'])) {
-	global $getstylesheet;
-	require dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php';
-	
-	$curl = 0;
-	$errorMsg = '';
+    global $getstylesheet;
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
 
-	$schkd = '';
-	$rchkd = '';
-	$fchkd = '';
-	$ochkd = '';
-	$alchkd = '';
-	
-	$hideFMSSettings = '';
-	$hideRed5Settings = '';
-	$hideOTASettings = '';
-	$hideAddLiveSettings = '';
+    $curl = 0;
+    $errorMsg = '';
 
-	$commonSettings = '';
+    $schkd = '';
+    $rchkd = '';
+    $fchkd = '';
+    $ochkd = '';
+    $alchkd = '';
 
-	if ($videoPluginType == '4') {
-		$alchkd = "selected";
-		$hideFMSSettings = 'style="display:none;"';
-		$commonSettings = 'display:none;';
-		$hideOTASettings = 'style="display:none;"';
-	} else if ($videoPluginType == '3') {
-		$ochkd = "selected";
-		$hideFMSSettings = 'style="display:none;"';
-		$commonSettings = 'display:none;';
-		$hideAddLiveSettings = 'style="display:none;"';
-		if(!checkcURL()) {
-			$curl = 1;
-			$hideOTASettings = 'style="display:none;"';
-			$errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for CometChat Server.</h2>";
-		}
-	} else if ($videoPluginType == '2') {
-		$fchkd = "selected";
-		$hideRed5Settings = 'style="display:none;"';
-		$hideOTASettings = 'style="display:none;"';
-		$hideAddLiveSettings = 'style="display:none;"';
-		$errorMsg = '';
-	} else if ($videoPluginType == '1') {
-		$rchkd = "selected";
-		$hideFMSSettings = 'style="display:none;"';
-		$hideOTASettings = 'style="display:none;"';
-		$hideAddLiveSettings = 'style="display:none;"';
-		$errorMsg = '';
-	} else {
-		$schkd = "selected";
-		$hideFMSSettings = 'style="display:none;"';
-		$hideOTASettings = 'style="display:none;"';
-		$hideAddLiveSettings = 'style="display:none;"';
-		$errorMsg = '';
-	}
+    $hideFMSSettings = '';
+    $hideRed5Settings = '';
+    $hideOTASettings = '';
+    $hideAddLiveSettings = '';
 
-	$message = "<h3 id='data'></h3>";
+    $commonSettings = '';
 
-	
-echo <<<EOD
+    if ($videoPluginType == '4') {
+        $alchkd = "selected";
+        $hideFMSSettings = 'style="display:none;"';
+        $commonSettings = 'display:none;';
+        $hideOTASettings = 'style="display:none;"';
+    } else if ($videoPluginType == '3') {
+        $ochkd = "selected";
+        $hideFMSSettings = 'style="display:none;"';
+        $commonSettings = 'display:none;';
+        $hideAddLiveSettings = 'style="display:none;"';
+        if (!checkcURL()) {
+            $curl = 1;
+            $hideOTASettings = 'style="display:none;"';
+            $errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for CometChat Server.</h2>";
+        }
+    } else if ($videoPluginType == '2') {
+        $fchkd = "selected";
+        $hideRed5Settings = 'style="display:none;"';
+        $hideOTASettings = 'style="display:none;"';
+        $hideAddLiveSettings = 'style="display:none;"';
+        $errorMsg = '';
+    } else if ($videoPluginType == '1') {
+        $rchkd = "selected";
+        $hideFMSSettings = 'style="display:none;"';
+        $hideOTASettings = 'style="display:none;"';
+        $hideAddLiveSettings = 'style="display:none;"';
+        $errorMsg = '';
+    } else {
+        $schkd = "selected";
+        $hideFMSSettings = 'style="display:none;"';
+        $hideOTASettings = 'style="display:none;"';
+        $hideAddLiveSettings = 'style="display:none;"';
+        $errorMsg = '';
+    }
+
+    $message = "<h3 id='data'></h3>";
+
+
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html>
@@ -293,12 +296,12 @@ echo <<<EOD
 </html>
 EOD;
 } else {
-	
-	$data = '';
-	foreach ($_POST as $field => $value) {
-		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
-	}
 
-	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
-	header("Location:?module=dashboard&action=loadexternal&type=plugin&name=avchat");
+    $data = '';
+    foreach ($_POST as $field => $value) {
+        $data .= '$' . $field . ' = \'' . $value . '\';' . "\r\n";
+    }
+
+    configeditor('SETTINGS', $data, 0, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php');
+    header("Location:?module=dashboard&action=loadexternal&type=plugin&name=avchat");
 }

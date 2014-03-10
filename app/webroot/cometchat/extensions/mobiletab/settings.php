@@ -53,21 +53,24 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
-
-if (empty($_GET['process'])) {
-	global $getstylesheet;
-	require dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php';
-	
-if ($confirmOnAllMessages == 1) {
-	$confirmOnAllMessagesYes = 'checked="checked"';
-	$confirmOnAllMessagesNo = '';
-} else {
-	$confirmOnAllMessagesNo = 'checked="checked"';
-	$confirmOnAllMessagesYes = '';
+if (!defined('CCADMIN')) {
+    echo "NO DICE";
+    exit;
 }
 
-echo <<<EOD
+if (empty($_GET['process'])) {
+    global $getstylesheet;
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
+
+    if ($confirmOnAllMessages == 1) {
+        $confirmOnAllMessagesYes = 'checked="checked"';
+        $confirmOnAllMessagesNo = '';
+    } else {
+        $confirmOnAllMessagesNo = 'checked="checked"';
+        $confirmOnAllMessagesYes = '';
+    }
+
+    echo <<<EOD
 <!DOCTYPE html>
 {$getstylesheet}
 	<form action="?module=dashboard&action=loadexternal&type=extension&name=mobiletab&process=true" method="post">
@@ -87,12 +90,12 @@ echo <<<EOD
 	</form>
 EOD;
 } else {
-	
-	$data = '';
-	foreach ($_POST as $field => $value) {
-		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
-	}
 
-	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
-	header("Location:?module=dashboard&action=loadexternal&type=extension&name=mobiletab");
+    $data = '';
+    foreach ($_POST as $field => $value) {
+        $data .= '$' . $field . ' = \'' . $value . '\';' . "\r\n";
+    }
+
+    configeditor('SETTINGS', $data, 0, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php');
+    header("Location:?module=dashboard&action=loadexternal&type=extension&name=mobiletab");
 }

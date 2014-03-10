@@ -52,28 +52,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
-if(isset($_REQUEST['url'])){
-	include_once (dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php");
-	$auth = md5(ADMIN_USER).'$'.md5(ADMIN_PASS);	
+if (isset($_REQUEST['url'])) {
+    include_once(dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "modules.php");
+    $auth = md5(ADMIN_USER) . '$' . md5(ADMIN_PASS);
 }
 
-if($_REQUEST['auth'] == $auth ) {
-	if (!empty($_REQUEST['cron']) && in_array($_REQUEST['cron'],array("plugins","all",'filetransfer')) ) {   
-		$days = 1;
-		$seconds = ($days*24*60*60);
+if ($_REQUEST['auth'] == $auth) {
+    if (!empty($_REQUEST['cron']) && in_array($_REQUEST['cron'], array("plugins", "all", 'filetransfer'))) {
+        $days = 1;
+        $seconds = ($days * 24 * 60 * 60);
 
-		$dir = dirname(__FILE__).DIRECTORY_SEPARATOR."uploads";
-		$files = scandir($dir);
+        $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . "uploads";
+        $files = scandir($dir);
 
-		foreach ($files as $num => $fname){
-			if (file_exists("$dir/$fname") && ((time() - filemtime("$dir/$fname")) > $seconds)) {
-				if ($fname != 'index.html' && $fname != '.htaccess') {
-					@unlink("$dir/$fname");
-				}
-			}
-		}
-		echo "All uploaded files have been deleted successfully.<br />";
-	}
+        foreach ($files as $num => $fname) {
+            if (file_exists("$dir/$fname") && ((time() - filemtime("$dir/$fname")) > $seconds)) {
+                if ($fname != 'index.html' && $fname != '.htaccess') {
+                    @unlink("$dir/$fname");
+                }
+            }
+        }
+        echo "All uploaded files have been deleted successfully.<br />";
+    }
 } else {
-	echo 'Sorry you don`t have permissions.';
+    echo 'Sorry you don`t have permissions.';
 }

@@ -69,35 +69,37 @@ foreach ($broadcast_language as $i => $l) {
 ?>
 
 var baseUrl = "<?php echo BASE_URL;?>";
-var vidWidth = <?php echo $vidWidth;?>;
-var vidHeight = <?php echo $vidHeight;?>;
+var vidWidth =
+    <?php echo $vidWidth;?>;
+    var vidHeight =
+        <?php echo $vidHeight;?>;
 
-function disconnect() {
-	unpublish();
-	session.disconnect();
-	hide('navigation');
-	show('endcall');
-	var div = document.getElementById('canvas');
-	div.parentNode.removeChild(div);
-	eval(resize +'300,330);');
-}
+        function disconnect() {
+            unpublish();
+            session.disconnect();
+            hide('navigation');
+            show('endcall');
+            var div = document.getElementById('canvas');
+            div.parentNode.removeChild(div);
+            eval(resize +'300,330);');
+            }
 
-function sessionConnectedHandler(event) {
-	hide('loading');
-	show('canvas');
+        function sessionConnectedHandler(event) {
+            hide('loading');
+            show('canvas');
 
-	for (var i = 0; i < event.streams.length; i++) {
+            for (var i = 0; i < event.streams.length; i++) {
 
-		if (event.streams[i].connection.connectionId != session.connection.connectionId) {
-			totalStreams++;
-		}
-		addStream(event.streams[i]);
-	}
+            if (event.streams[i].connection.connectionId != session.connection.connectionId) {
+            totalStreams++;
+            }
+        addStream(event.streams[i]);
+        }
 
-	eval(publishFunction);
+        eval(publishFunction);
 
-	resizeWindow();
-	show('navigation');
+        resizeWindow();
+        show('navigation');
 	show('unpublishLink');
 	hide('publishLink');
 }
@@ -134,24 +136,27 @@ function publish() {
 }
 
 function inviteUser() {
-	eval(invitefunction + '("' + baseUrl + 'plugins/broadcast/invite.php?action=invite&roomid='+ sessionId +'","invite","status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=1, width=400,height=190",400,190,"<?php echo $broadcast_language[11];?>");'); 
-}
+	eval(invitefunction + '("' + baseUrl + 'plugins/broadcast/invite.php?action=invite&roomid='+ sessionId +'","invite","status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=1, width=400,height=190",400,190,"
+            <?php echo $broadcast_language[11];?>");');
+            }
 
-function resizeWindow() {
-	if (publisher) {
-		width = (totalStreams+1)*(vidWidth+30);
-		document.getElementById('canvas').style.width = (totalStreams+1)* vidWidth +'px';
-	} else {
-		width = (totalStreams)*(vidWidth+30);
-		document.getElementById('canvas').style.width = (totalStreams)* vidWidth +'px';
-	}
-	
-	if (width < vidWidth + 30) { width = vidWidth+30; }
-	if (width < 300) { width = 300; }
-	eval(resize +'width,' + vidHeight +'+ 165);');
+            function resizeWindow() {
+                if (publisher) {
+                width = (totalStreams+1)*(vidWidth+30);
+                document.getElementById('canvas').style.width = (totalStreams+1)* vidWidth +'px';
+                } else {
+                width = (totalStreams) * (vidWidth + 30);
+                document.getElementById('canvas').style.width = (totalStreams)* vidWidth +'px';
+                }
 
-	var h = vidHeight;
-	if( typeof( window.innerWidth ) == 'number' ) {
+            if (width
+                < vidWidth + 30) { width = vidWidth + 30; }
+                if (width
+                    < 300) { width = 300; }
+                    eval(resize +'width,' + vidHeight +'+ 165);');
+
+                    var h = vidHeight;
+                    if( typeof( window.innerWidth ) == 'number' ) {
 		h = window.innerHeight;
 	} else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
 		h = document.documentElement.clientHeight;

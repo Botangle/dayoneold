@@ -13,67 +13,67 @@ App::uses('AuthComponent', 'Controller/Component');
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://www.croogo.org
  */
-class News extends NewAppModel {
+class News extends NewAppModel
+{
 
-/**
- * Model name
- *
- * @var string
- * @access public
- */
-	public $name = 'News';
+    /**
+     * Model name
+     *
+     * @var string
+     * @access public
+     */
+    public $name = 'News';
 
-/**
- * Order
- *
- * @var string
- * @access public
- */
-	public $order = 'News.date ASC';
- 
+    /**
+     * Order
+     *
+     * @var string
+     * @access public
+     */
+    public $order = 'News.date ASC';
 
-/**
- * Model associations: belongsTo
- *
- * @var array
- * @access public
- */
- 
-/**
- * Validation
- *
- * @var array
- * @access public
- */
-	public $validate = array(
-		 
-		'name' => array(
-			'notEmpty' => array(
-				'rule' => 'notEmpty',
-				'message' => 'This field cannot be left blank.',
-				'last' => true,
-			),
-			 
-		),
-		 
-	);
 
- 
-/**
- * Display fields for this model
- *
- * @var array
- */
-	protected $_displayFields = array(
-		'id', 
-		'title',
-		'details',
-		'date',
-		 
-		'status' => array('type' => 'boolean'),
-		 
-	);
-	
- 
+    /**
+     * Model associations: belongsTo
+     *
+     * @var array
+     * @access public
+     */
+
+    /**
+     * Validation
+     *
+     * @var array
+     * @access public
+     */
+    public $validate = array(
+
+        'name' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'This field cannot be left blank.',
+                'last' => true,
+            ),
+
+        ),
+
+    );
+
+
+    /**
+     * Display fields for this model
+     *
+     * @var array
+     */
+    protected $_displayFields = array(
+        'id',
+        'title',
+        'details',
+        'date',
+
+        'status' => array('type' => 'boolean'),
+
+    );
+
 
 }

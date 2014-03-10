@@ -10,7 +10,8 @@
 */
 
 
-class Session {
+class Session
+{
 
     private $sessionId;
 
@@ -18,17 +19,20 @@ class Session {
 
     private $sessionProperties;
 
-    function __construct($sessionId, $primaryMediaServer, $properties) {
+    function __construct($sessionId, $primaryMediaServer, $properties)
+    {
         $this->sessionId = $sessionId;
         $this->primaryMediaServer = $primaryMediaServer;
         $this->sessionProperties = $properties;
     }
 
-    public function getSessionId() {
+    public function getSessionId()
+    {
         return $this->sessionId;
     }
 
-    public static function parseSession($sessionXml) {
+    public static function parseSession($sessionXml)
+    {
 
 
     }

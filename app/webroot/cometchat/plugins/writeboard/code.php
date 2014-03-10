@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('writeboard','Writeboard');
+$plugininfo = array('writeboard', 'Writeboard');

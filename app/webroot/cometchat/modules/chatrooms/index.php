@@ -53,32 +53,32 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "modules.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
 
 unset($_SESSION['cometchat']['cometchat_chatroomslist']);
 
 if (isset($_SESSION['cometchat']['timedifference'])) {
-	$_SESSION['cometchat']['timedifference'] = 0;
+    $_SESSION['cometchat']['timedifference'] = 0;
 }
 
 if (!empty($_REQUEST['basedata'])) {
-	$_SESSION['basedata'] = $_REQUEST['basedata'];
+    $_SESSION['basedata'] = $_REQUEST['basedata'];
 }
 
-if ($userid == 0 || in_array($userid,$bannedUserIDs) || in_array($_SERVER['REMOTE_ADDR'],$bannedUserIPs) || ($userid > 10000000 && !$crguestsMode)) {
+if ($userid == 0 || in_array($userid, $bannedUserIDs) || in_array($_SERVER['REMOTE_ADDR'], $bannedUserIPs) || ($userid > 10000000 && !$crguestsMode)) {
 
-	if (in_array($userid,$bannedUserIDs)) {
-		$chatrooms_language[0] = $bannedMessage;
-	}
+    if (in_array($userid, $bannedUserIDs)) {
+        $chatrooms_language[0] = $bannedMessage;
+    }
 
-echo <<<EOD
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -101,39 +101,39 @@ echo <<<EOD
 EOD;
 } else {
 
-$joinroom = '';
+    $joinroom = '';
 
-if (!empty($_COOKIE[$cookiePrefix.'chatroom']) && empty($_GET['roomid']) && empty($_GET['id'])) {
-	$info = explode(':',base64_decode($_COOKIE[$cookiePrefix.'chatroom']));
-	$_GET['roomid'] = intval($info[0]);
-	$_GET['inviteid'] = $info[1];
-	$_GET['roomname'] = $info[2];
-}
+    if (!empty($_COOKIE[$cookiePrefix . 'chatroom']) && empty($_GET['roomid']) && empty($_GET['id'])) {
+        $info = explode(':', base64_decode($_COOKIE[$cookiePrefix . 'chatroom']));
+        $_GET['roomid'] = intval($info[0]);
+        $_GET['inviteid'] = $info[1];
+        $_GET['roomname'] = $info[2];
+    }
 
-if (!empty($_GET['roomid'])) {
-	$joinroom = "silentroom('{$_GET['roomid']}','{$_GET['inviteid']}','{$_GET['roomname']}');";
-	$autoLogin = 0;
-}
+    if (!empty($_GET['roomid'])) {
+        $joinroom = "silentroom('{$_GET['roomid']}','{$_GET['inviteid']}','{$_GET['roomname']}');";
+        $autoLogin = 0;
+    }
 
-if (empty($_GET['id']) && !empty($autoLogin)) {
-	$_GET['id'] = $autoLogin;
-}
+    if (empty($_GET['id']) && !empty($autoLogin)) {
+        $_GET['id'] = $autoLogin;
+    }
 
-if (!empty($_GET['id'])) {
-	$sql = ("select id,name from cometchat_chatrooms where id = '".mysql_real_escape_string($_GET['id'])."' and type = '0' limit 1");
-	$query = mysql_query($sql);
-	$room = mysql_fetch_array($query);
-	if ($room['id'] > 0) {
-		$roomname = base64_encode($room['name']);
-		$joinroom = "silentroom('{$_GET['id']}','','{$roomname}');";
-	}
-}
+    if (!empty($_GET['id'])) {
+        $sql = ("select id,name from cometchat_chatrooms where id = '" . mysql_real_escape_string($_GET['id']) . "' and type = '0' limit 1");
+        $query = mysql_query($sql);
+        $room = mysql_fetch_array($query);
+        if ($room['id'] > 0) {
+            $roomname = base64_encode($room['name']);
+            $joinroom = "silentroom('{$_GET['id']}','','{$roomname}');";
+        }
+    }
 
-$time = getTimeStamp();
+    $time = getTimeStamp();
 
-$token = $_SESSION['token'];
+    $token = $_SESSION['token'];
 
-echo <<<EOD
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -157,15 +157,15 @@ echo <<<EOD
 		  </li>
 EOD;
 
-if ($allowUsers == 1) {
-	echo <<<EOD
+    if ($allowUsers == 1) {
+        echo <<<EOD
 		  <li id="createtab">
 			<a href="javascript:void(0);" onclick="javascript:createChatroom()">{$chatrooms_language[2]}</a>
 		  </li>
 EOD;
-}
+    }
 
-echo <<<EOD
+    echo <<<EOD
 	      <li id="popouttab" style="display:none">
 			<a href="javascript:void(0);" onclick="javascript:popoutChat()">{$chatrooms_language[9]}</a>
 		  </li>

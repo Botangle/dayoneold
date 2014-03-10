@@ -11,59 +11,68 @@ small, strike, strong, sub, sup, tt, var,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-size: 100%;
-	font-family: inherit;
-	vertical-align: baseline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
 }
 
 html, body {
-	overflow: hidden;
-	background: <?php echo $themeSettings['tab_background'];?>;
-	direction: <?php echo $dir;?>;
+    overflow: hidden;
+    background: < ? php echo $ themeSettings [ 'tab_background' ];
+    ? >;
+    direction: < ? php echo $ dir;
+    ? >;
 }
 
 ul {
-  float: left;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  padding: 5px 0px;
+    float: left;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    padding: 5px 0px;
 }
- 
+
 li {
-  margin: 0;
-  padding: 0 10px 10px;
-} 
+    margin: 0;
+    padding: 0 10px 10px;
+}
 
 .container {
-	font-weight: normal;
-	font-family: <?php echo $themeSettings['tab_font_family'];?>;
-	font-size: <?php echo $themeSettings['tab_font_size'];?>;
-	color: <?php echo $themeSettings['tab_color'];?>;
-	padding: 0px;
-	
+    font-weight: normal;
+    font-family: < ? php echo $ themeSettings [ 'tab_font_family' ];
+    ? >;
+    font-size: < ? php echo $ themeSettings [ 'tab_font_size' ];
+    ? >;
+    color: < ? php echo $ themeSettings [ 'tab_color' ];
+    ? >;
+    padding: 0px;
+
 }
 
-.announcements ul{
-	width : 100%;
-	word-wrap: break-word;
+.announcements ul {
+    width: 100%;
+    word-wrap: break-word;
 }
 
 .container a {
-	color: <?php echo $themeSettings['tab_link_color'];?>;
+    color: < ? php echo $ themeSettings [ 'tab_link_color' ];
+    ? >;
 }
 
 small {
-	color: <?php echo $themeSettings['tab_color_self'];?>;
-	font-size: <?php echo $themeSettings['tab_font_size_small'];?>;
+    color: < ? php echo $ themeSettings [ 'tab_color_self' ];
+    ? >;
+    font-size: < ? php echo $ themeSettings [ 'tab_font_size_small' ];
+    ? >;
 }
 
 .highlight {
-	background-color: <?php echo $themeSettings['tab_title_backgroud_light'];?>;
+    background-color: < ? php echo $ themeSettings [ 'tab_title_backgroud_light' ];
+    ? >;
 }

@@ -53,35 +53,35 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "modules.php";
 
 $themeslist = '';
-$dir = dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."themes"; 
-$files = scandir($dir); 
-foreach ($files as $listedtheme){
-	if (is_dir($dir."/".$listedtheme) && $listedtheme != '' && !preg_match('/^\.(.*)/',$listedtheme) && file_exists($dir.DIRECTORY_SEPARATOR.$listedtheme.DIRECTORY_SEPARATOR.$listedtheme.".php")) {
-		$themename = ucfirst($listedtheme);
-		if ($theme != $listedtheme && $listedtheme != 'lite' && $listedtheme != 'base') {
-		$themeslist .=  <<<EOD
+$dir = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "themes";
+$files = scandir($dir);
+foreach ($files as $listedtheme) {
+    if (is_dir($dir . "/" . $listedtheme) && $listedtheme != '' && !preg_match('/^\.(.*)/', $listedtheme) && file_exists($dir . DIRECTORY_SEPARATOR . $listedtheme . DIRECTORY_SEPARATOR . $listedtheme . ".php")) {
+        $themename = ucfirst($listedtheme);
+        if ($theme != $listedtheme && $listedtheme != 'lite' && $listedtheme != 'base') {
+            $themeslist .= <<<EOD
 <a href="javascript:void(0);" onclick="javascript:changeTheme('{$listedtheme}')">{$themename}</a><br/>
 EOD;
-		}
-	}
+        }
+    }
 }
 
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
 $currenttheme = ucfirst($theme);
 
 $themesoptions = '';
-if(!empty($themeslist)) {
-	$themesoptions = "<b>{$themechanger_language[1]}</b><br/><br/>{$themeslist}";
+if (!empty($themeslist)) {
+    $themesoptions = "<b>{$themechanger_language[1]}</b><br/><br/>{$themeslist}";
 } else {
-	$themesoptions = "<b>{$themechanger_language[2]}</b>";
+    $themesoptions = "<b>{$themechanger_language[2]}</b>";
 }
 
 echo <<<EOD

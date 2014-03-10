@@ -5,7 +5,8 @@
  *  License: Licensed under the MIT License
  */
 /* global jQuery:true, ko:true */
-;(function ( $, window, document, undefined ) {
+;
+(function ($, window, document, undefined) {
     'use strict';
 
     var pluginName = 'prettyCheckable',
@@ -21,7 +22,7 @@
 
         if (window.ko) {
 
-            $(element).on('change', function(e) {
+            $(element).on('change', function (e) {
 
                 e.preventDefault();
 
@@ -48,7 +49,7 @@
 
         }
 
-        element.find('a:first, label').on('touchstart click', function(e){
+        element.find('a:first, label').on('touchstart click', function (e) {
 
             e.preventDefault();
 
@@ -64,7 +65,7 @@
 
             if (input.prop('type') === 'radio') {
 
-                $('input[name="' + input.attr('name') + '"]').each(function(index, el){
+                $('input[name="' + input.attr('name') + '"]').each(function (index, el) {
 
                     $(el).prop('checked', false).parent().find('a:first').removeClass('checked');
 
@@ -94,7 +95,7 @@
 
         });
 
-        element.find('a:first').on('keyup', function(e){
+        element.find('a:first').on('keyup', function (e) {
 
             if (e.keyCode === 32) {
 
@@ -106,16 +107,16 @@
 
     };
 
-    var Plugin = function ( element ) {
+    var Plugin = function (element) {
         this.element = element;
-        this.options = $.extend( {}, defaults );
+        this.options = $.extend({}, defaults);
     };
 
     Plugin.prototype = {
 
-        init: function ( options ) {
+        init: function (options) {
 
-            $.extend( this.options, options );
+            $.extend(this.options, options);
 
             var el = $(this.element);
 
@@ -131,7 +132,7 @@
 
             var customClass = el.data('customclass') !== undefined ? el.data('customclass') : this.options.customClass;
 
-            var color =  el.data('color') !== undefined ? el.data('color') : this.options.color;
+            var color = el.data('color') !== undefined ? el.data('color') : this.options.color;
 
             var disabled = el.prop('disabled') === true ? 'disabled' : '';
 
@@ -195,31 +196,31 @@
 
     };
 
-    $.fn[ pluginName ] = function ( arg ) {
+    $.fn[ pluginName ] = function (arg) {
 
         var args, instance;
 
-        if (!( this.data( dataPlugin ) instanceof Plugin )) {
+        if (!( this.data(dataPlugin) instanceof Plugin )) {
 
-            this.data( dataPlugin, new Plugin( this ) );
+            this.data(dataPlugin, new Plugin(this));
 
         }
 
-        instance = this.data( dataPlugin );
+        instance = this.data(dataPlugin);
 
         instance.element = this;
 
         if (typeof arg === 'undefined' || typeof arg === 'object') {
 
-            if ( typeof instance.init === 'function' ) {
-                instance.init( arg );
+            if (typeof instance.init === 'function') {
+                instance.init(arg);
             }
 
-        } else if ( typeof arg === 'string' && typeof instance[arg] === 'function' ) {
+        } else if (typeof arg === 'string' && typeof instance[arg] === 'function') {
 
-            args = Array.prototype.slice.call( arguments, 1 );
+            args = Array.prototype.slice.call(arguments, 1);
 
-            return instance[arg].apply( instance, args );
+            return instance[arg].apply(instance, args);
 
         } else {
 

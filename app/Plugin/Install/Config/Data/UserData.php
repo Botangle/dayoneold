@@ -1,9 +1,10 @@
 <?php
-class UserData {
 
-	public $table = 'users';
+class UserData
+{
 
-	public $records = array(
-	);
+    public $table = 'users';
+
+    public $records = array();
 
 }

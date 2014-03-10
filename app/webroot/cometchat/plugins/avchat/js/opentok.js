@@ -67,26 +67,28 @@ foreach ($avchat_language as $i => $l) {
 }
 
 ?>
-var vidWidth = <?php echo $vidWidth;?>; var vidHeight = <?php echo $vidHeight;?>; var baseUrl = "<?php echo BASE_URL;?>"; var session; var publisher; var subscribers = {}; var totalStreams = 0;
+var vidWidth =
+    <?php echo $vidWidth;?>; var vidHeight =
+        <?php echo $vidHeight;?>; var baseUrl = "<?php echo BASE_URL;?>"; var session; var publisher; var subscribers = {}; var totalStreams = 0;
 
-function disconnect() {
-	unpublish();
-	session.disconnect();
-	hide('navigation');
-	show('endcall');
-	var div = document.getElementById('canvas');
-	div.parentNode.removeChild(div);
-	eval(resize +'300,330);');
-}
+        function disconnect() {
+            unpublish();
+            session.disconnect();
+            hide('navigation');
+            show('endcall');
+            var div = document.getElementById('canvas');
+            div.parentNode.removeChild(div);
+            eval(resize +'300,330);');
+            }
 
-function publish() {
-	if (!publisher) {
-		var canvas = document.getElementById("canvas");
-		var div = document.createElement('div');		
-		div.setAttribute('id', 'opentok_publisher');
-		canvas.appendChild(div);
-		var params = {width: vidWidth, height: vidHeight , name: name};
-		publisher = session.publish('opentok_publisher', params); 	
+        function publish() {
+            if (!publisher) {
+            var canvas = document.getElementById("canvas");
+            var div = document.createElement('div');
+            div.setAttribute('id', 'opentok_publisher');
+            canvas.appendChild(div);
+            var params = {width: vidWidth, height: vidHeight , name: name};
+        publisher = session.publish('opentok_publisher', params);
 		resizeWindow();
 		show('unpublishLink');
 		hide('publishLink');
@@ -115,8 +117,8 @@ function resizeWindow() {
                height = 300;
        eval(resize +'width,'+height + ');');
 
-       var h = vidHeight;
-       if( typeof( window.innerWidth ) == 'number' ) {
+        var h = vidHeight;
+        if( typeof( window.innerWidth ) == 'number' ) {
                h = window.innerHeight;
        } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
                h = document.documentElement.clientHeight;
@@ -151,22 +153,23 @@ function addStream(stream) {
 }
 
 function inviteUser() {
-	eval(invitefunction + '("' + baseUrl + 'plugins/avchat/invite.php?action=invite&roomid='+ sessionId +'","invite","status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=1, width=400,height=190",400,190,"<?php echo $avchat_language[16];?>");'); 
-}		
+	eval(invitefunction + '("' + baseUrl + 'plugins/avchat/invite.php?action=invite&roomid='+ sessionId +'","invite","status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=1, width=400,height=190",400,190,"
+            <?php echo $avchat_language[16];?>");');
+            }
 
-function connect() {
-	session.connect(apiKey, token);
-}
+            function connect() {
+                session.connect(apiKey, token);
+                }
 
-function unpublish() {
+            function unpublish() {
 
-	if (publisher) {
-		session.unpublish(publisher);
-	}
-	
-	publisher = null;
-	
-	show('publishLink');
+                if (publisher) {
+                session.unpublish(publisher);
+                }
+
+            publisher = null;
+
+            show('publishLink');
 	hide('unpublishLink');
 	resizeWindow();
 }

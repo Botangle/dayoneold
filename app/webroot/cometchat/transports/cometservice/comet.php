@@ -1,5 +1,5 @@
 <?php
- 
+
 /*
 
 CometChat
@@ -53,30 +53,33 @@ THE SOFTWARE.
 
 */
 
-class Comet {
-    private $ORIGIN        = 'x3.chatforyoursite.com';
-    private $LIMIT         = 1800;
-    private $PUBLISH_KEY   = '';
+class Comet
+{
+    private $ORIGIN = 'x3.chatforyoursite.com';
+    private $LIMIT = 1800;
+    private $PUBLISH_KEY = '';
     private $SUBSCRIBE_KEY = '';
-    private $SECRET_KEY    = false;
-    private $SSL           = false;
+    private $SECRET_KEY = false;
+    private $SSL = false;
 
     function Comet(
         $publish_key,
         $subscribe_key,
         $secret_key = false,
         $ssl = false
-    ) {
-        $this->PUBLISH_KEY   = $publish_key;
+    )
+    {
+        $this->PUBLISH_KEY = $publish_key;
         $this->SUBSCRIBE_KEY = $subscribe_key;
-        $this->SECRET_KEY    = $secret_key;
-        $this->SSL           = $ssl;
+        $this->SECRET_KEY = $secret_key;
+        $this->SSL = $ssl;
 
         if ($ssl) $this->ORIGIN = 'https://' . $this->ORIGIN;
-        else      $this->ORIGIN = 'http://'  . $this->ORIGIN;
+        else      $this->ORIGIN = 'http://' . $this->ORIGIN;
     }
 
-    function publish($args) {
+    function publish($args)
+    {
         if (!($args['channel'] && $args['message'])) {
             echo('Missing Channel or Message');
             return false;
@@ -85,22 +88,22 @@ class Comet {
         $channel = $args['channel'];
         $message = json_encode($args['message']);
 
-		$sql = "insert into cometchat_comethistory (channel,message,sent) values ( '".mysql_real_escape_string($channel). "', '" . mysql_real_escape_string(serialize($args['message'])) . "','".getTimeStamp()."')";
-		mysql_query($sql);
-		
-        $string_to_sign = implode( '/', array(
+        $sql = "insert into cometchat_comethistory (channel,message,sent) values ( '" . mysql_real_escape_string($channel) . "', '" . mysql_real_escape_string(serialize($args['message'])) . "','" . getTimeStamp() . "')";
+        mysql_query($sql);
+
+        $string_to_sign = implode('/', array(
             $this->PUBLISH_KEY,
             $this->SUBSCRIBE_KEY,
             $this->SECRET_KEY,
             $channel,
             $message
-        ) );
+        ));
 
         $signature = $this->SECRET_KEY ? md5($string_to_sign) : '0';
 
         if (strlen($message) > $this->LIMIT) {
             echo('Message TOO LONG (' . $this->LIMIT . ' LIMIT)');
-            return array( 0, 'Message Too Long.' );
+            return array(0, 'Message Too Long.');
         }
 
         return $this->_request(array(
@@ -115,25 +118,27 @@ class Comet {
     }
 
 
-    function history($args) {
+    function history($args)
+    {
         if (!$args['channel']) {
             echo('Missing Channel');
             return false;
         }
-		
-		$response['messages'] = array();
-		$limit   = +$args['limit'] ? +$args['limit'] : 10;
-		$sql = "select id,message from cometchat_comethistory where channel = '".mysql_real_escape_string($args['channel'])."' order by id desc limit 0, ".$limit;
-		$result = mysql_query($sql);
-		
-		while($row = mysql_fetch_array($result)) {
-			$response['messages'][$row['id']] = unserialize($row['message']);
-		}
+
+        $response['messages'] = array();
+        $limit = +$args['limit'] ? +$args['limit'] : 10;
+        $sql = "select id,message from cometchat_comethistory where channel = '" . mysql_real_escape_string($args['channel']) . "' order by id desc limit 0, " . $limit;
+        $result = mysql_query($sql);
+
+        while ($row = mysql_fetch_array($result)) {
+            $response['messages'][$row['id']] = unserialize($row['message']);
+        }
 
         return $response['messages'];
     }
 
-    function time() {
+    function time()
+    {
         $response = $this->_request(array(
             'time',
             '0'
@@ -142,42 +147,46 @@ class Comet {
         return $response[0];
     }
 
-    private function _request($request) {
-        $request = array_map( 'Comet_encode', $request );
-        array_unshift( $request, $this->ORIGIN );
+    private function _request($request)
+    {
+        $request = array_map('Comet_encode', $request);
+        array_unshift($request, $this->ORIGIN);
 
         $ctx = stream_context_create(array(
-            'http' => array( 'timeout' => 200 ) 
+            'http' => array('timeout' => 200)
         ));
 
-        return json_decode( file_get_contents(
-            implode( '/', $request ), 0, $ctx
-        ), true );
+        return json_decode(file_get_contents(
+            implode('/', $request), 0, $ctx
+        ), true);
     }
 
 }
 
-function new_str_split($part) {
-	if(function_exists('str_split')) {
-		return str_split($part);
-	}
-	$arr = array();
-	$i = 0;
-	$part = (string)$part;
-	while(isset($part[$i])) {
-		$arr[] = $part[$i++];
-	}
-	return $arr;
+function new_str_split($part)
+{
+    if (function_exists('str_split')) {
+        return str_split($part);
+    }
+    $arr = array();
+    $i = 0;
+    $part = (string)$part;
+    while (isset($part[$i])) {
+        $arr[] = $part[$i++];
+    }
+    return $arr;
 }
 
-function Comet_encode($part) {
-	return implode( '', array_map(
-		'Comet_encode_char', new_str_split($part)
-	));
+function Comet_encode($part)
+{
+    return implode('', array_map(
+        'Comet_encode_char', new_str_split($part)
+    ));
 }
 
-function Comet_encode_char($char) {
-	if (strpos( ' ~`!@#$%^&*()+=[]\\{}|;\':",./<>?', $char ) === false)
-		return $char;
-	return rawurlencode($char);
+function Comet_encode_char($char)
+{
+    if (strpos(' ~`!@#$%^&*()+=[]\\{}|;\':",./<>?', $char) === false)
+        return $char;
+    return rawurlencode($char);
 }

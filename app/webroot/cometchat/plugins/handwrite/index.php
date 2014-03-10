@@ -53,35 +53,37 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
-if (empty($_GET['id'])) { exit; }
+if (empty($_GET['id'])) {
+    exit;
+}
 
 $toId = intval($_GET['id']);
 
 if (!empty($_GET['chatroommode'])) {
-	$toId = "c".$toId;
+    $toId = "c" . $toId;
 }
 
 $embed = '';
 $embedcss = '';
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
-	$embed = 'web';
-	$embedcss = 'embed';
-}	
-
-if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
-	$embed = 'desktop';
-	$embedcss = 'embed';
+if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
+    $embed = 'web';
+    $embedcss = 'embed';
 }
 
-$toId .= ';'.$_REQUEST['basedata'].';'.$embed.';'.$_SESSION['token'];
+if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
+    $embed = 'desktop';
+    $embedcss = 'embed';
+}
+
+$toId .= ';' . $_REQUEST['basedata'] . ';' . $embed . ';' . $_SESSION['token'];
 
 echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

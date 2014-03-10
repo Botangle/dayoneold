@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('avchat','Audio/Video Chat');
+$plugininfo = array('avchat', 'Audio/Video Chat');

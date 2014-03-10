@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('games','Two Player Games');
+$plugininfo = array('games', 'Two Player Games');

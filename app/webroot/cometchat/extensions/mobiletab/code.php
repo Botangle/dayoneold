@@ -1,3 +1,3 @@
 <?php
-$extensioninfo = array('mobiletab','Mobile Tab');
+$extensioninfo = array('mobiletab', 'Mobile Tab');
 ?>

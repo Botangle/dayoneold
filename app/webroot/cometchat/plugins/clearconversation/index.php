@@ -53,29 +53,29 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
 
 if ($_REQUEST['action'] == 'clear' && !empty($_REQUEST['clearid'])) {
 
-	$id = $_REQUEST['clearid'];
+    $id = $_REQUEST['clearid'];
 
-	if (!empty($id) && !empty($_SESSION['cometchat']['cometchat_user_'.$id])) {
-		$lastentry = 0;
+    if (!empty($id) && !empty($_SESSION['cometchat']['cometchat_user_' . $id])) {
+        $lastentry = 0;
 
-		if (!empty($_SESSION['cometchat']['cometchat_user_'.$id]) && is_array($_SESSION['cometchat']['cometchat_user_'.$id])) {
-			$lastentry = end($_SESSION['cometchat']['cometchat_user_'.$id]);
-			$lastentry = $lastentry['id'];
-		}
+        if (!empty($_SESSION['cometchat']['cometchat_user_' . $id]) && is_array($_SESSION['cometchat']['cometchat_user_' . $id])) {
+            $lastentry = end($_SESSION['cometchat']['cometchat_user_' . $id]);
+            $lastentry = $lastentry['id'];
+        }
 
-		unset($_SESSION['cometchat']['cometchat_user_'.$id]);
+        unset($_SESSION['cometchat']['cometchat_user_' . $id]);
 
-		$_SESSION['cometchat']['cometchat_user_'.$id.'_clear'] = array('timestamp' => getTimeStamp().'999', 'lastentry' => array('id' => $lastentry));
-	}
+        $_SESSION['cometchat']['cometchat_user_' . $id . '_clear'] = array('timestamp' => getTimeStamp() . '999', 'lastentry' => array('id' => $lastentry));
+    }
 }
 
 if (!empty($_GET['callback'])) {
-	header('content-type: application/json; charset=utf-8');
-	echo $_GET['callback'].'()';
+    header('content-type: application/json; charset=utf-8');
+    echo $_GET['callback'] . '()';
 }
 
 ?>

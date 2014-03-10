@@ -11,58 +11,66 @@ small, strike, strong, sub, sup, tt, var,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-size: 100%;
-	font-family: inherit;
-	vertical-align: baseline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
 }
 
 html, body {
-	background: <?php echo $themeSettings['tab_background'];?>;
-	direction: <?php echo $dir;?>;
+    background: < ? php echo $ themeSettings [ 'tab_background' ];
+    ? >;
+    direction: < ? php echo $ dir;
+    ? >;
 }
 
 ul {
-  float: left;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  list-style-image: url(themes/default/images/bullet.png);
-  padding-<?php echo $left;?>: 15px;
+    float: left;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    list-style-image: url(themes/default/images/bullet.png);
+    padding- < ? php echo $ left;
+    ? > : 15 px;
 }
 
 li {
-  float: left;
-  width: 119px;
-  margin: 0;
-  height: 20px;
-  cursor: pointer;
-} 
+    float: left;
+    width: 119px;
+    margin: 0;
+    height: 20px;
+    cursor: pointer;
+}
 
 .container {
-	font-weight:normal;
-	font-family: <?php echo $themeSettings['tab_font_family'];?>;
-	font-size: <?php echo $themeSettings['tab_font_size'];?>;
-	color: <?php echo $themeSettings['tab_color'];?>;
-	padding: 10px 8px;
-	padding-<?php echo $right;?>: 0px;
-	width: 255px !important;
+    font-weight: normal;
+    font-family: < ? php echo $ themeSettings [ 'tab_font_family' ];
+    ? >;
+    font-size: < ? php echo $ themeSettings [ 'tab_font_size' ];
+    ? >;
+    color: < ? php echo $ themeSettings [ 'tab_color' ];
+    ? >;
+    padding: 10px 8px;
+    padding- < ? php echo $ right;
+    ? > : 0 px;
+    width: 255px !important;
 }
 
 .container a {
-	color: <?php echo $themeSettings['tab_link_color'];?>;
+    color: < ? php echo $ themeSettings [ 'tab_link_color' ];
+    ? >;
 }
 
 .translating {
-	display: none;
+    display: none;
 }
 
 .current {
-	font-weight: bold;
-	margin-bottom: 15px;
+    font-weight: bold;
+    margin-bottom: 15px;
 }

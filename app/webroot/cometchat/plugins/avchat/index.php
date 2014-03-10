@@ -53,120 +53,120 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
-if (!file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."themes".DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR."avchat".$rtl.".css")) {
-	$theme = "default";
+if (!file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "themes" . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . "avchat" . $rtl . ".css")) {
+    $theme = "default";
 }
 
-if ($p_<4) exit;
+if ($p_ < 4) exit;
 
-if(!checkcURL() && $videoPluginType == '3') {
-	sendSelfMessage($_REQUEST['to'],"Please contact your site administrator to configure this plugin."); 
-	exit;
+if (!checkcURL() && $videoPluginType == '3') {
+    sendSelfMessage($_REQUEST['to'], "Please contact your site administrator to configure this plugin.");
+    exit;
 }
 
-if($videoPluginType == '3') {
-	require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'sdk'.DIRECTORY_SEPARATOR.'API_Config.php';
-	require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'sdk'.DIRECTORY_SEPARATOR.'OpenTokSDK.php';
-	
-	$apiKey = '348501';
-	$apiSecret = '1022308838584cb6eba1fd9548a64dc1f8439774';
-	$apiServer = 'https://api.opentok.com';
-	$apiObj = new OpenTokSDK($apiKey, $apiSecret);
-	
+if ($videoPluginType == '3') {
+    require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'API_Config.php';
+    require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'sdk' . DIRECTORY_SEPARATOR . 'OpenTokSDK.php';
+
+    $apiKey = '348501';
+    $apiSecret = '1022308838584cb6eba1fd9548a64dc1f8439774';
+    $apiServer = 'https://api.opentok.com';
+    $apiObj = new OpenTokSDK($apiKey, $apiSecret);
+
 }
 
 if ($_REQUEST['action'] == 'request') {
-	$avchat_token = '';
-	if( $videoPluginType == '3' ) {
-		$location = time();
-		if (!empty($_SERVER['REMOTE_ADDR'])) {
-			$location = $_SERVER['REMOTE_ADDR'];
-		}
-		$session = $apiObj->create_session($location);
-		$grp = $session->getSessionId();
-		$avchat_token = $apiObj->generate_token($grp);
-	} else {
-		$grp = sha1(time()+$userid+'from');
-	}
-	
-	sendMessageTo($_REQUEST['to'],$avchat_language[2]." <a token ='".$avchat_token."' href='javascript:void(0);' onclick=\"javascript:jqcc.ccavchat.accept('".$userid."','".$grp."');\">".$avchat_language[3]."</a> ".$avchat_language[4]);
-	$temp_callback = $_REQUEST['callback'];
-	$_REQUEST['callback'] = time();
-	sendSelfMessage($_REQUEST['to'],$avchat_language[5]);
-	$_REQUEST['callback'] = $temp_callback;
-	
-	if (!empty($_REQUEST['callback'])) {
-		header('content-type: application/json; charset=utf-8');
-		echo $_REQUEST['callback'].'()';
-	}
-	exit;
+    $avchat_token = '';
+    if ($videoPluginType == '3') {
+        $location = time();
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $location = $_SERVER['REMOTE_ADDR'];
+        }
+        $session = $apiObj->create_session($location);
+        $grp = $session->getSessionId();
+        $avchat_token = $apiObj->generate_token($grp);
+    } else {
+        $grp = sha1(time() + $userid + 'from');
+    }
+
+    sendMessageTo($_REQUEST['to'], $avchat_language[2] . " <a token ='" . $avchat_token . "' href='javascript:void(0);' onclick=\"javascript:jqcc.ccavchat.accept('" . $userid . "','" . $grp . "');\">" . $avchat_language[3] . "</a> " . $avchat_language[4]);
+    $temp_callback = $_REQUEST['callback'];
+    $_REQUEST['callback'] = time();
+    sendSelfMessage($_REQUEST['to'], $avchat_language[5]);
+    $_REQUEST['callback'] = $temp_callback;
+
+    if (!empty($_REQUEST['callback'])) {
+        header('content-type: application/json; charset=utf-8');
+        echo $_REQUEST['callback'] . '()';
+    }
+    exit;
 }
 
 if ($_REQUEST['action'] == 'accept') {
-	$avchat_token = '';
-	if ($videoPluginType == '3') {
-		$avchat_token = $apiObj->generate_token($_REQUEST['grp']);	
-	}
-	
-	sendMessageTo($_REQUEST['to'],$avchat_language[6]." <a token ='".$avchat_token."' href='javascript:void(0);' onclick=\"javascript:jqcc.ccavchat.accept_fid('".$userid."','".$_REQUEST['grp']."');\">".$avchat_language[7]."</a>");
-	if (!empty($_REQUEST['callback'])) {
-		header('content-type: application/json; charset=utf-8');
-		echo $_REQUEST['callback'].'()';
-	}
-	exit;
+    $avchat_token = '';
+    if ($videoPluginType == '3') {
+        $avchat_token = $apiObj->generate_token($_REQUEST['grp']);
+    }
+
+    sendMessageTo($_REQUEST['to'], $avchat_language[6] . " <a token ='" . $avchat_token . "' href='javascript:void(0);' onclick=\"javascript:jqcc.ccavchat.accept_fid('" . $userid . "','" . $_REQUEST['grp'] . "');\">" . $avchat_language[7] . "</a>");
+    if (!empty($_REQUEST['callback'])) {
+        header('content-type: application/json; charset=utf-8');
+        echo $_REQUEST['callback'] . '()';
+    }
+    exit;
 }
 
 if ($_REQUEST['action'] == 'call') {
 
-	$baseUrl = BASE_URL;
-	$embed = '';
-	$embedcss = '';
-	$resize = 'window.resizeTo(';
-	$invitefunction = 'window.open';
-	if (!empty($_REQUEST['embed']) && $_REQUEST['embed'] == 'web') {
-		$embed = 'web';
-		$resize = "parent.resizeCCPopup('audiovideochat',";
-		$embedcss = 'embed';
-		$invitefunction = 'parent.loadCCPopup';
-	}
-	if (!empty($_REQUEST['embed']) && $_REQUEST['embed'] == 'desktop') {
-		$embed = 'desktop';
-		$resize = "parentSandboxBridge.resizeCCPopupWindow('audiovideochat',";
-		$embedcss = 'embed';
-		$invitefunction = 'parentSandboxBridge.loadCCPopupWindow';
-	}
+    $baseUrl = BASE_URL;
+    $embed = '';
+    $embedcss = '';
+    $resize = 'window.resizeTo(';
+    $invitefunction = 'window.open';
+    if (!empty($_REQUEST['embed']) && $_REQUEST['embed'] == 'web') {
+        $embed = 'web';
+        $resize = "parent.resizeCCPopup('audiovideochat',";
+        $embedcss = 'embed';
+        $invitefunction = 'parent.loadCCPopup';
+    }
+    if (!empty($_REQUEST['embed']) && $_REQUEST['embed'] == 'desktop') {
+        $embed = 'desktop';
+        $resize = "parentSandboxBridge.resizeCCPopupWindow('audiovideochat',";
+        $embedcss = 'embed';
+        $invitefunction = 'parentSandboxBridge.loadCCPopupWindow';
+    }
 
-	$grp = $_REQUEST['grp'];
+    $grp = $_REQUEST['grp'];
 
-	if (!empty($_REQUEST['chatroommode'])) {
-		if (empty($_REQUEST['join'])) {
-			sendChatroomMessage($grp,$avchat_language[19]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccavchat.join('".$grp."');\">".$avchat_language[20]."</a>");
-		}
-	}
+    if (!empty($_REQUEST['chatroommode'])) {
+        if (empty($_REQUEST['join'])) {
+            sendChatroomMessage($grp, $avchat_language[19] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccavchat.join('" . $grp . "');\">" . $avchat_language[20] . "</a>");
+        }
+    }
 
-	if($videoPluginType < '3') {
-		if($videoPluginType=='0') {
-			$connectUrl = 'rtmfp://stratus.rtmfp.net';
-			$developerKey = 'b72b713a18065673cdc1064e-0a89db06e6f8';
+    if ($videoPluginType < '3') {
+        if ($videoPluginType == '0') {
+            $connectUrl = 'rtmfp://stratus.rtmfp.net';
+            $developerKey = 'b72b713a18065673cdc1064e-0a89db06e6f8';
 
-			$flashvariables = '{grp:"'.$grp.'",quality:"'.$quality.'",bandwidth:"0",connectUrl:"'.$connectUrl.'",DeveloperKey:"'.$developerKey.'",maxP:'.$maxP.'}';
-			$file = '';
-		} elseif ($videoPluginType=='1' || $videoPluginType=='2') {
-			ini_set('display_errors', 0);
-			$mode = 3;
-			$flashvariables = '{grp:"'.$grp.'",connectUrl: "'.$connectUrl.'",name:"",quality: "'. $quality. '",bandwidth: "'.$bandwidth.'",fps:"'.$fps.'",mode: "'.$mode.'",maxP: "'.$maxP.'",camWidth: "'.$camWidth.'",camHeight: "'.$camHeight.'",soundQuality: "'.$soundQuality.'"}';
-			$file = '_fms';
-		}
+            $flashvariables = '{grp:"' . $grp . '",quality:"' . $quality . '",bandwidth:"0",connectUrl:"' . $connectUrl . '",DeveloperKey:"' . $developerKey . '",maxP:' . $maxP . '}';
+            $file = '';
+        } elseif ($videoPluginType == '1' || $videoPluginType == '2') {
+            ini_set('display_errors', 0);
+            $mode = 3;
+            $flashvariables = '{grp:"' . $grp . '",connectUrl: "' . $connectUrl . '",name:"",quality: "' . $quality . '",bandwidth: "' . $bandwidth . '",fps:"' . $fps . '",mode: "' . $mode . '",maxP: "' . $maxP . '",camWidth: "' . $camWidth . '",camHeight: "' . $camHeight . '",soundQuality: "' . $soundQuality . '"}';
+            $file = '_fms';
+        }
 
-		echo <<<EOD
+        echo <<<EOD
 		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 		<html>
 			<head>
@@ -216,42 +216,42 @@ if ($_REQUEST['action'] == 'call') {
 			</body>
 		</html>
 EOD;
-	} elseif ($videoPluginType == '3') {
-		$grp = $_REQUEST['grp'];
-		if (!empty($_REQUEST['chatroommode'])) {
-			$sql = ("select vidsession from cometchat_chatrooms where id = '".mysql_real_escape_string($grp)."'");
-			$query = mysql_query($sql);
-			$chatroom = mysql_fetch_array($query);
+    } elseif ($videoPluginType == '3') {
+        $grp = $_REQUEST['grp'];
+        if (!empty($_REQUEST['chatroommode'])) {
+            $sql = ("select vidsession from cometchat_chatrooms where id = '" . mysql_real_escape_string($grp) . "'");
+            $query = mysql_query($sql);
+            $chatroom = mysql_fetch_array($query);
 
-			if (empty($chatroom['vidsession'])) {
-				$session = $apiObj->create_session(time());
-				$newsessionid = $session->getSessionId();
+            if (empty($chatroom['vidsession'])) {
+                $session = $apiObj->create_session(time());
+                $newsessionid = $session->getSessionId();
 
-				$sql = ("update cometchat_chatrooms set  vidsession = '".mysql_real_escape_string($newsessionid)."' where id = '".mysql_real_escape_string($grp)."'");
-				$query = mysql_query($sql);
+                $sql = ("update cometchat_chatrooms set  vidsession = '" . mysql_real_escape_string($newsessionid) . "' where id = '" . mysql_real_escape_string($grp) . "'");
+                $query = mysql_query($sql);
 
-				$grp = $newsessionid;
+                $grp = $newsessionid;
 
-			} else {
-				$grp = $chatroom['vidsession'];
-			}
-		}
-		$avchat_token = $apiObj->generate_token($grp);	
-		$name = "";
-		$sql = getUserDetails($userid);
-		if ($guestsMode && $userid >= 10000000) {
-			$sql = getGuestDetails($userid);
-		}
-		$result = mysql_query($sql);
-		if($row = mysql_fetch_array($result)) {
-			if (function_exists('processName')) {
-				$row['username'] = processName($row['username']);
-			}
-			$name = $row['username'];
-		}
-		$name = urlencode($name);
+            } else {
+                $grp = $chatroom['vidsession'];
+            }
+        }
+        $avchat_token = $apiObj->generate_token($grp);
+        $name = "";
+        $sql = getUserDetails($userid);
+        if ($guestsMode && $userid >= 10000000) {
+            $sql = getGuestDetails($userid);
+        }
+        $result = mysql_query($sql);
+        if ($row = mysql_fetch_array($result)) {
+            if (function_exists('processName')) {
+                $row['username'] = processName($row['username']);
+            }
+            $name = $row['username'];
+        }
+        $name = urlencode($name);
 
-		echo <<<EOD
+        echo <<<EOD
 		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 		<html>
 			<head>
@@ -304,9 +304,9 @@ EOD;
 			</script>
 		</html>
 EOD;
-	} elseif ($videoPluginType == '4') {
-	
-		echo <<<EOD
+    } elseif ($videoPluginType == '4') {
+
+        echo <<<EOD
 		<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 		<html>
 			<head>
@@ -411,5 +411,5 @@ EOD;
 				</script>
 		</html>
 EOD;
-	}
+    }
 }

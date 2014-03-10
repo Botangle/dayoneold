@@ -53,54 +53,54 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
-if ($p_<2) exit;
+if ($p_ < 2) exit;
 
 $toId = $_GET['id'];
 
-if (!empty($_COOKIE[$cookiePrefix."language"])) {
-	$_GET['action'] = 'cached';
-	$_GET['lang'] = $_COOKIE[$cookiePrefix."language"];
+if (!empty($_COOKIE[$cookiePrefix . "language"])) {
+    $_GET['action'] = 'cached';
+    $_GET['lang'] = $_COOKIE[$cookiePrefix . "language"];
 }
 
 $chatroommode = 0;
 
 if (!empty($_GET['chatroommode'])) {
-	$chatroommode = 1;
+    $chatroommode = 1;
 }
 
 $embed = '';
 $embedcss = '';
 $before = 'window.opener';
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
-	$embed = 'web';
-	$embedcss = 'embed';
-	$before = 'parent';
-	
-	if ($chatroommode == 1) {
-		$before = "$('#cometchat_trayicon_chatrooms_iframe',parent.document)[0].contentWindow"; 
-	}
-}	
+if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
+    $embed = 'web';
+    $embedcss = 'embed';
+    $before = 'parent';
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
-	$embed = 'desktop';
-	$embedcss = 'embed';
-	$before = 'parentSandboxBridge';
+    if ($chatroommode == 1) {
+        $before = "$('#cometchat_trayicon_chatrooms_iframe',parent.document)[0].contentWindow";
+    }
+}
+
+if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
+    $embed = 'desktop';
+    $embedcss = 'embed';
+    $before = 'parentSandboxBridge';
 }
 
 if (empty($_GET['action'])) {
 
-	$toId = $_GET['id'];
-	$baseData = $_REQUEST['basedata'];
+    $toId = $_GET['id'];
+    $baseData = $_REQUEST['basedata'];
 
-	echo <<<EOD
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -169,20 +169,20 @@ EOD;
 
 } else {
 
-	$toId = $_GET['id'];
-	$lang = $_GET['lang'];
-	$baseData = $_REQUEST['basedata'];
-	
-	$extra = '';
+    $toId = $_GET['id'];
+    $lang = $_GET['lang'];
+    $baseData = $_REQUEST['basedata'];
 
-	if (!empty($_GET['chatroommode'])) {
-		$decide = '#currentroom';
-	} else {
-		$decide = '#cometchat_user_'.$toId.'_popup';
-		$extra = $before.'.jqcc.cometchat.chatWith(\''.$toId.'\');';
-	}
+    $extra = '';
 
-	echo <<<EOD
+    if (!empty($_GET['chatroommode'])) {
+        $decide = '#currentroom';
+    } else {
+        $decide = '#cometchat_user_' . $toId . '_popup';
+        $extra = $before . '.jqcc.cometchat.chatWith(\'' . $toId . '\');';
+    }
+
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>

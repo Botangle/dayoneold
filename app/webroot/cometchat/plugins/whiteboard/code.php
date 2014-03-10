@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('whiteboard','Whiteboard');
+$plugininfo = array('whiteboard', 'Whiteboard');

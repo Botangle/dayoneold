@@ -53,78 +53,85 @@ THE SOFTWARE.
 
 */
 
-	$callbackfn = ''; if (!empty($_GET['callbackfn']) && $_GET['callbackfn'] == 'desktop') { $desktopmode = 1; } else { $desktopmode = 0; }
-	include_once (dirname(__FILE__).DIRECTORY_SEPARATOR.'comet.js');
+$callbackfn = '';
+if (!empty($_GET['callbackfn']) && $_GET['callbackfn'] == 'desktop') {
+    $desktopmode = 1;
+} else {
+    $desktopmode = 0;
+}
+include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'comet.js');
 
 ?>
 
 var cometid = '';
 
 var comet = COMET.init({
-	'subscribe_key' : '<?php echo KEY_B;?>',
-	'desktop' : '<?php echo $desktopmode;?>',
-	'baseurl' : '<?php echo BASE_URL;?>'
+'subscribe_key' : '<?php echo KEY_B; ?>',
+'desktop' : '<?php echo $desktopmode; ?>',
+'baseurl' : '<?php echo BASE_URL; ?>'
 });
 
 function cometcall_function(id,td,callbackfn) {
-	var timetoken = jqcc.cookie('<?php echo $cookiePrefix; ?>timetoken') || 0;
-	
-	cometid = id;
+var timetoken = jqcc.cookie('<?php echo $cookiePrefix; ?>timetoken') || 0;
 
-	comet.subscribe({
-		channel : id,
-		timetoken : timetoken
-	}, function(incoming) {
+cometid = id;
 
-		if (callbackfn != '') {
-			jqcc[callbackfn].newMessage(incoming);
-		}
+comet.subscribe({
+channel : id,
+timetoken : timetoken
+}, function(incoming) {
 
-		<?php
-		
-		if (file_exists(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'realtimetranslate'.DIRECTORY_SEPARATOR.'config.php'))  {
-			include_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'realtimetranslate'.DIRECTORY_SEPARATOR.'config.php';
+if (callbackfn != '') {
+jqcc[callbackfn].newMessage(incoming);
+}
 
-			if($useGoogle == 1 && !empty($googleKey)) {
-		?>
-			if (jqcc.cookie('<?php echo $cookiePrefix;?>lang')) {
-				var lang = jqcc.cookie('<?php echo $cookiePrefix;?>lang');
+<?php
 
-				jqcc.ajax({
-					url: "https://www.googleapis.com/language/translate/v2?key=<?php echo $googleKey;?>&callback=?",
-					data: {q: incoming.message, target: lang},
-					dataType: 'jsonp',
-					success: function(data) {
+if (file_exists(dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'realtimetranslate' . DIRECTORY_SEPARATOR . 'config.php')) {
+    include_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'realtimetranslate' . DIRECTORY_SEPARATOR . 'config.php';
 
-						incoming.message = data.data.translations[0].translatedText+' <span class="untranslatedtext">('+incoming.message+')</span>';
-						jqcc.cometchat.addMessage(incoming.from, incoming.message, incoming.self, 0, incoming.sent, 0, parseInt(incoming.sent/1000)+td);
+    if ($useGoogle == 1 && !empty($googleKey)) {
+        ?>
+        if (jqcc.cookie('<?php echo $cookiePrefix; ?>lang')) {
+        var lang = jqcc.cookie('<?php echo $cookiePrefix; ?>lang');
 
-					}
-				});
-			} else {
-				jqcc.cometchat.addMessage(incoming.from, incoming.message, incoming.self, 0, incoming.sent, 0, parseInt(incoming.sent/1000)+td);
-			}
-			<?php 
-			} else { ?>
-				jqcc.cometchat.addMessage(incoming.from, incoming.message, incoming.self, 0, incoming.sent, 0, parseInt(incoming.sent/1000)+td);
-			<?php 
-				} 
-			} else { ?>
-				jqcc.cometchat.addMessage(incoming.from, incoming.message, incoming.self, 0, incoming.sent, 0, parseInt(incoming.sent/1000)+td);
-			<?php } ?>	   
-	});
+        jqcc.ajax({
+        url: "https://www.googleapis.com/language/translate/v2?key=<?php echo $googleKey; ?>&callback=?",
+        data: {q: incoming.message, target: lang},
+        dataType: 'jsonp',
+        success: function(data) {
+
+        incoming.message = data.data.translations[0].translatedText+' <span class="untranslatedtext">('+incoming.message+')</span>';
+        jqcc.cometchat.addMessage(incoming.from, incoming.message, incoming.self, 0, incoming.sent, 0, parseInt(incoming.sent/1000)+td);
+
+        }
+        });
+        } else {
+        jqcc.cometchat.addMessage(incoming.from, incoming.message, incoming.self, 0, incoming.sent, 0, parseInt(incoming.sent/1000)+td);
+        }
+    <?php
+    } else {
+        ?>
+        jqcc.cometchat.addMessage(incoming.from, incoming.message, incoming.self, 0, incoming.sent, 0, parseInt(incoming.sent/1000)+td);
+    <?php
+    }
+} else {
+    ?>
+    jqcc.cometchat.addMessage(incoming.from, incoming.message, incoming.self, 0, incoming.sent, 0, parseInt(incoming.sent/1000)+td);
+<?php } ?>
+});
 }
 
 function chatroomcall_function(id) {
-	comet.subscribe({
-		channel : id,
-		timetoken : 0
-	}, function(incoming) {	 
-	
-	   addRawMessage(incoming.sent,incoming.message,incoming.from,parseInt(incoming.sent));
-	});
+comet.subscribe({
+channel : id,
+timetoken : 0
+}, function(incoming) {
+
+addRawMessage(incoming.sent,incoming.message,incoming.from,parseInt(incoming.sent));
+});
 }
 
 function cometuncall_function(id) {
-	comet.unsubscribe({channel:id});
+comet.unsubscribe({channel:id});
 }

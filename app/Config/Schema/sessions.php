@@ -26,22 +26,26 @@
  * cake schema run create Sessions
  *
  */
-class SessionsSchema extends CakeSchema {
 
-	public $name = 'Sessions';
+class SessionsSchema extends CakeSchema
+{
 
-	public function before($event = array()) {
-		return true;
-	}
+    public $name = 'Sessions';
 
-	public function after($event = array()) {
-	}
+    public function before($event = array())
+    {
+        return true;
+    }
 
-	public $cake_sessions = array(
-		'id' => array('type' => 'string', 'null' => false, 'key' => 'primary'),
-		'data' => array('type' => 'text', 'null' => true, 'default' => null),
-		'expires' => array('type' => 'integer', 'null' => true, 'default' => null),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
-	);
+    public function after($event = array())
+    {
+    }
+
+    public $cake_sessions = array(
+        'id' => array('type' => 'string', 'null' => false, 'key' => 'primary'),
+        'data' => array('type' => 'text', 'null' => true, 'default' => null),
+        'expires' => array('type' => 'integer', 'null' => true, 'default' => null),
+        'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
+    );
 
 }

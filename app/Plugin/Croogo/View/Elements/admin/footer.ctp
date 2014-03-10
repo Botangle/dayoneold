@@ -1,9 +1,9 @@
 <footer class="navbar-inverse">
-	<div class="navbar-inner">
+    <div class="navbar-inner">
 
-	<div class="footer-content">
-	
-	</div>
+        <div class="footer-content">
 
-	</div>
+        </div>
+
+    </div>
 </footer>

@@ -1,69 +1,71 @@
 <?php
 
-if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
+if (!defined('CCADMIN')) {
+    echo "NO DICE";
+    exit;
+}
 
 if (empty($_GET['process'])) {
-	global $getstylesheet;
-	require dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php';
+    global $getstylesheet;
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
 
-if ($armyTime == 1) {
-	$armyTimeYes = 'checked="checked"';
-	$armyTimeNo = '';
-} else {
-	$armyTimeNo = 'checked="checked"';
-	$armyTimeYes = '';
-}
+    if ($armyTime == 1) {
+        $armyTimeYes = 'checked="checked"';
+        $armyTimeNo = '';
+    } else {
+        $armyTimeNo = 'checked="checked"';
+        $armyTimeYes = '';
+    }
 
-if ($displayFullName == 1) {
-	$displayFullNameYes = 'checked="checked"';
-	$displayFullNameNo = '';
-} else {
-	$displayFullNameNo = 'checked="checked"';
-	$displayFullNameYes = '';
-}
+    if ($displayFullName == 1) {
+        $displayFullNameYes = 'checked="checked"';
+        $displayFullNameNo = '';
+    } else {
+        $displayFullNameNo = 'checked="checked"';
+        $displayFullNameYes = '';
+    }
 
-if ($allowUsers == 1) {
-	$allowUsersYes = 'checked="checked"';
-	$allowUsersNo = '';
-} else {
-	$allowUsersNo = 'checked="checked"';
-	$allowUsersYes = '';
-}
+    if ($allowUsers == 1) {
+        $allowUsersYes = 'checked="checked"';
+        $allowUsersNo = '';
+    } else {
+        $allowUsersNo = 'checked="checked"';
+        $allowUsersYes = '';
+    }
 
-if ($hideEnterExit == 1) {
-	$hideEnterExitYes = 'checked="checked"';
-	$hideEnterExitNo = '';
-} else {
-	$hideEnterExitNo = 'checked="checked"';
-	$hideEnterExitYes = '';
-}
+    if ($hideEnterExit == 1) {
+        $hideEnterExitYes = 'checked="checked"';
+        $hideEnterExitNo = '';
+    } else {
+        $hideEnterExitNo = 'checked="checked"';
+        $hideEnterExitYes = '';
+    }
 
-if ($messageBeep == 1) {
-	$messageBeepYes = 'checked="checked"';
-	$messageBeepNo = '';
-} else {
-	$messageBeepNo = 'checked="checked"';
-	$messageBeepYes = '';
-}
+    if ($messageBeep == 1) {
+        $messageBeepYes = 'checked="checked"';
+        $messageBeepNo = '';
+    } else {
+        $messageBeepNo = 'checked="checked"';
+        $messageBeepYes = '';
+    }
 
-if ($allowAvatar == 1) {
-	$allowAvatarYes = 'checked="checked"';
-	$allowAvatarNo = '';
-} else {
-	$allowAvatarNo = 'checked="checked"';
-	$allowAvatarYes = '';
-}
-if ($crguestsMode == 1) {
-	$crguestsModeYes = 'checked="checked"';
-	$crguestsModeNo = '';
-} else {
-	$crguestsModeNo = 'checked="checked"';
-	$crguestsModeYes = '';
-}
+    if ($allowAvatar == 1) {
+        $allowAvatarYes = 'checked="checked"';
+        $allowAvatarNo = '';
+    } else {
+        $allowAvatarNo = 'checked="checked"';
+        $allowAvatarYes = '';
+    }
+    if ($crguestsMode == 1) {
+        $crguestsModeYes = 'checked="checked"';
+        $crguestsModeNo = '';
+    } else {
+        $crguestsModeNo = 'checked="checked"';
+        $crguestsModeYes = '';
+    }
 
 
-
-echo <<<EOD
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 $getstylesheet
 <form action="?module=dashboard&action=loadexternal&type=module&name=chatrooms&process=true" method="post">
@@ -114,12 +116,12 @@ $getstylesheet
 </form>
 EOD;
 } else {
-	
-	$data = '';
-	foreach ($_POST as $field => $value) {
-		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
-	}
 
-	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
-	header("Location:?module=dashboard&action=loadexternal&type=module&name=chatrooms");
+    $data = '';
+    foreach ($_POST as $field => $value) {
+        $data .= '$' . $field . ' = \'' . $value . '\';' . "\r\n";
+    }
+
+    configeditor('SETTINGS', $data, 0, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php');
+    header("Location:?module=dashboard&action=loadexternal&type=module&name=chatrooms");
 }

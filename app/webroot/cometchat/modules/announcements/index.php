@@ -53,48 +53,50 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "modules.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
 $extra = "";
 
 if (!empty($userid)) {
-	$extra = "or `to` = '0' or `to` = '".mysql_real_escape_string($userid)."'";
+    $extra = "or `to` = '0' or `to` = '" . mysql_real_escape_string($userid) . "'";
 }
 
-$sql = ("select id,announcement,time,`to` from cometchat_announcements where `to` = '-1' ".$extra." order by id desc limit ".$noOfAnnouncements);
+$sql = ("select id,announcement,time,`to` from cometchat_announcements where `to` = '-1' " . $extra . " order by id desc limit " . $noOfAnnouncements);
 $query = mysql_query($sql);
 
-if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
+if (defined('DEV_MODE') && DEV_MODE == '1') {
+    echo mysql_error();
+}
 
 $announcementdata = '';
 
 while ($announcement = mysql_fetch_array($query)) {
-	$time = date('g:iA M dS', $announcement['time']+$_SESSION['cometchat']['timedifference']);
-	
-	$class = 'highlight';
+    $time = date('g:iA M dS', $announcement['time'] + $_SESSION['cometchat']['timedifference']);
 
-	if ($announcement['to'] == 0 || $announcement['to'] == -1) {
-		$class = '';
-	}
+    $class = 'highlight';
 
-	$announcementdata .= <<<EOD
+    if ($announcement['to'] == 0 || $announcement['to'] == -1) {
+        $class = '';
+    }
+
+    $announcementdata .= <<<EOD
 		<li class="announcement"><span class="{$class}">{$announcement['announcement']}</span><br/><small>{$time}</small></li>
 EOD;
 }
 
 if (empty($announcementdata)) {
-	$announcementdata = '<li class="announcement">'.$announcements_language[0].'</li>';
+    $announcementdata = '<li class="announcement">' . $announcements_language[0] . '</li>';
 }
 
 $extrajs = "";
 if ($sleekScroller == 1) {
-	$extrajs = '<script>jqcc=jQuery;</script><script src="../../js.php?type=core&name=scroll"></script>';
+    $extrajs = '<script>jqcc=jQuery;</script><script src="../../js.php?type=core&name=scroll"></script>';
 }
 
 echo <<<EOD

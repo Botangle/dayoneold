@@ -25,40 +25,43 @@ App::uses('Folder', 'Utility');
  *
  * @package       Cake.TestSuite
  */
-class CakeTestSuite extends PHPUnit_Framework_TestSuite {
+class CakeTestSuite extends PHPUnit_Framework_TestSuite
+{
 
-/**
- * Adds all the files in a directory to the test suite. Does not recurse through directories.
- *
- * @param string $directory The directory to add tests from.
- * @return void
- */
-	public function addTestDirectory($directory = '.') {
-		$Folder = new Folder($directory);
-		list(, $files) = $Folder->read(true, true, true);
+    /**
+     * Adds all the files in a directory to the test suite. Does not recurse through directories.
+     *
+     * @param string $directory The directory to add tests from.
+     * @return void
+     */
+    public function addTestDirectory($directory = '.')
+    {
+        $Folder = new Folder($directory);
+        list(, $files) = $Folder->read(true, true, true);
 
-		foreach ($files as $file) {
-			if (substr($file, -4) === '.php') {
-				$this->addTestFile($file);
-			}
-		}
-	}
+        foreach ($files as $file) {
+            if (substr($file, -4) === '.php') {
+                $this->addTestFile($file);
+            }
+        }
+    }
 
-/**
- * Recursively adds all the files in a directory to the test suite.
- *
- * @param string $directory The directory subtree to add tests from.
- * @return void
- */
-	public function addTestDirectoryRecursive($directory = '.') {
-		$Folder = new Folder($directory);
-		$files = $Folder->tree(null, true, 'files');
+    /**
+     * Recursively adds all the files in a directory to the test suite.
+     *
+     * @param string $directory The directory subtree to add tests from.
+     * @return void
+     */
+    public function addTestDirectoryRecursive($directory = '.')
+    {
+        $Folder = new Folder($directory);
+        $files = $Folder->tree(null, true, 'files');
 
-		foreach ($files as $file) {
-			if (substr($file, -4) === '.php') {
-				$this->addTestFile($file);
-			}
-		}
-	}
+        foreach ($files as $file) {
+            if (substr($file, -4) === '.php') {
+                $this->addTestFile($file);
+            }
+        }
+    }
 
 }

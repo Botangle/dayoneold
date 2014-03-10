@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('colors','Color your text');
+$plugininfo = array('colors', 'Color your text');

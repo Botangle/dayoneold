@@ -12,6 +12,7 @@ App::uses('AppController', 'Controller');
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://www.croogo.org
  */
-class SettingsAppController extends AppController {
+class SettingsAppController extends AppController
+{
 
 }

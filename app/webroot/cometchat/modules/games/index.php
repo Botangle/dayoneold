@@ -53,13 +53,13 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "modules.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
 
 $includeJs = '';
 
 if ($sleekScroller == 1) {
-	$includeJs = '<script src="../../js.php?type=core&name=scroll" type="text/javascript"></script>';
+    $includeJs = '<script src="../../js.php?type=core&name=scroll" type="text/javascript"></script>';
 }
 
 echo <<<EOD

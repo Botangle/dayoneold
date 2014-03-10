@@ -4,19 +4,22 @@ include_once (dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."jq
 include_once (dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."iscroll.js");?>
 var chatScroll,lobbyScroll,chatroomScroll,woScroll,baseurl="<?php echo BASE_URL; ?>";;
 document.addEventListener('DOMContentLoaded', loaded, false);
-var cookie_prefix='<?php echo $cookiePrefix; ?>';
-<?php 
-include_once (dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."chat.js");
-include_once (dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."chatrooms.js");
-?>
+var cookie_prefix='
+    <?php echo $cookiePrefix; ?>';
+        <?php
+        include_once (dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."chat.js");
+        include_once (dirname(__FILE__).DIRECTORY_SEPARATOR."js".DIRECTORY_SEPARATOR."chatrooms.js");
+        ?>
 
-$.mobile.transitionFallbacks.slide = "none";
+        $.mobile.transitionFallbacks.slide = "none";
 
-function loaded() {
-		setTimeout(function () {
-			
-			document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
-			chatScroll = new iScroll('chatcontent');
+        function loaded() {
+            setTimeout(function () {
+
+                document.addEventListener('touchmove', function (e) {
+                    e.preventDefault();
+                }, false);
+        chatScroll = new iScroll('chatcontent');
 			chatroomScroll = new iScroll('chatroomcontent');
 			lobbyScroll = new iScroll('lobbycontent', {
                 onBeforeScrollStart: function (e) {
@@ -61,102 +64,108 @@ $(document).ready(function(){
 	},100);
 	
 	$('#buddy').live('pageinit',function(){
-		$('.chatlink .ui-icon').html('<span class="notifier">0</span>');
-	});
+		$('.chatlink .ui-icon').html('
+            <span class="notifier">0</span>
+        ');
+        });
 
-	$('#lobby').live('pageinit',function(){
-		$('.chatlink .ui-icon').html('<span class="notifier">0</span>');
-	});
-	$('#chatroommessage').live('keydown',function(event){
-			return chatboxKeydown(event,this);
-	});
+        $('#lobby').live('pageinit',function(){
+            $('.chatlink .ui-icon').html('<span class="notifier">0</span>');
+            });
+        $('#chatroommessage').live('keydown',function(event){
+            return chatboxKeydown(event,this);
+            });
 
-	$('#chatmessage').live('click',function(event){
-		setTimeout(function () {scrollToBottom();},500);
-	});
+        $('#chatmessage').live('click',function(event){
+            setTimeout(function () {
+                scrollToBottom();
+            },500);
+        });
 
-	$('#chatroommessage').live('click',function(event){
-		setTimeout(function () {crscrollToBottom();},500);
-	});
-	$('#chatroom').live("pageinit", function(){
-		getChatroomCookie();
-	});
+        $('#chatroommessage').live('click',function(event){
+            setTimeout(function () {
+                crscrollToBottom();
+            },500);
+        });
+        $('#chatroom').live("pageinit", function(){
+            getChatroomCookie();
+            });
 
-	$('#chat').live("pageinit", function(){
-		jqcc.mobilewebapp.getChatCookie();
-	});
-});
-function scrollToBottom(){
-	if($('#scroller').height() > $('#chatcontent').height()){
-		setTimeout(function () {
-			chatScroll.scrollToElement('#cwlist li:last-child', 100);
-		},500);
-	}
-}
+        $('#chat').live("pageinit", function(){
+            jqcc.mobilewebapp.getChatCookie();
+            });
+        });
+        function scrollToBottom(){
+            if($('#scroller').height() > $('#chatcontent').height()){
+            setTimeout(function () {
+            chatScroll.scrollToElement('#cwlist li:last-child', 100);
+            },500);
+        }
+        }
 
-function crscrollToBottom(){
-	if($('#crscroller').height() > $('#chatroomcontent').height()){
-		setTimeout(function () {
-			chatroomScroll.scrollToElement('#currentroom_convotext div:last-child', 100);
-		},500);
-	}
-}
+        function crscrollToBottom(){
+            if($('#crscroller').height() > $('#chatroomcontent').height()){
+            setTimeout(function () {
+            chatroomScroll.scrollToElement('#currentroom_convotext div:last-child', 100);
+            },500);
+        }
+        }
 
-function refreshLists(id){
-	$('#'+id).listview("refresh");
-}
+        function refreshLists(id){
+            $('#' + id).listview("refresh");
+            }
 
 
-	
-function loadChatbox(){
-	$.mobile.changePage("#chat",{transition:"none"});
-}
 
-function loadChatboxReverse(){
-	$.mobile.changePage("#buddy",{transition:"none",reverse: true});
-	jqcc.mobilewebapp.back();
-}
+        function loadChatbox(){
+            $.mobile.changePage("#chat", {transition: "none"});
+        }
 
-function loadChatroom(){ 
-	$.mobile.changePage("#chatroom",{transition:"none"});
-}
+        function loadChatboxReverse(){
+            $.mobile.changePage("#buddy", {transition: "none", reverse: true});
+        jqcc.mobilewebapp.back();
+        }
 
-function loadChatroomReverse(){
-	$.mobile.changePage("#chatroom",{transition:"none",reverse: true});
-}
+        function loadChatroom(){
+            $.mobile.changePage("#chatroom", {transition: "none"});
+        }
 
-function loadLobbyReverse(){
-	$.mobile.changePage("#lobby",{transition:"none",reverse: true});
-}
+        function loadChatroomReverse(){
+            $.mobile.changePage("#chatroom", {transition: "none", reverse: true});
+        }
 
-function showChatroomUser(){
-	$.mobile.changePage("#chatroomuser",{transition:"none"});
-}
+        function loadLobbyReverse(){
+            $.mobile.changePage("#lobby", {transition: "none", reverse: true});
+        }
 
-function chatwith(){
-	$.mobile.changePage("#chat",{transition:"none"});
-	return true;
-}
+        function showChatroomUser(){
+            $.mobile.changePage("#chatroomuser", {transition: "none"});
+        }
 
-function createChatroom(){
-	$.mobile.changePage("#createChatroom",{transition:"none"});
-}
+        function chatwith(){
+            $.mobile.changePage("#chat", {transition: "none"});
+        return true;
+        }
 
-function refreshPage(){
-	location.reload();
-}
+        function createChatroom(){
+            $.mobile.changePage("#createChatroom", {transition: "none"});
+        }
 
-function getCookieInfo(cookieName){
-		var i,x,y,ARRcookies=document.cookie.split(";");
-		for (i=0;i<ARRcookies.length;i++)
-		{
-			x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-			y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-			x=x.replace(/^\s+|\s+$/g,"");
-			if (x==cookieName)
-			{
-				return unescape(y);
-			}
-		}
-}
+        function refreshPage(){
+            location.reload();
+            }
+
+        function getCookieInfo(cookieName){
+            var i,x,y,ARRcookies=document.cookie.split(";");
+            for (i=0;i<ARRcookies.length;i++)
+            {
+            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+            x=x.replace(/^\s+|\s+$/g,"");
+            if (x==cookieName)
+            {
+            return unescape(y);
+            }
+        }
+        }
 

@@ -53,95 +53,100 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
 $embed = '';
 $close = "setTimeout('window.close()',2000);";
 
-function invite() {
-	global $userid;
-	global $avchat_language;
-	global $language;
-	global $embed;
-	global $embedcss;
-	global $lightboxWindows;
+function invite()
+{
+    global $userid;
+    global $avchat_language;
+    global $language;
+    global $embed;
+    global $embedcss;
+    global $lightboxWindows;
 
-	if($lightboxWindows == '1') {
-		$embed = 'web';
-		$embedcss = 'embed';
+    if ($lightboxWindows == '1') {
+        $embed = 'web';
+        $embedcss = 'embed';
 
-	}
+    }
 
-	$status['available'] = $language[30];
-	$status['busy'] = $language[31];
-	$status['offline'] = $language[32];
-	$status['invisible'] = $language[33];
-	$status['away'] = $language[34];
+    $status['available'] = $language[30];
+    $status['busy'] = $language[31];
+    $status['offline'] = $language[32];
+    $status['invisible'] = $language[33];
+    $status['away'] = $language[34];
 
-	$id = $_GET['roomid'];
+    $id = $_GET['roomid'];
 
-	if (empty($id)) { exit; }
+    if (empty($id)) {
+        exit;
+    }
 
-	$time = getTimeStamp();
-	$buddyList = array();
-	$sql = getFriendsList($userid,$time);
+    $time = getTimeStamp();
+    $buddyList = array();
+    $sql = getFriendsList($userid, $time);
 
-	$query = mysql_query($sql);
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
+    $query = mysql_query($sql);
+    if (defined('DEV_MODE') && DEV_MODE == '1') {
+        echo mysql_error();
+    }
 
-	while ($chat = mysql_fetch_array($query)) {
+    while ($chat = mysql_fetch_array($query)) {
 
-		if ((($time-processTime($chat['lastactivity'])) < ONLINE_TIMEOUT) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') {
-			if ($chat['status'] != 'busy' && $chat['status'] != 'away') {
-				$chat['status'] = 'available';
-			}
-		} else {
-			$chat['status'] = 'offline';
-		}
-	
-		$avatar = getAvatar($chat['avatar']);
+        if ((($time - processTime($chat['lastactivity'])) < ONLINE_TIMEOUT) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') {
+            if ($chat['status'] != 'busy' && $chat['status'] != 'away') {
+                $chat['status'] = 'available';
+            }
+        } else {
+            $chat['status'] = 'offline';
+        }
 
-		if (!empty($chat['username'])) {
-			if (function_exists('processName')) {
-				$chat['username'] = processName($chat['username']);
-			}
-			
-			if($chat['userid'] != $userid) {
-				$buddyList[] = array('id' => $chat['userid'], 'n' => $chat['username'], 's' => $chat['status'], 'a' => $avatar);
-			}
-		}
-	}
+        $avatar = getAvatar($chat['avatar']);
 
-	if (function_exists('hooks_forcefriends') && is_array(hooks_forcefriends())) {
-		$buddyList = array_merge(hooks_forcefriends(),$buddyList);
-	}
+        if (!empty($chat['username'])) {
+            if (function_exists('processName')) {
+                $chat['username'] = processName($chat['username']);
+            }
 
-	$s['available'] = '';
-	$s['away'] = '';
-	$s['busy'] = '';
-	$s['offline'] = '';
+            if ($chat['userid'] != $userid) {
+                $buddyList[] = array('id' => $chat['userid'], 'n' => $chat['username'], 's' => $chat['status'], 'a' => $avatar);
+            }
+        }
+    }
 
-	foreach ($buddyList as $buddy) {
+    if (function_exists('hooks_forcefriends') && is_array(hooks_forcefriends())) {
+        $buddyList = array_merge(hooks_forcefriends(), $buddyList);
+    }
 
-		$s[$buddy['s']] .= '<div class="invite_1"><div class="invite_2" onclick="javascript:document.getElementById(\'check_'.$buddy['id'].'\').checked = document.getElementById(\'check_'.$buddy['id'].'\').checked?false:true;"><img height=30 width=30 src="'.$buddy['a'].'"></div><div class="invite_3" onclick="javascript:document.getElementById(\'check_'.$buddy['id'].'\').checked = document.getElementById(\'check_'.$buddy['id'].'\').checked?false:true;"><span class="invite_name">'.$buddy['n'].'</span><br/><span class="invite_5">'.$status[$buddy['s']].'</span></div><input type="checkbox" name="invite[]" value="'.$buddy['id'].'" id="check_'.$buddy['id'].'" class="invite_4"></div>';
-		
-	}
-	
-	$inviteContent = '';
-	$invitehide = '';
-	$inviteContent = $s['available']."".$s['away']."".$s['offline'];
-	if(empty($inviteContent)) {
-		$inviteContent = $avchat_language[25];
-		$invitehide = 'style="display:none;"';
-	}
+    $s['available'] = '';
+    $s['away'] = '';
+    $s['busy'] = '';
+    $s['offline'] = '';
 
-	echo <<<EOD
+    foreach ($buddyList as $buddy) {
+
+        $s[$buddy['s']] .= '<div class="invite_1"><div class="invite_2" onclick="javascript:document.getElementById(\'check_' . $buddy['id'] . '\').checked = document.getElementById(\'check_' . $buddy['id'] . '\').checked?false:true;"><img height=30 width=30 src="' . $buddy['a'] . '"></div><div class="invite_3" onclick="javascript:document.getElementById(\'check_' . $buddy['id'] . '\').checked = document.getElementById(\'check_' . $buddy['id'] . '\').checked?false:true;"><span class="invite_name">' . $buddy['n'] . '</span><br/><span class="invite_5">' . $status[$buddy['s']] . '</span></div><input type="checkbox" name="invite[]" value="' . $buddy['id'] . '" id="check_' . $buddy['id'] . '" class="invite_4"></div>';
+
+    }
+
+    $inviteContent = '';
+    $invitehide = '';
+    $inviteContent = $s['available'] . "" . $s['away'] . "" . $s['offline'];
+    if (empty($inviteContent)) {
+        $inviteContent = $avchat_language[25];
+        $invitehide = 'style="display:none;"';
+    }
+
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -169,24 +174,25 @@ EOD;
 
 }
 
-function inviteusers() {
-	global $avchat_language;
-	global $userid;
-	global $close;
-	global $embed;
-	global $embedcss;
-	global $lightboxWindows;
+function inviteusers()
+{
+    global $avchat_language;
+    global $userid;
+    global $close;
+    global $embed;
+    global $embedcss;
+    global $lightboxWindows;
 
-	if($lightboxWindows == '1') {
-		$embedcss = 'embed';
+    if ($lightboxWindows == '1') {
+        $embedcss = 'embed';
 
-	}
+    }
 
-	foreach ($_POST['invite'] as $user) {
-		sendMessageTo($user,"{$avchat_language[14]}<a href=\"javascript:jqcc.ccavchat.accept_fid('{$userid}','{$_POST['roomid']}')\">{$avchat_language[15]}</a>");
-	}
+    foreach ($_POST['invite'] as $user) {
+        sendMessageTo($user, "{$avchat_language[14]}<a href=\"javascript:jqcc.ccavchat.accept_fid('{$userid}','{$_POST['roomid']}')\">{$avchat_language[15]}</a>");
+    }
 
-	echo <<<EOD
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -208,10 +214,10 @@ EOD;
 
 }
 
-$allowedActions = array('invite','inviteusers');
+$allowedActions = array('invite', 'inviteusers');
 $action = 'invite';
 
-if (!empty($_GET['action']) && function_exists($_GET['action']) && in_array($_GET['action'],$allowedActions)) {
-       $action = $_GET['action'];
+if (!empty($_GET['action']) && function_exists($_GET['action']) && in_array($_GET['action'], $allowedActions)) {
+    $action = $_GET['action'];
 }
 call_user_func($action);

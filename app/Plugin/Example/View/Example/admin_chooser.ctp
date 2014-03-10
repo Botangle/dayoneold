@@ -2,118 +2,118 @@
 
 $this->extend('/Common/admin_index');
 $this->Html
-	->addCrumb('', '/admin', array('icon' => 'home'))
-	->addCrumb('Example', array('controller' => 'example', 'action' => 'index'))
-	->addCrumb('Chooser Example', array('controller' => 'example', 'action' => 'chooser'));
+->addCrumb('', '/admin', array('icon' => 'home'))
+->addCrumb('Example', array('controller' => 'example', 'action' => 'index'))
+->addCrumb('Chooser Example', array('controller' => 'example', 'action' => 'chooser'));
 
 echo $this->Form->create(null);
 
 ?>
 <fieldset>
-<legend>Chooser Example</legend>
-<?php
+    <legend>Chooser Example</legend>
+    <?php
 
 echo $this->Form->input('node_id', array(
-	'type' => 'text',
-	'class' => 'span8',
-	'after' => ' ' . $this->Html->link('Choose Node',
-		array(
-			'plugin' => 'nodes',
-			'controller' => 'nodes',
-			'action' => 'index',
-			'?' => array(
-				'chooser' => true,
-				'KeepThis' => true,
-				'TB_iframe' => true,
-			),
-		),
-		array(
-			'class' => 'action node chooser',
-		)
-	)
-));
+    'type' => 'text',
+    'class' => 'span8',
+    'after' => ' ' . $this->Html->link('Choose Node',
+    array(
+    'plugin' => 'nodes',
+    'controller' => 'nodes',
+    'action' => 'index',
+    '?' => array(
+    'chooser' => true,
+    'KeepThis' => true,
+    'TB_iframe' => true,
+    ),
+    ),
+    array(
+    'class' => 'action node chooser',
+    )
+    )
+    ));
 
-echo $this->Form->input('node_url', array(
-	'type' => 'text',
-	'class' => 'span8',
-	'after' => ' ' . $this->Html->link('Choose Node',
-		array(
-			'plugin' => 'nodes',
-			'controller' => 'nodes',
-			'action' => 'index',
-			'?' => array(
-				'chooser' => true,
-				'KeepThis' => true,
-				'TB_iframe' => true,
-			),
-		),
-		array(
-			'class' => 'action node chooser',
-		)
-	)
-));
+    echo $this->Form->input('node_url', array(
+    'type' => 'text',
+    'class' => 'span8',
+    'after' => ' ' . $this->Html->link('Choose Node',
+    array(
+    'plugin' => 'nodes',
+    'controller' => 'nodes',
+    'action' => 'index',
+    '?' => array(
+    'chooser' => true,
+    'KeepThis' => true,
+    'TB_iframe' => true,
+    ),
+    ),
+    array(
+    'class' => 'action node chooser',
+    )
+    )
+    ));
 
-echo $this->Form->input('block_id', array(
-	'type' => 'text',
-	'class' => 'span8',
-	'after' => ' ' . $this->Html->link('Choose Block Id',
-		array(
-			'plugin' => 'blocks',
-			'controller' => 'blocks',
-			'action' => 'index',
-			'?' => array(
-				'chooser' => true,
-				'KeepThis' => true,
-				'TB_iframe' => true,
-			),
-		),
-		array(
-			'class' => 'action block chooser',
-		)
-	)
-));
+    echo $this->Form->input('block_id', array(
+    'type' => 'text',
+    'class' => 'span8',
+    'after' => ' ' . $this->Html->link('Choose Block Id',
+    array(
+    'plugin' => 'blocks',
+    'controller' => 'blocks',
+    'action' => 'index',
+    '?' => array(
+    'chooser' => true,
+    'KeepThis' => true,
+    'TB_iframe' => true,
+    ),
+    ),
+    array(
+    'class' => 'action block chooser',
+    )
+    )
+    ));
 
-echo $this->Form->input('block_title', array(
-	'type' => 'text',
-	'class' => 'span8',
-	'after' => ' ' . $this->Html->link('Choose Block Title',
-		array(
-			'plugin' => 'blocks',
-			'controller' => 'blocks',
-			'action' => 'index',
-			'?' => array(
-				'chooser' => true,
-				'KeepThis' => true,
-				'TB_iframe' => true,
-			),
-		),
-		array(
-			'class' => 'action block chooser',
-		)
-	)
-));
+    echo $this->Form->input('block_title', array(
+    'type' => 'text',
+    'class' => 'span8',
+    'after' => ' ' . $this->Html->link('Choose Block Title',
+    array(
+    'plugin' => 'blocks',
+    'controller' => 'blocks',
+    'action' => 'index',
+    '?' => array(
+    'chooser' => true,
+    'KeepThis' => true,
+    'TB_iframe' => true,
+    ),
+    ),
+    array(
+    'class' => 'action block chooser',
+    )
+    )
+    ));
 
-echo $this->Form->input('user_id', array(
-	'type' => 'text',
-	'class' => 'span8',
-	'after' => ' ' . $this->Html->link('Choose User Id',
-		array(
-			'plugin' => 'users',
-			'controller' => 'users',
-			'action' => 'index',
-			'?' => array(
-				'chooser' => true,
-				'KeepThis' => true,
-				'TB_iframe' => true,
-			),
-		),
-		array(
-			'class' => 'action user chooser',
-		)
-	)
-));
+    echo $this->Form->input('user_id', array(
+    'type' => 'text',
+    'class' => 'span8',
+    'after' => ' ' . $this->Html->link('Choose User Id',
+    array(
+    'plugin' => 'users',
+    'controller' => 'users',
+    'action' => 'index',
+    '?' => array(
+    'chooser' => true,
+    'KeepThis' => true,
+    'TB_iframe' => true,
+    ),
+    ),
+    array(
+    'class' => 'action user chooser',
+    )
+    )
+    ));
 
-?>
+    ?>
 </fieldset>
 <?php
 

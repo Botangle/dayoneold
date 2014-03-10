@@ -59,23 +59,21 @@ session_name('CC_AVCHAT');
 session_id($grp);
 session_start();
 
-if(isset($_GET['add_peer'])) {
-	$_SESSION['peers'][] = $_GET['peerid'];
-	
-} else if(isset($_GET['list_peers'])) {
+if (isset($_GET['add_peer'])) {
+    $_SESSION['peers'][] = $_GET['peerid'];
 
-	$peers = '';
-	if(isset($_SESSION['peers']))
-	{
-		foreach($_SESSION['peers'] as $peer)
-		{
-			$peers .= $peer."|";
-		}
-		$peers = trim($peers, "|");
+} else if (isset($_GET['list_peers'])) {
+
+    $peers = '';
+    if (isset($_SESSION['peers'])) {
+        foreach ($_SESSION['peers'] as $peer) {
+            $peers .= $peer . "|";
+        }
+        $peers = trim($peers, "|");
     }
 
-	echo $peers;
-	
+    echo $peers;
+
 }
 
 exit;

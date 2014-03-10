@@ -2,4 +2,8 @@
 * http://jqueryui.com
 * Copyright 2014 jQuery Foundation and other contributors; Licensed MIT */
 
-.ui-selectable-helper{position:absolute;z-index:100;border:1px dotted black}
+.ui-selectable-helper {
+    position: absolute;
+    z-index: 100;
+    border: 1px dotted black
+}

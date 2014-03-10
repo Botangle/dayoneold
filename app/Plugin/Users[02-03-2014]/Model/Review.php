@@ -1,6 +1,6 @@
 <?php
 
-App::uses('UsersAppModel', 'Users.Model'); 
+App::uses('UsersAppModel', 'Users.Model');
 
 /**
  * User
@@ -12,17 +12,16 @@ App::uses('UsersAppModel', 'Users.Model');
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://www.croogo.org
  */
-class Review extends UsersAppModel {
+class Review extends UsersAppModel
+{
 
-/**
- * Model name
- *
- * @var string
- * @access public
- */
-	public $name = 'Review';
- 
- 
- 
+    /**
+     * Model name
+     *
+     * @var string
+     * @access public
+     */
+    public $name = 'Review';
+
 
 }

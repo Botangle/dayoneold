@@ -1,9 +1,10 @@
 <?php
-class I18nData {
 
-	public $table = 'i18n';
+class I18nData
+{
 
-	public $records = array(
-	);
+    public $table = 'i18n';
+
+    public $records = array();
 
 }

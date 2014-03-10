@@ -53,7 +53,7 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."config.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "config.php";
 
 $filename = preg_replace("/[^a-zA-Z0-9 ]/", "", $_GET['file']);
 $filename = str_replace(" ", "_", $filename);
@@ -62,18 +62,18 @@ $file = preg_replace("/[^a-zA-Z0-9\. ]/", "", $_GET['file']);
 $file = str_replace(" ", "_", $file);
 
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.'uploads' .DIRECTORY_SEPARATOR. md5($filename."cometchat"))) {
-	header('Content-Description: File Transfer');
-	header('Content-Type: application/force-download');
-	header('Content-Disposition: attachment; filename='.$file);
-	header('Content-Transfer-Encoding: binary');
-	header('Expires: 0');
-	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-	header('Pragma: public');
-	header('Content-Length: ' . filesize(dirname(__FILE__).DIRECTORY_SEPARATOR.'uploads' .DIRECTORY_SEPARATOR. md5($filename."cometchat")));
-	ob_clean();
-	flush();
-	readfile(dirname(__FILE__).DIRECTORY_SEPARATOR.'uploads' .DIRECTORY_SEPARATOR. md5($filename."cometchat"));
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . md5($filename . "cometchat"))) {
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/force-download');
+    header('Content-Disposition: attachment; filename=' . $file);
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . md5($filename . "cometchat")));
+    ob_clean();
+    flush();
+    readfile(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . md5($filename . "cometchat"));
 } else {
-	header("HTTP/1.0 404 Not Found");
+    header("HTTP/1.0 404 Not Found");
 }

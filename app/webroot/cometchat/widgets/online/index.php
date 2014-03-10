@@ -1,5 +1,5 @@
 <?php
- 
+
 /*
 
 CometChat
@@ -53,20 +53,20 @@ THE SOFTWARE.
 
 */
 
-include_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."cometchat_init.php";
+include_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "cometchat_init.php";
 
 $time = getTimeStamp();
 
 $blockList = array();
 
-if (in_array('block',$plugins)) {
+if (in_array('block', $plugins)) {
 
-	$sql = "(select toid as id from cometchat_block where fromid = '".mysql_real_escape_string($userid)."') union (select fromid as id from cometchat_block where toid = '".mysql_real_escape_string($userid)."') ";
+    $sql = "(select toid as id from cometchat_block where fromid = '" . mysql_real_escape_string($userid) . "') union (select fromid as id from cometchat_block where toid = '" . mysql_real_escape_string($userid) . "') ";
 
-	$query = mysql_query($sql);
-	while ($user = mysql_fetch_array($query)) {
-		array_push($blockList,$user['id']);
-	}
+    $query = mysql_query($sql);
+    while ($user = mysql_fetch_array($query)) {
+        array_push($blockList, $user['id']);
+    }
 }
 
 if (empty($_REQUEST['rows'])) $_REQUEST['rows'] = 6;
@@ -81,10 +81,12 @@ $height = $_REQUEST['height'];
 $width = $_REQUEST['width'];
 $hideOffline = $_REQUEST['hideoffline'];
 
-$sql = getFriendsList($userid,$time);
+$sql = getFriendsList($userid, $time);
 
 $query = mysql_query($sql);
-if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
+if (defined('DEV_MODE') && DEV_MODE == '1') {
+    echo mysql_error();
+}
 
 $rows = 0;
 $cols = 0;
@@ -95,51 +97,52 @@ $data['away'] = array();
 $data['offline'] = array();
 
 while ($chat = mysql_fetch_array($query)) {
-	if (!in_array($chat['userid'],$blockList)) {
+    if (!in_array($chat['userid'], $blockList)) {
 
-		if ((($time-processTime($chat['lastactivity'])) < ONLINE_TIMEOUT) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') {
-			if ($chat['status'] != 'busy' && $chat['status'] != 'away') {
-				$chat['status'] = 'available';
-			}
-		} else {
-			$chat['status'] = 'offline';
-		}
+        if ((($time - processTime($chat['lastactivity'])) < ONLINE_TIMEOUT) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') {
+            if ($chat['status'] != 'busy' && $chat['status'] != 'away') {
+                $chat['status'] = 'available';
+            }
+        } else {
+            $chat['status'] = 'offline';
+        }
 
-		$avatar = getAvatar($chat['avatar']);
-		if (!empty($chat['username']) && ($hideOffline == 0 || ($hideOffline == 1 && $chat['status'] != 'offline'))) {
-			$data[$chat['status']][] = '<a class="cometchat_online" href="javascript:parent.jqcc.cometchat.chatWith(\''.$chat['userid'].'\');"><div class="cometchat_'.$chat['status'].'"></div><img src="'.$avatar.'" height="'.$height.'" width="'.$width.'"></a>';
-		}
-	}
+        $avatar = getAvatar($chat['avatar']);
+        if (!empty($chat['username']) && ($hideOffline == 0 || ($hideOffline == 1 && $chat['status'] != 'offline'))) {
+            $data[$chat['status']][] = '<a class="cometchat_online" href="javascript:parent.jqcc.cometchat.chatWith(\'' . $chat['userid'] . '\');"><div class="cometchat_' . $chat['status'] . '"></div><img src="' . $avatar . '" height="' . $height . '" width="' . $width . '"></a>';
+        }
+    }
 }
 
-$results = array_merge($data['available'],$data['busy'],$data['away'],$data['offline']);
+$results = array_merge($data['available'], $data['busy'], $data['away'], $data['offline']);
 
 $thumbnails = '';
 
 foreach ($results as $result) {
-	++$cols;
+    ++$cols;
 
-	if ($cols > $maxcols) {
-		$thumbnails .= '<div style="clear:both"></div>';
-		$cols = 1;
-		++$rows;
-	}
+    if ($cols > $maxcols) {
+        $thumbnails .= '<div style="clear:both"></div>';
+        $cols = 1;
+        ++$rows;
+    }
 
-	if ($rows >= $maxrows) {
-		break;
-	}
+    if ($rows >= $maxrows) {
+        break;
+    }
 
-	$thumbnails .= $result;
+    $thumbnails .= $result;
 
 }
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<title>Online List</title> 
-<link type="text/css" rel="stylesheet" media="all" href="online.css" /> 
-<?php echo $thumbnails;?>
-</body>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Online List</title>
+    <link type="text/css" rel="stylesheet" media="all" href="online.css"/>
+    <?php echo $thumbnails; ?>
+    </body>
 </html>

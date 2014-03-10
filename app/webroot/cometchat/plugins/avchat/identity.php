@@ -53,58 +53,62 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "modules.php";
 
 if ($userid == 0) {
-	print "Content-type: text/plain\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<result>";
-	print "\t<update>false</update>";
-	print "</result>";
-	exit;
+    print "Content-type: text/plain\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<result>";
+    print "\t<update>false</update>";
+    print "</result>";
+    exit;
 }
 
 if (!empty($_GET['username']) && $_GET['identity'] == '0') {
 
-	$sql = "insert into cometchat_videochatsessions (username,identity,timestamp) values ('".mysql_real_escape_string($_GET['username'])."','0','".getTimeStamp()."')";
- 	$query = mysql_query($sql);
-	
-	print "Content-type: text/plain\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<result>";
-	print "\t<update>true</update>";
-	print "</result>";
+    $sql = "insert into cometchat_videochatsessions (username,identity,timestamp) values ('" . mysql_real_escape_string($_GET['username']) . "','0','" . getTimeStamp() . "')";
+    $query = mysql_query($sql);
 
-} 
+    print "Content-type: text/plain\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<result>";
+    print "\t<update>true</update>";
+    print "</result>";
+
+}
 
 if (!empty($_GET['identity']) && $_GET['identity'] != '0') {
 
-	$sql = "insert into cometchat_videochatsessions (username,identity,timestamp) values ('".mysql_real_escape_string($_GET['username'])."','".mysql_real_escape_string($_GET['identity'])."','".getTimeStamp()."')";
-	$query = mysql_query($sql);
+    $sql = "insert into cometchat_videochatsessions (username,identity,timestamp) values ('" . mysql_real_escape_string($_GET['username']) . "','" . mysql_real_escape_string($_GET['identity']) . "','" . getTimeStamp() . "')";
+    $query = mysql_query($sql);
 
-	$sql = "update cometchat_videochatsessions set identity = ('".mysql_real_escape_string($_GET['identity'])."') where username = ('".mysql_real_escape_string($_GET['username'])."')";
- 	$query = mysql_query($sql);
+    $sql = "update cometchat_videochatsessions set identity = ('" . mysql_real_escape_string($_GET['identity']) . "') where username = ('" . mysql_real_escape_string($_GET['username']) . "')";
+    $query = mysql_query($sql);
 
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
-	
-	print "Content-type: text/plain\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<result>";
-	print "\t<update>true</update>";
-	print "</result>";
+    if (defined('DEV_MODE') && DEV_MODE == '1') {
+        echo mysql_error();
+    }
 
-} 
+    print "Content-type: text/plain\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<result>";
+    print "\t<update>true</update>";
+    print "</result>";
+
+}
 
 if (!empty($_GET['friends'])) {
 
-	$friend = $_GET['friends'];
-	$sql = "select * from cometchat_videochatsessions where username = '".mysql_real_escape_string($_GET['friends'])."'";
- 	$query = mysql_query($sql);
+    $friend = $_GET['friends'];
+    $sql = "select * from cometchat_videochatsessions where username = '" . mysql_real_escape_string($_GET['friends']) . "'";
+    $query = mysql_query($sql);
 
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
-	
-	$chat = mysql_fetch_array($query);
+    if (defined('DEV_MODE') && DEV_MODE == '1') {
+        echo mysql_error();
+    }
 
-	print "Content-type: text/plain\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<result>";
-	print "\t<friend>\n\t\t<user>{$friend}</user>";
-	if (!empty($chat['identity'])) {
-		print "\t\t<identity>{$chat['identity']}</identity>";
-	}
-	print "\t</friend>";
+    $chat = mysql_fetch_array($query);
 
-	print "</result>";
+    print "Content-type: text/plain\n\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<result>";
+    print "\t<friend>\n\t\t<user>{$friend}</user>";
+    if (!empty($chat['identity'])) {
+        print "\t\t<identity>{$chat['identity']}</identity>";
+    }
+    print "\t</friend>";
+
+    print "</result>";
 }

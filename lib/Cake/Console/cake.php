@@ -25,25 +25,25 @@ $found = false;
 $paths = explode(PATH_SEPARATOR, ini_get('include_path'));
 
 foreach ($paths as $path) {
-	if (file_exists($path . $ds . $dispatcher)) {
-		$found = $path;
-		break;
-	}
+    if (file_exists($path . $ds . $dispatcher)) {
+        $found = $path;
+        break;
+    }
 }
 
 if (!$found) {
-	$rootInstall = dirname(dirname(dirname(__FILE__))) . $ds . $dispatcher;
-	$composerInstall = dirname(dirname(__FILE__)) . $ds . $dispatcher;
+    $rootInstall = dirname(dirname(dirname(__FILE__))) . $ds . $dispatcher;
+    $composerInstall = dirname(dirname(__FILE__)) . $ds . $dispatcher;
 
-	if (file_exists($composerInstall)) {
-		include $composerInstall;
-	} elseif (file_exists($rootInstall)) {
-		include $rootInstall;
-	} else {
-		trigger_error('Could not locate CakePHP core files.', E_USER_ERROR);
-	}
+    if (file_exists($composerInstall)) {
+        include $composerInstall;
+    } elseif (file_exists($rootInstall)) {
+        include $rootInstall;
+    } else {
+        trigger_error('Could not locate CakePHP core files.', E_USER_ERROR);
+    }
 } else {
-	include $found . $ds . $dispatcher;
+    include $found . $ds . $dispatcher;
 }
 
 unset($paths, $path, $found, $dispatcher, $root, $ds);

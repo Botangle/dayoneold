@@ -53,67 +53,77 @@ THE SOFTWARE.
 
 */
 if (isset($_REQUEST['url'])) {
-	include_once (dirname(__FILE__).DIRECTORY_SEPARATOR."modules.php");
-	$auth = md5(ADMIN_USER).'$'.md5(ADMIN_PASS);
+    include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . "modules.php");
+    $auth = md5(ADMIN_USER) . '$' . md5(ADMIN_PASS);
 } else {
-	include_once (dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
+    include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php");
 }
 
-if ($_REQUEST['auth'] == $auth ) {
-	if (!empty($_REQUEST['cron']) && $_REQUEST['cron'] == "all") {
-		clearMessageEntries();
-		clearGuestEntries();
-	} else {
-		if (isset($_REQUEST['messages'])) {
-			clearMessageEntries();
-		}
-		if (isset($_REQUEST['guest'])) {
-			clearGuestEntries();
-		}
-	}
-	clearModulesData();
-	clearPluginsData();
+if ($_REQUEST['auth'] == $auth) {
+    if (!empty($_REQUEST['cron']) && $_REQUEST['cron'] == "all") {
+        clearMessageEntries();
+        clearGuestEntries();
+    } else {
+        if (isset($_REQUEST['messages'])) {
+            clearMessageEntries();
+        }
+        if (isset($_REQUEST['guest'])) {
+            clearGuestEntries();
+        }
+    }
+    clearModulesData();
+    clearPluginsData();
 } else {
-	echo "Sorry, you do not have permissions to execute cron.";
+    echo "Sorry, you do not have permissions to execute cron.";
 }
 
-function clearModulesData() {
-	global $trayicon;
-	global $auth;
-	foreach ($trayicon as $t) {
-		if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$t[0].DIRECTORY_SEPARATOR.'cron.php')) {
-				include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$t[0].DIRECTORY_SEPARATOR.'cron.php');
-		}
-	}
-	echo "Cron Job executed successfully for Modules.<br />";
+function clearModulesData()
+{
+    global $trayicon;
+    global $auth;
+    foreach ($trayicon as $t) {
+        if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $t[0] . DIRECTORY_SEPARATOR . 'cron.php')) {
+            include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $t[0] . DIRECTORY_SEPARATOR . 'cron.php');
+        }
+    }
+    echo "Cron Job executed successfully for Modules.<br />";
 }
 
-function clearPluginsData() {
-	global $plugins;
-	global $auth;
-	foreach ($plugins as $p) {
-		if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$p.DIRECTORY_SEPARATOR.'cron.php')) {
-			include_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$p.DIRECTORY_SEPARATOR.'cron.php');
-		}
-	}
-	echo "Cron Job executed successfully for Plugins<br />";
+function clearPluginsData()
+{
+    global $plugins;
+    global $auth;
+    foreach ($plugins as $p) {
+        if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $p . DIRECTORY_SEPARATOR . 'cron.php')) {
+            include_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $p . DIRECTORY_SEPARATOR . 'cron.php');
+        }
+    }
+    echo "Cron Job executed successfully for Plugins<br />";
 }
 
-function clearMessageEntries() {
-	$sql = ("delete from cometchat where (cometchat.read = 1 and (".getTimeStamp()."-cometchat.sent)>10800) OR ((".getTimeStamp()."-cometchat.sent)>604800)");
-	$query = mysql_query($sql);
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
+function clearMessageEntries()
+{
+    $sql = ("delete from cometchat where (cometchat.read = 1 and (" . getTimeStamp() . "-cometchat.sent)>10800) OR ((" . getTimeStamp() . "-cometchat.sent)>604800)");
+    $query = mysql_query($sql);
+    if (defined('DEV_MODE') && DEV_MODE == '1') {
+        echo mysql_error();
+    }
 
-	$sql = ("delete from cometchat_comethistory where ((".getTimeStamp()."-cometchat_comethistory.sent)>10800)");
-	$query = mysql_query($sql);
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
+    $sql = ("delete from cometchat_comethistory where ((" . getTimeStamp() . "-cometchat_comethistory.sent)>10800)");
+    $query = mysql_query($sql);
+    if (defined('DEV_MODE') && DEV_MODE == '1') {
+        echo mysql_error();
+    }
 
-	echo "Cron Job executed successfully for Chat Messages.<br />";
+    echo "Cron Job executed successfully for Chat Messages.<br />";
 }
 
-function clearGuestEntries() {
-	$sql = ("delete from cometchat_guests where ((".getTimeStamp()."-cometchat_guests.lastactivity)>10800)");
-	$query = mysql_query($sql);
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
-	echo "Cron Job executed successfully for Guest entries.<br />";
+function clearGuestEntries()
+{
+    $sql = ("delete from cometchat_guests where ((" . getTimeStamp() . "-cometchat_guests.lastactivity)>10800)");
+    $query = mysql_query($sql);
+    if (defined('DEV_MODE') && DEV_MODE == '1') {
+        echo mysql_error();
+    }
+    echo "Cron Job executed successfully for Guest entries.<br />";
 }

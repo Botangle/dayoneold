@@ -53,19 +53,19 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
 
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
-include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
 
 $domain = '';
 if (!empty($_GET['basedomain'])) {
-	$domain = $_GET['basedomain'];
+    $domain = $_GET['basedomain'];
 }
 
 $embed = '';
@@ -75,132 +75,137 @@ $before = 'window.opener';
 $before2 = 'window.top';
 
 if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
-	$embed = 'web';
-	$before = 'parent';
-	$before2 = 'parent';
-	$embedcss = 'embed'; 
-	$close = "parent.closeCCPopup('jabber');"; 
+    $embed = 'web';
+    $before = 'parent';
+    $before2 = 'parent';
+    $embedcss = 'embed';
+    $close = "parent.closeCCPopup('jabber');";
 }
 
 if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
-	$embed = 'desktop';
-	$before = 'parentSandboxBridge';
-	$before2 = 'parentSandboxBridge';
-	$embedcss = 'embed';
-	$close = "parentSandboxBridge.closeCCPopup('jabber');";
+    $embed = 'desktop';
+    $before = 'parentSandboxBridge';
+    $before2 = 'parentSandboxBridge';
+    $embedcss = 'embed';
+    $close = "parentSandboxBridge.closeCCPopup('jabber');";
 }
 
 if (isset($_GET['session'])) {
-	echo <<<EOD
+    echo <<<EOD
 	<script>
 	{$before2}.location.href = location.href.replace('session','sessiondata');
 	</script>
 EOD;
-	exit;
+    exit;
 }
 if (isset($_GET['sessiongtalk'])) {
-	echo <<<EOD
+    echo <<<EOD
 	<script>
 	{$before2}.location.href = location.href.replace('sessiongtalk','sessiondatagtalk');
 	</script>
 EOD;
-	exit;
+    exit;
 }
 if (isset($_GET['error'])) {
-	echo <<<EOD
+    echo <<<EOD
 	<script>
 	{$before2}.location.href = location.href.replace('error','Denied');
 	</script>	
 EOD;
-	exit;
+    exit;
 }
 if (isset($_GET['Denied'])) {
-	echo <<<EOD
+    echo <<<EOD
 	<script>
 	{$close}
 	</script>
 EOD;
-	exit;
+    exit;
 }
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<title>
-			<?php echo $jabber_language[0];?><?php echo $jabberName;?>
-			<?php echo $jabber_language[15];?>
-		</title> 
-		<link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=extension&name=jabber" /> 
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-		<script src="../../js.php?type=extension&name=jabber"></script>		
-		<script>
-			var before = "<?php echo $before;?>";
-			var before2 = "<?php echo $before2;?>";
-			var close = "<?php echo $close;?>";
-			var domain = "<?php echo $domain;?>";
-		</script>		
-	</head>
-	<body>
-		<form name="upload" onsubmit="return login();">
-			<div class="container">
-				<div class="container_title <?php echo $embedcss;?>"><?php echo $jabber_language[1];?></div>
-				<div class="container_body <?php echo $embedcss;?>">
-				<?php 
-					if(empty($_GET['sessiondata']) && empty($_GET['sessiondatagtalk']) ):
-				?>
-						<div class="container_body_1">
-						<div style="margin-left:5px;">
-							<script>
-								String.prototype.replaceAll=function(s1, s2) {return this.split(s1).join(s2)};
-								var currenttime = new Date();
-								currenttime = parseInt(currenttime.getTime());
-								document.write('<iframe src="<?php echo $cometchatServer;?>facebook.jsp?time='+currenttime+'&id=<?php echo $facebookAppId;?>&r='+location.href.replaceAll('&','AND').replaceAll('?','QUESTION')+'" frameborder="0" border="0" width="149" height="22"></iframe>');
-							</script>
-							</div>
-						</div>         
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>
+        <?php echo $jabber_language[0]; ?><?php echo $jabberName; ?>
+        <?php echo $jabber_language[15]; ?>
+    </title>
+    <link type="text/css" rel="stylesheet" media="all" href="../../css.php?type=extension&name=jabber"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script src="../../js.php?type=extension&name=jabber"></script>
+    <script>
+        var before = "<?php echo $before;?>";
+        var before2 = "<?php echo $before2;?>";
+        var close = "<?php echo $close;?>";
+        var domain = "<?php echo $domain;?>";
+    </script>
+</head>
+<body>
+<form name="upload" onsubmit="return login();">
+    <div class="container">
+        <div class="container_title <?php echo $embedcss; ?>"><?php echo $jabber_language[1]; ?></div>
+        <div class="container_body <?php echo $embedcss; ?>">
+            <?php
+            if (empty($_GET['sessiondata']) && empty($_GET['sessiondatagtalk'])):
+                ?>
+                <div class="container_body_1">
+                    <div style="margin-left:5px;">
+                        <script>
+                            String.prototype.replaceAll = function (s1, s2) {
+                                return this.split(s1).join(s2)
+                            };
+                            var currenttime = new Date();
+                            currenttime = parseInt(currenttime.getTime());
+                            document.write('<iframe src="<?php echo $cometchatServer;?>facebook.jsp?time=' + currenttime + '&id=<?php echo $facebookAppId;?>&r=' + location.href.replaceAll('&', 'AND').replaceAll('?', 'QUESTION') + '" frameborder="0" border="0" width="149" height="22"></iframe>');
+                        </script>
+                    </div>
+                </div>
 
-						<div class="container_body_2">
-							<div style="float:right;margin-right:5px;">
-								<script>
-									String.prototype.replaceAll=function(s1, s2) {return this.split(s1).join(s2)};
-									var currenttime = new Date();
-									currenttime = parseInt(currenttime.getTime());
-									document.write('<iframe src="<?php echo $cometchatServer;?>gtalk.jsp?cometserver=<?php echo $cometchatServer; ?>&time='+currenttime+'&id=<?php echo $gtalkAppId;?>&r='+location.href.replaceAll('&','AND').replaceAll('?','QUESTION')+'" frameborder="0" border="0" width="149" height="22"></iframe>');
-								</script>
-							</div>							
-						</div>
-				<?php 
-					else:
-						if(isset($_GET['sessiondata'])):
-				?>    
-							<div class="container_body_1">
-								<span><?php echo $jabber_language[7];?></span>
-							</div>
-							<script>
-								$(document).ready(function() {
-									login_facebook('<?php echo $_GET["sessiondata"];?>');
-								});
-							</script>
-					<?php
-						elseif(isset($_GET['sessiondatagtalk'])):
-					?>    
-					<div class="container_body_1">
-						<span><?php echo $jabber_language[7];?></span>
-					</div>
-					<script>
-						$(document).ready(function() {
-							login_gtalk('<?php echo $_GET["sessiondatagtalk"];?>','<?php echo $_GET["username"];?>');
-						});
-					</script>
-				<?php
-						endif;
-					endif;
-				?>
-					<div style="clear:both"></div>
-				</div>
-			</div>
-		</form>
-	</body>
+                <div class="container_body_2">
+                    <div style="float:right;margin-right:5px;">
+                        <script>
+                            String.prototype.replaceAll = function (s1, s2) {
+                                return this.split(s1).join(s2)
+                            };
+                            var currenttime = new Date();
+                            currenttime = parseInt(currenttime.getTime());
+                            document.write('<iframe src="<?php echo $cometchatServer;?>gtalk.jsp?cometserver=<?php echo $cometchatServer; ?>&time=' + currenttime + '&id=<?php echo $gtalkAppId;?>&r=' + location.href.replaceAll('&', 'AND').replaceAll('?', 'QUESTION') + '" frameborder="0" border="0" width="149" height="22"></iframe>');
+                        </script>
+                    </div>
+                </div>
+            <?php
+            else:
+            if (isset($_GET['sessiondata'])):
+            ?>
+                <div class="container_body_1">
+                    <span><?php echo $jabber_language[7]; ?></span>
+                </div>
+                <script>
+                    $(document).ready(function () {
+                        login_facebook('<?php echo $_GET["sessiondata"];?>');
+                    });
+                </script>
+            <?php
+            elseif (isset($_GET['sessiondatagtalk'])):
+            ?>
+                <div class="container_body_1">
+                    <span><?php echo $jabber_language[7]; ?></span>
+                </div>
+                <script>
+                    $(document).ready(function () {
+                        login_gtalk('<?php echo $_GET["sessiondatagtalk"];?>', '<?php echo $_GET["username"];?>');
+                    });
+                </script>
+            <?php
+            endif;
+            endif;
+            ?>
+            <div style="clear:both"></div>
+        </div>
+    </div>
+</form>
+</body>
 </html>

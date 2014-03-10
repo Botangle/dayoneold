@@ -53,7 +53,10 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
+if (!defined('CCADMIN')) {
+    echo "NO DICE";
+    exit;
+}
 
 $navigation = <<<EOD
 	<div id="leftnav">
@@ -64,48 +67,49 @@ $navigation = <<<EOD
 	</div>
 EOD;
 
-function index() {
-	global $db;
-	global $body;	
-	global $languages;
-	global $navigation;
-	global $lang;
+function index()
+{
+    global $db;
+    global $body;
+    global $languages;
+    global $navigation;
+    global $lang;
 
-	$alanguages = array();
-	
-	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'lang')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_file(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$file) && strtolower(extension($file)) == 'php') {
-				$alanguages[] = substr($file,0,-4);
-			}
-		}
-		closedir($handle);
-	}
+    $alanguages = array();
 
-	$languages = '';
-	$no = 0;
-	$activelanguages = '';
+    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'lang')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != "." && $file != ".." && is_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $file) && strtolower(extension($file)) == 'php') {
+                $alanguages[] = substr($file, 0, -4);
+            }
+        }
+        closedir($handle);
+    }
 
-	foreach ($alanguages as $ti) {
-		
-		$default = '';
-		$opacity = '';
-		$titlemakedefault = 'title="Make language default"';
-		$setdefault = 'onclick="javascript:language_makedefault(\''.$ti.'\')"';
-		
-		if (strtolower($lang) == strtolower($ti)) {
-			$default = ' (Default)';
-			$opacity = '0.5;cursor:default;';
-			$titlemakedefault = '';
-			$setdefault = '';
-		}
+    $languages = '';
+    $no = 0;
+    $activelanguages = '';
 
-		++$no;
+    foreach ($alanguages as $ti) {
 
-		$activelanguages .= '<li class="ui-state-default" id="'.$no.'" d1="'.$ti.'"><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="'.$ti.'_title">'.$ti.$default.'</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="javascript:void(0)" '.$setdefault.' style="margin-right:5px;"><img src="images/default.png" '.$titlemakedefault.' style="opacity:'.$opacity.';"></a><a href="?module=language&action=editlanguage&data='.$ti.'" style="margin-right:5px"><img src="images/config.png" title="Edit Language"></a><a href="?module=language&action=exportlanguage&data='.$ti.'&token='.$_SESSION['token'].'" target="_blank" style="margin-right:5px;"><img src="images/export.png" title="Download Language"></a><a href="javascript:void(0)" onclick="javascript:language_removelanguage(\''.$ti.'\')"><img src="images/remove.png" title="Remove Language"></a></span><div style="clear:both"></div></li>';
-	}
+        $default = '';
+        $opacity = '';
+        $titlemakedefault = 'title="Make language default"';
+        $setdefault = 'onclick="javascript:language_makedefault(\'' . $ti . '\')"';
 
-	$body = <<<EOD
+        if (strtolower($lang) == strtolower($ti)) {
+            $default = ' (Default)';
+            $opacity = '0.5;cursor:default;';
+            $titlemakedefault = '';
+            $setdefault = '';
+        }
+
+        ++$no;
+
+        $activelanguages .= '<li class="ui-state-default" id="' . $no . '" d1="' . $ti . '"><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="' . $ti . '_title">' . $ti . $default . '</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="javascript:void(0)" ' . $setdefault . ' style="margin-right:5px;"><img src="images/default.png" ' . $titlemakedefault . ' style="opacity:' . $opacity . ';"></a><a href="?module=language&action=editlanguage&data=' . $ti . '" style="margin-right:5px"><img src="images/config.png" title="Edit Language"></a><a href="?module=language&action=exportlanguage&data=' . $ti . '&token=' . $_SESSION['token'] . '" target="_blank" style="margin-right:5px;"><img src="images/export.png" title="Download Language"></a><a href="javascript:void(0)" onclick="javascript:language_removelanguage(\'' . $ti . '\')"><img src="images/remove.png" title="Remove Language"></a></span><div style="clear:both"></div></li>';
+    }
+
+    $body = <<<EOD
 	$navigation
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
 		<h2>Languages</h2>
@@ -126,182 +130,185 @@ function index() {
 	<div style="clear:both"></div>
 EOD;
 
-	template();
+    template();
 
 }
 
-function makedefault() {
-	checktoken();
+function makedefault()
+{
+    checktoken();
 
-	$icons = '';
+    $icons = '';
 
-	if (!empty($_POST['lang'])) {
-		$data = '$lang = \''.$_POST['lang'].'\';';
+    if (!empty($_POST['lang'])) {
+        $data = '$lang = \'' . $_POST['lang'] . '\';';
 
-		configeditor('LANGUAGE',$data,0);
-	}
+        configeditor('LANGUAGE', $data, 0);
+    }
 
-	$_SESSION['cometchat']['error'] = 'Language details updated successfully';
+    $_SESSION['cometchat']['error'] = 'Language details updated successfully';
 
-	echo "1";
-
-}
-
-function removelanguageprocess() {
-	checktoken();
-
-	$lang = $_GET['data'];
-
-	if ($lang != 'en') {
-		if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules')) {
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file) && is_file(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
-					unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php');
-				}
-			}
-			closedir($handle);
-		}
-
-		if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins')) {
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file) && is_file(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
-					unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php');
-				}
-			}
-			closedir($handle);
-		}
-
-		if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions')) {
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file) && is_file(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
-					unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php');
-				}
-			}
-			closedir($handle);
-		}
-
-		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
-			unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php');
-		}
-
-		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'i'.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
-			unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'i'.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php');
-		}
-
-		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'m'.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
-			unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'m'.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php');
-		}
-
-		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'desktop'.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
-			unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'desktop'.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.$lang.'.php');
-		}
-
-		$_SESSION['cometchat']['error'] = 'Language deleted successfully';
-	} else {
-		$_SESSION['cometchat']['error'] = 'Sorry, this language cannot be deleted.';
-	}	
-
-	header("Location:?module=language");
-
+    echo "1";
 
 }
 
-function editlanguage() {
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
-	
-	$lang = $_GET['data'];
+function removelanguageprocess()
+{
+    checktoken();
 
-	$filestoedit = array ( "" => "", "i" => "i", "m" => "m", "desktop" => "desktop" );
+    $lang = $_GET['data'];
 
-	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file) && is_file(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.'en.php')) {
-				$filestoedit["modules/".$file] = $file;
-			}
-		}
-		closedir($handle);
-	}
+    if ($lang != 'en') {
+        if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules')) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file) && is_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
+                    unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php');
+                }
+            }
+            closedir($handle);
+        }
 
-	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file) && is_file(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.'en.php')) {
-				$filestoedit["plugins/".$file] = $file;
-			}
-		}
-		closedir($handle);
-	}
+        if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins')) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file) && is_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
+                    unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php');
+                }
+            }
+            closedir($handle);
+        }
+
+        if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions')) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file) && is_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
+                    unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php');
+                }
+            }
+            closedir($handle);
+        }
+
+        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
+            unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php');
+        }
+
+        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'i' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
+            unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'i' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php');
+        }
+
+        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'm' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
+            unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'm' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php');
+        }
+
+        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'desktop' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
+            unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'desktop' . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php');
+        }
+
+        $_SESSION['cometchat']['error'] = 'Language deleted successfully';
+    } else {
+        $_SESSION['cometchat']['error'] = 'Sorry, this language cannot be deleted.';
+    }
+
+    header("Location:?module=language");
 
 
-	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file) &&  file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.'en.php')) {
-				$filestoedit["extensions/".$file] = $file;
-			}
-		}
-		closedir($handle);
-	}
+}
 
-	$data = '';
+function editlanguage()
+{
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
 
-	foreach ($filestoedit as $name => $file) {
-		
-		if (empty($name)) {
-			$namews = $name;
-		} else {
-			$namews = $name.'/';
-		}
+    $lang = $_GET['data'];
 
-		if (file_exists((dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.$namews.'lang'.DIRECTORY_SEPARATOR.'en.php')) {
-			if ($name == '') {
-				$data .= '<h4 onclick="javascript:$(\'#'.md5($name).'\').slideToggle(\'slow\')">core</h4>';
-			} else {
-				$data .= '<div style="clear:both"></div><h4 onclick="javascript:$(\'#'.md5($name).'\').slideToggle(\'slow\')">'.$name.'</h4>';
-			}
+    $filestoedit = array("" => "", "i" => "i", "m" => "m", "desktop" => "desktop");
 
-			$data .= '<div id="'.md5($name).'" style="display:none"><form>';
+    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file) && is_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'en.php')) {
+                $filestoedit["modules/" . $file] = $file;
+            }
+        }
+        closedir($handle);
+    }
 
-			require (dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.$namews.'lang'.DIRECTORY_SEPARATOR.'en.php';
+    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file) && is_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'en.php')) {
+                $filestoedit["plugins/" . $file] = $file;
+            }
+        }
+        closedir($handle);
+    }
 
-			if (file_exists((dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.$namews.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
-				require (dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.$namews.'lang'.DIRECTORY_SEPARATOR.$lang.'.php';
-			}
 
-			if (!empty($file)) {
-				$file .= '_';
-			}
+    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'en.php')) {
+                $filestoedit["extensions/" . $file] = $file;
+            }
+        }
+        closedir($handle);
+    }
 
-			$array = $file.'language';
+    $data = '';
 
-			$x = 0;
+    foreach ($filestoedit as $name => $file) {
 
-			if ($name == '') {
-				
-				$rtly = "";
-				$rtln = "";
+        if (empty($name)) {
+            $namews = $name;
+        } else {
+            $namews = $name . '/';
+        }
 
-				if ($rtl == 1) {
-					$rtly = "checked";
-				} else {
-					$rtln = "checked";
-				}
+        if (file_exists((dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . $namews . 'lang' . DIRECTORY_SEPARATOR . 'en.php')) {
+            if ($name == '') {
+                $data .= '<h4 onclick="javascript:$(\'#' . md5($name) . '\').slideToggle(\'slow\')">core</h4>';
+            } else {
+                $data .= '<div style="clear:both"></div><h4 onclick="javascript:$(\'#' . md5($name) . '\').slideToggle(\'slow\')">' . $name . '</h4>';
+            }
 
-				$data .= '<div class="title">Right to left text:</div><div class="element"><input type="radio" id="rtl" name="rtl" value="1" '.$rtly.'>Yes <input id="rtl" type="radio" '.$rtln.' name="rtl" value="0" >No</div><div style="clear:both;padding:7.5px;"></div>';
-			}
+            $data .= '<div id="' . md5($name) . '" style="display:none"><form>';
 
-			foreach (${$array} as $i => $l) {
-				$x++;
-				$data .= '<div style="clear:both"></div><div class="title">'.$x.':</div><div class="element"><textarea name="lang_'.$i.'" class="inputbox inputboxlong">'.(stripslashes($l)).'</textarea></div>';
-			}
+            require (dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . $namews . 'lang' . DIRECTORY_SEPARATOR . 'en.php';
 
-			$data .= '<div style="clear:both;padding:7.5px;"></div><div style="float:right;margin-right:20px;"><input type="button" value="Update language" onclick="language_updatelanguage(\''.md5($name).'\',\''.$name.'\',\''.$file.'\',\''.$lang.'\')" class="button">&nbsp;&nbsp;or <a onclick="language_restorelanguage(\''.md5($name).'\',\''.$name.'\',\''.$file.'\',\''.$lang.'\')" href="#">restore</a></div><div style="clear:both;padding:7.5px;"></div></form></div>';
-			
-		}
-	}
+            if (file_exists((dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . $namews . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
+                require (dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . $namews . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php';
+            }
 
-	$body = <<<EOD
+            if (!empty($file)) {
+                $file .= '_';
+            }
+
+            $array = $file . 'language';
+
+            $x = 0;
+
+            if ($name == '') {
+
+                $rtly = "";
+                $rtln = "";
+
+                if ($rtl == 1) {
+                    $rtly = "checked";
+                } else {
+                    $rtln = "checked";
+                }
+
+                $data .= '<div class="title">Right to left text:</div><div class="element"><input type="radio" id="rtl" name="rtl" value="1" ' . $rtly . '>Yes <input id="rtl" type="radio" ' . $rtln . ' name="rtl" value="0" >No</div><div style="clear:both;padding:7.5px;"></div>';
+            }
+
+            foreach (${$array} as $i => $l) {
+                $x++;
+                $data .= '<div style="clear:both"></div><div class="title">' . $x . ':</div><div class="element"><textarea name="lang_' . $i . '" class="inputbox inputboxlong">' . (stripslashes($l)) . '</textarea></div>';
+            }
+
+            $data .= '<div style="clear:both;padding:7.5px;"></div><div style="float:right;margin-right:20px;"><input type="button" value="Update language" onclick="language_updatelanguage(\'' . md5($name) . '\',\'' . $name . '\',\'' . $file . '\',\'' . $lang . '\')" class="button">&nbsp;&nbsp;or <a onclick="language_restorelanguage(\'' . md5($name) . '\',\'' . $name . '\',\'' . $file . '\',\'' . $lang . '\')" href="#">restore</a></div><div style="clear:both;padding:7.5px;"></div></form></div>';
+
+        }
+    }
+
+    $body = <<<EOD
 	$navigation
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
 		<h2>Edit language - {$lang}</h2>
@@ -319,81 +326,84 @@ function editlanguage() {
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function editlanguageprocess() {
-	checktoken();
+function editlanguageprocess()
+{
+    checktoken();
 
-	$lang = $_POST['lang'];
+    $lang = $_POST['lang'];
 
-	$data = '<?php'."\r\n"."\r\n".'/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'."\r\n"."\r\n".'/* LANGUAGE */'."\r\n"."\r\n";
+    $data = '<?php' . "\r\n" . "\r\n" . '/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////' . "\r\n" . "\r\n" . '/* LANGUAGE */' . "\r\n" . "\r\n";
 
-	if (isset($_POST['rtl']) && empty($_POST['id'])) {
-		$data .= "\$rtl = '".$_POST['rtl']."';\r\n";
-	}
+    if (isset($_POST['rtl']) && empty($_POST['id'])) {
+        $data .= "\$rtl = '" . $_POST['rtl'] . "';\r\n";
+    }
 
-	foreach ($_POST['language'] as $i => $l) {
-		$data .= '$'.$_POST['file'].'language['.str_replace('lang_','',$i).'] = \''.(str_replace("'", "\'",$l)).'\';'."\r\n";
-	}
+    foreach ($_POST['language'] as $i => $l) {
+        $data .= '$' . $_POST['file'] . 'language[' . str_replace('lang_', '', $i) . '] = \'' . (str_replace("'", "\'", $l)) . '\';' . "\r\n";
+    }
 
-	$data .= "\r\n".'/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////';
-	
-	if (!empty($_POST['id'])) {
-		$_POST['id'] .= '/';
-	}
+    $data .= "\r\n" . '/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////';
 
-	$file = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$_POST['id'].'lang/'.strtolower($lang).".php";
-	$fh = fopen($file, 'w');
-	if (fwrite($fh, $data) === FALSE) {
-			echo "Cannot write to file ($file)";
-			exit;
-	}
-	fclose($fh);
-	chmod($file, 0777);
+    if (!empty($_POST['id'])) {
+        $_POST['id'] .= '/';
+    }
 
-	echo "1";
-	exit;
+    $file = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $_POST['id'] . 'lang/' . strtolower($lang) . ".php";
+    $fh = fopen($file, 'w');
+    if (fwrite($fh, $data) === FALSE) {
+        echo "Cannot write to file ($file)";
+        exit;
+    }
+    fclose($fh);
+    chmod($file, 0777);
+
+    echo "1";
+    exit;
 }
 
-function restorelanguageprocess() {
-	checktoken();
+function restorelanguageprocess()
+{
+    checktoken();
 
-	$lang = $_POST['lang'];
+    $lang = $_POST['lang'];
 
-	if (!empty($_POST['id'])) {
-		$_POST['id'] .= '/';
-	}
+    if (!empty($_POST['id'])) {
+        $_POST['id'] .= '/';
+    }
 
-	$file = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$_POST['id'].'lang'.DIRECTORY_SEPARATOR.'en.bak';
-	$fh = fopen($file, 'r');
-	$restoredata = fread($fh, filesize($file));
-	fclose($fh);
+    $file = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $_POST['id'] . 'lang' . DIRECTORY_SEPARATOR . 'en.bak';
+    $fh = fopen($file, 'r');
+    $restoredata = fread($fh, filesize($file));
+    fclose($fh);
 
-	$file = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$_POST['id'].'lang'.DIRECTORY_SEPARATOR.strtolower($lang).".php";
-	$fh = fopen($file, 'w');
-	if (fwrite($fh, $restoredata) === FALSE) {
-			echo "Cannot write to file ($file)";
-			exit;
-	}
-	fclose($fh);
-	chmod($file, 0777);
+    $file = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $_POST['id'] . 'lang' . DIRECTORY_SEPARATOR . strtolower($lang) . ".php";
+    $fh = fopen($file, 'w');
+    if (fwrite($fh, $restoredata) === FALSE) {
+        echo "Cannot write to file ($file)";
+        exit;
+    }
+    fclose($fh);
+    chmod($file, 0777);
 
-	$_SESSION['cometchat']['error'] = 'Language has been restored successfully.';
+    $_SESSION['cometchat']['error'] = 'Language has been restored successfully.';
 
-	echo "1";
-	exit;
+    echo "1";
+    exit;
 
 }
 
-function createlanguage() {
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
+function createlanguage()
+{
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
 
-	$body = <<<EOD
+    $body = <<<EOD
 	$navigation
 	<form action="?module=language&action=createlanguageprocess" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -415,108 +425,111 @@ function createlanguage() {
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function createlanguageprocess() {
-	checktoken();
+function createlanguageprocess()
+{
+    checktoken();
 
-	if (!file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.strtolower($_POST['lang']).".php")) {
-		$file = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.strtolower($_POST['lang']).".php";
-		$fh = fopen($file, 'w');
-		fclose($fh);
-		chmod($file, 0777);
-		$_SESSION['cometchat']['error'] = 'New language added successfully';
-	} else {
-		$_SESSION['cometchat']['error'] = 'Language already exists. Please remove it and then try again.';
-	}
+    if (!file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . strtolower($_POST['lang']) . ".php")) {
+        $file = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . strtolower($_POST['lang']) . ".php";
+        $fh = fopen($file, 'w');
+        fclose($fh);
+        chmod($file, 0777);
+        $_SESSION['cometchat']['error'] = 'New language added successfully';
+    } else {
+        $_SESSION['cometchat']['error'] = 'Language already exists. Please remove it and then try again.';
+    }
 
-	header("Location:?module=language");
+    header("Location:?module=language");
 }
 
-function getlanguage($lang) {
-	checktoken();
+function getlanguage($lang)
+{
+    checktoken();
 
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
 
-	$filestoedit = array ( "" => "", "i" => "i", "m" => "m", "desktop" => "desktop" );
+    $filestoedit = array("" => "", "i" => "i", "m" => "m", "desktop" => "desktop");
 
-	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.'en.php')) {
-				$filestoedit["modules".DIRECTORY_SEPARATOR.$file] = $file;
-			}
-		}
-		closedir($handle);
-	}
+    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'en.php')) {
+                $filestoedit["modules" . DIRECTORY_SEPARATOR . $file] = $file;
+            }
+        }
+        closedir($handle);
+    }
 
-	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.'en.php')) {
-				$filestoedit["plugins".DIRECTORY_SEPARATOR.$file] = $file;
-			}
-		}
-		closedir($handle);
-	}
+    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'en.php')) {
+                $filestoedit["plugins" . DIRECTORY_SEPARATOR . $file] = $file;
+            }
+        }
+        closedir($handle);
+    }
 
-	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions')) {
-		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php') && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.'en.php')) {
-				$filestoedit["extensions".DIRECTORY_SEPARATOR.$file] = $file;
-			}
-		}
-		closedir($handle);
-	}
+    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php') && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . 'en.php')) {
+                $filestoedit["extensions" . DIRECTORY_SEPARATOR . $file] = $file;
+            }
+        }
+        closedir($handle);
+    }
 
-	$data = '<?php '."\r\n".'// CometChat Language File - '.$lang."\r\n"."\r\n";
+    $data = '<?php ' . "\r\n" . '// CometChat Language File - ' . $lang . "\r\n" . "\r\n";
 
-	foreach ($filestoedit as $name => $file) {
-		
-		if (empty($name)) {
-			$namews = $name;
-		} else {
-			$namews = $name.'/';
-		}
+    foreach ($filestoedit as $name => $file) {
 
-		if (file_exists((dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.$namews.'lang'.DIRECTORY_SEPARATOR.'en.php')) {
+        if (empty($name)) {
+            $namews = $name;
+        } else {
+            $namews = $name . '/';
+        }
 
-			if (file_exists((dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.$namews.'lang'.DIRECTORY_SEPARATOR.$lang.'.php')) {
+        if (file_exists((dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . $namews . 'lang' . DIRECTORY_SEPARATOR . 'en.php')) {
 
-				if (!empty($file)) {
-					$file .= '_';
-				}
+            if (file_exists((dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . $namews . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php')) {
 
-				$array = $file.'language';
+                if (!empty($file)) {
+                    $file .= '_';
+                }
 
-				$file = (dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.$namews.'lang'.DIRECTORY_SEPARATOR.$lang.'.php';
-				$fh = fopen($file, 'r');
-				$readdata = @fread($fh, filesize($file));
-				fclose($fh);
-				
-				$data .= '$file["'.$name.'"]=\''.base64_encode($readdata).'\';'."\r\n\r\n"; 
+                $array = $file . 'language';
 
-			}
+                $file = (dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . $namews . 'lang' . DIRECTORY_SEPARATOR . $lang . '.php';
+                $fh = fopen($file, 'r');
+                $readdata = @fread($fh, filesize($file));
+                fclose($fh);
+
+                $data .= '$file["' . $name . '"]=\'' . base64_encode($readdata) . '\';' . "\r\n\r\n";
+
+            }
 
 
-		}
-	}
+        }
+    }
 
-	$data .= ' ?>';
+    $data .= ' ?>';
 
-	return $data;
+    return $data;
 }
 
-function additionallanguages() {
-	global $db;
-	global $body;	
-	global $languages;
-	global $navigation;
+function additionallanguages()
+{
+    global $db;
+    global $body;
+    global $languages;
+    global $navigation;
 
-	$body = <<<EOD
+    $body = <<<EOD
 	$navigation
 	<form action="?module=language&action=updatelanguage" method="post">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -545,81 +558,88 @@ function additionallanguages() {
 	</script>
 EOD;
 
-	template();
+    template();
 
 }
 
-function previewlanguage() {
-	checktoken();
+function previewlanguage()
+{
+    checktoken();
 
-	if (!empty($_POST['data'])) {
-		$data = $_POST['data']['data'];
-		$data = str_replace('<?php','',$data);
-		$data = str_replace('?>','',$data);
-		eval($data);
+    if (!empty($_POST['data'])) {
+        $data = $_POST['data']['data'];
+        $data = str_replace('<?php', '', $data);
+        $data = str_replace('?>', '', $data);
+        eval($data);
 
-		foreach ($file as $f => $d) {
-			if ($f == '') { $f = 'core'; }
-			echo "\n-- ";
-			echo $f;
-			echo " ----------------------\r\n";
-			$d = base64_decode($d);
-			$d = str_replace('<?php','',$d);
-			$d = str_replace('?>','',$d);
-		    $d = preg_replace('/#.*/','',preg_replace('#//.*#','',preg_replace('#/\*(?:[^*]*(?:\*(?!/))*)*\*/#','',($d))));
-			$d = preg_replace('/(\r?\n){1,}/', "\n", $d); 
-			$d = preg_replace('/(.*?) = /','',$d);
-			$d = str_replace('\';','\'',$d);
-			$d = str_replace('<','&lt;',$d);
-			$d = str_replace('>','&gt;',$d);
-			echo $d;
-		}
-	}
+        foreach ($file as $f => $d) {
+            if ($f == '') {
+                $f = 'core';
+            }
+            echo "\n-- ";
+            echo $f;
+            echo " ----------------------\r\n";
+            $d = base64_decode($d);
+            $d = str_replace('<?php', '', $d);
+            $d = str_replace('?>', '', $d);
+            $d = preg_replace('/#.*/', '', preg_replace('#//.*#', '', preg_replace('#/\*(?:[^*]*(?:\*(?!/))*)*\*/#', '', ($d))));
+            $d = preg_replace('/(\r?\n){1,}/', "\n", $d);
+            $d = preg_replace('/(.*?) = /', '', $d);
+            $d = str_replace('\';', '\'', $d);
+            $d = str_replace('<', '&lt;', $d);
+            $d = str_replace('>', '&gt;', $d);
+            echo $d;
+        }
+    }
 }
 
-function importlanguage() {
-	checktoken();
+function importlanguage()
+{
+    checktoken();
 
-	if (!empty($_POST['data'])) {
-		$lang = $_POST['data']['name'];
-		$data = $_POST['data']['data'];
-		$data = str_replace('<?php','',$data);
-		$data = str_replace('?>','',$data);
-		eval($data);
+    if (!empty($_POST['data'])) {
+        $lang = $_POST['data']['name'];
+        $data = $_POST['data']['data'];
+        $data = str_replace('<?php', '', $data);
+        $data = str_replace('?>', '', $data);
+        eval($data);
 
-		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'lang'.DIRECTORY_SEPARATOR.strtolower($lang).".php")) {
-			$_SESSION['cometchat']['error'] = 'Language already exists. Please remove it and then import the language.';
-		} else {
+        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR . strtolower($lang) . ".php")) {
+            $_SESSION['cometchat']['error'] = 'Language already exists. Please remove it and then import the language.';
+        } else {
 
-			foreach ($file as $f => $d) {
-				
-				if (!empty($f)) { $f .= '/'; }
+            foreach ($file as $f => $d) {
 
-				if (is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$f.'lang') && !file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$f.'lang'.DIRECTORY_SEPARATOR.strtolower($lang).".php")) {
+                if (!empty($f)) {
+                    $f .= '/';
+                }
 
-					$file = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$f.'lang'.DIRECTORY_SEPARATOR.strtolower($lang).".php";
-					$fh = fopen($file, 'w');
-					if (fwrite($fh, base64_decode($d)) === FALSE) {
-							echo "Cannot write to file ($file)";
-							exit;
-					}
-					fclose($fh);
-					chmod($file, 0777);
-				}
-			}
-		}
-	}
+                if (is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $f . 'lang') && !file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $f . 'lang' . DIRECTORY_SEPARATOR . strtolower($lang) . ".php")) {
 
-	echo "1";
+                    $file = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $f . 'lang' . DIRECTORY_SEPARATOR . strtolower($lang) . ".php";
+                    $fh = fopen($file, 'w');
+                    if (fwrite($fh, base64_decode($d)) === FALSE) {
+                        echo "Cannot write to file ($file)";
+                        exit;
+                    }
+                    fclose($fh);
+                    chmod($file, 0777);
+                }
+            }
+        }
+    }
+
+    echo "1";
 }
 
-function uploadlanguage() {
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
+function uploadlanguage()
+{
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
 
-	$body = <<<EOD
+    $body = <<<EOD
 	$navigation
 	<form action="?module=language&action=uploadlanguageprocess" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -642,97 +662,101 @@ function uploadlanguage() {
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function uploadlanguageprocess() {
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
+function uploadlanguageprocess()
+{
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
 
-	$extension = '';
-	$error = '';
+    $extension = '';
+    $error = '';
 
-	if (!empty($_FILES["file"]["size"])) {
-		if ($_FILES["file"]["error"] > 0) {
-			$error = "Language corrupted. Please try again.";
-		} else {
-			if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"])) {
-				unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp/" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"]);
-			}
+    if (!empty($_FILES["file"]["size"])) {
+        if ($_FILES["file"]["error"] > 0) {
+            $error = "Language corrupted. Please try again.";
+        } else {
+            if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"])) {
+                unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp/" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"]);
+            }
 
-			if (!move_uploaded_file($_FILES["file"]["tmp_name"], dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"])) {
-				$error = "Unable to copy to temp folder. Please CHMOD temp folder to 777.";
-			}
-		}
-	} else {
-		$error = "Language not found. Please try again.";
-	}
-	
-	if (!empty($error)) {
-		$_SESSION['cometchat']['error'] = $error;
-		header("Location: ?module=language&action=uploadlanguage");
-		exit;
-	}
+            if (!move_uploaded_file($_FILES["file"]["tmp_name"], dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"])) {
+                $error = "Unable to copy to temp folder. Please CHMOD temp folder to 777.";
+            }
+        }
+    } else {
+        $error = "Language not found. Please try again.";
+    }
 
-	require_once(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"]);
+    if (!empty($error)) {
+        $_SESSION['cometchat']['error'] = $error;
+        header("Location: ?module=language&action=uploadlanguage");
+        exit;
+    }
 
-	$lang = basename(strtolower($_FILES["file"]["name"]), ".lng");
+    require_once(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"]);
 
-	foreach ($file as $f => $d) {
-		
-		if (!empty($f)) { $f .= '/'; }
+    $lang = basename(strtolower($_FILES["file"]["name"]), ".lng");
 
-		if (is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$f.'lang')) {
+    foreach ($file as $f => $d) {
 
-			$file = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$f.'lang'.DIRECTORY_SEPARATOR.strtolower($lang).".php";
-			$fh = fopen($file, 'w');
-			if (fwrite($fh, base64_decode($d)) === FALSE) {
-					echo "Cannot write to file ($file)";
-					exit;
-			}
-			fclose($fh);
-			chmod($file, 0777);
+        if (!empty($f)) {
+            $f .= '/';
+        }
 
-		}
+        if (is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $f . 'lang')) {
 
-	}
+            $file = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $f . 'lang' . DIRECTORY_SEPARATOR . strtolower($lang) . ".php";
+            $fh = fopen($file, 'w');
+            if (fwrite($fh, base64_decode($d)) === FALSE) {
+                echo "Cannot write to file ($file)";
+                exit;
+            }
+            fclose($fh);
+            chmod($file, 0777);
 
-	if (!empty($error)) {
-		$_SESSION['cometchat']['error'] = $error;
-		header("Location: ?module=language&action=uploadlanguage");
-		exit;
-	}
+        }
 
-	unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"]);
-	
-	$_SESSION['cometchat']['error'] = 'Language added successfully';
-	header("Location: ?module=language");
-	exit;
+    }
+
+    if (!empty($error)) {
+        $_SESSION['cometchat']['error'] = $error;
+        header("Location: ?module=language&action=uploadlanguage");
+        exit;
+    }
+
+    unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"]);
+
+    $_SESSION['cometchat']['error'] = 'Language added successfully';
+    header("Location: ?module=language");
+    exit;
 
 }
 
-function exportlanguage() {
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
+function exportlanguage()
+{
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
 
-	$lang = $_GET['data'];
+    $lang = $_GET['data'];
 
-	$data = getlanguage($lang);
+    $data = getlanguage($lang);
 
-	header('Content-Description: File Transfer');
-	header('Content-Type: application/force-download');
-	header('Content-Disposition: attachment; filename='.$lang.'.lng');
-	header('Content-Transfer-Encoding: binary');
-	header('Expires: 0');
-	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-	header('Pragma: public');
-	ob_clean();
-	flush();
-	echo ($data);
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/force-download');
+    header('Content-Disposition: attachment; filename=' . $lang . '.lng');
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    ob_clean();
+    flush();
+    echo($data);
 
 }

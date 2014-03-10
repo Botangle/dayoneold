@@ -53,45 +53,48 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "modules.php";
 
-include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
 
 require_once("twitteroauth/twitteroauth.php"); //Path to twitteroauth library
 
 $connection = new TwitterOAuth($consumerkey, $consumersecret, $accesstoken, $accesstokensecret);
-function auto_link_text($text) {
-   $pattern  = '#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#';
-   $callback = create_function('$matches', '
+function auto_link_text($text)
+{
+    $pattern = '#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#';
+    $callback = create_function('$matches', '
        $url       = array_shift($matches);
        
        return sprintf(\'<a target="_blank" href="%s">%s</a>\', $url, $url);
    ');
 
-   return preg_replace_callback($pattern, $callback, $text);
+    return preg_replace_callback($pattern, $callback, $text);
 }
-$followers = $connection->get("https://api.twitter.com/1.1/followers/list.json?cursor=-1&screen_name=".$twitteruser."&count=48");
+
+$followers = $connection->get("https://api.twitter.com/1.1/followers/list.json?cursor=-1&screen_name=" . $twitteruser . "&count=48");
 $followersHTML = '';
 $tweetsHTML = '';
 
-if(isset($followers->errors)) {
-	echo "<div style='background: white;'>Please configure this module using CometChat Administration Panel.</div>"; exit;
+if (isset($followers->errors)) {
+    echo "<div style='background: white;'>Please configure this module using CometChat Administration Panel.</div>";
+    exit;
 } else {
-	foreach ($followers->users as $follower) {
-		$followersHTML .= '<a target="_blank" href="http://www.twitter.com/'.$follower->screen_name.'"><img width=24 height=24 src="'.str_replace('normal', 'mini', $follower->profile_image_url).'" alt="'.$follower->name.'" title="'.$follower->name.'"></a>';
-	}
+    foreach ($followers->users as $follower) {
+        $followersHTML .= '<a target="_blank" href="http://www.twitter.com/' . $follower->screen_name . '"><img width=24 height=24 src="' . str_replace('normal', 'mini', $follower->profile_image_url) . '" alt="' . $follower->name . '" title="' . $follower->name . '"></a>';
+    }
 
-	$tweets = $connection->get("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=".$twitteruser."&count=".$notweets);
-	
-	foreach ($tweets as $tweet) {
-		$tweetsHTML .= '<li class="tweet">'.auto_link_text($tweet->text).'<br /><small>'.date( 'Y-m-d H:i:s', strtotime($tweet->created_at) ).'</small></li>';
+    $tweets = $connection->get("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" . $twitteruser . "&count=" . $notweets);
 
-	}
+    foreach ($tweets as $tweet) {
+        $tweetsHTML .= '<li class="tweet">' . auto_link_text($tweet->text) . '<br /><small>' . date('Y-m-d H:i:s', strtotime($tweet->created_at)) . '</small></li>';
+
+    }
 }
 
 $extrajs = '';
 if ($sleekScroller == 1) {
-	$extrajs = '<script>jqcc=jQuery;</script><script src="../../js.php?type=core&name=scroll"></script>';
+    $extrajs = '<script>jqcc=jQuery;</script><script src="../../js.php?type=core&name=scroll"></script>';
 }
 
 echo <<<EOD

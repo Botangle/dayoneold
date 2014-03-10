@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('clearconversation','Clear Conversation');
+$plugininfo = array('clearconversation', 'Clear Conversation');

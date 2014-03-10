@@ -17,21 +17,21 @@
  * @since         CakePHP(tm) v 1.2.0.4433
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-?>	</div>
-		</div>
-		<div id="footer">
-			<p>
-			<!--PLEASE USE ONE OF THE POWERED BY CAKEPHP LOGO-->
-			<a href="http://www.cakephp.org/" target="_blank">
-				<img src="<?php echo $baseDir; ?>img/cake.power.gif" alt="CakePHP(tm) :: Rapid Development Framework" /></a>
-			</p>
-		</div>
-		<?php
-			App::uses('View', 'View');
-			$null = null;
-			$View = new View($null, false);
-			echo $View->element('sql_dump');
-		?>
-	</div>
+?>    </div>
+</div>
+<div id="footer">
+    <p>
+        <!--PLEASE USE ONE OF THE POWERED BY CAKEPHP LOGO-->
+        <a href="http://www.cakephp.org/" target="_blank">
+            <img src="<?php echo $baseDir; ?>img/cake.power.gif" alt="CakePHP(tm) :: Rapid Development Framework"/></a>
+    </p>
+</div>
+<?php
+App::uses('View', 'View');
+$null = null;
+$View = new View($null, false);
+echo $View->element('sql_dump');
+?>
+</div>
 </body>
 </html>

@@ -53,7 +53,10 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
+if (!defined('CCADMIN')) {
+    echo "NO DICE";
+    exit;
+}
 
 $navigation = <<<EOD
 	<div id="leftnav">
@@ -62,14 +65,15 @@ $navigation = <<<EOD
 	</div>
 EOD;
 
-function index() {
-	global $db;
-	global $body;	
-	global $navigation;
-	$overlay = '';
+function index()
+{
+    global $db;
+    global $body;
+    global $navigation;
+    $overlay = '';
 
-	if(USE_COMET == 1 && SAVE_LOGS == 0) {
-		$overlay = <<<EOD
+    if (USE_COMET == 1 && SAVE_LOGS == 0) {
+        $overlay = <<<EOD
 
 			<script>
 			jQuery('#content').before('<div id="overlaymain" style="position:relative"></div>');
@@ -100,9 +104,9 @@ function index() {
 		</script>
 
 EOD;
-	}
+    }
 
-	$body = <<<EOD
+    $body = <<<EOD
 	{$navigation}
 	<form action="?module=logs&action=searchlogs" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -134,52 +138,53 @@ EOD;
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function searchlogs() {
+function searchlogs()
+{
 
-	global $usertable_userid;
-	global $usertable_username;
-	global $usertable;
-	global $navigation;
-	global $body;
-	global $guestsMode;
-	
-	$userid = $_POST['userid'];
-	$username = $_POST['susername'];
-	
-	if (empty($username)) {
-		// Base 64 Encoded
-		$username = 'Q293YXJkaWNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgc2FmZT8NCkV4cGVkaWVuY3kgYXNrcyB0aGUgcXVlc3Rpb24gLSBpcyBpdCBwb2xpdGljPw0KVmFuaXR5IGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcG9wdWxhcj8NCkJ1dCBjb25zY2llbmNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcmlnaHQ/DQpBbmQgdGhlcmUgY29tZXMgYSB0aW1lIHdoZW4gb25lIG11c3QgdGFrZSBhIHBvc2l0aW9uDQp0aGF0IGlzIG5laXRoZXIgc2FmZSwgbm9yIHBvbGl0aWMsIG5vciBwb3B1bGFyOw0KYnV0IG9uZSBtdXN0IHRha2UgaXQgYmVjYXVzZSBpdCBpcyByaWdodC4=';
-	}
+    global $usertable_userid;
+    global $usertable_username;
+    global $usertable;
+    global $navigation;
+    global $body;
+    global $guestsMode;
 
-	$guestpart = "";
+    $userid = $_POST['userid'];
+    $username = $_POST['susername'];
 
-	if($guestsMode) {
-		$guestpart = "union (select cometchat_guests.id, cometchat_guests.name username from cometchat_guests where cometchat_guests.name LIKE '%".mysql_real_escape_string(sanitize_core($username))."%' or cometchat_guests.id = '".mysql_real_escape_string(sanitize_core($userid))."')";	
-	}
-    
-	$sql = ("(select ".$usertable_userid." id, ".$usertable_username." username from ".$usertable." where ".$usertable_username." LIKE '%".mysql_real_escape_string(sanitize_core($username))."%' or ".$usertable_userid." = '".mysql_real_escape_string(sanitize_core($userid))."') ".$guestpart." ");
-	$query = mysql_query($sql);
+    if (empty($username)) {
+        // Base 64 Encoded
+        $username = 'Q293YXJkaWNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgc2FmZT8NCkV4cGVkaWVuY3kgYXNrcyB0aGUgcXVlc3Rpb24gLSBpcyBpdCBwb2xpdGljPw0KVmFuaXR5IGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcG9wdWxhcj8NCkJ1dCBjb25zY2llbmNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcmlnaHQ/DQpBbmQgdGhlcmUgY29tZXMgYSB0aW1lIHdoZW4gb25lIG11c3QgdGFrZSBhIHBvc2l0aW9uDQp0aGF0IGlzIG5laXRoZXIgc2FmZSwgbm9yIHBvbGl0aWMsIG5vciBwb3B1bGFyOw0KYnV0IG9uZSBtdXN0IHRha2UgaXQgYmVjYXVzZSBpdCBpcyByaWdodC4=';
+    }
 
-	$userslist = '';
-	$no_users = '';
+    $guestpart = "";
 
-	while ($user = mysql_fetch_array($query)) {
-		if (function_exists('processName')) {
-			$user['username'] = processName($user['username']);
-		}
+    if ($guestsMode) {
+        $guestpart = "union (select cometchat_guests.id, cometchat_guests.name username from cometchat_guests where cometchat_guests.name LIKE '%" . mysql_real_escape_string(sanitize_core($username)) . "%' or cometchat_guests.id = '" . mysql_real_escape_string(sanitize_core($userid)) . "')";
+    }
 
-		$userslist .= '<li class="ui-state-default" onclick="javascript:logs_gotouser(\''.$user['id'].'\');"><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">'.$user['username'].'</span><div style="clear:both"></div></li>';
-	}
+    $sql = ("(select " . $usertable_userid . " id, " . $usertable_username . " username from " . $usertable . " where " . $usertable_username . " LIKE '%" . mysql_real_escape_string(sanitize_core($username)) . "%' or " . $usertable_userid . " = '" . mysql_real_escape_string(sanitize_core($userid)) . "') " . $guestpart . " ");
+    $query = mysql_query($sql);
 
-	if(!$userslist){
-		$no_users .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">No results found</div>';
-	}
+    $userslist = '';
+    $no_users = '';
 
-	$body = <<<EOD
+    while ($user = mysql_fetch_array($query)) {
+        if (function_exists('processName')) {
+            $user['username'] = processName($user['username']);
+        }
+
+        $userslist .= '<li class="ui-state-default" onclick="javascript:logs_gotouser(\'' . $user['id'] . '\');"><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">' . $user['username'] . '</span><div style="clear:both"></div></li>';
+    }
+
+    if (!$userslist) {
+        $no_users .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">No results found</div>';
+    }
+
+    $body = <<<EOD
 	{$navigation}
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -199,62 +204,63 @@ function searchlogs() {
 	<div style="clear:both"></div>
 
 EOD;
-	
-	template();
+
+    template();
 }
 
-function viewuser() {
-	
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
-	global $usertable_userid;
-	global $usertable_username;
-	global $usertable;
-	global $guestsMode;
-	global $guestnamePrefix;
+function viewuser()
+{
 
-	$userid = $_GET['data'];
-	
-	$guestpart = "";
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
+    global $usertable_userid;
+    global $usertable_username;
+    global $usertable;
+    global $guestsMode;
+    global $guestnamePrefix;
 
-	if($userid < '10000000') {
-		$sql = ("select ".$usertable_username." username from ".$usertable." where ".$usertable_userid." = '".mysql_real_escape_string($userid)."'");
-	} else {
-		$sql = ("select concat('".$guestnamePrefix."',' ',name) username from cometchat_guests where cometchat_guests.id = '".mysql_real_escape_string($userid)."'");
-	}
-	$query = mysql_query($sql);
-	$usern = mysql_fetch_array($query);
+    $userid = $_GET['data'];
 
-	if($guestsMode) {
-		$guestpart = " union (select distinct(f.id) id, concat('".$guestnamePrefix."',' ',f.name) username  from cometchat m1, cometchat_guests f where (f.id = m1.from and m1.to = '".mysql_real_escape_string($userid)."') or (f.id = m1.to and m1.from = '".mysql_real_escape_string($userid)."'))";
-	}
-	
-	$sql = ("(select distinct(f.".$usertable_userid.") id, f.".$usertable_username." username  from cometchat m1, ".$usertable." f where (f.".$usertable_userid." = m1.from and m1.to = '".mysql_real_escape_string($userid)."') or (f.".$usertable_userid." = m1.to and m1.from = '".mysql_real_escape_string($userid)."')) ".$guestpart." order by username asc");
+    $guestpart = "";
 
-	$query = mysql_query($sql); 
+    if ($userid < '10000000') {
+        $sql = ("select " . $usertable_username . " username from " . $usertable . " where " . $usertable_userid . " = '" . mysql_real_escape_string($userid) . "'");
+    } else {
+        $sql = ("select concat('" . $guestnamePrefix . "',' ',name) username from cometchat_guests where cometchat_guests.id = '" . mysql_real_escape_string($userid) . "'");
+    }
+    $query = mysql_query($sql);
+    $usern = mysql_fetch_array($query);
 
-	$userslist = '';
-	$no_users = '';
+    if ($guestsMode) {
+        $guestpart = " union (select distinct(f.id) id, concat('" . $guestnamePrefix . "',' ',f.name) username  from cometchat m1, cometchat_guests f where (f.id = m1.from and m1.to = '" . mysql_real_escape_string($userid) . "') or (f.id = m1.to and m1.from = '" . mysql_real_escape_string($userid) . "'))";
+    }
 
-	if (function_exists('processName')) {
-		$usern['username'] = processName($usern['username']);
-	}
+    $sql = ("(select distinct(f." . $usertable_userid . ") id, f." . $usertable_username . " username  from cometchat m1, " . $usertable . " f where (f." . $usertable_userid . " = m1.from and m1.to = '" . mysql_real_escape_string($userid) . "') or (f." . $usertable_userid . " = m1.to and m1.from = '" . mysql_real_escape_string($userid) . "')) " . $guestpart . " order by username asc");
 
-	while ($user = mysql_fetch_array($query)) {
-		if (function_exists('processName')) {
-			$user['username'] = processName($user['username']);
-		}
+    $query = mysql_query($sql);
 
-		$userslist .= '<li class="ui-state-default" onclick="javascript:logs_gotouserb(\''.$userid.'\',\''.$user['id'].'\');"><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">'.$user['username'].'</span><div style="clear:both"></div></li>';
-	}
+    $userslist = '';
+    $no_users = '';
 
-	if(!$userslist){
-		$no_users .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">No results found</div>';
-	}
+    if (function_exists('processName')) {
+        $usern['username'] = processName($usern['username']);
+    }
 
-	$body = <<<EOD
+    while ($user = mysql_fetch_array($query)) {
+        if (function_exists('processName')) {
+            $user['username'] = processName($user['username']);
+        }
+
+        $userslist .= '<li class="ui-state-default" onclick="javascript:logs_gotouserb(\'' . $userid . '\',\'' . $user['id'] . '\');"><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">' . $user['username'] . '</span><div style="clear:both"></div></li>';
+    }
+
+    if (!$userslist) {
+        $no_users .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">No results found</div>';
+    }
+
+    $body = <<<EOD
 	{$navigation}
 	<form action="?module=logs&action=newlogprocess" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -273,66 +279,67 @@ function viewuser() {
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function viewuserconversation() {
-	
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
-	global $usertable_userid;
-	global $usertable_username;
-	global $usertable;
-	global $guestsMode;
-	global $guestnamePrefix;
+function viewuserconversation()
+{
 
-	$userid = $_GET['data'];
-	$userid2 = $_GET['data2'];
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
+    global $usertable_userid;
+    global $usertable_username;
+    global $usertable;
+    global $guestsMode;
+    global $guestnamePrefix;
 
-	if($userid < '10000000') {
-		$sql = ("select ".$usertable_username." username from ".$usertable." where ".$usertable_userid." = '".mysql_real_escape_string($userid)."'");
-	} else {
-		$sql = ("select concat('".$guestnamePrefix."',' ',name) username from cometchat_guests where cometchat_guests.id = '".mysql_real_escape_string($userid)."'");
-	}
-	$query = mysql_query($sql); 
-	$usern = mysql_fetch_array($query);
+    $userid = $_GET['data'];
+    $userid2 = $_GET['data2'];
 
-	if($userid2 < '10000000') {
-		$sql = ("select ".$usertable_username." username from ".$usertable." where ".$usertable_userid." = '".mysql_real_escape_string($userid2)."'");
-	} else {
-		$sql = ("select concat('".$guestnamePrefix."',' ',name) username from cometchat_guests where cometchat_guests.id = '".mysql_real_escape_string($userid2)."'");
-	}
-	$query = mysql_query($sql); 
-	$usern2 = mysql_fetch_array($query);
+    if ($userid < '10000000') {
+        $sql = ("select " . $usertable_username . " username from " . $usertable . " where " . $usertable_userid . " = '" . mysql_real_escape_string($userid) . "'");
+    } else {
+        $sql = ("select concat('" . $guestnamePrefix . "',' ',name) username from cometchat_guests where cometchat_guests.id = '" . mysql_real_escape_string($userid) . "'");
+    }
+    $query = mysql_query($sql);
+    $usern = mysql_fetch_array($query);
 
-	$sql = ("(select m.*  from cometchat m where  (m.from = '".mysql_real_escape_string($userid)."' and m.to = '".mysql_real_escape_string($userid2)."') or (m.to = '".mysql_real_escape_string($userid)."' and m.from = '".mysql_real_escape_string($userid2)."'))
+    if ($userid2 < '10000000') {
+        $sql = ("select " . $usertable_username . " username from " . $usertable . " where " . $usertable_userid . " = '" . mysql_real_escape_string($userid2) . "'");
+    } else {
+        $sql = ("select concat('" . $guestnamePrefix . "',' ',name) username from cometchat_guests where cometchat_guests.id = '" . mysql_real_escape_string($userid2) . "'");
+    }
+    $query = mysql_query($sql);
+    $usern2 = mysql_fetch_array($query);
+
+    $sql = ("(select m.*  from cometchat m where  (m.from = '" . mysql_real_escape_string($userid) . "' and m.to = '" . mysql_real_escape_string($userid2) . "') or (m.to = '" . mysql_real_escape_string($userid) . "' and m.from = '" . mysql_real_escape_string($userid2) . "'))
 	order by id desc");
 
-	$query = mysql_query($sql); 
+    $query = mysql_query($sql);
 
-	$userslist = '';
+    $userslist = '';
 
-	while ($chat = mysql_fetch_array($query)) {
-		$time = date('g:iA M dS', $chat['sent']);
+    while ($chat = mysql_fetch_array($query)) {
+        $time = date('g:iA M dS', $chat['sent']);
 
-		if ($userid == $chat['from']) {
-			$dir = '>';
-		} else {
-			$dir = '<';
-		}
+        if ($userid == $chat['from']) {
+            $dir = '>';
+        } else {
+            $dir = '<';
+        }
 
-		$userslist .= '<li class="ui-state-default"><span style="font-size:11px;float:left;margin-top:2px;margin-left:0px;width:10px;margin-right:10px;color:#fff;background-color:#333;padding:0px;-moz-border-radius:5px;-webkit-border-radius:5px;"><b>'.$dir.'</b></span><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;width:560px;">&nbsp; '.$chat['message'].'</span><span style="font-size:11px;float:right;width:100px;overflow:hidden;margin-top:2px;margin-left:10px;">'.$time.'</span><div style="clear:both"></div></li>';
-	}
+        $userslist .= '<li class="ui-state-default"><span style="font-size:11px;float:left;margin-top:2px;margin-left:0px;width:10px;margin-right:10px;color:#fff;background-color:#333;padding:0px;-moz-border-radius:5px;-webkit-border-radius:5px;"><b>' . $dir . '</b></span><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;width:560px;">&nbsp; ' . $chat['message'] . '</span><span style="font-size:11px;float:right;width:100px;overflow:hidden;margin-top:2px;margin-left:10px;">' . $time . '</span><div style="clear:both"></div></li>';
+    }
 
-	if (function_exists('processName')) {
-			$usern['username'] = processName($usern['username']);
-			$usern2['username'] = processName($usern2['username']);
-	}
+    if (function_exists('processName')) {
+        $usern['username'] = processName($usern['username']);
+        $usern2['username'] = processName($usern2['username']);
+    }
 
-	$body = <<<EOD
+    $body = <<<EOD
 	{$navigation}
 	<form action="?module=logs&action=newlogprocess" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -350,33 +357,34 @@ function viewuserconversation() {
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function chatroomLog() {
-	
-	global $usertable_userid;
-	global $usertable_username;
-	global $usertable;
-	global $navigation;
-	global $body;
-		
-	$sql = ("select * from cometchat_chatrooms order by lastactivity desc");
+function chatroomLog()
+{
 
-	$query = mysql_query($sql);
+    global $usertable_userid;
+    global $usertable_username;
+    global $usertable;
+    global $navigation;
+    global $body;
 
-	$chatroomlog = '';
+    $sql = ("select * from cometchat_chatrooms order by lastactivity desc");
 
-	while ($chatroom = mysql_fetch_array($query)) {
-		if (function_exists('processName')) {
-			$user['username'] = processName($chatroom['name']);
-		}
+    $query = mysql_query($sql);
 
-		$chatroomlog .= '<li class="ui-state-default" onclick="javascript:logs_gotochatroom(\''.$chatroom['id'].'\');"><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">'.$chatroom['name'].'</span><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">(ID:'.$chatroom['id'].')</span><div style="clear:both"></div></li>';
-	}
+    $chatroomlog = '';
 
-	$body = <<<EOD
+    while ($chatroom = mysql_fetch_array($query)) {
+        if (function_exists('processName')) {
+            $user['username'] = processName($chatroom['name']);
+        }
+
+        $chatroomlog .= '<li class="ui-state-default" onclick="javascript:logs_gotochatroom(\'' . $chatroom['id'] . '\');"><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">' . $chatroom['name'] . '</span><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">(ID:' . $chatroom['id'] . ')</span><div style="clear:both"></div></li>';
+    }
+
+    $body = <<<EOD
 	{$navigation}
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -402,52 +410,53 @@ function chatroomLog() {
 	<div style="clear:both"></div>
 
 EOD;
-	
-	template();
+
+    template();
 }
 
 
-function viewuserchatroomconversation() {
-	
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
-	global $usertable_userid;
-	global $usertable_username;
-	global $usertable;
-	global $guestsMode;
-	global $guestnamePrefix;
+function viewuserchatroomconversation()
+{
 
-	if($guestsMode) {	
-		$usertable = "(select ".$usertable_userid.", ".$usertable_username."  from ".$usertable." union select id ".$usertable_userid.",concat('".$guestnamePrefix."',' ',name) ".$usertable_username." from cometchat_guests)";	
-	}
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
+    global $usertable_userid;
+    global $usertable_username;
+    global $usertable;
+    global $guestsMode;
+    global $guestnamePrefix;
 
-	$chatroomid = $_GET['data'];
+    if ($guestsMode) {
+        $usertable = "(select " . $usertable_userid . ", " . $usertable_username . "  from " . $usertable . " union select id " . $usertable_userid . ",concat('" . $guestnamePrefix . "',' ',name) " . $usertable_username . " from cometchat_guests)";
+    }
 
-	$sql = ("select name chatroomname from cometchat_chatrooms where id = '".mysql_real_escape_string($chatroomid)."'");
-	$query = mysql_query($sql); 
-	$chatroomn = mysql_fetch_array($query);
+    $chatroomid = $_GET['data'];
 
-	$sql = ("select cometchat_chatroommessages.*, f.".$usertable_username." username  from cometchat_chatroommessages join ".$usertable." f on cometchat_chatroommessages.userid = f.".$usertable_userid." where chatroomid = '".mysql_real_escape_string($chatroomid)."' order by id desc LIMIT 200");
+    $sql = ("select name chatroomname from cometchat_chatrooms where id = '" . mysql_real_escape_string($chatroomid) . "'");
+    $query = mysql_query($sql);
+    $chatroomn = mysql_fetch_array($query);
 
-	$query = mysql_query($sql); 
-	$num = mysql_num_rows($query);
+    $sql = ("select cometchat_chatroommessages.*, f." . $usertable_username . " username  from cometchat_chatroommessages join " . $usertable . " f on cometchat_chatroommessages.userid = f." . $usertable_userid . " where chatroomid = '" . mysql_real_escape_string($chatroomid) . "' order by id desc LIMIT 200");
 
-	$chatroomlog = '';
+    $query = mysql_query($sql);
+    $num = mysql_num_rows($query);
 
-	while ($chat = mysql_fetch_array($query)) {
+    $chatroomlog = '';
 
-		if (function_exists('processName')) {
-			$chatroomn['chatroomname'] = processName($chatroomn['chatroomname']);
-		}
-		$time = date('g:iA M dS', $chat['sent']);
+    while ($chat = mysql_fetch_array($query)) {
 
-		$chatroomlog .= '<li class="ui-state-default"><span style="font-size: 11px; float: left; margin-top: 2px; margin-left: 0px; width: 8em; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding: 0px; text-align: center;">'.$chat["username"].'</span><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;width:495px;">&nbsp; '.$chat['message'].'</span><span style="font-size:11px;float:right;width:100px;overflow:hidden;margin-top:2px;margin-left:10px;">'.$time.'</span><div style="clear:both"></div></li>';
-	}
+        if (function_exists('processName')) {
+            $chatroomn['chatroomname'] = processName($chatroomn['chatroomname']);
+        }
+        $time = date('g:iA M dS', $chat['sent']);
 
-	
-	$body = <<<EOD
+        $chatroomlog .= '<li class="ui-state-default"><span style="font-size: 11px; float: left; margin-top: 2px; margin-left: 0px; width: 8em; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding: 0px; text-align: center;">' . $chat["username"] . '</span><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;width:495px;">&nbsp; ' . $chat['message'] . '</span><span style="font-size:11px;float:right;width:100px;overflow:hidden;margin-top:2px;margin-left:10px;">' . $time . '</span><div style="clear:both"></div></li>';
+    }
+
+
+    $body = <<<EOD
 	{$navigation}
 	<form action="?module=logs&action=newlogprocess" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -465,5 +474,5 @@ function viewuserchatroomconversation() {
 
 EOD;
 
-	template();
+    template();
 }

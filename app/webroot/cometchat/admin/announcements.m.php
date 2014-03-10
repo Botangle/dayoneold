@@ -53,7 +53,10 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
+if (!defined('CCADMIN')) {
+    echo "NO DICE";
+    exit;
+}
 
 $navigation = <<<EOD
 	<div id="leftnav">
@@ -62,26 +65,29 @@ $navigation = <<<EOD
 	</div>
 EOD;
 
-function index() {
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
+function index()
+{
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
 
-	$sql = ("select id,announcement,time,`to` from cometchat_announcements where `to` = 0 or `to` = '-1'  order by id desc");
-	$query = mysql_query($sql);
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
+    $sql = ("select id,announcement,time,`to` from cometchat_announcements where `to` = 0 or `to` = '-1'  order by id desc");
+    $query = mysql_query($sql);
+    if (defined('DEV_MODE') && DEV_MODE == '1') {
+        echo mysql_error();
+    }
 
-	$announcementlist = '';
-	
-	while ($announcement = mysql_fetch_array($query)) {
-		$time = date('g:iA M dS', ($announcement['time'] + $_SESSION['cometchat']['timedifference']));
+    $announcementlist = '';
 
-		$announcementlist .= '<li class="ui-state-default"><span style="font-size:11px;word-wrap:break-word;margin-top:3px;margin-left:5px;">'.htmlspecialchars  ($announcement['announcement']).' ('.$time.')</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="?module=announcements&action=deleteannouncement&data='.$announcement['id'].'&token='.$_SESSION['token'].'"><img src="images/remove.png" title="Delete Announcement"></a></span><div style="clear:both"></div></li>';
-	}
+    while ($announcement = mysql_fetch_array($query)) {
+        $time = date('g:iA M dS', ($announcement['time'] + $_SESSION['cometchat']['timedifference']));
+
+        $announcementlist .= '<li class="ui-state-default"><span style="font-size:11px;word-wrap:break-word;margin-top:3px;margin-left:5px;">' . htmlspecialchars($announcement['announcement']) . ' (' . $time . ')</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="?module=announcements&action=deleteannouncement&data=' . $announcement['id'] . '&token=' . $_SESSION['token'] . '"><img src="images/remove.png" title="Delete Announcement"></a></span><div style="clear:both"></div></li>';
+    }
 
 
-	$body = <<<EOD
+    $body = <<<EOD
 	$navigation
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -115,29 +121,31 @@ function index() {
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function deleteannouncement() {
-	checktoken();
+function deleteannouncement()
+{
+    checktoken();
 
-	if (!empty($_GET['data'])) {
-		$sql = ("delete from cometchat_announcements where id = '".mysql_real_escape_string(sanitize_core($_GET['data']))."'");
-		$query = mysql_query($sql);
-		removeCache('latest_announcement');
-	}
+    if (!empty($_GET['data'])) {
+        $sql = ("delete from cometchat_announcements where id = '" . mysql_real_escape_string(sanitize_core($_GET['data'])) . "'");
+        $query = mysql_query($sql);
+        removeCache('latest_announcement');
+    }
 
-	header("Location:?module=announcements");
+    header("Location:?module=announcements");
 }
 
-function newannouncement() {
-	global $db;
-	global $body;	
-	global $trayicon;
-	global $navigation;
+function newannouncement()
+{
+    global $db;
+    global $body;
+    global $trayicon;
+    global $navigation;
 
-	$body = <<<EOD
+    $body = <<<EOD
 	$navigation
 	<form action="?module=announcements&action=newannouncementprocess" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -171,22 +179,23 @@ function newannouncement() {
 
 EOD;
 
-	template();
+    template();
 
 }
 
-function newannouncementprocess() {
-	checktoken();
+function newannouncementprocess()
+{
+    checktoken();
 
-	$announcement = $_POST['announcement'];
-	$zero = '0';
-	if ($_POST['sli'] == 0) {
-		$zero = '-1';
-	}
-	
-	$sql = ("insert into cometchat_announcements (announcement,time,`to`) values ('".mysql_real_escape_string($announcement)."', '".getTimeStamp()."','".$zero."')");
-	$query = mysql_query($sql);
-	removeCache('latest_announcement');
-	
-	header( "Location: ?module=announcements" ); 
+    $announcement = $_POST['announcement'];
+    $zero = '0';
+    if ($_POST['sli'] == 0) {
+        $zero = '-1';
+    }
+
+    $sql = ("insert into cometchat_announcements (announcement,time,`to`) values ('" . mysql_real_escape_string($announcement) . "', '" . getTimeStamp() . "','" . $zero . "')");
+    $query = mysql_query($sql);
+    removeCache('latest_announcement');
+
+    header("Location: ?module=announcements");
 }

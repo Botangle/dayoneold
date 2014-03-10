@@ -53,45 +53,47 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "modules.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
-include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'translate.php';
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'translate.php';
 
 if (!checkcURL(1)) {
-	echo "<div style='background:white;'>Please ask your webhost to install libcurl for PHP and configure it for HTTPs as well</div>"; exit;
+    echo "<div style='background:white;'>Please ask your webhost to install libcurl for PHP and configure it for HTTPs as well</div>";
+    exit;
 }
 
 if (empty($bingClientID) && empty($googleKey)) {
-	echo "<div style='background:white;'>Please configure this module using CometChat Administration Panel.</div>"; exit;
+    echo "<div style='background:white;'>Please configure this module using CometChat Administration Panel.</div>";
+    exit;
 }
 
 $translatingtext = '';
 
-if (!empty($_COOKIE[$cookiePrefix.'lang'])) {
-	$translatingtext = '<div class="current">'.$realtimetranslate_language[1].strtoupper($_COOKIE[$cookiePrefix.'lang']).' | <a href="javascript:void(0);" onclick="javascript:stoptranslating()">'.$realtimetranslate_language[2].'</a></div>';	
+if (!empty($_COOKIE[$cookiePrefix . 'lang'])) {
+    $translatingtext = '<div class="current">' . $realtimetranslate_language[1] . strtoupper($_COOKIE[$cookiePrefix . 'lang']) . ' | <a href="javascript:void(0);" onclick="javascript:stoptranslating()">' . $realtimetranslate_language[2] . '</a></div>';
 }
 
 $languagescode = '';
 
 if ($useGoogle == 0) {
-	$languages = translate_languages();
+    $languages = translate_languages();
 
-	foreach ($languages as $code => $name) {
-		$languagescode .= '<li id="'.$code.'">'.$name.'</li>';
-	}
+    foreach ($languages as $code => $name) {
+        $languagescode .= '<li id="' . $code . '">' . $name . '</li>';
+    }
 } else {
 
-	$languagescode = '<li id="af">Afrikaans</li><li id="sq">Albanian</li><li id="ar">Arabic</li><li id="be">Belarusian</li><li id="bg">Bulgarian</li><li id="ca">Catalan</li><li id="zh-CN">Chinese (Simpl)</li><li id="zh-TW">Chinese (Trad)</li><li id="hr">Croatian</li><li id="cs">Czech</li><li id="da">Danish</li><li id="nl">Dutch</li><li id="en">English</li><li id="et">Estonian</li><li id="tl">Filipino</li><li id="fi">Finnish</li><li id="fr">French</li><li id="gl">Galician</li><li id="de">German</li><li id="el">Greek</li><li id="ht">Haitian Creole</li><li id="iw">Hebrew</li><li id="hi">Hindi</li><li id="hu">Hungarian</li><li id="is">Icelandic</li><li id="id">Indonesian</li><li id="ga">Irish</li><li id="it">Italian</li><li id="ja">Japanese</li><li id="ko">Korean</li><li id="lv">Latvian</li><li id="lt">Lithuanian</li><li id="mk">Macedonian</li><li id="ms">Malay</li><li id="mt">Maltese</li><li id="no">Norwegian</li><li id="fa">Persian</li><li id="pl">Polish</li><li id="pt">Portuguese</li><li id="ro">Romanian</li><li id="ru">Russian</li><li id="sr">Serbian</li><li id="sk">Slovak</li><li id="sl">Slovenian</li><li id="es">Spanish</li><li id="sw">Swahili</li><li id="sv">Swedish</li><li id="th">Thai</li><li id="tr">Turkish</li><li id="uk">Ukrainian</li><li id="vi">Vietnamese</li><li id="cy">Welsh</li><li id="yi">Yiddish</li>';
+    $languagescode = '<li id="af">Afrikaans</li><li id="sq">Albanian</li><li id="ar">Arabic</li><li id="be">Belarusian</li><li id="bg">Bulgarian</li><li id="ca">Catalan</li><li id="zh-CN">Chinese (Simpl)</li><li id="zh-TW">Chinese (Trad)</li><li id="hr">Croatian</li><li id="cs">Czech</li><li id="da">Danish</li><li id="nl">Dutch</li><li id="en">English</li><li id="et">Estonian</li><li id="tl">Filipino</li><li id="fi">Finnish</li><li id="fr">French</li><li id="gl">Galician</li><li id="de">German</li><li id="el">Greek</li><li id="ht">Haitian Creole</li><li id="iw">Hebrew</li><li id="hi">Hindi</li><li id="hu">Hungarian</li><li id="is">Icelandic</li><li id="id">Indonesian</li><li id="ga">Irish</li><li id="it">Italian</li><li id="ja">Japanese</li><li id="ko">Korean</li><li id="lv">Latvian</li><li id="lt">Lithuanian</li><li id="mk">Macedonian</li><li id="ms">Malay</li><li id="mt">Maltese</li><li id="no">Norwegian</li><li id="fa">Persian</li><li id="pl">Polish</li><li id="pt">Portuguese</li><li id="ro">Romanian</li><li id="ru">Russian</li><li id="sr">Serbian</li><li id="sk">Slovak</li><li id="sl">Slovenian</li><li id="es">Spanish</li><li id="sw">Swahili</li><li id="sv">Swedish</li><li id="th">Thai</li><li id="tr">Turkish</li><li id="uk">Ukrainian</li><li id="vi">Vietnamese</li><li id="cy">Welsh</li><li id="yi">Yiddish</li>';
 
 }
 $extrajs = "";
 if ($sleekScroller == 1) {
-	$extrajs = '<script>jqcc=jQuery;</script><script src="../../js.php?type=core&name=scroll"></script>';
+    $extrajs = '<script>jqcc=jQuery;</script><script src="../../js.php?type=core&name=scroll"></script>';
 }
 
 echo <<<EOD

@@ -53,32 +53,32 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
 if (empty($_GET['action'])) {
 
-$toId = $_GET['id'];
-$baseData = $_REQUEST['basedata'];
+    $toId = $_GET['id'];
+    $baseData = $_REQUEST['basedata'];
 
-$embed = '';
-$embedcss = '';
+    $embed = '';
+    $embedcss = '';
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
-	$embed = 'web';
-	$embedcss = 'embed';
-}	
+    if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
+        $embed = 'web';
+        $embedcss = 'embed';
+    }
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
-	$embed = 'desktop';
-	$embedcss = 'embed';
-}
+    if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
+        $embed = 'desktop';
+        $embedcss = 'embed';
+    }
 
-echo <<<EOD
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -121,34 +121,34 @@ EOD;
 
 } else {
 
-if ($_GET['action'] == 'request') {
-	$random_from = md5(getTimeStamp()+$userid+'from');
-	$random_to = md5(getTimeStamp()+intval($_GET['toId'])+'to');
-	$random_order = $random_from.','.$random_to;
-	$toId = intval($_GET['toId']);
-	$baseData = $_REQUEST['basedata'];
+    if ($_GET['action'] == 'request') {
+        $random_from = md5(getTimeStamp() + $userid + 'from');
+        $random_to = md5(getTimeStamp() + intval($_GET['toId']) + 'to');
+        $random_order = $random_from . ',' . $random_to;
+        $toId = intval($_GET['toId']);
+        $baseData = $_REQUEST['basedata'];
 
-	$embed = '';
-	$embedcss = '';
-	$close = "setTimeout('window.close()',2000);";
+        $embed = '';
+        $embedcss = '';
+        $close = "setTimeout('window.close()',2000);";
 
-	if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
-		$embed = 'web';
-		$embedcss = 'embed';
-		$close = "parent.closeCCPopup('games_init');";
-	}	
+        if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
+            $embed = 'web';
+            $embedcss = 'embed';
+            $close = "parent.closeCCPopup('games_init');";
+        }
 
-	if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
-		$embed = 'desktop';
-		$embedcss = 'embed';
-		$close = "parentSandboxBridge.closeCCPopup('games_init');";
-	}
+        if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
+            $embed = 'desktop';
+            $embedcss = 'embed';
+            $close = "parentSandboxBridge.closeCCPopup('games_init');";
+        }
 
-	sendMessageTo(intval($_GET['toId']),$games_language[3]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccgames.accept('".$userid."','".$random_from."','".$random_to."','".$random_order."','".intval($_GET['gameId'])."','".intval($_GET['gameWidth'])."');\">".$games_language[4]."</a>".$games_language[5]);
+        sendMessageTo(intval($_GET['toId']), $games_language[3] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccgames.accept('" . $userid . "','" . $random_from . "','" . $random_to . "','" . $random_order . "','" . intval($_GET['gameId']) . "','" . intval($_GET['gameWidth']) . "');\">" . $games_language[4] . "</a>" . $games_language[5]);
 
-	sendSelfMessage(intval($_GET['toId']),$games_language[6]);
+        sendSelfMessage(intval($_GET['toId']), $games_language[6]);
 
-echo <<<EOD
+        echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -174,52 +174,52 @@ echo <<<EOD
 </html>
 EOD;
 
-}
+    }
 
-if ($_GET['action'] == 'accept') {
-	sendMessageTo($_REQUEST['to'],$games_language[10]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccgames.accept_fid('".$userid."','".$_REQUEST['tid']."','".$_REQUEST['fid']."','".$_REQUEST['rid']."','".$_REQUEST['gameId']."','".preg_replace('/[^a-zA-Z0-9]/', '', $_REQUEST['gameWidth'])."');\">".$games_language[11]."</a>");
+    if ($_GET['action'] == 'accept') {
+        sendMessageTo($_REQUEST['to'], $games_language[10] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccgames.accept_fid('" . $userid . "','" . $_REQUEST['tid'] . "','" . $_REQUEST['fid'] . "','" . $_REQUEST['rid'] . "','" . $_REQUEST['gameId'] . "','" . preg_replace('/[^a-zA-Z0-9]/', '', $_REQUEST['gameWidth']) . "');\">" . $games_language[11] . "</a>");
 
-	if (!empty($_GET['callback'])) {
-		header('content-type: application/json; charset=utf-8');
-		echo $_GET['callback'].'()';
-	} 
-}
+        if (!empty($_GET['callback'])) {
+            header('content-type: application/json; charset=utf-8');
+            echo $_GET['callback'] . '()';
+        }
+    }
 
-if ($_GET['action'] == 'play') {
+    if ($_GET['action'] == 'play') {
 
-	$fid = $_GET['fid'];
-	$tid = $_GET['tid'];
-	$rid = $_GET['rid'];
-	$gameid = intval($_GET['gameId']);
-	$auth =  ($fid.$rid.'100'.$gameid.'fdd4605ba06214842e3caee695bd2787');
+        $fid = $_GET['fid'];
+        $tid = $_GET['tid'];
+        $rid = $_GET['rid'];
+        $gameid = intval($_GET['gameId']);
+        $auth = ($fid . $rid . '100' . $gameid . 'fdd4605ba06214842e3caee695bd2787');
 
-	$rid = urlencode($rid);
+        $rid = urlencode($rid);
 
-	global $userid;
-	global $guestsMode;
+        global $userid;
+        global $guestsMode;
 
-	$name = "";
+        $name = "";
 
-    $sql = getUserDetails($userid);
+        $sql = getUserDetails($userid);
 
-	if ($guestsMode && $userid >= 10000000) {
-		$sql = getGuestDetails($userid);
-	}
+        if ($guestsMode && $userid >= 10000000) {
+            $sql = getGuestDetails($userid);
+        }
 
-	$result = mysql_query($sql);
-	
-	if($row = mysql_fetch_array($result)) {
-		
-		if (function_exists('processName')) {
-			$row['username'] = processName($row['username']);
-		}
+        $result = mysql_query($sql);
 
-		$name = $row['username'];
-	}
+        if ($row = mysql_fetch_array($result)) {
 
-	$name = urlencode($name);
+            if (function_exists('processName')) {
+                $row['username'] = processName($row['username']);
+            }
 
-	echo <<<EOD
+            $name = $row['username'];
+        }
+
+        $name = urlencode($name);
+
+        echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
@@ -257,6 +257,6 @@ body{ overflow-x:hidden;overflow-y:hidden; }
 </body>
 </html>
 EOD;
-}
+    }
 
 }

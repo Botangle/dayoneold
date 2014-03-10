@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('filetransfer','Send a file');
+$plugininfo = array('filetransfer', 'Send a file');

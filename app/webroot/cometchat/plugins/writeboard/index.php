@@ -53,76 +53,76 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
-if ($p_<3) exit;
+if ($p_ < 3) exit;
 
 if ($_GET['action'] == 'request') {
-	sendMessageTo($_REQUEST['to'],$writeboard_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwriteboard.accept('".$userid."','".$_REQUEST['id']."');\">".$writeboard_language[3]."</a> ".$writeboard_language[4]);
+    sendMessageTo($_REQUEST['to'], $writeboard_language[2] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwriteboard.accept('" . $userid . "','" . $_REQUEST['id'] . "');\">" . $writeboard_language[3] . "</a> " . $writeboard_language[4]);
 
-	sendSelfMessage($_REQUEST['to'],$writeboard_language[5]);
+    sendSelfMessage($_REQUEST['to'], $writeboard_language[5]);
 
-	
-	if (!empty($_GET['callback'])) {
-		header('content-type: application/json; charset=utf-8');
-		echo $_GET['callback'].'()';
-	}
+
+    if (!empty($_GET['callback'])) {
+        header('content-type: application/json; charset=utf-8');
+        echo $_GET['callback'] . '()';
+    }
 }
 
 if ($_GET['action'] == 'accept') {
-	sendMessageTo($_REQUEST['to'],$writeboard_language[6]);
-	
-	if (!empty($_GET['callback'])) {
-		header('content-type: application/json; charset=utf-8');
-		echo $_GET['callback'].'()';
-	}
+    sendMessageTo($_REQUEST['to'], $writeboard_language[6]);
+
+    if (!empty($_GET['callback'])) {
+        header('content-type: application/json; charset=utf-8');
+        echo $_GET['callback'] . '()';
+    }
 }
 
 if ($_GET['action'] == 'writeboard') {
 
-	$id = $_GET['id'];
-	$type = $_GET['type'];
+    $id = $_GET['id'];
+    $type = $_GET['type'];
 
-	if ($type == 1) {
-		$type = 'publisher';
-	} else {
-		$type = 'subscriber';
-	}
-	
-	if (!empty($_GET['chatroommode'])) {
-		sendChatroomMessage($_GET['roomid'],$writeboard_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwriteboard.accept('".$userid."','".$_GET['id']."');\">".$writeboard_language[3]."</a>");
-	}
-    
-    $room = "writeboard".$id;
-	$room = md5($room);
+    if ($type == 1) {
+        $type = 'publisher';
+    } else {
+        $type = 'subscriber';
+    }
 
-	$name = "Unknown".rand(0,999);
+    if (!empty($_GET['chatroommode'])) {
+        sendChatroomMessage($_GET['roomid'], $writeboard_language[2] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwriteboard.accept('" . $userid . "','" . $_GET['id'] . "');\">" . $writeboard_language[3] . "</a>");
+    }
+
+    $room = "writeboard" . $id;
+    $room = md5($room);
+
+    $name = "Unknown" . rand(0, 999);
 
     $sql = getUserDetails($userid);
 
-	if ($guestsMode && $userid >= 10000000) {
-		$sql = getGuestDetails($userid);
-	}
+    if ($guestsMode && $userid >= 10000000) {
+        $sql = getGuestDetails($userid);
+    }
 
-	$result = mysql_query($sql);
-	
-	if($row = mysql_fetch_array($result)) {
-		
-		if (function_exists('processName')) {
-			$row['username'] = processName($row['username']);
-		}
+    $result = mysql_query($sql);
 
-		$name = $row['username'];
-	}
+    if ($row = mysql_fetch_array($result)) {
+
+        if (function_exists('processName')) {
+            $row['username'] = processName($row['username']);
+        }
+
+        $name = $row['username'];
+    }
 
 
-echo <<<EOD
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>

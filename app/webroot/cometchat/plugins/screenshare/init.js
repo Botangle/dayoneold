@@ -1,67 +1,68 @@
 <?php
-		include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
-		include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
 
-		if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-			include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
-		}
+if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
+    include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+    }
 
-		foreach ($screenshare_language as $i => $l) {
-			$screenshare_language[$i] = str_replace("'", "\'", $l);
-		}
+foreach ($screenshare_language as $i => $l) {
+    $screenshare_language[$i] = str_replace("'", "\'", $l);
+    }
 ?>
 
 /*
- * CometChat
- * Copyright (c) 2012 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
+* CometChat
+* Copyright (c) 2012 Inscripts - support@cometchat.com | http://www.cometchat.com | http://www.inscripts.com
 */
 
-(function($){   
-  
-	$.ccscreenshare = (function () {
+(function($){
 
-		var title = '<?php echo $screenshare_language[0];?>';
-		var lastcall = 0;
-		var height = <?php echo $scrHeight;?>;
-		var width = <?php echo $scrWidth;?>;
-		var type = '<?php echo $screensharePluginType;?>';
+    $.ccscreenshare = (function () {
 
-        return {
+        var title = '<?php echo $screenshare_language[0];?>';
+        var lastcall = 0;
+        var height = <?php echo $scrHeight;?>;
+        var width =
+            <?php echo $scrWidth;?>;
+            var type = '<?php echo $screensharePluginType;?>';
 
-			getTitle: function() {
-				return title;	
-			},
+            return {
 
-			init: function (id) {
-				var currenttime = new Date();
-				currenttime = parseInt(currenttime.getTime()/1000);
-				if (currenttime-lastcall > 10) {
-					baseUrl = $.cometchat.getBaseUrl();
-					baseData = $.cometchat.getBaseData();
+                getTitle: function() {
+                return title;
+                },
 
-					var random = currenttime;
-					$.getJSON(baseUrl+'plugins/screenshare/index.php?action=request&callback=?', {to: id, id: random, basedata: baseData});
-					lastcall = currenttime;
-					if(type=='1') {
-						var w = window.open (baseUrl+'plugins/screenshare/index.php?action=screenshare&type=1&id='+random+'&basedata='+baseData, 'screenshare',"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width=825,height=350");
-					} else {
-						var w = window.open (baseUrl+'plugins/screenshare/index.php?action=screenshare&type=1&id='+random+'&basedata='+baseData, 'screenshare',"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width=430,height=100");
-					}
-					w.focus();
+init: function (id) {
+    var currenttime = new Date();
+    currenttime = parseInt(currenttime.getTime()/1000);
+    if (currenttime-lastcall > 10) {
+    baseUrl = $.cometchat.getBaseUrl();
+    baseData = $.cometchat.getBaseData();
 
-				} else {
-					alert('<?php echo $screenshare_language[1];?>');
-				}
-			},
+    var random = currenttime;
+    $.getJSON(baseUrl+'plugins/screenshare/index.php?action=request&callback=?', {to: id, id: random, basedata: baseData});
+lastcall = currenttime;
+if(type=='1') {
+    var w = window.open (baseUrl+'plugins/screenshare/index.php?action=screenshare&type=1&id='+random+'&basedata='+baseData, 'screenshare',"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width=825,height=350");
+    } else {
+    var w = window.open (baseUrl+'plugins/screenshare/index.php?action=screenshare&type=1&id='+random+'&basedata='+baseData, 'screenshare',"status=0,toolbar=0,menubar=0,directories=0,resizable=0,location=0,status=0,scrollbars=0, width=430,height=100");
+    }
+w.focus();
 
-			accept: function (id,random) {
-				baseUrl = $.cometchat.getBaseUrl();
-				baseData = $.cometchat.getBaseData();
+} else {
+    alert('<?php echo $screenshare_language[1];?>');
+    }
+},
 
-				$.getJSON(baseUrl+'plugins/screenshare/index.php?action=accept&callback=?', {to: id, basedata: baseData});
-				loadCCPopup(baseUrl+'plugins/screenshare/index.php?action=screenshare&type=0&id='+random+'&basedata='+baseData, 'screenshare',"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width="+width+",height="+height,width,height,'<?php echo $screenshare_language[7];?>'); 
-			}
-        };
-    })();
- 
+accept: function (id,random) {
+    baseUrl = $.cometchat.getBaseUrl();
+    baseData = $.cometchat.getBaseData();
+
+    $.getJSON(baseUrl+'plugins/screenshare/index.php?action=accept&callback=?', {to: id, basedata: baseData});
+loadCCPopup(baseUrl+'plugins/screenshare/index.php?action=screenshare&type=0&id='+random+'&basedata='+baseData, 'screenshare',"status=0,toolbar=0,menubar=0,directories=0,resizable=1,location=0,status=0,scrollbars=0, width="+width+",height="+height,width,height,'<?php echo $screenshare_language[7];?>');
+}
+};
+})();
+
 })(jqcc);

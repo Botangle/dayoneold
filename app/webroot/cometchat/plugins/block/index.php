@@ -53,92 +53,96 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
-include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
 
-if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
-	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
+if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
+    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
 }
 
-if ($p_<1) exit;
+if ($p_ < 1) exit;
 
 if (!empty($_GET['action']) && $_GET['action'] == 'block') {
-	
-	$id = $_GET['to'];
 
-	$sql = "insert into cometchat_block (fromid, toid) values ('".mysql_real_escape_string($userid)."','".mysql_real_escape_string($id)."')";
-	$query = mysql_query($sql);
-	
-	removeCache($cookiePrefix.'blocked_id_of_'.$userid);
-	removeCache($cookiePrefix.'blocked_id_of_'.$id);
-	
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
+    $id = $_GET['to'];
 
-	if (!empty($_GET['callback'])) {
-		header('content-type: application/json; charset=utf-8');
-		echo $_GET['callback'].'()';
-	}	
+    $sql = "insert into cometchat_block (fromid, toid) values ('" . mysql_real_escape_string($userid) . "','" . mysql_real_escape_string($id) . "')";
+    $query = mysql_query($sql);
+
+    removeCache($cookiePrefix . 'blocked_id_of_' . $userid);
+    removeCache($cookiePrefix . 'blocked_id_of_' . $id);
+
+    if (defined('DEV_MODE') && DEV_MODE == '1') {
+        echo mysql_error();
+    }
+
+    if (!empty($_GET['callback'])) {
+        header('content-type: application/json; charset=utf-8');
+        echo $_GET['callback'] . '()';
+    }
 
 } elseif (!empty($_GET['action']) && $_GET['action'] == 'unblock') {
-	
-	$id = intval($_GET['id']);
-	$embed = '';
-	$embedcss = '';
 
-	if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
-		$embed = 'web';
-		$embedcss = 'embed';
-	}	
+    $id = intval($_GET['id']);
+    $embed = '';
+    $embedcss = '';
 
-	if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
-		$embed = 'desktop';
-		$embedcss = 'embed';
-	}	
+    if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
+        $embed = 'web';
+        $embedcss = 'embed';
+    }
 
-	$sql = "delete from cometchat_block where toid = '".mysql_real_escape_string($id)."' and fromid = '".mysql_real_escape_string($userid)."'";
-	$query = mysql_query($sql);
-	
-	removeCache($cookiePrefix.'blocked_id_of_'.$userid);
-	removeCache($cookiePrefix.'blocked_id_of_'.$id);
-	
-	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
-	$ts = time();
-	header("Location: index.php?basedata={$_REQUEST['basedata']}&embed={$embed}&ts={$ts}\r\n");
-	exit;
+    if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
+        $embed = 'desktop';
+        $embedcss = 'embed';
+    }
+
+    $sql = "delete from cometchat_block where toid = '" . mysql_real_escape_string($id) . "' and fromid = '" . mysql_real_escape_string($userid) . "'";
+    $query = mysql_query($sql);
+
+    removeCache($cookiePrefix . 'blocked_id_of_' . $userid);
+    removeCache($cookiePrefix . 'blocked_id_of_' . $id);
+
+    if (defined('DEV_MODE') && DEV_MODE == '1') {
+        echo mysql_error();
+    }
+    $ts = time();
+    header("Location: index.php?basedata={$_REQUEST['basedata']}&embed={$embed}&ts={$ts}\r\n");
+    exit;
 
 } else {
-	
-	$embed = '';
-	$embedcss = '';
 
-	if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
-		$embed = 'web';
-		$embedcss = 'embed';
-	}	
+    $embed = '';
+    $embedcss = '';
 
-	if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
-		$embed = 'desktop';
-		$embedcss = 'embed';
-	}	
+    if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
+        $embed = 'web';
+        $embedcss = 'embed';
+    }
 
-	$usertable = TABLE_PREFIX.DB_USERTABLE;
-	$usertable_username = DB_USERTABLE_NAME;
-	$usertable_userid = DB_USERTABLE_USERID;
-	$body = '';
-	$number = 0;
+    if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
+        $embed = 'desktop';
+        $embedcss = 'embed';
+    }
 
-	$sql = ("select distinct(m.$usertable_userid) `id`, m.$usertable_username `name` from cometchat_block, $usertable m where m.$usertable_userid = toid and fromid = '".mysql_real_escape_string($userid)."'");
+    $usertable = TABLE_PREFIX . DB_USERTABLE;
+    $usertable_username = DB_USERTABLE_NAME;
+    $usertable_userid = DB_USERTABLE_USERID;
+    $body = '';
+    $number = 0;
 
-	$query = mysql_query($sql);
-	
-	while ($chat = mysql_fetch_array($query)) {
-		if (function_exists('processName')) {
-			$chat['name'] = processName($chat['name']);
-		}
+    $sql = ("select distinct(m.$usertable_userid) `id`, m.$usertable_username `name` from cometchat_block, $usertable m where m.$usertable_userid = toid and fromid = '" . mysql_real_escape_string($userid) . "'");
 
-		++$number;
+    $query = mysql_query($sql);
 
-		$body = <<<EOD
+    while ($chat = mysql_fetch_array($query)) {
+        if (function_exists('processName')) {
+            $chat['name'] = processName($chat['name']);
+        }
+
+        ++$number;
+
+        $body = <<<EOD
  $body
 <div class="chat">
 			<div class="chatrequest"><b>{$number}</b></div> 
@@ -148,10 +152,10 @@ if (!empty($_GET['action']) && $_GET['action'] == 'block') {
 </div> 
 
 EOD;
-		}
+    }
 
-	if ($number == 0) {
-		$body = <<<EOD
+    if ($number == 0) {
+        $body = <<<EOD
  $body
 <div class="chat">
 			<div class="chatrequest">&nbsp;</div> 
@@ -161,11 +165,10 @@ EOD;
 </div> 
 
 EOD;
-	}
+    }
 
-	
 
-echo <<<EOD
+    echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
