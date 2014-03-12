@@ -12,7 +12,7 @@ var Vocabularies = {};
  *
  * @return void
  */
-Vocabularies.documentReady = function () {
+Vocabularies.documentReady = function() {
 
 }
 
@@ -21,11 +21,11 @@ Vocabularies.documentReady = function () {
  *
  * @return void
  */
-Vocabularies.slug = function () {
-    $("#VocabularyTitle").slug({
-        slug: 'alias',
-        hide: false
-    });
+Vocabularies.slug = function() {
+	$("#VocabularyTitle").slug({
+		slug:'alias',
+		hide: false
+	});
 }
 
 /**
@@ -33,11 +33,11 @@ Vocabularies.slug = function () {
  *
  * @return void
  */
-$(document).ready(function () {
-    if (Croogo.params.controller == 'vocabularies') {
-        Vocabularies.documentReady();
-        if (Croogo.params.action == 'admin_add') {
-            Vocabularies.slug();
-        }
-    }
+$(document).ready(function() {
+	if (Croogo.params.controller == 'vocabularies') {
+		Vocabularies.documentReady();
+		if (Croogo.params.action == 'admin_add') {
+			Vocabularies.slug();
+		}
+	}
 });

@@ -52,12 +52,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 */
-include_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "config.php";
-include_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
+include_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."config.php";
+include_once dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
+include_once dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
 
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
-    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
+if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
+	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
 }
 
 $id = $_GET['id'];
@@ -68,7 +68,7 @@ $used = array();
 $chatroommode = 0;
 
 if (!empty($_GET['chatroommode'])) {
-    $chatroommode = 1;
+	$chatroommode = 1;
 }
 
 $embed = '';
@@ -76,33 +76,33 @@ $embedcss = '';
 $close = "setTimeout('window.close()',2000);";
 $before = 'window.opener';
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
-    $embed = 'web';
-    $embedcss = 'embed';
-    $close = "";
-    $before = 'parent';
+if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
+	$embed = 'web';
+	$embedcss = 'embed';
+	$close = "";
+	$before = 'parent';	
 
-    if ($chatroommode == 1) {
-        $before = "$('#cometchat_trayicon_chatrooms_iframe,#cometchat_container_chatrooms .cometchat_iframe,.cometchat_embed_chatrooms',parent.document)[0].contentWindow";
-    }
+	if ($chatroommode == 1) {
+		$before = "$('#cometchat_trayicon_chatrooms_iframe,#cometchat_container_chatrooms .cometchat_iframe,.cometchat_embed_chatrooms',parent.document)[0].contentWindow";
+	}
 }
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
-    $embed = 'desktop';
-    $embedcss = 'embed';
-    $close = "";
-    $before = 'parentSandboxBridge';
+if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
+	$embed = 'desktop';
+	$embedcss = 'embed';
+	$close = "";
+	$before = 'parentSandboxBridge';
 }
 
 foreach ($smileys as $pattern => $result) {
 
-    if (!empty($used[$result])) {
-    } else {
-        $pattern2 = str_replace("'", "\\'", $pattern);
-        $title = str_replace("-", " ", ucwords(preg_replace("/\.(.*)/", "", $result)));
-        $text .= '<img class="cometchat_smiley" height="20" src="' . BASE_URL . 'images/smileys/' . $result . '" title="' . $pattern . ' (' . $title . ')" onclick="' . $before . '.jqcc.ccsmilies.addtext(\'' . $id . '\',\'' . $pattern2 . '\');' . $close . '" style="margin:2px">';
-        $used[$result] = 1;
-    }
+	if (!empty($used[$result])) {
+	} else {
+		$pattern2 = str_replace("'","\\'",$pattern);
+		$title = str_replace("-"," ",ucwords(preg_replace("/\.(.*)/","",$result)));
+		$text .= '<img class="cometchat_smiley" height="20" src="'.BASE_URL.'images/smileys/'.$result.'" title="'.$pattern.' ('.$title.')" onclick="'.$before.'.jqcc.ccsmilies.addtext(\''.$id.'\',\''.$pattern2.'\');'.$close.'" style="margin:2px">';
+		$used[$result] = 1;
+	}
 }
 
 echo <<<EOD

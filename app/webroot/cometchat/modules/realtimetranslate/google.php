@@ -53,66 +53,64 @@ THE SOFTWARE.
 
 */
 
-function removeBOM($str = "")
-{
-    if (substr($str, 0, 3) == pack("CCC", 0xef, 0xbb, 0xbf)) {
-        $str = substr($str, 3);
+function removeBOM($str = "") {
+    if (substr($str, 0, 3) == pack("CCC",0xef,0xbb,0xbf)) {
+        $str=substr($str, 3);
     }
     return $str;
 }
 
 
-function translate_text($text, $from = 'en', $to = 'en')
-{
+function translate_text ($text, $from = 'en', $to = 'en') {
 
-    global $googleKey;
+	global $googleKey;
 
-    try {
+	try {
 
-        $url = 'https://www.googleapis.com/language/translate/v2/detect?key=' . $googleKey . '&q=' . urlencode($text);
+		$url = 'https://www.googleapis.com/language/translate/v2/detect?key='.$googleKey.'&q='.urlencode($text);
+		
+		$ch = curl_init();
+		curl_setopt($ch,CURLOPT_URL,$url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		$result = curl_exec($ch);
+		curl_close($ch);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        $result = curl_exec($ch);
-        curl_close($ch);
+		$result = json_decode(removeBOM($result));
 
-        $result = json_decode(removeBOM($result));
+		$language = '';
 
-        $language = '';
+		if (!empty($result->data->detections[0][0]->language)) {
 
-        if (!empty($result->data->detections[0][0]->language)) {
+			if ($result->data->detections[0][0]->confidence < 0.05) {
+				return false;
+			} else {
+				$language = $result->data->detections[0][0]->language;
+			}
+		} else {
+			return false;
+		}
 
-            if ($result->data->detections[0][0]->confidence < 0.05) {
-                return false;
-            } else {
-                $language = $result->data->detections[0][0]->language;
-            }
-        } else {
-            return false;
-        }
+		if ($language == $to || empty($to) || empty($language)) {
+			return false;
+		}
+		$url = 'https://www.googleapis.com/language/translate/v2?key='.$googleKey.'&q='.urlencode($text).'&source='.$language.'&target='.$to;
 
-        if ($language == $to || empty($to) || empty($language)) {
-            return false;
-        }
-        $url = 'https://www.googleapis.com/language/translate/v2?key=' . $googleKey . '&q=' . urlencode($text) . '&source=' . $language . '&target=' . $to;
+		$ch = curl_init();
+		curl_setopt($ch,CURLOPT_URL,$url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		$result = curl_exec($ch);
+		curl_close($ch);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        $result = curl_exec($ch);
-        curl_close($ch);
+		$result = json_decode(removeBOM($result));
 
-        $result = json_decode(removeBOM($result));
+		return $result->data->translations[0]->translatedText;
 
-        return $result->data->translations[0]->translatedText;
-
-    } catch (Exception $e) {
-        return false;
-    }
+	} catch (Exception $e) {
+		return false;
+	}
 
 }

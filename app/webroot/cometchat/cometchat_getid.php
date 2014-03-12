@@ -1,5 +1,5 @@
 <?php
-
+ 
 /*
 
 CometChat
@@ -53,7 +53,7 @@ THE SOFTWARE.
 
 */
 
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "cometchat_init.php";
+include_once dirname(__FILE__).DIRECTORY_SEPARATOR."cometchat_init.php";
 
 $response = array();
 $messages = array();
@@ -65,52 +65,50 @@ $status['invisible'] = $language[33];
 $status['away'] = $language[34];
 
 if (!empty($_REQUEST['userid'])) {
-    $fetchid = $_REQUEST['userid'];
+	$fetchid = $_REQUEST['userid'];
 } else {
-    $fetchid = $userid;
+	$fetchid = $userid;
 }
 
 $fetchid = intval($fetchid);
 $time = getTimeStamp();
 $sql = getUserDetails($fetchid);
-
+	
 if ($guestsMode && $fetchid >= 10000000) {
-    $sql = getGuestDetails($fetchid);
+	$sql = getGuestDetails($fetchid);
 }
 
 $query = mysql_query($sql);
 
-if (defined('DEV_MODE') && DEV_MODE == '1') {
-    echo mysql_error();
-}
+if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
 
 $chat = mysql_fetch_array($query);
 
-if ((($time - processTime($chat['lastactivity'])) < ONLINE_TIMEOUT) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') {
-    if ($chat['status'] != 'busy' && $chat['status'] != 'away') {
-        $chat['status'] = 'available';
-    }
+if ((($time-processTime($chat['lastactivity'])) < ONLINE_TIMEOUT) && $chat['status'] != 'invisible' && $chat['status'] != 'offline') {
+	if ($chat['status'] != 'busy' && $chat['status'] != 'away') {
+		$chat['status'] = 'available';
+	}
 } else {
-    $chat['status'] = 'offline';
+	$chat['status'] = 'offline';
 }
 
 if ($chat['message'] == null) {
-    $chat['message'] = $status[$chat['status']];
+	$chat['message'] = $status[$chat['status']];
 }
 
 $link = fetchLink($chat['link']);
 $avatar = getAvatar($chat['avatar']);
 
 if (function_exists('processName')) {
-    $chat['username'] = processName($chat['username']);
+	$chat['username'] = processName($chat['username']);
 }
 
-$response = array('id' => $chat['userid'], 'n' => $chat['username'], 's' => $chat['status'], 'm' => $chat['message'], 'a' => $avatar, 'l' => $link);
+$response =  array('id' => $chat['userid'], 'n' => $chat['username'], 's' => $chat['status'], 'm' => $chat['message'], 'a' => $avatar, 'l' => $link);
 
 header('Content-type: application/json; charset=utf-8');
 if (!empty($_GET['callback'])) {
-    echo $_GET['callback'] . '(' . json_encode($response) . ')';
+	echo $_GET['callback'].'('.json_encode($response).')';
 } else {
-    echo json_encode($response);
+	echo json_encode($response);
 }
 exit;

@@ -32,431 +32,420 @@ App::uses('Scaffold', 'View');
  *
  * @package       Cake.Controller
  */
-class Scaffold
-{
+class Scaffold {
 
-    /**
-     * Controller object
-     *
-     * @var Controller
-     */
-    public $controller = null;
+/**
+ * Controller object
+ *
+ * @var Controller
+ */
+	public $controller = null;
 
-    /**
-     * Name of the controller to scaffold
-     *
-     * @var string
-     */
-    public $name = null;
+/**
+ * Name of the controller to scaffold
+ *
+ * @var string
+ */
+	public $name = null;
 
-    /**
-     * Name of current model this view context is attached to
-     *
-     * @var string
-     */
-    public $model = null;
+/**
+ * Name of current model this view context is attached to
+ *
+ * @var string
+ */
+	public $model = null;
 
-    /**
-     * Path to View.
-     *
-     * @var string
-     */
-    public $viewPath;
+/**
+ * Path to View.
+ *
+ * @var string
+ */
+	public $viewPath;
 
-    /**
-     * Name of layout to use with this View.
-     *
-     * @var string
-     */
-    public $layout = 'default';
+/**
+ * Name of layout to use with this View.
+ *
+ * @var string
+ */
+	public $layout = 'default';
 
-    /**
-     * Request object
-     *
-     * @var CakeRequest
-     */
-    public $request;
+/**
+ * Request object
+ *
+ * @var CakeRequest
+ */
+	public $request;
 
-    /**
-     * Valid session.
-     *
-     * @var boolean
-     */
-    protected $_validSession = null;
+/**
+ * Valid session.
+ *
+ * @var boolean
+ */
+	protected $_validSession = null;
 
-    /**
-     * List of variables to collect from the associated controller
-     *
-     * @var array
-     */
-    protected $_passedVars = array(
-        'layout', 'name', 'viewPath', 'request'
-    );
+/**
+ * List of variables to collect from the associated controller
+ *
+ * @var array
+ */
+	protected $_passedVars = array(
+		'layout', 'name', 'viewPath', 'request'
+	);
 
-    /**
-     * Title HTML element for current scaffolded view
-     *
-     * @var string
-     */
-    public $scaffoldTitle = null;
+/**
+ * Title HTML element for current scaffolded view
+ *
+ * @var string
+ */
+	public $scaffoldTitle = null;
 
-    /**
-     * Construct and set up given controller with given parameters.
-     *
-     * @param Controller $controller Controller to scaffold
-     * @param CakeRequest $request Request parameters.
-     * @throws MissingModelException
-     */
-    public function __construct(Controller $controller, CakeRequest $request)
-    {
-        $this->controller = $controller;
+/**
+ * Construct and set up given controller with given parameters.
+ *
+ * @param Controller $controller Controller to scaffold
+ * @param CakeRequest $request Request parameters.
+ * @throws MissingModelException
+ */
+	public function __construct(Controller $controller, CakeRequest $request) {
+		$this->controller = $controller;
 
-        $count = count($this->_passedVars);
-        for ($j = 0; $j < $count; $j++) {
-            $var = $this->_passedVars[$j];
-            $this->{$var} = $controller->{$var};
-        }
+		$count = count($this->_passedVars);
+		for ($j = 0; $j < $count; $j++) {
+			$var = $this->_passedVars[$j];
+			$this->{$var} = $controller->{$var};
+		}
 
-        $this->redirect = array('action' => 'index');
+		$this->redirect = array('action' => 'index');
 
-        $this->modelClass = $controller->modelClass;
-        $this->modelKey = $controller->modelKey;
+		$this->modelClass = $controller->modelClass;
+		$this->modelKey = $controller->modelKey;
 
-        if (!is_object($this->controller->{$this->modelClass})) {
-            throw new MissingModelException($this->modelClass);
-        }
+		if (!is_object($this->controller->{$this->modelClass})) {
+			throw new MissingModelException($this->modelClass);
+		}
 
-        $this->ScaffoldModel = $this->controller->{$this->modelClass};
-        $this->scaffoldTitle = Inflector::humanize(Inflector::underscore($this->viewPath));
-        $this->scaffoldActions = $controller->scaffold;
-        $title = __d('cake', 'Scaffold :: ') . Inflector::humanize($request->action) . ' :: ' . $this->scaffoldTitle;
-        $modelClass = $this->controller->modelClass;
-        $primaryKey = $this->ScaffoldModel->primaryKey;
-        $displayField = $this->ScaffoldModel->displayField;
-        $singularVar = Inflector::variable($modelClass);
-        $pluralVar = Inflector::variable($this->controller->name);
-        $singularHumanName = Inflector::humanize(Inflector::underscore($modelClass));
-        $pluralHumanName = Inflector::humanize(Inflector::underscore($this->controller->name));
-        $scaffoldFields = array_keys($this->ScaffoldModel->schema());
-        $associations = $this->_associations();
+		$this->ScaffoldModel = $this->controller->{$this->modelClass};
+		$this->scaffoldTitle = Inflector::humanize(Inflector::underscore($this->viewPath));
+		$this->scaffoldActions = $controller->scaffold;
+		$title = __d('cake', 'Scaffold :: ') . Inflector::humanize($request->action) . ' :: ' . $this->scaffoldTitle;
+		$modelClass = $this->controller->modelClass;
+		$primaryKey = $this->ScaffoldModel->primaryKey;
+		$displayField = $this->ScaffoldModel->displayField;
+		$singularVar = Inflector::variable($modelClass);
+		$pluralVar = Inflector::variable($this->controller->name);
+		$singularHumanName = Inflector::humanize(Inflector::underscore($modelClass));
+		$pluralHumanName = Inflector::humanize(Inflector::underscore($this->controller->name));
+		$scaffoldFields = array_keys($this->ScaffoldModel->schema());
+		$associations = $this->_associations();
 
-        $this->controller->set(compact(
-            'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
-            'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations'
-        ));
-        $this->controller->set('title_for_layout', $title);
+		$this->controller->set(compact(
+			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
+			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations'
+		));
+		$this->controller->set('title_for_layout', $title);
 
-        if ($this->controller->viewClass) {
-            $this->controller->viewClass = 'Scaffold';
-        }
-        $this->_validSession = (
-            isset($this->controller->Session) && $this->controller->Session->valid()
-        );
-        $this->_scaffold($request);
-    }
+		if ($this->controller->viewClass) {
+			$this->controller->viewClass = 'Scaffold';
+		}
+		$this->_validSession = (
+			isset($this->controller->Session) && $this->controller->Session->valid()
+		);
+		$this->_scaffold($request);
+	}
 
-    /**
-     * Renders a view action of scaffolded model.
-     *
-     * @param CakeRequest $request Request Object for scaffolding
-     * @return mixed A rendered view of a row from Models database table
-     * @throws NotFoundException
-     */
-    protected function _scaffoldView(CakeRequest $request)
-    {
-        if ($this->controller->beforeScaffold('view')) {
-            if (isset($request->params['pass'][0])) {
-                $this->ScaffoldModel->id = $request->params['pass'][0];
-            }
-            if (!$this->ScaffoldModel->exists()) {
-                throw new NotFoundException(__d('cake', 'Invalid %s', Inflector::humanize($this->modelKey)));
-            }
-            $this->ScaffoldModel->recursive = 1;
-            $this->controller->request->data = $this->ScaffoldModel->read();
-            $this->controller->set(
-                Inflector::variable($this->controller->modelClass), $this->request->data
-            );
-            $this->controller->render($this->request['action'], $this->layout);
-        } elseif ($this->controller->scaffoldError('view') === false) {
-            return $this->_scaffoldError();
-        }
-    }
+/**
+ * Renders a view action of scaffolded model.
+ *
+ * @param CakeRequest $request Request Object for scaffolding
+ * @return mixed A rendered view of a row from Models database table
+ * @throws NotFoundException
+ */
+	protected function _scaffoldView(CakeRequest $request) {
+		if ($this->controller->beforeScaffold('view')) {
+			if (isset($request->params['pass'][0])) {
+				$this->ScaffoldModel->id = $request->params['pass'][0];
+			}
+			if (!$this->ScaffoldModel->exists()) {
+				throw new NotFoundException(__d('cake', 'Invalid %s', Inflector::humanize($this->modelKey)));
+			}
+			$this->ScaffoldModel->recursive = 1;
+			$this->controller->request->data = $this->ScaffoldModel->read();
+			$this->controller->set(
+				Inflector::variable($this->controller->modelClass), $this->request->data
+			);
+			$this->controller->render($this->request['action'], $this->layout);
+		} elseif ($this->controller->scaffoldError('view') === false) {
+			return $this->_scaffoldError();
+		}
+	}
 
-    /**
-     * Renders index action of scaffolded model.
-     *
-     * @param array $params Parameters for scaffolding
-     * @return mixed A rendered view listing rows from Models database table
-     */
-    protected function _scaffoldIndex($params)
-    {
-        if ($this->controller->beforeScaffold('index')) {
-            $this->ScaffoldModel->recursive = 0;
-            $this->controller->set(
-                Inflector::variable($this->controller->name), $this->controller->paginate()
-            );
-            $this->controller->render($this->request['action'], $this->layout);
-        } elseif ($this->controller->scaffoldError('index') === false) {
-            return $this->_scaffoldError();
-        }
-    }
+/**
+ * Renders index action of scaffolded model.
+ *
+ * @param array $params Parameters for scaffolding
+ * @return mixed A rendered view listing rows from Models database table
+ */
+	protected function _scaffoldIndex($params) {
+		if ($this->controller->beforeScaffold('index')) {
+			$this->ScaffoldModel->recursive = 0;
+			$this->controller->set(
+				Inflector::variable($this->controller->name), $this->controller->paginate()
+			);
+			$this->controller->render($this->request['action'], $this->layout);
+		} elseif ($this->controller->scaffoldError('index') === false) {
+			return $this->_scaffoldError();
+		}
+	}
 
-    /**
-     * Renders an add or edit action for scaffolded model.
-     *
-     * @param string $action Action (add or edit)
-     * @return void
-     */
-    protected function _scaffoldForm($action = 'edit')
-    {
-        $this->controller->viewVars['scaffoldFields'] = array_merge(
-            $this->controller->viewVars['scaffoldFields'],
-            array_keys($this->ScaffoldModel->hasAndBelongsToMany)
-        );
-        $this->controller->render($action, $this->layout);
-    }
+/**
+ * Renders an add or edit action for scaffolded model.
+ *
+ * @param string $action Action (add or edit)
+ * @return void
+ */
+	protected function _scaffoldForm($action = 'edit') {
+		$this->controller->viewVars['scaffoldFields'] = array_merge(
+			$this->controller->viewVars['scaffoldFields'],
+			array_keys($this->ScaffoldModel->hasAndBelongsToMany)
+		);
+		$this->controller->render($action, $this->layout);
+	}
 
-    /**
-     * Saves or updates the scaffolded model.
-     *
-     * @param CakeRequest $request Request Object for scaffolding
-     * @param string $action add or edit
-     * @return mixed Success on save/update, add/edit form if data is empty or error if save or update fails
-     * @throws NotFoundException
-     */
-    protected function _scaffoldSave(CakeRequest $request, $action = 'edit')
-    {
-        $formAction = 'edit';
-        $success = __d('cake', 'updated');
-        if ($action === 'add') {
-            $formAction = 'add';
-            $success = __d('cake', 'saved');
-        }
+/**
+ * Saves or updates the scaffolded model.
+ *
+ * @param CakeRequest $request Request Object for scaffolding
+ * @param string $action add or edit
+ * @return mixed Success on save/update, add/edit form if data is empty or error if save or update fails
+ * @throws NotFoundException
+ */
+	protected function _scaffoldSave(CakeRequest $request, $action = 'edit') {
+		$formAction = 'edit';
+		$success = __d('cake', 'updated');
+		if ($action === 'add') {
+			$formAction = 'add';
+			$success = __d('cake', 'saved');
+		}
 
-        if ($this->controller->beforeScaffold($action)) {
-            if ($action === 'edit') {
-                if (isset($request->params['pass'][0])) {
-                    $this->ScaffoldModel->id = $request['pass'][0];
-                }
-                if (!$this->ScaffoldModel->exists()) {
-                    throw new NotFoundException(__d('cake', 'Invalid %s', Inflector::humanize($this->modelKey)));
-                }
-            }
+		if ($this->controller->beforeScaffold($action)) {
+			if ($action === 'edit') {
+				if (isset($request->params['pass'][0])) {
+					$this->ScaffoldModel->id = $request['pass'][0];
+				}
+				if (!$this->ScaffoldModel->exists()) {
+					throw new NotFoundException(__d('cake', 'Invalid %s', Inflector::humanize($this->modelKey)));
+				}
+			}
 
-            if (!empty($request->data)) {
-                if ($action === 'create') {
-                    $this->ScaffoldModel->create();
-                }
+			if (!empty($request->data)) {
+				if ($action === 'create') {
+					$this->ScaffoldModel->create();
+				}
 
-                if ($this->ScaffoldModel->save($request->data)) {
-                    if ($this->controller->afterScaffoldSave($action)) {
-                        $message = __d('cake',
-                            'The %1$s has been %2$s',
-                            Inflector::humanize($this->modelKey),
-                            $success
-                        );
-                        return $this->_sendMessage($message);
-                    }
-                    return $this->controller->afterScaffoldSaveError($action);
-                }
-                if ($this->_validSession) {
-                    $this->controller->Session->setFlash(__d('cake', 'Please correct errors below.'));
-                }
-            }
+				if ($this->ScaffoldModel->save($request->data)) {
+					if ($this->controller->afterScaffoldSave($action)) {
+						$message = __d('cake',
+							'The %1$s has been %2$s',
+							Inflector::humanize($this->modelKey),
+							$success
+						);
+						return $this->_sendMessage($message);
+					}
+					return $this->controller->afterScaffoldSaveError($action);
+				}
+				if ($this->_validSession) {
+					$this->controller->Session->setFlash(__d('cake', 'Please correct errors below.'));
+				}
+			}
 
-            if (empty($request->data)) {
-                if ($this->ScaffoldModel->id) {
-                    $this->controller->data = $request->data = $this->ScaffoldModel->read();
-                } else {
-                    $this->controller->data = $request->data = $this->ScaffoldModel->create();
-                }
-            }
+			if (empty($request->data)) {
+				if ($this->ScaffoldModel->id) {
+					$this->controller->data = $request->data = $this->ScaffoldModel->read();
+				} else {
+					$this->controller->data = $request->data = $this->ScaffoldModel->create();
+				}
+			}
 
-            foreach ($this->ScaffoldModel->belongsTo as $assocName => $assocData) {
-                $varName = Inflector::variable(Inflector::pluralize(
-                    preg_replace('/(?:_id)$/', '', $assocData['foreignKey'])
-                ));
-                $this->controller->set($varName, $this->ScaffoldModel->{$assocName}->find('list'));
-            }
-            foreach ($this->ScaffoldModel->hasAndBelongsToMany as $assocName => $assocData) {
-                $varName = Inflector::variable(Inflector::pluralize($assocName));
-                $this->controller->set($varName, $this->ScaffoldModel->{$assocName}->find('list'));
-            }
+			foreach ($this->ScaffoldModel->belongsTo as $assocName => $assocData) {
+				$varName = Inflector::variable(Inflector::pluralize(
+					preg_replace('/(?:_id)$/', '', $assocData['foreignKey'])
+				));
+				$this->controller->set($varName, $this->ScaffoldModel->{$assocName}->find('list'));
+			}
+			foreach ($this->ScaffoldModel->hasAndBelongsToMany as $assocName => $assocData) {
+				$varName = Inflector::variable(Inflector::pluralize($assocName));
+				$this->controller->set($varName, $this->ScaffoldModel->{$assocName}->find('list'));
+			}
 
-            return $this->_scaffoldForm($formAction);
-        } elseif ($this->controller->scaffoldError($action) === false) {
-            return $this->_scaffoldError();
-        }
-    }
+			return $this->_scaffoldForm($formAction);
+		} elseif ($this->controller->scaffoldError($action) === false) {
+			return $this->_scaffoldError();
+		}
+	}
 
-    /**
-     * Performs a delete on given scaffolded Model.
-     *
-     * @param CakeRequest $request Request for scaffolding
-     * @return mixed Success on delete, error if delete fails
-     * @throws MethodNotAllowedException When HTTP method is not a DELETE
-     * @throws NotFoundException When id being deleted does not exist.
-     */
-    protected function _scaffoldDelete(CakeRequest $request)
-    {
-        if ($this->controller->beforeScaffold('delete')) {
-            if (!$request->is('post')) {
-                throw new MethodNotAllowedException();
-            }
-            $id = false;
-            if (isset($request->params['pass'][0])) {
-                $id = $request->params['pass'][0];
-            }
-            $this->ScaffoldModel->id = $id;
-            if (!$this->ScaffoldModel->exists()) {
-                throw new NotFoundException(__d('cake', 'Invalid %s', Inflector::humanize($this->modelClass)));
-            }
-            if ($this->ScaffoldModel->delete()) {
-                $message = __d('cake', 'The %1$s with id: %2$s has been deleted.', Inflector::humanize($this->modelClass), $id);
-                return $this->_sendMessage($message);
-            }
-            $message = __d('cake',
-                'There was an error deleting the %1$s with id: %2$s',
-                Inflector::humanize($this->modelClass),
-                $id
-            );
-            return $this->_sendMessage($message);
-        } elseif ($this->controller->scaffoldError('delete') === false) {
-            return $this->_scaffoldError();
-        }
-    }
+/**
+ * Performs a delete on given scaffolded Model.
+ *
+ * @param CakeRequest $request Request for scaffolding
+ * @return mixed Success on delete, error if delete fails
+ * @throws MethodNotAllowedException When HTTP method is not a DELETE
+ * @throws NotFoundException When id being deleted does not exist.
+ */
+	protected function _scaffoldDelete(CakeRequest $request) {
+		if ($this->controller->beforeScaffold('delete')) {
+			if (!$request->is('post')) {
+				throw new MethodNotAllowedException();
+			}
+			$id = false;
+			if (isset($request->params['pass'][0])) {
+				$id = $request->params['pass'][0];
+			}
+			$this->ScaffoldModel->id = $id;
+			if (!$this->ScaffoldModel->exists()) {
+				throw new NotFoundException(__d('cake', 'Invalid %s', Inflector::humanize($this->modelClass)));
+			}
+			if ($this->ScaffoldModel->delete()) {
+				$message = __d('cake', 'The %1$s with id: %2$s has been deleted.', Inflector::humanize($this->modelClass), $id);
+				return $this->_sendMessage($message);
+			}
+			$message = __d('cake',
+				'There was an error deleting the %1$s with id: %2$s',
+				Inflector::humanize($this->modelClass),
+				$id
+			);
+			return $this->_sendMessage($message);
+		} elseif ($this->controller->scaffoldError('delete') === false) {
+			return $this->_scaffoldError();
+		}
+	}
 
-    /**
-     * Sends a message to the user. Either uses Sessions or flash messages depending
-     * on the availability of a session
-     *
-     * @param string $message Message to display
-     * @return void
-     */
-    protected function _sendMessage($message)
-    {
-        if ($this->_validSession) {
-            $this->controller->Session->setFlash($message);
-            return $this->controller->redirect($this->redirect);
-        }
-        $this->controller->flash($message, $this->redirect);
-    }
+/**
+ * Sends a message to the user. Either uses Sessions or flash messages depending
+ * on the availability of a session
+ *
+ * @param string $message Message to display
+ * @return void
+ */
+	protected function _sendMessage($message) {
+		if ($this->_validSession) {
+			$this->controller->Session->setFlash($message);
+			return $this->controller->redirect($this->redirect);
+		}
+		$this->controller->flash($message, $this->redirect);
+	}
 
-    /**
-     * Show a scaffold error
-     *
-     * @return mixed A rendered view showing the error
-     */
-    protected function _scaffoldError()
-    {
-        return $this->controller->render('error', $this->layout);
-    }
+/**
+ * Show a scaffold error
+ *
+ * @return mixed A rendered view showing the error
+ */
+	protected function _scaffoldError() {
+		return $this->controller->render('error', $this->layout);
+	}
 
-    /**
-     * When methods are now present in a controller
-     * scaffoldView is used to call default Scaffold methods if:
-     * `public $scaffold;` is placed in the controller's class definition.
-     *
-     * @param CakeRequest $request Request object for scaffolding
-     * @return void
-     * @throws MissingActionException When methods are not scaffolded.
-     * @throws MissingDatabaseException When the database connection is undefined.
-     */
-    protected function _scaffold(CakeRequest $request)
-    {
-        $db = ConnectionManager::getDataSource($this->ScaffoldModel->useDbConfig);
-        $prefixes = Configure::read('Routing.prefixes');
-        $scaffoldPrefix = $this->scaffoldActions;
+/**
+ * When methods are now present in a controller
+ * scaffoldView is used to call default Scaffold methods if:
+ * `public $scaffold;` is placed in the controller's class definition.
+ *
+ * @param CakeRequest $request Request object for scaffolding
+ * @return void
+ * @throws MissingActionException When methods are not scaffolded.
+ * @throws MissingDatabaseException When the database connection is undefined.
+ */
+	protected function _scaffold(CakeRequest $request) {
+		$db = ConnectionManager::getDataSource($this->ScaffoldModel->useDbConfig);
+		$prefixes = Configure::read('Routing.prefixes');
+		$scaffoldPrefix = $this->scaffoldActions;
 
-        if (isset($db)) {
-            if (empty($this->scaffoldActions)) {
-                $this->scaffoldActions = array(
-                    'index', 'list', 'view', 'add', 'create', 'edit', 'update', 'delete'
-                );
-            } elseif (!empty($prefixes) && in_array($scaffoldPrefix, $prefixes)) {
-                $this->scaffoldActions = array(
-                    $scaffoldPrefix . '_index',
-                    $scaffoldPrefix . '_list',
-                    $scaffoldPrefix . '_view',
-                    $scaffoldPrefix . '_add',
-                    $scaffoldPrefix . '_create',
-                    $scaffoldPrefix . '_edit',
-                    $scaffoldPrefix . '_update',
-                    $scaffoldPrefix . '_delete'
-                );
-            }
+		if (isset($db)) {
+			if (empty($this->scaffoldActions)) {
+				$this->scaffoldActions = array(
+					'index', 'list', 'view', 'add', 'create', 'edit', 'update', 'delete'
+				);
+			} elseif (!empty($prefixes) && in_array($scaffoldPrefix, $prefixes)) {
+				$this->scaffoldActions = array(
+					$scaffoldPrefix . '_index',
+					$scaffoldPrefix . '_list',
+					$scaffoldPrefix . '_view',
+					$scaffoldPrefix . '_add',
+					$scaffoldPrefix . '_create',
+					$scaffoldPrefix . '_edit',
+					$scaffoldPrefix . '_update',
+					$scaffoldPrefix . '_delete'
+				);
+			}
 
-            if (in_array($request->params['action'], $this->scaffoldActions)) {
-                if (!empty($prefixes)) {
-                    $request->params['action'] = str_replace($scaffoldPrefix . '_', '', $request->params['action']);
-                }
-                switch ($request->params['action']) {
-                    case 'index':
-                    case 'list':
-                        $this->_scaffoldIndex($request);
-                        break;
-                    case 'view':
-                        $this->_scaffoldView($request);
-                        break;
-                    case 'add':
-                    case 'create':
-                        $this->_scaffoldSave($request, 'add');
-                        break;
-                    case 'edit':
-                    case 'update':
-                        $this->_scaffoldSave($request, 'edit');
-                        break;
-                    case 'delete':
-                        $this->_scaffoldDelete($request);
-                        break;
-                }
-            } else {
-                throw new MissingActionException(array(
-                    'controller' => $this->controller->name,
-                    'action' => $request->action
-                ));
-            }
-        } else {
-            throw new MissingDatabaseException(array('connection' => $this->ScaffoldModel->useDbConfig));
-        }
-    }
+			if (in_array($request->params['action'], $this->scaffoldActions)) {
+				if (!empty($prefixes)) {
+					$request->params['action'] = str_replace($scaffoldPrefix . '_', '', $request->params['action']);
+				}
+				switch ($request->params['action']) {
+					case 'index':
+					case 'list':
+						$this->_scaffoldIndex($request);
+						break;
+					case 'view':
+						$this->_scaffoldView($request);
+						break;
+					case 'add':
+					case 'create':
+						$this->_scaffoldSave($request, 'add');
+						break;
+					case 'edit':
+					case 'update':
+						$this->_scaffoldSave($request, 'edit');
+						break;
+					case 'delete':
+						$this->_scaffoldDelete($request);
+						break;
+				}
+			} else {
+				throw new MissingActionException(array(
+					'controller' => $this->controller->name,
+					'action' => $request->action
+				));
+			}
+		} else {
+			throw new MissingDatabaseException(array('connection' => $this->ScaffoldModel->useDbConfig));
+		}
+	}
 
-    /**
-     * Returns associations for controllers models.
-     *
-     * @return array Associations for model
-     */
-    protected function _associations()
-    {
-        $keys = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
-        $associations = array();
+/**
+ * Returns associations for controllers models.
+ *
+ * @return array Associations for model
+ */
+	protected function _associations() {
+		$keys = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
+		$associations = array();
 
-        foreach ($keys as $type) {
-            foreach ($this->ScaffoldModel->{$type} as $assocKey => $assocData) {
-                $associations[$type][$assocKey]['primaryKey'] =
-                    $this->ScaffoldModel->{$assocKey}->primaryKey;
+		foreach ($keys as $type) {
+			foreach ($this->ScaffoldModel->{$type} as $assocKey => $assocData) {
+				$associations[$type][$assocKey]['primaryKey'] =
+					$this->ScaffoldModel->{$assocKey}->primaryKey;
 
-                $associations[$type][$assocKey]['displayField'] =
-                    $this->ScaffoldModel->{$assocKey}->displayField;
+				$associations[$type][$assocKey]['displayField'] =
+					$this->ScaffoldModel->{$assocKey}->displayField;
 
-                $associations[$type][$assocKey]['foreignKey'] =
-                    $assocData['foreignKey'];
+				$associations[$type][$assocKey]['foreignKey'] =
+					$assocData['foreignKey'];
 
-                list($plugin, $model) = pluginSplit($assocData['className']);
-                if ($plugin) {
-                    $plugin = Inflector::underscore($plugin);
-                }
-                $associations[$type][$assocKey]['plugin'] = $plugin;
+				list($plugin, $model) = pluginSplit($assocData['className']);
+				if ($plugin) {
+					$plugin = Inflector::underscore($plugin);
+				}
+				$associations[$type][$assocKey]['plugin'] = $plugin;
 
-                $associations[$type][$assocKey]['controller'] =
-                    Inflector::pluralize(Inflector::underscore($model));
+				$associations[$type][$assocKey]['controller'] =
+					Inflector::pluralize(Inflector::underscore($model));
 
-                if ($type === 'hasAndBelongsToMany') {
-                    $associations[$type][$assocKey]['with'] = $assocData['with'];
-                }
-            }
-        }
-        return $associations;
-    }
+				if ($type === 'hasAndBelongsToMany') {
+					$associations[$type][$assocKey]['with'] = $assocData['with'];
+				}
+			}
+		}
+		return $associations;
+	}
 
 }

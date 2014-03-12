@@ -16,10 +16,10 @@ App::uses('CroogoCache', 'Croogo.Cache');
 $defaultEngine = Configure::read('Cache.defaultEngine');
 $defaultPrefix = Configure::read('Cache.defaultPrefix');
 $cacheConfig = array(
-    'duration' => '+1 hour',
-    'path' => CACHE . 'queries' . DS,
-    'engine' => $defaultEngine,
-    'prefix' => $defaultPrefix,
+	'duration' => '+1 hour',
+	'path' => CACHE . 'queries' . DS,
+	'engine' => $defaultEngine,
+	'prefix' => $defaultPrefix,
 );
 Configure::write('Cache.defaultConfig', $cacheConfig);
 
@@ -29,7 +29,7 @@ Configure::write('Cache.defaultConfig', $cacheConfig);
 App::uses('CroogoJsonReader', 'Croogo.Configure');
 Configure::config('settings', new CroogoJsonReader());
 if (file_exists(APP . 'Config' . DS . 'settings.json')) {
-    Configure::load('settings', 'settings');
+	Configure::load('settings', 'settings');
 }
 
 /**
@@ -42,14 +42,14 @@ Configure::write('Config.language', Configure::read('Site.locale'));
  */
 $croogoPath = CakePlugin::path('Croogo');
 App::build(array(
-    'Console/Command' => array($croogoPath . 'Console' . DS . 'Command' . DS),
-    'View' => array($croogoPath . 'View' . DS),
-    'View/Helper' => array($croogoPath . 'View' . DS . 'Helper' . DS),
+	'Console/Command' => array($croogoPath . 'Console' . DS . 'Command' . DS),
+	'View' => array($croogoPath . 'View' . DS),
+	'View/Helper' => array($croogoPath . 'View' . DS . 'Helper' . DS),
 ), App::APPEND);
 if ($theme = Configure::read('Site.theme')) {
-    App::build(array(
-        'View/Helper' => array(App::themePath($theme) . 'Helper' . DS),
-    ));
+	App::build(array(
+		'View/Helper' => array(App::themePath($theme) . 'Helper' . DS),
+	));
 }
 
 /**
@@ -57,8 +57,8 @@ if ($theme = Configure::read('Site.theme')) {
  */
 
 Configure::write('Core.corePlugins', array(
-    'Settings', 'Acl', 'Blocks', 'Comments', 'Contacts', 'Menus', 'Meta',
-    'Nodes', 'Taxonomy', 'Users',
+	'Settings', 'Acl', 'Blocks', 'Comments', 'Contacts', 'Menus', 'Meta',
+	'Nodes', 'Taxonomy', 'Users',
 ));
 
 /**
@@ -69,22 +69,22 @@ $pluginBootstraps = Configure::read('Hook.bootstraps');
 $plugins = array_filter(explode(',', $pluginBootstraps));
 
 if (!in_array($aclPlugin, $plugins)) {
-    $plugins = Hash::merge((array)$aclPlugin, $plugins);
+	$plugins = Hash::merge((array)$aclPlugin, $plugins);
 }
 foreach ($plugins as $plugin) {
-    $pluginName = Inflector::camelize($plugin);
-    $pluginPath = APP . 'Plugin' . DS . $pluginName;
-    if (!file_exists($pluginPath)) {
-        CakeLog::error('Plugin not found during bootstrap: ' . $pluginName);
-        continue;
-    }
-    $option = array(
-        $pluginName => array(
-            'bootstrap' => true,
-            'routes' => true,
-            'ignoreMissing' => true,
-        )
-    );
-    CroogoPlugin::load($option);
+	$pluginName = Inflector::camelize($plugin);
+	$pluginPath = APP . 'Plugin' . DS . $pluginName;
+	if (!file_exists($pluginPath)) {
+		CakeLog::error('Plugin not found during bootstrap: ' . $pluginName);
+		continue;
+	}
+	$option = array(
+		$pluginName => array(
+			'bootstrap' => true,
+			'routes' => true,
+			'ignoreMissing' => true,
+		)
+	);
+	CroogoPlugin::load($option);
 }
 CroogoEventManager::loadListeners();

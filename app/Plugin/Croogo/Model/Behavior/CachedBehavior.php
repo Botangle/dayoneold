@@ -12,63 +12,58 @@ App::uses('ModelBehavior', 'Model');
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://www.croogo.org
  */
-class CachedBehavior extends ModelBehavior
-{
+class CachedBehavior extends ModelBehavior {
 
-    /**
-     * Setup
-     *
-     * @param object $model
-     * @param array $config
-     * @return void
-     */
-    public function setup(Model $model, $config = array())
-    {
-        if (is_string($config)) {
-            $config = array($config);
-        }
+/**
+ * Setup
+ *
+ * @param object $model
+ * @param array  $config
+ * @return void
+ */
+	public function setup(Model $model, $config = array()) {
+		if (is_string($config)) {
+			$config = array($config);
+		}
 
-        $default = array('config' => 'default', 'prefix' => null, 'groups' => array());
-        $this->settings[$model->alias] = Hash::merge($default, $config);
-    }
+		$default = array('config' => 'default', 'prefix' => null, 'groups' => array());
+		$this->settings[$model->alias] = Hash::merge($default, $config);
+	}
 
-    /**
-     * afterSave callback
-     *
-     * @param object $model
-     * @param boolean $created
-     * @return void
-     */
-    public function afterSave(Model $model, $created, $options = array())
-    {
-        $this->_deleteCachedFiles($model);
-    }
+/**
+ * afterSave callback
+ *
+ * @param object  $model
+ * @param boolean $created
+ * @return void
+ */
+	public function afterSave(Model $model, $created, $options = array()) {
+		$this->_deleteCachedFiles($model);
+	}
 
-    /**
-     * afterDelete callback
-     *
-     * @param object $model
-     * @return void
-     */
-    public function afterDelete(Model $model)
-    {
-        $this->_deleteCachedFiles($model);
-    }
+/**
+ * afterDelete callback
+ *
+ * @param object $model
+ * @return void
+ */
+	public function afterDelete(Model $model) {
+		$this->_deleteCachedFiles($model);
+	}
 
-    /**
-     * Delete cache files matching prefix
-     *
-     * @param object $model
-     * @return void
-     */
-    protected function _deleteCachedFiles(Model $model)
-    {
-        foreach ($this->settings[$model->alias]['groups'] as $group) {
-            $configs = CroogoCache::groupConfigs($group);
-            foreach ($configs[$group] as $config) {
-                Cache::clearGroup($group, $config);
-            }
-        }
-    }
+/**
+ * Delete cache files matching prefix
+ *
+ * @param object $model
+ * @return void
+ */
+	protected function _deleteCachedFiles(Model $model) {
+		foreach ($this->settings[$model->alias]['groups'] as $group) {
+			$configs = CroogoCache::groupConfigs($group);
+			foreach ($configs[$group] as $config) {
+				Cache::clearGroup($group, $config);
+			}
+		}
+	}
 
 }

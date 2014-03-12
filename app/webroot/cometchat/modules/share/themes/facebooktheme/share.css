@@ -4,10 +4,8 @@
 */
 
 html, body {
-    background: < ? php echo $ themeSettings [ 'tab_background' ];
-    ? >;
-    direction: < ? php echo $ dir;
-    ? >;
-    overflow: hidden;
-    width: 500px;
+	background: <?php echo $themeSettings['tab_background'];?>;
+	direction: <?php echo $dir;?>;
+	overflow: hidden;
+	width: 500px;
 }

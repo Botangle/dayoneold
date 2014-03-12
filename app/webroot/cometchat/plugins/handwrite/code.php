@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('handwrite', 'Handwrite a message');
+$plugininfo = array('handwrite','Handwrite a message');

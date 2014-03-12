@@ -8,7 +8,6 @@ App::uses('CroogoAppShell', 'Croogo.Console');
  * @package  Croogo
  * @link     http://www.croogo.org
  */
-class AppShell extends CroogoAppShell
-{
+class AppShell extends CroogoAppShell {
 
 }

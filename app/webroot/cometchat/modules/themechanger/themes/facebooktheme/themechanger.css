@@ -11,38 +11,33 @@ small, strike, strong, sub, sup, tt, var,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    font-weight: inherit;
-    font-style: inherit;
-    font-size: 100%;
-    font-family: inherit;
-    vertical-align: baseline;
-    overflow: hidden;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+	overflow: hidden;
 }
 
 html, body {
-    background: < ? php echo $ themeSettings [ 'tab_background' ];
-    ? >;
+	background: <?php echo $themeSettings['tab_background'];?>;
 }
 
 .container {
-    font-family: < ? php echo $ themeSettings [ 'tab_font_family' ];
-    ? >;
-    font-size: < ? php echo $ themeSettings [ 'tab_font_size' ];
-    ? >;
-    color: < ? php echo $ themeSettings [ 'tab_color' ];
-    ? >;
-    float: left;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	float: left;   
     height: 93px;
     overflow: auto;
     padding: 5px;
     width: 94%;
-}
+}   
 
 .container a {
-    color: < ? php echo $ themeSettings [ 'tab_link_color' ];
-    ? >;
+	color: <?php echo $themeSettings['tab_link_color'];?>;
 }

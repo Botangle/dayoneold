@@ -1,10 +1,9 @@
 <?php
+class MessageData {
 
-class MessageData
-{
+	public $table = 'messages';
 
-    public $table = 'messages';
-
-    public $records = array();
+	public $records = array(
+	);
 
 }

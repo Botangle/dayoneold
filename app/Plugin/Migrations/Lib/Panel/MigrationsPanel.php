@@ -26,60 +26,58 @@ App::import('Lib', 'Migrations.MigrationVersion');
  * @package migrations
  * @subpackage migrations.vendors
  */
-class MigrationsPanel extends DebugPanel
-{
+class MigrationsPanel extends DebugPanel {
 
-    /**
-     * Title
-     *
-     * @var string
-     */
-    public $title = 'Migrations';
+/**
+ * Title
+ *
+ * @var string
+ */
+	public $title = 'Migrations';
 
-    /**
-     * Element name
-     *
-     * @var string
-     */
-    public $elementName = 'migrations_panel';
+/**
+ * Element name
+ *
+ * @var string
+ */
+	public $elementName = 'migrations_panel';
 
-    /**
-     * Plugin name
-     *
-     * @var string
-     */
-    public $plugin = 'migrations';
+/**
+ * Plugin name
+ *
+ * @var string
+ */
+	public $plugin = 'migrations';
 
-    /**
-     * Output buffer
-     *
-     * @var string
-     */
-    public $output = '';
+/**
+ * Output buffer
+ *
+ * @var string
+ */
+	public $output = '';
 
-    /**
-     * beforeRender Callback
-     *
-     * @param Controller $controller
-     * @return array
-     */
-    public function beforeRender(Controller $controller)
-    {
-        $v = new MigrationVersion();
-        $map = $migrations = array();
+/**
+ * beforeRender Callback
+ *
+ * @param Controller $controller
+ * @return array
+ */
+	public function beforeRender(Controller $controller) {
+		$v = new MigrationVersion();
+		$map = $migrations = array();
 
-        $migrations = Hash::merge(array('app'), CakePlugin::loaded());
-        foreach ($migrations as $plugin) {
-            try {
-                $map[$plugin] = array(
-                    'map' => $v->getMapping($plugin),
-                    'current' => $v->getVersion($plugin)
-                );
-            } catch (MigrationVersionException $e) {
-                // Skip if we get an error.
-            }
-        }
-        return $map;
-    }
+		$migrations = Hash::merge(array('app'), CakePlugin::loaded());
+		foreach ($migrations as $plugin) {
+			try {
+				$map[$plugin] = array(
+					'map' => $v->getMapping($plugin),
+					'current' => $v->getVersion($plugin)
+				);
+			} catch (MigrationVersionException $e) {
+				// Skip if we get an error.
+			}
+		}
+		return $map;
+	}
 
 }

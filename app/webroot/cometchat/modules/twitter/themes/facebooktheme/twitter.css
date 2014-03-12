@@ -11,73 +11,64 @@ small, strike, strong, sub, sup, tt, var,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    font-weight: inherit;
-    font-style: inherit;
-    font-size: 100%;
-    font-family: inherit;
-    vertical-align: baseline;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
 }
 
 html, body {
-    overflow: hidden;
-    background: < ? php echo $ themeSettings [ 'tab_background' ];
-    ? >;
-    direction: < ? php echo $ dir;
-    ? >;
+	overflow: hidden;
+	background: <?php echo $themeSettings['tab_background'];?>;
+	direction: <?php echo $dir;?>;
 }
 
 ul {
-    float: left;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 li {
-    float: left;
-    margin: 0;
-    padding: 10px;
-}
+  float: left;
+  margin: 0;
+  padding: 10px;
+} 
 
 .container {
-    font-weight: normal;
-    font-family: < ? php echo $ themeSettings [ 'tab_font_family' ];
-    ? >;
-    font-size: < ? php echo $ themeSettings [ 'tab_font_size' ];
-    ? >;
-    color: < ? php echo $ themeSettings [ 'tab_color' ];
-    ? >;
-    padding: 0px;
+	font-weight: normal;
+	font-family: <?php echo $themeSettings['tab_font_family'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size'];?>;
+	color: <?php echo $themeSettings['tab_color'];?>;
+	padding: 0px;
 }
 
 .container a {
-    color: < ? php echo $ themeSettings [ 'tab_link_color' ];
-    ? >;
+	color: <?php echo $themeSettings['tab_link_color'];?>;
 }
 
 small {
-    color: < ? php echo $ themeSettings [ 'tab_color_self' ];
-    ? >;
-    font-size: < ? php echo $ themeSettings [ 'tab_font_size_small' ];
-    ? >;
+	color: <?php echo $themeSettings['tab_color_self'];?>;
+	font-size: <?php echo $themeSettings['tab_font_size_small'];?>;
 }
 
 .followme {
-    float: left;
-    width: 154px;
-    border-right: 1px dotted < ? php echo $ themeSettings [ 'bar_border_light' ];
-    ? >;
-    padding: 10px;
+	float: left;
+	width: 154px;
+	border-right: 1px dotted <?php echo $themeSettings['bar_border_light'];?>;
+	padding: 10px;
 }
 
 .slimScrollDiv {
-    height: 290px !important;
+	height: 290px !important;
 }
 
 #tweets {
-    padding-right: 5px !important;
+	padding-right: 5px !important;
 }

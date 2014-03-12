@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('chathistory', 'Chat History');
+$plugininfo = array('chathistory','Chat History');

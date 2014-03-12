@@ -2,51 +2,51 @@
 
 // Basic
 CroogoRouter::connect('/', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'promoted'
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'promoted'
 ));
 
 CroogoRouter::connect('/promoted/*', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'promoted'
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'promoted'
 ));
 
 CroogoRouter::connect('/search/*', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'search'
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'search'
 ));
 
 CroogoRouter::connect('/reportbug', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'reportbug',
-
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'reportbug',
+	 
 ));
 
 // Content types
 CroogoRouter::contentType('blog');
 CroogoRouter::contentType('node');
 if (Configure::read('Croogo.installed')) {
-    CroogoRouter::routableContentTypes();
+	CroogoRouter::routableContentTypes();
 }
 
 // Page
 CroogoRouter::connect('/about', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
-    'type' => 'page', 'slug' => 'about'
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
+	'type' => 'page', 'slug' => 'about'
 ));
 CroogoRouter::connect('/privacy', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
-    'type' => 'page', 'slug' => 'privacy'
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
+	'type' => 'page', 'slug' => 'privacy'
 ));
 CroogoRouter::connect('/faq', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
-    'type' => 'page', 'slug' => 'faq'
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
+	'type' => 'page', 'slug' => 'faq'
 ));
 CroogoRouter::connect('/contact-us', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
-    'type' => 'page', 'slug' => 'contact-us'
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
+	'type' => 'page', 'slug' => 'contact-us'
 ));
 CroogoRouter::connect('/terms', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
-    'type' => 'page', 'slug' => 'terms'
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
+	'type' => 'page', 'slug' => 'terms'
 ));
 CroogoRouter::connect('/page/:slug', array(
-    'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
-    'type' => 'page'
+	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
+	'type' => 'page'
 ));

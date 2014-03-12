@@ -53,50 +53,46 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) {
-    echo "NO DICE";
-    exit;
-}
+if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 $navigation = <<<EOD
 	<div id="leftnav">
 	</div>
 EOD;
 
-function index()
-{
-    global $body;
-    global $currentversion;
-    $stats = '';
-
-    if (isset($_REQUEST['currentTime'])) {
-        $_SESSION['cometchat']['timedifference'] = round((($_REQUEST['currentTime'] - getTimeStamp()) / 60) / 30) * 60 * 30;
-    } else {
-        $_SESSION['cometchat']['timedifference'] = 0;
-    }
-    if (USE_COMET == 1 && SAVE_LOGS == 0) {
-        $stats = <<<EOD
+function index() {
+	global $body;
+	global $currentversion;
+	$stats = '';
+	
+	if (isset($_REQUEST['currentTime'])) {
+		$_SESSION['cometchat']['timedifference'] = round((($_REQUEST['currentTime']-getTimeStamp())/60)/30)*60*30;
+	} else {
+		$_SESSION['cometchat']['timedifference'] = 0;
+	}
+	if(USE_COMET == 1 && SAVE_LOGS == 0) {
+	$stats = <<<EOD
 
 		 <div style="float: left; padding-right: 20px; border-right: 1px dotted rgb(204, 204, 204); margin-right: 20px; width: 400px;">
 			<h1 style="font-size: 50px; font-weight: bold;"></h1>
 		</div>
 
 EOD;
-    } else {
-        $onlineusers = onlineusers();
+	} else {
+		$onlineusers = onlineusers();
 
-        $sql = ("select count(id) totalmessages from cometchat");
-        $query = mysql_query($sql);
-        $r = mysql_fetch_array($query);
-        $totalmessages = $r['totalmessages'];
+		$sql = ("select count(id) totalmessages from cometchat");
+		$query = mysql_query($sql); 
+		$r = mysql_fetch_array($query);
+		$totalmessages = $r['totalmessages'];
 
-        $now = getTimeStamp() - 60 * 60 * 24;
+		$now = getTimeStamp()-60*60*24;
 
-        $sql = ("select count(id) totalmessages from cometchat where sent >= $now");
-        $query = mysql_query($sql);
-        $r = mysql_fetch_array($query);
-        $totalmessagest = $r['totalmessages'];
-        $stats = <<<EOD
+		$sql = ("select count(id) totalmessages from cometchat where sent >= $now");
+		$query = mysql_query($sql); 
+		$r = mysql_fetch_array($query);
+		$totalmessagest = $r['totalmessages'];
+		$stats = <<<EOD
 
 		<div style="float:left;padding-right:20px;border-right:1px dotted #cccccc;margin-right:20px;">
 			<h1 style="font-size: 50px; font-weight: bold;">$onlineusers</h1>
@@ -114,19 +110,19 @@ EOD;
 		</div>
 
 EOD;
-    }
+	}
 
-    $detectchangepass = 'Below are quick statistics of your site. Be sure to frequently change your administrator password.';
+	$detectchangepass = 'Below are quick statistics of your site. Be sure to frequently change your administrator password.';
 
-    if (ADMIN_USER == 'cometchat' && ADMIN_PASS == 'cometchat') {
-        $detectchangepass = '<span style="color:#ff0000">Warning: Default administrator username/password detected. Please go to settings and change the username and password.</span>';
-    }
+	if ( ADMIN_USER == 'cometchat' && ADMIN_PASS == 'cometchat') {
+		$detectchangepass = '<span style="color:#ff0000">Warning: Default administrator username/password detected. Please go to settings and change the username and password.</span>';
+	}
 
-    if (empty($totalmessages)) {
-        $totalmessages = 0;
-    }
+	if (empty($totalmessages)) {
+		$totalmessages = 0;
+	}
 
-    $body = <<<EOD
+		$body = <<<EOD
 <h2>Welcome</h2>
 <h3>$detectchangepass</h3>
 
@@ -157,16 +153,15 @@ EOD;
 <div style="clear:both"></div>
 	
 EOD;
-    template();
+	template();
 }
 
-function loadexternal()
-{
-    global $getstylesheet;
-    if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $_GET['type'] . 's' . DIRECTORY_SEPARATOR . $_GET['name'] . DIRECTORY_SEPARATOR . 'settings.php')) {
-        require(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . $_GET['type'] . 's' . DIRECTORY_SEPARATOR . $_GET['name'] . DIRECTORY_SEPARATOR . 'settings.php');
-    } else {
-        echo <<<EOD
+function loadexternal() {
+	global $getstylesheet;
+	if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$_GET['type'].'s'.DIRECTORY_SEPARATOR.$_GET['name'].DIRECTORY_SEPARATOR.'settings.php')) {
+		require (dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.$_GET['type'].'s'.DIRECTORY_SEPARATOR.$_GET['name'].DIRECTORY_SEPARATOR.'settings.php');
+	} else {
+echo <<<EOD
 $getstylesheet
 <form>
 <div id="content">
@@ -176,5 +171,5 @@ $getstylesheet
 </div>
 </form>
 EOD;
-    }
+	}
 }

@@ -53,12 +53,12 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
 
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
 
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
-    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
+if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
+	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
 }
 
 $toId = $_GET['id'];
@@ -67,20 +67,20 @@ $baseData = $_REQUEST['basedata'];
 $chatroommode = 0;
 
 if (!empty($_GET['chatroommode'])) {
-    $chatroommode = 1;
+	$chatroommode = 1;
 }
-
+ 
 $embed = '';
 $embedcss = '';
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
-    $embed = 'web';
-    $embedcss = 'embed';
-}
+if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
+	$embed = 'web';
+	$embedcss = 'embed';
+}	
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
-    $embed = 'desktop';
-    $embedcss = 'embed';
+if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
+	$embed = 'desktop';
+	$embedcss = 'embed';
 }
 
 echo <<<EOD

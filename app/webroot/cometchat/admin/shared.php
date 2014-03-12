@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /*
 
@@ -53,131 +53,123 @@ THE SOFTWARE.
 
 */
 
-function themeslist()
-{
-    $themes = array();
+function themeslist() {
+	$themes = array();
+	
+	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'css'.DIRECTORY_SEPARATOR.'cometchat.css')) {
+				$themes[] = $file;
+			}
+		}
+		closedir($handle);
+	}
 
-    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'cometchat.css')) {
-                $themes[] = $file;
-            }
-        }
-        closedir($handle);
-    }
 
-
-    return $themes;
+	return $themes;
 }
 
-function configeditor($keyword, $config, $append = 0, $file = null)
-{
-    if ($file == null) {
-        $file = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.php';
-    }
+function configeditor ($keyword, $config, $append = 0, $file = null) {
+	if ($file == null) {
+		$file = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'config.php';
+	}
 
-    $fh = fopen($file, 'r');
-    $data = fread($fh, filesize($file));
-    fclose($fh);
+	$fh = fopen($file, 'r');
+	$data = fread($fh, filesize($file));
+	fclose($fh);
 
-    $pattern = "/\/\* $keyword START \*\/(\s*)(.*?)(\s*)\/\* $keyword END \*\//is";
+	$pattern = "/\/\* $keyword START \*\/(\s*)(.*?)(\s*)\/\* $keyword END \*\//is";
 
-    if ($append == 1) {
-        $replacement = "/* $keyword START */\r\n\r\n\\2\r\n" . $config . "\r\n\r\n/* $keyword END */";
-    } else {
-        $replacement = "/* $keyword START */\r\n\r\n" . $config . "\r\n\r\n/* $keyword END */";
-    }
+	if ($append == 1) {
+		$replacement = "/* $keyword START */\r\n\r\n\\2\r\n".$config."\r\n\r\n/* $keyword END */";
+	} else {
+		$replacement = "/* $keyword START */\r\n\r\n".$config."\r\n\r\n/* $keyword END */";
+	}
 
-    $newdata = preg_replace($pattern, $replacement, $data);
+	$newdata = preg_replace($pattern, $replacement, $data);
+	
+	if (is_writable($file)) {
+		if (!$handle = fopen($file, 'w')) {
+			 echo "Cannot open file ($file)";
+			 exit;
+		}
 
-    if (is_writable($file)) {
-        if (!$handle = fopen($file, 'w')) {
-            echo "Cannot open file ($file)";
-            exit;
-        }
+		if (fwrite($handle, $newdata) === FALSE) {
+			echo "Cannot write to file ($file)";
+			exit;
+		}
 
-        if (fwrite($handle, $newdata) === FALSE) {
-            echo "Cannot write to file ($file)";
-            exit;
-        }
+		fclose($handle);
 
-        fclose($handle);
+	} else {
+		echo "The file $file is not writable. Please CHMOD config.php to 777.";
+		exit;
+	}
 
-    } else {
-        echo "The file $file is not writable. Please CHMOD config.php to 777.";
-        exit;
-    }
-
-    if ($handle = opendir(dirname(dirname(__FILE__)) . '/cache/')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && $file != "index.html") {
-                unlink(dirname(dirname(__FILE__)) . '/cache/' . $file);
-            }
-        }
-    }
+	if ($handle = opendir(dirname(dirname(__FILE__)).'/cache/')) {
+		   while (false !== ($file = readdir($handle))) {   
+			if ($file != "." && $file != ".." && $file != "index.html") {
+			 unlink(dirname(dirname(__FILE__)).'/cache/'.$file);
+		   }
+	   }
+	}
 }
 
-function createslug($title, $rand = false)
-{
-    $slug = preg_replace("/[^a-zA-Z0-9]/", "", $title);
-    if ($rand) {
-        $slug .= rand(0, 9999);
-    }
-    return strtolower($slug);
+function createslug($title,$rand = false) {
+	$slug = preg_replace("/[^a-zA-Z0-9]/", "", $title);
+	if ($rand) { $slug .= rand(0,9999); }
+	return strtolower($slug);
 }
 
-function extension($filename)
-{
-    return pathinfo($filename, PATHINFO_EXTENSION);
+function extension($filename) {        
+	return pathinfo($filename, PATHINFO_EXTENSION);
 }
 
 
-function deletedirectory($dir)
-{
+function deletedirectory($dir) {
     if (!file_exists($dir)) return true;
     if (!is_dir($dir) || is_link($dir)) return unlink($dir);
-    foreach (scandir($dir) as $item) {
-        if ($item == '.' || $item == '..') continue;
-        if (!deleteDirectory($dir . "/" . $item)) {
-            chmod($dir . "/" . $item, 0777);
-            if (!deleteDirectory($dir . "/" . $item)) return false;
-        };
-    }
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') continue;
+            if (!deleteDirectory($dir . "/" . $item)) {
+                chmod($dir . "/" . $item, 0777);
+                if (!deleteDirectory($dir . "/" . $item)) return false;
+            };
+        }
     return rmdir($dir);
 }
 
 
-function copydirectory($src, $dst, $clone, $theme)
-{
+function copydirectory($src,$dst,$clone,$theme) {
     $dir = opendir($src);
     @mkdir($dst);
-    while (false !== ($file = readdir($dir))) {
-        if (($file != '.') && ($file != '..')) {
-            if (is_dir($src . '/' . $file)) {
-            } else {
-                $newfile = str_replace($clone, $theme, $file);
-                copy($src . '/' . $file, $dst . '/' . $newfile);
+    while(false !== ( $file = readdir($dir)) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            if ( is_dir($src . '/' . $file) ) {
+            }
+            else {
+				$newfile = str_replace($clone,$theme,$file);
+                copy($src . '/' . $file,$dst . '/' . $newfile);
             }
         }
     }
     closedir($dir);
-}
+} 
 
-function checktoken()
-{
+function checktoken() {
+	
+	$secure = 0;
 
-    $secure = 0;
+	if(!empty($_REQUEST['token']) && $_REQUEST['token'] == $_SESSION['token']) {
+		$secure = 1;
+		unset($_GET['token']);
+		unset($_POST['token']);
+	}
 
-    if (!empty($_REQUEST['token']) && $_REQUEST['token'] == $_SESSION['token']) {
-        $secure = 1;
-        unset($_GET['token']);
-        unset($_POST['token']);
-    }
-
-    if (!$secure) {
-        echo "CSRF attack detected. Halting request.";
-        exit;
-    }
+	if (!$secure) {
+		echo "CSRF attack detected. Halting request.";
+		exit;
+	}
 }
 
 

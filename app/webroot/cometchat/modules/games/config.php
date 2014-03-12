@@ -12,15 +12,15 @@ $partner_id = '53f6b8a7c5e84444';
 $keywordlist = '';
 
 if (!empty($keywords)) {
-    $keywordsarray = explode(',', $keywords);
-    foreach ($keywordsarray as $keyword) {
-        if ($keyword) {
-            $keyword = trim($keyword);
-            $keyword = preg_replace('/[^\w\d_ -]/si', '', $keyword);
-            $keywordlist .= '|' . $keyword . '';
-        }
-    }
-    $keywordlist = substr($keywordlist, 1);
+	$keywordsarray = explode(',',$keywords);
+	foreach ($keywordsarray as $keyword) {
+		if($keyword){
+		$keyword = trim($keyword);
+		$keyword = preg_replace('/[^\w\d_ -]/si', '', $keyword);
+		$keywordlist .= '|'.$keyword.'';
+		}
+	}
+	$keywordlist = substr($keywordlist,1);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

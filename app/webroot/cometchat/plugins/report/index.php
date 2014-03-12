@@ -53,77 +53,73 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
+include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
 
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
-    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
+if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
+	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
 }
 
-if ($p_ < 1) exit;
+if ($p_<1) exit;
 
 if (!empty($_GET['action']) && !empty($_SESSION['cometchat']['report_rand']) && $_SESSION['cometchat']['report_rand'] == $_POST['rand']) {
 
-    unset($_SESSION['cometchat']['report_rand']);
+unset($_SESSION['cometchat']['report_rand']);
 
-    $id = $_POST['id'];
-    $issue = $_POST['issue'];
+$id = $_POST['id'];
+$issue = $_POST['issue'];
 
-    $sql = getUserDetails($userid);
+$sql = getUserDetails($userid);
 
-    if ($guestsMode && $userid >= 10000000) {
-        $sql = getGuestDetails($userid);
-    }
+if ($guestsMode && $userid >= 10000000) {
+	$sql = getGuestDetails($userid);
+}
 
-    $query = mysql_query($sql);
-    if (defined('DEV_MODE') && DEV_MODE == '1') {
-        echo mysql_error();
-    }
-    $user = mysql_fetch_array($query);
-    if (function_exists('processName')) {
-        $user['username'] = processName($user['username']);
-    }
+$query = mysql_query($sql);
+if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
+$user = mysql_fetch_array($query);
+if (function_exists('processName')) {
+	$user['username'] = processName($user['username']);
+}
 
-    $reporter = $user['username'];
+$reporter = $user['username'];
 
-    $sql = getUserDetails($id);
+$sql = getUserDetails($id);
 
-    if ($guestsMode && $id >= 10000000) {
-        $sql = getGuestDetails($id);
-    }
+if ($guestsMode && $id >= 10000000) {
+	$sql = getGuestDetails($id);
+}
 
-    $query = mysql_query($sql);
-    if (defined('DEV_MODE') && DEV_MODE == '1') {
-        echo mysql_error();
-    }
-    $user = mysql_fetch_array($query);
-    if (function_exists('processName')) {
-        $user['username'] = processName($user['username']);
-    }
+$query = mysql_query($sql);
+if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
+$user = mysql_fetch_array($query);
+if (function_exists('processName')) {
+	$user['username'] = processName($user['username']);
+}
 
-    $log = '';
-    $filename = 'Conversation with ' . $user['username'] . ' on ' . date('M jS Y');
+$log = '';
+$filename = 'Conversation with '.$user['username'].' on '.date('M jS Y');
 
-    $messages = array();
+$messages = array();
 
-    getChatboxData($id);
+getChatboxData($id);
 
-    $log .= 'Conversation with ' . $user['username'] . ' (' . $id . ') on ' . date('M jS Y');
-    $log .= "\r\n-------------------------------------------------------\r\n\r\n";
+$log .= 'Conversation with '.$user['username'].' ('.$id.') on '.date('M jS Y');
+$log .= "\r\n-------------------------------------------------------\r\n\r\n";
 
-    foreach ($messages as $chat) {
-        $chat['message'] = strip_tags($chat['message']);
-        if ($chat['self'] == 1) {
-            $log .= '(' . date('g:iA', $chat['sent']) . ") " . $language[10] . ': ' . $chat['message'] . "\r\n";
-        } else {
-            $log .= '(' . date('g:iA', $chat['sent']) . ") " . $user['username'] . ': ' . $chat['message'] . "\r\n";
-        }
-    }
+foreach ($messages as $chat) {
+	$chat['message'] = strip_tags($chat['message']);
+	if ($chat['self'] == 1) {
+		$log .= '('.date('g:iA', $chat['sent']).") ".$language[10].': '.$chat['message']."\r\n";
+	} else {
+		$log .= '('.date('g:iA', $chat['sent']).") ".$user['username'].': '.$chat['message']."\r\n";
+	}
+}
 
-    $to = $reportEmail;
-    $subject = 'CometChat Incident Report';
-    $message = <<<EOD
+$to      = $reportEmail;
+$subject = 'CometChat Incident Report';
+$message = <<<EOD
 Hello,
 
 The following incident was reported by $reporter:
@@ -136,29 +132,29 @@ $log
 
 EOD;
 
-    $headers = 'From: bounce@chat.com' . "\r\n" .
-        'Reply-To: bounce@chat.com' . "\r\n" .
-        'X-Mailer: PHP/' . phpversion();
+$headers = 'From: bounce@chat.com' . "\r\n" .
+    'Reply-To: bounce@chat.com' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
 
-    mail($to, $subject, $message, $headers);
+mail($to, $subject, $message, $headers);
 
-    $embed = '';
-    $embedcss = '';
-    $close = "setTimeout('window.close()',2000);";
+$embed = '';
+$embedcss = '';
+$close = "setTimeout('window.close()',2000);";
 
-    if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
-        $embed = 'web';
-        $embedcss = 'embed';
-        $close = "parent.closeCCPopup('report');";
-    }
+if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
+	$embed = 'web';
+	$embedcss = 'embed';
+	$close = "parent.closeCCPopup('report');";
+}	
 
-    if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
-        $embed = 'desktop';
-        $embedcss = 'embed';
-        $close = "parentSandboxBridge.closeCCPopup('report');";
-    }
+if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
+	$embed = 'desktop';
+	$embedcss = 'embed';
+	$close = "parentSandboxBridge.closeCCPopup('report');";
+}
 
-    echo <<<EOD
+echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -187,29 +183,29 @@ EOD;
 
 } else {
 
-    $toId = $_GET['id'];
+	$toId = $_GET['id'];
 
-    $_SESSION['cometchat']['report_rand'] = rand(0, 9999);
+	$_SESSION['cometchat']['report_rand'] = rand(0,9999);
 
 
-    $embed = '';
-    $embedcss = '';
+	$embed = '';
+	$embedcss = '';
 
-    if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
-        $embed = 'web';
-        $embedcss = 'embed';
-    }
+	if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
+		$embed = 'web';
+		$embedcss = 'embed';
+	}	
 
-    if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
-        $embed = 'desktop';
-        $embedcss = 'embed';
-    }
-
-    if (isset($_REQUEST['callbackfn']) && $_REQUEST['callbackfn'] == 'mobileapp') {
-        echo $_SESSION['cometchat']['report_rand'];
-    } else {
-
-        echo <<<EOD
+	if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
+		$embed = 'desktop';
+		$embedcss = 'embed';
+	}
+	
+	if (isset($_REQUEST['callbackfn']) && $_REQUEST['callbackfn'] == 'mobileapp') {
+		echo $_SESSION['cometchat']['report_rand'];	
+	} else {
+	
+		echo <<<EOD
 		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 		<html>
 			<head>
@@ -239,5 +235,5 @@ EOD;
 			</body>
 		</html>
 EOD;
-    }
+	}
 }

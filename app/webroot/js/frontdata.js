@@ -3,61 +3,61 @@ var classprefix ="verify";
 var mustCheck = true;
 var validatefrom = {
     validation : function (formName,customfunction){
-    var formId = formName;
+       var formId = formName; 
+	
+       jQuery("FORM").submit(function(event){
+            if(mustCheck) { 
+			
+                    if( !validatefrom.checkForm(this) ) {
+                            event.preventDefault();
+                    }else{   
+						if(customfunction!=undefined){ 
+							if(!customdata.checkValidation(formId)){ 
+								event.preventDefault();
+							}
+						}
+					}
+		} else {
+			mustCheck = !mustCheck;
+		}
+       })
+      
+    },
+    checkForm : function (form) { 
+        var send = true;
+        var password = '';
+        radioGroups = Array();
+        checkboxGroups = Array();
+		
+        jQuery( form ).removeClass ( "haserrors" );
+        inputs = jQuery(form).find('INPUT[class*="' + classprefix + '"]:visible, .required INPUT:visible, .required TEXTAREA:visible, .required SELECT:visible');
+		 
+        jQuery.each(inputs, function(i, val) {  
+            input = jQuery(val);
+            if( input.attr('offsetWidth') != 0 ) {
+                var tag = input.get(0).tagName;
+                var inputType = '';
+			 
+                if( tag == 'INPUT' ) {
+                    inputType = input.attr('type');
+                } else if( tag == 'SELECT' ) {
+                    inputType = 'select-one';
+                } else if( tag == 'TEXTAREA' ) {
+                    inputType = 'textarea';					
+                }
+               
+                switch(inputType) {
+                   
+                    case 'select-one':  
+					if( input.val() == '' || input.val() == null) { 
+						if( send ) validatefrom.moveTo(input);
+						validatefrom.showErrorOn( input );
+						send = false;
+					}
+				break;
 
-    jQuery("FORM").submit(function(event){
-    if(mustCheck) {
-
-    if( !validatefrom.checkForm(this) ) {
-    event.preventDefault();
-    }else{
-    if(customfunction!=undefined){
-    if(!customdata.checkValidation(formId)){
-    event.preventDefault();
-    }
-}
-}
-} else {
-    mustCheck = !mustCheck;
-    }
-})
-
-},
-checkForm : function (form) {
-    var send = true;
-    var password = '';
-    radioGroups = Array();
-    checkboxGroups = Array();
-
-    jQuery( form ).removeClass ( "haserrors" );
-    inputs = jQuery(form).find('INPUT[class*="' + classprefix + '"]:visible, .required INPUT:visible, .required TEXTAREA:visible, .required SELECT:visible');
-
-    jQuery.each(inputs, function(i, val) {
-    input = jQuery(val);
-    if( input.attr('offsetWidth') != 0 ) {
-    var tag = input.get(0).tagName;
-    var inputType = '';
-
-    if( tag == 'INPUT' ) {
-    inputType = input.attr('type');
-    } else if( tag == 'SELECT' ) {
-    inputType = 'select-one';
-    } else if( tag == 'TEXTAREA' ) {
-    inputType = 'textarea';
-    }
-
-switch(inputType) {
-
-    case 'select-one':
-    if( input.val() == '' || input.val() == null) {
-    if( send ) validatefrom.moveTo(input);
-    validatefrom.showErrorOn( input );
-    send = false;
-    }
-break;
-
-case 'select-multiple':
-if( input.get(0)[ input.attr('selectedIndex') ].value == '' || input.val() == null) {
+                    case 'select-multiple':  
+                            if( input.get(0)[ input.attr('selectedIndex') ].value == '' || input.val() == null) {  
                                     if( send ) validatefrom.moveTo(input);
                                     validatefrom.showErrorOn( input );
                                     send = false;
@@ -190,10 +190,10 @@ isTypeValid : function ( input, type, value ) {
 	}
 	
 	if( type == classprefix + 'Url' ) {
-		return ( value.match( /^(https?:\/\/)?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?(([0-9]{1, 3}\.){3}[0-9]{1, 3}|([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0, 61})?[0-9a-z]\.[a-z]{2, 6})(:[0-9]{1, 4})?((\/?)|(\/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+\/?)$/ ) );
-}
-
-if( type == classprefix + 'MultipleWords' ) {
+		return ( value.match( /^(https?:\/\/)?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-z_!~*'()-]+\.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z]\.[a-z]{2,6})(:[0-9]{1,4})?((\/?)|(\/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+\/?)$/ ) );
+	}
+	
+	if( type == classprefix + 'MultipleWords' ) {
 		return value.match(/^.*[^^]\s[^$].*$/);
 	}
 	
@@ -227,7 +227,7 @@ moveTo : function ( input ) {
 showErrorOn : function ( input ) {
 /* BUG FIXED FOR IE: when submited it auto focuses to the first required field, so the hint and red box aren't there. Might be confusing to a user!
 
-input.bind('focus.rmErrorClass', function(){
+	input.bind('focus.rmErrorClass', function(){
 		rmErrorClass( this );
 	});
 */

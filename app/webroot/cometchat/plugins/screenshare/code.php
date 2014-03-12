@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('screenshare', 'Screensharing');
+$plugininfo = array('screenshare','Screensharing');

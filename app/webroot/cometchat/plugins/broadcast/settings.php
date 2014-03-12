@@ -53,57 +53,55 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) {
-    echo "NO DICE";
-    exit;
-}
+if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 if (empty($_GET['process'])) {
-    global $getstylesheet;
-    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
+	global $getstylesheet;
+	require dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php';
+	
+	$curl = 0;
+	$errorMsg = '';
 
-    $curl = 0;
-    $errorMsg = '';
+	$rchkd = '';
+	$fchkd = '';
+	$ochkd = '';
+	
+	
+	$hideFMSSettings = '';
+	$hideRed5Settings = '';
+	$hideOTASettings = '';
+	
 
-    $rchkd = '';
-    $fchkd = '';
-    $ochkd = '';
+	$commonSettings = '';
 
+	if ($videoPluginType == '2') {
+		$ochkd = "selected";
+		$hideFMSSettings = 'style="display:none;"';
+		$commonSettings = 'display:none;';
+		$errorMsg = "";
+		if(!checkcURL()) {
+			$curl = 1;
+			$hideOTASettings = 'style="display:none;"';
+			$errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for CometChat Server.</h2>";
+		}
+	} elseif ($videoPluginType == '1') {
+		$rchkd = "selected";
+		$hideFMSSettings = 'style="display:none;"';
+		$hideOTASettings = 'style="display:none;"';
+		$errorMsg = "";
+	} else { 
+		$fchkd = "selected";
+		$hideRed5Settings = 'style="display:none;"';
+		$hideOTASettings = 'style="display:none;"';
+		$errorMsg = "";
+	}
+	
 
-    $hideFMSSettings = '';
-    $hideRed5Settings = '';
-    $hideOTASettings = '';
+	
+	$message = "<h3 id='data'></h3>";
 
-
-    $commonSettings = '';
-
-    if ($videoPluginType == '2') {
-        $ochkd = "selected";
-        $hideFMSSettings = 'style="display:none;"';
-        $commonSettings = 'display:none;';
-        $errorMsg = "";
-        if (!checkcURL()) {
-            $curl = 1;
-            $hideOTASettings = 'style="display:none;"';
-            $errorMsg = "<h2 id='errormsg' style='font-size: 11px; color: rgb(255, 0, 0);'>cURL extension is disabled on your server. Please contact your webhost to enable it. cURL is required for CometChat Server.</h2>";
-        }
-    } elseif ($videoPluginType == '1') {
-        $rchkd = "selected";
-        $hideFMSSettings = 'style="display:none;"';
-        $hideOTASettings = 'style="display:none;"';
-        $errorMsg = "";
-    } else {
-        $fchkd = "selected";
-        $hideRed5Settings = 'style="display:none;"';
-        $hideOTASettings = 'style="display:none;"';
-        $errorMsg = "";
-    }
-
-
-    $message = "<h3 id='data'></h3>";
-
-
-    echo <<<EOD
+	
+echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html>
@@ -227,12 +225,12 @@ if (empty($_GET['process'])) {
 </html>
 EOD;
 } else {
+	
+	$data = '';
+	foreach ($_POST as $field => $value) {
+		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
+	}
 
-    $data = '';
-    foreach ($_POST as $field => $value) {
-        $data .= '$' . $field . ' = \'' . $value . '\';' . "\r\n";
-    }
-
-    configeditor('SETTINGS', $data, 0, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php');
-    header("Location:?module=dashboard&action=loadexternal&type=plugin&name=broadcast");
+	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
+	header("Location:?module=dashboard&action=loadexternal&type=plugin&name=broadcast");
 }

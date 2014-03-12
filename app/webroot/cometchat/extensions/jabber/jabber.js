@@ -67,84 +67,81 @@ function login_gtalk(session,username) {
 	var currenttime = new Date();
 	currenttime = parseInt(currenttime.getTime()/1000);
 
-	$.getJSON("<?php echo $cometchatServer;?>j?json_callback=?", {action:'login', username: username, password: session, session_key: session, server: '
-    <?php echo $jabberServer;?>', port: '<?php echo $jabberPort;?>', id: '<?php echo $gtalkAppId;?>', key: '<?php echo $gtalkSecretKey;?>'} , function(data){
+	$.getJSON("<?php echo $cometchatServer;?>j?json_callback=?", {action:'login', username: username, password: session, session_key: session, server: '<?php echo $jabberServer;?>', port: '<?php echo $jabberPort;?>', id: '<?php echo $gtalkAppId;?>', key: '<?php echo $gtalkSecretKey;?>'} , function(data){
 
-        if (data[0].error == '0') {
-        $.cookie('cc_jabber','true',{ path: '/' });
-    $.cookie('cc_jabber_id',data[0].msg,{ path: '/' });
-    $.cookie('cc_jabber_type','gtalk',{ path: '/' });
-    $('.container_body_2').remove();
-			$('#gtalk_box').html('
-        <span><?php echo $jabber_language[7];?></span>
-    ');
+		if (data[0].error == '0') {
+			$.cookie('cc_jabber','true',{ path: '/' });
+			$.cookie('cc_jabber_id',data[0].msg,{ path: '/' });
+			$.cookie('cc_jabber_type','gtalk',{ path: '/' });
+			$('.container_body_2').remove();
+			$('#gtalk_box').html('<span><?php echo $jabber_language[7];?></span>');
 
-    setTimeout(function() {
-        try {
-        if(before == "parent") {
-        parent.jqcc.ccjabber.process();
-        parent.closeCCPopup('jabber');
-        } else {
-        parentSandboxBridge.jqcc.ccjabber.process();
-        parentSandboxBridge.closeCCPopup('jabber');
-        }
-    } catch (e) {
-        crossDomain();
-        }
-    }, 4000);
-    } else {
-        alert('<?php echo $jabber_language[9];?>');
-        $('#gtalk').css('display','block');
-        $('#loader').css('display','none');
-        }
-    });
-    return false;
-    }
+			setTimeout(function() {
+				try {
+					if(before == "parent") {
+						parent.jqcc.ccjabber.process();
+						parent.closeCCPopup('jabber');
+					} else {
+						parentSandboxBridge.jqcc.ccjabber.process();
+						parentSandboxBridge.closeCCPopup('jabber');								
+					}
+				} catch (e) {
+					crossDomain();
+				}
+			}, 4000);
+		} else {
+			alert('<?php echo $jabber_language[9];?>');
+			$('#gtalk').css('display','block');
+			$('#loader').css('display','none');
+		}
+	});
+	return false;
+}
 
-    function login_facebook(session) {
+function login_facebook(session) {
+	   
+	var currenttime = new Date();
+	currenttime = parseInt(currenttime.getTime()/1000);
 
-        var currenttime = new Date();
-        currenttime = parseInt(currenttime.getTime()/1000);
+	$.getJSON("<?php echo $cometchatServer;?>j?json_callback=?", {action:'login', username: 'dummy'+currenttime, password: 'dummy'+currenttime, session_key: session, server: 'chat.facebook.com', port: '5222', id: '<?php echo $facebookAppId;?>', key: '<?php echo $facebookSecretKey;?>'} , function(data){
+		if (data[0].error == '0') {
+			$.cookie('cc_jabber','true',{ path: '/' });
+			$.cookie('cc_jabber_id',data[0].msg,{ path: '/' });
+			$.cookie('cc_jabber_type','facebook',{ path: '/' });
+	
+			setTimeout(function() {
+				try {
+					if(before == "parent") {
+						parent.jqcc.ccjabber.process();
+						parent.closeCCPopup('jabber');
+					} else {
+						parentSandboxBridge.jqcc.ccjabber.process();
+						parentSandboxBridge.closeCCPopup('jabber');								
+					}
+				} catch (e) {
+					crossDomain();
+				}
+			}, 4000);
 
-        $.getJSON("<?php echo $cometchatServer;?>j?json_callback=?", {action:'login', username: 'dummy'+currenttime, password: 'dummy'+currenttime, session_key: session, server: 'chat.facebook.com', port: '5222', id: '<?php echo $facebookAppId;?>', key: '<?php echo $facebookSecretKey;?>'} , function(data){
-        if (data[0].error == '0') {
-        $.cookie('cc_jabber','true',{ path: '/' });
-    $.cookie('cc_jabber_id',data[0].msg,{ path: '/' });
-    $.cookie('cc_jabber_type','facebook',{ path: '/' });
+		} else {
+			alert('<?php echo $jabber_language[9];?>');
+		}
+	});
+	return false;
+}
 
-    setTimeout(function() {
-        try {
-        if(before == "parent") {
-        parent.jqcc.ccjabber.process();
-        parent.closeCCPopup('jabber');
-        } else {
-        parentSandboxBridge.jqcc.ccjabber.process();
-        parentSandboxBridge.closeCCPopup('jabber');
-        }
-    } catch (e) {
-        crossDomain();
-        }
-    }, 4000);
-
-    } else {
-        alert('<?php echo $jabber_language[9];?>');
-        }
-    });
-    return false;
-    }
-
-    /*    $(document).ready(function() {
+/*	$(document).ready(function() {
 //	$.cookie('cc_jabber','false',{ path: '/' });
-    //    $.getJSON("<?php echo $cometchatServer;?>j?json_callback=?", {'action':'logout'});
-    });*/
+//	$.getJSON("<?php echo $cometchatServer;?>j?json_callback=?", {'action':'logout'});
+});*/
 
-    function crossDomain() {
-        var ts = Math.round((new Date()).getTime() / 1000);
-        location.href= '//'+domain+'/chat.htm?ts='+ts+'&jabber='+$.cookie('cc_jabber')+'&jabber_type='+$.cookie('cc_jabber_type')+'&jabber_id='+$.cookie('cc_jabber_id');
-        }
+function crossDomain() {
+	var ts = Math.round((new Date()).getTime() / 1000);
+	location.href= '//'+domain+'/chat.htm?ts='+ts+'&jabber='+$.cookie('cc_jabber')+'&jabber_type='+$.cookie('cc_jabber_type')+'&jabber_id='+$.cookie('cc_jabber_id');
+}
 
-    // Copyright (c) 2006 Klaus Hartl (stilbuero.de)
-    // http://www.opensource.org/licenses/mit-license.php
+// Copyright (c) 2006 Klaus Hartl (stilbuero.de)
+// http://www.opensource.org/licenses/mit-license.php
 
-    $.cookie=function(a,b,c){if(typeof b!='undefined'){c=c||{};if(b===null){b = '';c.expires=-1}var d='';if(c.expires&&(typeof c.expires=='number'||c.expires.toUTCString)){var e;if(typeof c.expires=='number'){e=new Date();e.setTime(e.getTime()+(c.expires*24*60*60*1000))}else{e = c.expires}d='; expires='+e.toUTCString()}var f=c.path?'; path='+(c.path):'';var g=c.domain?'; domain='+(c.domain):'';var h=c.secure?'; secure':'';document.cookie=[a,'=',encodeURIComponent(b),d,f,g,h].join('')}else{var j=null;if(document.cookie&&document.cookie!=''){var k=document.cookie.split(';');for(var i=0;i<k.length;i++){var l=$.trim(k[i]);if(l.substring(0,a.length+1)==(a+'=')){j=decodeURIComponent(l.substring(a.length+1));break}}}return j}};
+$.cookie=function(a,b,c){if(typeof b!='undefined'){c=c||{};if(b===null){b='';c.expires=-1}var d='';if(c.expires&&(typeof c.expires=='number'||c.expires.toUTCString)){var e;if(typeof c.expires=='number'){e=new Date();e.setTime(e.getTime()+(c.expires*24*60*60*1000))}else{e=c.expires}d='; expires='+e.toUTCString()}var f=c.path?'; path='+(c.path):'';var g=c.domain?'; domain='+(c.domain):'';var h=c.secure?'; secure':'';document.cookie=[a,'=',encodeURIComponent(b),d,f,g,h].join('')}else{var j=null;if(document.cookie&&document.cookie!=''){var k=document.cookie.split(';');for(var i=0;i<k.length;i++){var l=$.trim(k[i]);if(l.substring(0,a.length+1)==(a+'=')){j=decodeURIComponent(l.substring(a.length+1));break}}}return j}};
 		

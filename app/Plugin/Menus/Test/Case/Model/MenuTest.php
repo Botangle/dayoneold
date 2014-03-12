@@ -7,15 +7,14 @@ App::uses('CroogoTestCase', 'Croogo.TestSuite');
  * TestMenu
  *
  */
-class TestMenu extends Menu
-{
+class TestMenu extends Menu {
 
-    /**
-     * model alias
-     *
-     * @var string
-     */
-    public $alias = 'Menu';
+/**
+ * model alias
+ *
+ * @var string
+ */
+	public $alias = 'Menu';
 
 }
 
@@ -23,72 +22,68 @@ class TestMenu extends Menu
  * TestUser
  *
  */
-class MenuTest extends CroogoTestCase
-{
+class MenuTest extends CroogoTestCase {
 
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = array(
-        'plugin.users.aco',
-        'plugin.users.aro',
-        'plugin.users.aros_aco',
-        'plugin.settings.setting',
-        'plugin.menus.menu',
-        'plugin.menus.link',
-    );
+/**
+ * Fixtures
+ *
+ * @var array
+ */
+	public $fixtures = array(
+		'plugin.users.aco',
+		'plugin.users.aro',
+		'plugin.users.aros_aco',
+		'plugin.settings.setting',
+		'plugin.menus.menu',
+		'plugin.menus.link',
+	);
 
-    /**
-     * Menu instance
-     *
-     * @var TestMenu
-     */
-    public $Menu;
+/**
+ * Menu instance
+ *
+ * @var TestMenu
+ */
+	public $Menu;
 
-    /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->Menu = ClassRegistry::init('TestMenu');
-    }
+/**
+ * setUp method
+ *
+ * @return void
+ */
+	public function setUp() {
+		parent::setUp();
+		$this->Menu = ClassRegistry::init('TestMenu');
+	}
 
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        parent::tearDown();
-        unset($this->Menu);
-    }
+/**
+ * tearDown method
+ *
+ * @return void
+ */
+	public function tearDown() {
+		parent::tearDown();
+		unset($this->Menu);
+	}
 
-    /**
-     * testDeleteDependentLinks method
-     */
-    public function testDeleteDependentLinks()
-    {
-        $totalLinks = $this->Menu->Link->find('count');
+/**
+ * testDeleteDependentLinks method
+ */
+	public function testDeleteDependentLinks() {
+		$totalLinks = $this->Menu->Link->find('count');
 
-        $toDelete = $this->Menu->Link->find('count', array(
-            'conditions' => array('Link.menu_id' => 4)
-        ));
-        $this->assertTrue($toDelete > 0);
+		$toDelete = $this->Menu->Link->find('count', array(
+			'conditions' => array('Link.menu_id' => 4)
+			));
+		$this->assertTrue($toDelete > 0);
 
-        $this->Menu->id = 4;
-        $this->Menu->delete();
+		$this->Menu->id = 4;
+		$this->Menu->delete();
 
-        $count = $this->Menu->Link->find('count', array('conditions' => array('Link.menu_id' => 4)));
-        $this->assertTrue($count == 0);
+		$count = $this->Menu->Link->find('count', array('conditions' => array('Link.menu_id' => 4)));
+		$this->assertTrue($count == 0);
 
-        $currentLinks = $this->Menu->Link->find('count');
-        $this->assertEquals($totalLinks, $currentLinks + $toDelete);
-    }
+		$currentLinks = $this->Menu->Link->find('count');
+		$this->assertEquals($totalLinks, $currentLinks + $toDelete);
+	}
 
 }

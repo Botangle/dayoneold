@@ -14,8 +14,8 @@ $games_language[6] = 'Please log in to use this feature';
 $games_language[7] = 'Latest Played Games';
 $games_language[8] = 'User';
 $games_language[9] = 'Score';
-$games_language[10] = 'Games';
-$games_language[11] = 'No scores yet! Be the first to add your name to the leaderboard.';
+$games_language[10] = 'Games'; 
+$games_language[11] = 'No scores yet! Be the first to add your name to the leaderboard.'; 
 
 
 

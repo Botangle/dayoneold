@@ -4,14 +4,12 @@
 */
 
 html, body {
-    background: < ? php echo $ themeSettings [ 'tab_background' ];
-    ? >;
-    direction: < ? php echo $ dir;
-    ? >;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: hidden;
+	background: <?php echo $themeSettings['tab_background'];?>;
+	direction: <?php echo $dir;?>;
+	margin:0;
+	padding:0;
+	height: 100%;
+	width: 100%;
+	overflow-x:hidden;
+	overflow-y:hidden;
 }

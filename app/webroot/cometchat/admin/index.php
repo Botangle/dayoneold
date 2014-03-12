@@ -1,5 +1,5 @@
 <?php
-
+ 
 /*
 
 CometChat
@@ -53,119 +53,113 @@ THE SOFTWARE.
 
 */
 
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "config.php";
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "cometchat_shared.php";
-include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "php4functions.php";
+include_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."config.php";
+include_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."cometchat_shared.php";
+include_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."php4functions.php";
 
-$menuoptions = array("Dashboard", "Announcements", "Chatrooms", "Modules", "Plugins", "Extensions", "Themes", "Language", "Settings", "Monitor", "Logs", "Logout");
+$menuoptions = array("Dashboard","Announcements","Chatrooms","Modules","Plugins","Extensions","Themes","Language","Settings","Monitor","Logs","Logout");
 
 $currentversion = '5.1.0';
 
 if (!session_id()) {
-    session_name('CCADMIN');
-    session_start();
+	session_name('CCADMIN');
+	session_start();
+} 
+
+if(get_magic_quotes_runtime()) { 
+    set_magic_quotes_runtime(false); 
 }
 
-if (get_magic_quotes_runtime()) {
-    set_magic_quotes_runtime(false);
-}
-
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "shared.php";
+include_once dirname(__FILE__).DIRECTORY_SEPARATOR."shared.php";
 
 if (get_magic_quotes_gpc() || (defined('FORCE_MAGIC_QUOTES') && FORCE_MAGIC_QUOTES == 1)) {
-    $_GET = stripSlashesDeep($_GET);
-    $_POST = stripSlashesDeep($_POST);
-    $_COOKIE = stripSlashesDeep($_COOKIE);
+	$_GET = stripSlashesDeep($_GET);
+	$_POST = stripSlashesDeep($_POST);
+	$_COOKIE = stripSlashesDeep($_COOKIE);
 }
 
 if (empty($_SESSION['cometchat']['timedifference'])) {
-    $_SESSION['cometchat']['timedifference'] = 0;
+	$_SESSION['cometchat']['timedifference'] = 0;
 }
 
-$dbh = mysql_connect(DB_SERVER . ':' . DB_PORT, DB_USERNAME, DB_PASSWORD);
+$dbh = mysql_connect(DB_SERVER.':'.DB_PORT,DB_USERNAME,DB_PASSWORD);
 if (!$dbh) {
-    echo "<h3>Unable to connect to database. Please check details in configuration file.</h3>";
-    exit();
+	echo "<h3>Unable to connect to database. Please check details in configuration file.</h3>";
+	exit();
 }
 
-mysql_selectdb(DB_NAME, $dbh);
+mysql_selectdb(DB_NAME,$dbh);
 mysql_query("SET NAMES utf8");
 mysql_query("SET CHARACTER SET utf8");
-mysql_query("SET COLLATION_CONNECTION = 'utf8_general_ci'");
+mysql_query("SET COLLATION_CONNECTION = 'utf8_general_ci'");  
 
-$usertable = TABLE_PREFIX . DB_USERTABLE;
+$usertable = TABLE_PREFIX.DB_USERTABLE;
 $usertable_username = DB_USERTABLE_NAME;
 $usertable_userid = DB_USERTABLE_USERID;
 
-if (MEMCACHE == 1 && class_exists('memcache')) {
-    $memcache = new memcache;
-    $memcache->connect(MC_SERVER, MC_PORT);
-} elseif (MEMCACHE == 3 && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "MemcacheSASL.php")) {
-    include_once(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "MemcacheSASL.php");
-    $memcache = new MemcacheSASL;
-    $memcache->addServer(MC_SERVER, MC_PORT);
-    $memcache->setSaslAuthData(MC_USERNAME, MC_PASSWORD);
+if(MEMCACHE == 1 && class_exists('memcache')) {
+	$memcache = new memcache;
+	$memcache->connect(MC_SERVER, MC_PORT);
+} elseif (MEMCACHE == 3 && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."MemcacheSASL.php")) {
+	include_once (dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."MemcacheSASL.php");
+	$memcache = new MemcacheSASL;
+	$memcache->addServer(MC_SERVER, MC_PORT);
+	$memcache->setSaslAuthData(MC_USERNAME, MC_PASSWORD);
 }
 
 if (empty($_SESSION['token'])) {
-    $_SESSION['token'] = sha1(microtime());
+	$_SESSION['token'] = sha1(microtime());
 }
 
 $body = '';
 
-if (!empty($_POST['username'])) {
-    $_SESSION['cometchat']['cometchat_admin_user'] = $_POST['username'];
-}
-if (!empty($_POST['password'])) {
-    $_SESSION['cometchat']['cometchat_admin_pass'] = $_POST['password'];
-}
+if (!empty($_POST['username'])) { $_SESSION['cometchat']['cometchat_admin_user'] = $_POST['username']; }
+if (!empty($_POST['password'])) { $_SESSION['cometchat']['cometchat_admin_pass'] = $_POST['password']; }
 
 authenticate();
 
 $module = "dashboard";
 $action = "index";
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+	error_reporting(E_ALL);
+	ini_set('display_errors','On');
 if (!empty($_GET['module'])) {
-    if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . $_GET['module'] . '.m.php')) {
-        $module = $_GET['module'];
-    }
+	if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.$_GET['module'].'.m.php')) {
+		$module = $_GET['module'];
+	}
 }
 
-define ('CCADMIN', true);
+define ('CCADMIN',true);
 
-if (!file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . $module . '.m.php')) {
-    $_SESSION['cometchat']['error'] = 'Oops. This module does not exist.';
-    $module = 'dashboard';
+if (!file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR.$module.'.m.php')) {
+	$_SESSION['cometchat']['error'] = 'Oops. This module does not exist.';
+	$module = 'dashboard';
 }
 
-require(dirname(__FILE__) . DIRECTORY_SEPARATOR . $module . '.m.php');
+require (dirname(__FILE__).DIRECTORY_SEPARATOR.$module.'.m.php');
 
-$allowedActions = array('deleteannouncement', 'updateorder', 'index', 'updatesettings', 'moderator', 'newchatroomprocess', 'newannouncement', 'newannouncementprocess', 'newchatroom', 'updatechatroomorder', 'loadexternal', 'makedefault', 'edittheme', 'exporttheme', 'removethemeprocess', 'viewuser', 'viewuserchatroomconversation', 'viewuserconversation', 'updatecolorsprocess', 'updatevariablesprocess', 'editlanguage', 'editlanguageprocess', 'restorelanguageprocess', 'importlanguage', 'previewlanguage', 'removelanguageprocess', 'sharelanguage', 'data', 'moderatorprocess', 'createmodule', 'createmoduleprocess', 'chatroomplugins', 'clonetheme', 'uploadtheme', 'clonethemeprocess', 'additionallanguages', 'createlanguage', 'createlanguageprocess', 'uploadlanguage', 'uploadlanguageprocess', 'comet', 'guests', 'banuser', 'baseurl', 'changeuserpass', 'disablecometchat', 'updatecomet', 'updateguests', 'banuserprocess', 'updatebaseurl', 'changeuserpassprocess', 'updatedisablecometchat', 'chatroomlog', 'searchlogs', 'addmodule', 'addplugin', 'addextension', 'deletechatroom', 'finduser', 'updatelanguage', 'newlogprocess', 'addchatroomplugin', 'whosonline', 'updatewhosonline', 'uploadthemeprocess', 'cron', 'processcron', 'getlanguage', 'exportlanguage', 'caching', 'updatecaching');
+$allowedActions = array('deleteannouncement','updateorder','index','updatesettings','moderator','newchatroomprocess','newannouncement','newannouncementprocess','newchatroom','updatechatroomorder','loadexternal','makedefault','edittheme','exporttheme','removethemeprocess','viewuser','viewuserchatroomconversation','viewuserconversation','updatecolorsprocess','updatevariablesprocess','editlanguage','editlanguageprocess','restorelanguageprocess','importlanguage','previewlanguage','removelanguageprocess','sharelanguage','data','moderatorprocess','createmodule','createmoduleprocess','chatroomplugins','clonetheme','uploadtheme','clonethemeprocess','additionallanguages','createlanguage','createlanguageprocess','uploadlanguage','uploadlanguageprocess','comet','guests','banuser','baseurl','changeuserpass','disablecometchat','updatecomet','updateguests','banuserprocess','updatebaseurl','changeuserpassprocess','updatedisablecometchat','chatroomlog','searchlogs','addmodule','addplugin','addextension','deletechatroom','finduser','updatelanguage','newlogprocess','addchatroomplugin','whosonline','updatewhosonline','uploadthemeprocess','cron','processcron','getlanguage','exportlanguage','caching','updatecaching');
 
-if (!empty($_GET['action']) && in_array($_GET['action'], $allowedActions) && function_exists($_GET['action'])) {
-    $action = $_GET['action'];
+if (!empty($_GET['action']) && in_array($_GET['action'],$allowedActions) && function_exists($_GET['action'])) {
+       $action = $_GET['action'];
 }
 
 call_user_func($action);
 
-function onlineusers()
-{
-    global $db;
+function onlineusers() {
+	global $db;
 
-    $sql = ("select count(distinct(cometchat.from)) users from cometchat where ('" . getTimeStamp() . "'-cometchat.sent)<300");
+	$sql = ("select count(distinct(cometchat.from)) users from cometchat where ('".getTimeStamp()."'-cometchat.sent)<300");
 
-    $query = mysql_query($sql);
-    $chat = mysql_fetch_array($query);
+	$query = mysql_query($sql); 
+	$chat = mysql_fetch_array($query);
 
-    return $chat['users'];
+	return $chat['users'];
 }
 
-function authenticate()
-{
-    if (empty ($_SESSION['cometchat']['cometchat_admin_user']) || empty ($_SESSION['cometchat']['cometchat_admin_pass']) || !($_SESSION['cometchat']['cometchat_admin_user'] == ADMIN_USER && $_SESSION['cometchat']['cometchat_admin_pass'] == ADMIN_PASS)) {
-        global $body;
-        $body = <<<EOD
+function authenticate() {
+	if (empty ($_SESSION['cometchat']['cometchat_admin_user']) || empty ($_SESSION['cometchat']['cometchat_admin_pass']) || !($_SESSION['cometchat']['cometchat_admin_user'] == ADMIN_USER && $_SESSION['cometchat']['cometchat_admin_pass'] == ADMIN_PASS)) {
+		global $body;
+		$body = <<<EOD
 			<script>
 				$(document).ready(function(){
 					var todaysDate = new Date();
@@ -182,54 +176,53 @@ function authenticate()
 			<div class="chat chatnoline"><input type="hidden" name="currentTime" class="inputbox currentTime"></div>
 			</form>
 EOD;
-        template();
-    }
+		template();
+	}
 }
 
-function template()
-{
+function template() {
 
-    global $body;
-    global $menuoptions;
-    global $module;
+	global $body;
+	global $menuoptions;
+	global $module;
 
-    $tabs = $menuoptions;
+	$tabs = $menuoptions;
 
-    $tabstructure = '';
+	$tabstructure = '';
 
-    foreach ($tabs as $tab) {
-        $tabslug = strtolower($tab);
-        $tabslug = str_replace(" ", "", $tabslug);
-        $tabslug = str_replace("/", "", $tabslug);
+	foreach ($tabs as $tab) {
+		$tabslug = strtolower($tab);
+		$tabslug = str_replace(" ","",$tabslug);
+	    $tabslug = str_replace("/","",$tabslug);
 
-        $current = '';
+		$current = '';
 
-        if (!empty($module) && $module == $tabslug) {
-            $current = 'class="current"';
-        }
-
-        $tabstructure .= <<<EOD
+		if (!empty($module) && $module == $tabslug) {
+			$current = 'class="current"'; 
+		}
+		
+		$tabstructure .= <<<EOD
 		  <li $current>
 			<a href="?module={$tabslug}">{$tab}</a>
 		  </li>
 EOD;
 
-    }
+	}
 
-    $errorjs = '';
+	$errorjs = '';
 
-    if (!empty($_SESSION['cometchat']['error'])) {
-        $errorjs = <<<EOD
+	if (!empty($_SESSION['cometchat']['error'])) {
+		$errorjs = <<<EOD
 <script>
 \$(document).ready(function() {
 	\$.fancyalert('{$_SESSION['cometchat']['error']}');
 });
 </script>
 EOD;
-        unset($_SESSION['cometchat']['error']);
-    }
+		unset($_SESSION['cometchat']['error']);
+	}
 
-    echo <<<EOD
+	echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -269,5 +262,5 @@ $errorjs
 </html>
 EOD;
 
-    exit();
+exit();
 }

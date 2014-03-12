@@ -53,10 +53,7 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) {
-    echo "NO DICE";
-    exit;
-}
+if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 $navigation = <<<EOD
 	<div id="leftnav">
@@ -66,53 +63,52 @@ $navigation = <<<EOD
 	</div>
 EOD;
 
-function index()
-{
-    global $db;
-    global $body;
-    global $themes;
-    global $navigation;
-    global $theme;
+function index() {
+	global $db;
+	global $body;	
+	global $themes;
+	global $navigation;
+	global $theme;
 
-    $athemes = array();
+	$athemes = array();
+	
+	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && $file != "base" && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'css'.DIRECTORY_SEPARATOR.'cometchat.css')) {
+				$athemes[] = $file;
+			}
+		}
+		closedir($handle);
+	}
 
-    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && $file != "base" && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'cometchat.css')) {
-                $athemes[] = $file;
-            }
-        }
-        closedir($handle);
-    }
+	$activethemes = '';
+	$no = 0;
 
-    $activethemes = '';
-    $no = 0;
+	foreach ($athemes as $ti) {
 
-    foreach ($athemes as $ti) {
+		$title = ucwords($ti);
 
-        $title = ucwords($ti);
+		++$no;
 
-        ++$no;
+		$default = '';
+		$opacity = '1';
+		$titlemakedefault = 'title="Make theme default"';
+		$setdefault = 'onclick="javascript:themes_makedefault(\''.$ti.'\')"';
+		
+		if (strtolower($theme) == strtolower($ti)) {
+			$default = ' (Default)';
+			$opacity = '0.5;cursor:default;';
+			$titlemakedefault = '';
+			$setdefault = '';
+		}
 
-        $default = '';
-        $opacity = '1';
-        $titlemakedefault = 'title="Make theme default"';
-        $setdefault = 'onclick="javascript:themes_makedefault(\'' . $ti . '\')"';
-
-        if (strtolower($theme) == strtolower($ti)) {
-            $default = ' (Default)';
-            $opacity = '0.5;cursor:default;';
-            $titlemakedefault = '';
-            $setdefault = '';
-        }
-
-        $clone = '<a href="?module=themes&action=clonetheme&theme=' . $ti . '"><img src="images/clone.png" title="Clone Theme" style="margin-right:5px;"></a>';
-
-        $activethemes .= '<li class="ui-state-default" id="' . $no . '" d1="' . $ti . '"><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="' . $ti . '_title">' . stripslashes($title) . $default . '</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="javascript:void(0)" ' . $setdefault . ' style="margin-right:5px;"><img src="images/default.png" ' . $titlemakedefault . ' style="opacity:' . $opacity . ';"></a><a href="javascript:void(0)" onclick="javascript:themes_edittheme(\'' . $ti . '\')" style="margin-right:5px;"><img src="images/config.png" title="Edit Theme"></a>' . $clone . '<a href="javascript:void(0)" onclick="javascript:themes_exporttheme(\'' . $ti . '\')" style="margin-right:5px;"><img src="images/export.png" title="Download Theme"></a><a href="javascript:void(0)" onclick="javascript:themes_removetheme(\'' . $ti . '\')"><img src="images/remove.png" title="Remove Theme"></a></span><div style="clear:both"></div></li>';
-    }
+		$clone = '<a href="?module=themes&action=clonetheme&theme='.$ti.'"><img src="images/clone.png" title="Clone Theme" style="margin-right:5px;"></a>';
+		
+		$activethemes .= '<li class="ui-state-default" id="'.$no.'" d1="'.$ti.'"><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="'.$ti.'_title">'.stripslashes($title).$default.'</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="javascript:void(0)" '.$setdefault.' style="margin-right:5px;"><img src="images/default.png" '.$titlemakedefault.' style="opacity:'.$opacity.';"></a><a href="javascript:void(0)" onclick="javascript:themes_edittheme(\''.$ti.'\')" style="margin-right:5px;"><img src="images/config.png" title="Edit Theme"></a>'.$clone.'<a href="javascript:void(0)" onclick="javascript:themes_exporttheme(\''.$ti.'\')" style="margin-right:5px;"><img src="images/export.png" title="Download Theme"></a><a href="javascript:void(0)" onclick="javascript:themes_removetheme(\''.$ti.'\')"><img src="images/remove.png" title="Remove Theme"></a></span><div style="clear:both"></div></li>';
+	}
 
 
-    $body = <<<EOD
+	$body = <<<EOD
 	$navigation
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -134,85 +130,83 @@ function index()
 
 EOD;
 
-    template();
+	template();
 
 }
 
-function makedefault()
-{
-    checktoken();
+function makedefault() {
+	checktoken();
 
-    if (!empty($_POST['theme'])) {
+	if (!empty($_POST['theme'])) {
 
-        $themedata = '$theme = \'';
+		$themedata = '$theme = \'';
 
-        $themedata .= $_POST['theme'];
-        $themedata .= '\';';
-        if ($_POST['theme'] != 'lite') {
-            configeditor('THEME', $themedata);
-            $_SESSION['cometchat']['error'] = 'Default theme successfully updated. Please clear your browser cache and try.';
-        } else {
-            $_SESSION['cometchat']['error'] = 'Sorry, you cannot set the lite theme as default.';
-        }
-    }
+		$themedata .= $_POST['theme'];
+		$themedata .= '\';';
+		if ($_POST['theme'] != 'lite') {
+			configeditor('THEME',$themedata);
+			$_SESSION['cometchat']['error'] = 'Default theme successfully updated. Please clear your browser cache and try.';
+		} else {
+			$_SESSION['cometchat']['error'] = 'Sorry, you cannot set the lite theme as default.';
+		}
+	}
 
-    echo "1";
-
-}
-
-
-function checkcolor($color)
-{
-
-    if (substr($color, 0, 1) == '#') {
-        $color = strtoupper($color);
-
-        if (strlen($color) == 4) {
-            $color = $color . substr($matches[0], 1);
-        }
-
-    }
-
-    return $color;
+	echo "1";
 
 }
 
-function edittheme()
-{
-    global $db;
-    global $body;
-    global $trayicon;
-    global $navigation;
 
-    $csslist = array();
 
-    if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $_GET['data'] . DIRECTORY_SEPARATOR . $_GET['data'] . '.php')) {
-        require_once(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $_GET['data'] . DIRECTORY_SEPARATOR . $_GET['data'] . '.php');
-    }
+function checkcolor($color) {
 
-    $form = '';
-    $inputs = '';
-    $js = '';
-    $uniqueColor = array();
+	if (substr($color,0,1) == '#') {
+		$color = strtoupper($color);
 
-    foreach ($themeSettings as $field => $input) {
-        $input = checkcolor($input);
+		if (strlen($color) == 4) {
+			$color = $color.substr($matches[0],1);
+		}
 
-        $form .= '<div class="titlesmall" style="padding-top:14px;" >' . $field . '</div><div class="element">';
+	}
 
-        if (substr($input, 0, 1) == '#') {
+	return $color;
+	
+}
 
-            if (empty($uniqueColor[$input])) {
-                $inputs .= '<div class="themeBox colors" oldcolor="' . $input . '" newcolor="' . $input . '" style="background:' . $input . ';"></div>';
-            }
+function edittheme() {
+	global $db;
+	global $body;	
+	global $trayicon;
+	global $navigation;
 
-            $uniqueColor[$input] = 1;
+	$csslist = array();
 
-            $form .= '<input type="text" class="inputbox themevariables" id=\'' . $field . '_field\' name=\'' . $field . '\' value=\'' . $input . '\' style="width: 100px;height:28px">';
-            $form .= '<div class="colorSelector themeSettings" field="' . $field . '" id="' . $field . '" oldcolor="' . $input . '" newcolor="' . $input . '" ><div style="background:' . $input . '" style="float:right;margin-left:10px"></div></div>';
+	if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$_GET['data'].DIRECTORY_SEPARATOR.$_GET['data'].'.php')) {
+		require_once (dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$_GET['data'].DIRECTORY_SEPARATOR.$_GET['data'].'.php');
+	}
 
-            $input = substr($input, 1);
-            $js .= <<<EOD
+	$form = '';
+	$inputs = '';
+	$js = '';
+	$uniqueColor = array();
+
+	foreach ($themeSettings as $field => $input) {
+		$input = checkcolor($input);
+
+		$form .= '<div class="titlesmall" style="padding-top:14px;" >'.$field.'</div><div class="element">';
+
+		if (substr($input,0,1) == '#') {
+
+			if (empty($uniqueColor[$input])) {
+				$inputs .= '<div class="themeBox colors" oldcolor="'.$input.'" newcolor="'.$input.'" style="background:'.$input.';"></div>';
+			}
+
+			$uniqueColor[$input] = 1;
+
+			$form .= '<input type="text" class="inputbox themevariables" id=\''.$field.'_field\' name=\''.$field.'\' value=\''.$input.'\' style="width: 100px;height:28px">';		
+			$form .= '<div class="colorSelector themeSettings" field="'.$field.'" id="'.$field.'" oldcolor="'.$input.'" newcolor="'.$input.'" ><div style="background:'.$input.'" style="float:right;margin-left:10px"></div></div>';
+
+			$input = substr($input,1);
+			$js .= <<<EOD
 $('#$field').ColorPicker({
 	color: '#$input',
 	onShow: function (colpkr) {
@@ -232,15 +226,15 @@ $('#$field').ColorPicker({
 
 EOD;
 
-        } else {
-            $form .= '<input type="text" class="inputbox themevariables" name=\'' . $field . '\' value=\'' . $input . '\' style="height:28px;width:250px;">';
-        }
+		} else {
+			$form .= '<input type="text" class="inputbox themevariables" name=\''.$field.'\' value=\''.$input.'\' style="height:28px;width:250px;">';		
+		}
 
-        $form .= '</div><div style="clear:both;padding:7px;"></div>';
+		$form .= '</div><div style="clear:both;padding:7px;"></div>';
 
-    }
+	}
 
-    $js .= <<<EOD
+	$js .= <<<EOD
 
 $(function() {
 		$( "#slider" ).slider({
@@ -256,7 +250,7 @@ $(function() {
 
 EOD;
 
-    $body = <<<EOD
+	$body = <<<EOD
 
 	<script>
 	
@@ -305,74 +299,71 @@ EOD;
 
 EOD;
 
-    template();
+	template();
 }
 
-function updatecolorsprocess()
-{
-    checktoken();
+function updatecolorsprocess() {
+	checktoken();
 
-    $colors = $_POST['colors'];
-    $_GET['data'] = $_POST['theme'];
+	$colors = $_POST['colors'];
+	$_GET['data'] = $_POST['theme'];
 
-    require_once(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $_GET['data'] . DIRECTORY_SEPARATOR . $_GET['data'] . '.php');
+	require_once (dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$_GET['data'].DIRECTORY_SEPARATOR.$_GET['data'].'.php');
 
-    foreach ($themeSettings as $field => $input) {
-        $input = checkcolor($input);
+	foreach ($themeSettings as $field => $input) {
+		$input = checkcolor($input);
 
-        if (!empty($colors[strtoupper($input)])) {
-            $themeSettings[$field] = strtoupper($colors[$input]);
-        }
-    }
+		if (!empty($colors[strtoupper($input)])) {
+			$themeSettings[$field] = strtoupper($colors[$input]);
+		}
+	}
+	
+	$data = '$themeSettings = array('."\r\n";
 
-    $data = '$themeSettings = array(' . "\r\n";
+	foreach ($themeSettings as $field => $input) {
+		$data .= "'".$field."' => '".$input."',"."\r\n";
+	}
 
-    foreach ($themeSettings as $field => $input) {
-        $data .= "'" . $field . "' => '" . $input . "'," . "\r\n";
-    }
-
-    $data .= ");";
+	$data .= ");";
 
 
-    $_SESSION['cometchat']['error'] = 'Theme updated successfully';
+	$_SESSION['cometchat']['error'] = 'Theme updated successfully';
 
-    configeditor('SETTINGS', $data, 0, dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $_GET['data'] . DIRECTORY_SEPARATOR . $_GET['data'] . '.php');
+	configeditor('SETTINGS',$data,0,dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$_GET['data'].DIRECTORY_SEPARATOR.$_GET['data'].'.php');	
 
-    echo 1;
-
-}
-
-function updatevariablesprocess()
-{
-    checktoken();
-
-    $colors = $_POST['colors'];
-    $_GET['data'] = $_POST['theme'];
-
-    $data = '$themeSettings = array(' . "\r\n";
-
-    foreach ($colors as $field => $input) {
-        $data .= "'" . $field . "' => '" . $input . "'," . "\r\n";
-    }
-
-    $data .= ");";
-
-    $_SESSION['cometchat']['error'] = 'Theme updated successfully';
-
-    configeditor('SETTINGS', $data, 0, dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $_GET['data'] . DIRECTORY_SEPARATOR . $_GET['data'] . '.php');
-
-    echo 1;
+	echo 1;
 
 }
 
-function clonetheme()
-{
-    global $db;
-    global $body;
-    global $trayicon;
-    global $navigation;
+function updatevariablesprocess() {
+	checktoken();
 
-    $body = <<<EOD
+	$colors = $_POST['colors'];
+	$_GET['data'] = $_POST['theme'];
+
+	$data = '$themeSettings = array('."\r\n";
+
+	foreach ($colors as $field => $input) {
+		$data .= "'".$field."' => '".$input."',"."\r\n";
+	}
+
+	$data .= ");";
+
+	$_SESSION['cometchat']['error'] = 'Theme updated successfully';
+
+	configeditor('SETTINGS',$data,0,dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$_GET['data'].DIRECTORY_SEPARATOR.$_GET['data'].'.php');	
+
+	echo 1;
+
+}
+
+function clonetheme() {
+	global $db;
+	global $body;	
+	global $trayicon;
+	global $navigation;
+
+	$body = <<<EOD
 	$navigation
 	<form action="?module=themes&action=clonethemeprocess" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -394,227 +385,223 @@ function clonetheme()
 
 EOD;
 
-    template();
+	template();
 
 }
 
-function clonethemeprocess()
-{
-    checktoken();
+function clonethemeprocess() {
+	checktoken();
 
-    $theme = createslug($_POST['theme']);
-    $clone = $_POST['clone'];
+	$theme = createslug($_POST['theme']);
+	$clone = $_POST['clone'];
 
-    $dirstoclone = array();
+	$dirstoclone = array();
+	
+	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+				if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone.DIRECTORY_SEPARATOR.$file.'.css')) {
+					array_push($dirstoclone,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone));
+				}
+			}
+		}
+		closedir($handle);
+	}
 
-    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone . DIRECTORY_SEPARATOR . $file . '.css')) {
-                    array_push($dirstoclone, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone));
-                }
-            }
-        }
-        closedir($handle);
-    }
+	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+				if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone.DIRECTORY_SEPARATOR.$file.'.css')) {
+					array_push($dirstoclone,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone));
+				}
+			}
+		}
+		closedir($handle);
+	}
+	
+	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+				if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone.DIRECTORY_SEPARATOR.$file.'.css')) {
+					array_push($dirstoclone,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone));
+				}
+			}
+		}
+		closedir($handle);
+	}
 
-    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone . DIRECTORY_SEPARATOR . $file . '.css')) {
-                    array_push($dirstoclone, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone));
-                }
-            }
-        }
-        closedir($handle);
-    }
+	if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone.DIRECTORY_SEPARATOR.'css'.DIRECTORY_SEPARATOR.'cometchat.css')) {
+		array_push($dirstoclone,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone));
+		array_push($dirstoclone,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone.DIRECTORY_SEPARATOR.'css'));
+		array_push($dirstoclone,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$clone.DIRECTORY_SEPARATOR.'images'));
+	}
 
-    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone . DIRECTORY_SEPARATOR . $file . '.css')) {
-                    array_push($dirstoclone, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone));
-                }
-            }
-        }
-        closedir($handle);
-    }
+	foreach ($dirstoclone as $dir) {
+		$newdir = str_replace($clone,$theme,$dir);
+		copydirectory($dir,$newdir,$clone,$theme);
+	}
 
-    if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'cometchat.css')) {
-        array_push($dirstoclone, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone));
-        array_push($dirstoclone, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone . DIRECTORY_SEPARATOR . 'css'));
-        array_push($dirstoclone, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $clone . DIRECTORY_SEPARATOR . 'images'));
-    }
-
-    foreach ($dirstoclone as $dir) {
-        $newdir = str_replace($clone, $theme, $dir);
-        copydirectory($dir, $newdir, $clone, $theme);
-    }
-
-    $_SESSION['cometchat']['error'] = 'New theme added successfully';
-    header("Location:?module=themes");
+	$_SESSION['cometchat']['error'] = 'New theme added successfully';
+	header("Location:?module=themes");
 }
 
-function removethemeprocess()
-{
-    checktoken();
+function removethemeprocess() {
+	checktoken();
 
-    $theme = $_GET['data'];
+	$theme = $_GET['data'];
 
-    if ($theme != 'default' && $theme != 'dark' && $theme != 'base' && $theme != 'lite' && !empty($theme)) {
+	if ($theme != 'default' && $theme != 'dark' && $theme != 'base' && $theme != 'lite' && !empty($theme)) {
+	
+		if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules')) {
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+					if (is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme)) {
+						deletedirectory((dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+					}
+				}
+			}
+			closedir($handle);
+		}
 
-        if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules')) {
-            while (false !== ($file = readdir($handle))) {
-                if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                    if (is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme)) {
-                        deletedirectory((dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-                    }
-                }
-            }
-            closedir($handle);
-        }
+		if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins')) {
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+					if (is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme)) {
+						deletedirectory((dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+					}
+				}
+			}
+			closedir($handle);
+		}
 
-        if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins')) {
-            while (false !== ($file = readdir($handle))) {
-                if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                    if (is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme)) {
-                        deletedirectory((dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-                    }
-                }
-            }
-            closedir($handle);
-        }
+		
+		if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions')) {
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+					if (is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme)) {
+						deletedirectory((dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+					}
+				}
+			}
+			closedir($handle);
+		}
 
+		if (is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'i'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme)) {
+			deletedirectory((dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'i'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+		}
+	
+		if (is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'m'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme)) {
+			deletedirectory((dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'m'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+		}
+	
+		if (is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'desktop'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme)) {
+			deletedirectory((dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'desktop'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+		}
 
-        if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions')) {
-            while (false !== ($file = readdir($handle))) {
-                if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                    if (is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme)) {
-                        deletedirectory((dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-                    }
-                }
-            }
-            closedir($handle);
-        }
+		if (is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme)) {
+			deletedirectory((dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+		}
 
-        if (is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'i' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme)) {
-            deletedirectory((dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'i' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-        }
+		$_SESSION['cometchat']['error'] = 'Theme deleted successfully';
 
-        if (is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'm' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme)) {
-            deletedirectory((dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'm' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-        }
+	} else {
+		$_SESSION['cometchat']['error'] = 'Sorry, this theme cannot be deleted. Please manually remove the theme from the "themes" folder.';
+	}
 
-        if (is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'desktop' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme)) {
-            deletedirectory((dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'desktop' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-        }
-
-        if (is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme)) {
-            deletedirectory((dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-        }
-
-        $_SESSION['cometchat']['error'] = 'Theme deleted successfully';
-
-    } else {
-        $_SESSION['cometchat']['error'] = 'Sorry, this theme cannot be deleted. Please manually remove the theme from the "themes" folder.';
-    }
-
-
-    header("Location:?module=themes");
+	
+	header("Location:?module=themes");
 }
 
-function exporttheme()
-{
-    checktoken();
+function exporttheme() {
+	checktoken();
 
-    global $currentversion;
+	global $currentversion;
 
-    $theme = createslug($_GET['data']);
+	$theme = createslug($_GET['data']);
 
-    $zip = new ZipArchive();
+	$zip = new ZipArchive();
 
-    if ($zip->open(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $theme . ".zip", ZIPARCHIVE::CREATE) !== TRUE) {
-        echo "This feature is experimental and works only for certain configurations.";
-        exit;
-    }
+	if ($zip->open(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp".DIRECTORY_SEPARATOR.$theme.".zip", ZIPARCHIVE::CREATE) !== TRUE) {
+		echo "This feature is experimental and works only for certain configurations.";
+		exit;
+	}
 
-    $dirstotheme = array();
+	$dirstotheme = array();
 
-    if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'i' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'i.css')) {
-        array_push($dirstotheme, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'i' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-    }
+	if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'i'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.'i.css')) {
+		array_push($dirstotheme,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'i'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+	}
 
-    if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'm' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'm.css')) {
-        array_push($dirstotheme, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'm' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-    }
+	if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'m'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.'m.css')) {
+		array_push($dirstotheme,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'m'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+	}
 
-    if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'desktop' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'desktop.css')) {
-        array_push($dirstotheme, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'desktop' . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-    }
+	if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'desktop'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.'desktop.css')) {
+		array_push($dirstotheme,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'desktop'.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+	}
+	
+	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+				if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.$file.'.css')) {
+					array_push($dirstotheme,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+				}
+			}
+		}
+		closedir($handle);
+	}
 
-    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . $file . '.css')) {
-                    array_push($dirstotheme, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-                }
-            }
-        }
-        closedir($handle);
-    }
+	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+				if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.$file.'.css')) {
+					array_push($dirstotheme,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+				}
+			}
+		}
+		closedir($handle);
+	}
+	
+	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file) && file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+				if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.$file.'.css')) {
+					array_push($dirstotheme,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+				}
+			}
+		}
+		closedir($handle);
+	}
 
-    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . $file . '.css')) {
-                    array_push($dirstotheme, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-                }
-            }
-        }
-        closedir($handle);
-    }
+	if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.'css'.DIRECTORY_SEPARATOR.'cometchat.css')) {
+		array_push($dirstotheme,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme));
+		array_push($dirstotheme,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.'css'));
+		array_push($dirstotheme,(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.$theme.DIRECTORY_SEPARATOR.'images'));
+	}
 
-    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file) && file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . $file . '.css')) {
-                    array_push($dirstotheme, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-                }
-            }
-        }
-        closedir($handle);
-    }
+	foreach ($dirstotheme as $dir) {
+		$iterator = new DirectoryIterator($dir);
 
-    if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'cometchat.css')) {
-        array_push($dirstotheme, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme));
-        array_push($dirstotheme, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'css'));
-        array_push($dirstotheme, (dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $theme . DIRECTORY_SEPARATOR . 'images'));
-    }
+		foreach ($iterator as $key) {
+			$key2 = str_replace(dirname(dirname(__FILE__)).'/','',$dir.'/'.$key);
+			if (is_file($dir.'/'.$key)) {
+				$zip->addFile($dir.'/'.$key, $key2);
+			}
+		}
+	}
 
-    foreach ($dirstotheme as $dir) {
-        $iterator = new DirectoryIterator($dir);
+	$zip->addFromString('version.txt', $currentversion);
 
-        foreach ($iterator as $key) {
-            $key2 = str_replace(dirname(dirname(__FILE__)) . '/', '', $dir . '/' . $key);
-            if (is_file($dir . '/' . $key)) {
-                $zip->addFile($dir . '/' . $key, $key2);
-            }
-        }
-    }
-
-    $zip->addFromString('version.txt', $currentversion);
-
-    header("Location:../temp/$theme.zip");
+	header("Location:../temp/$theme.zip");
 }
 
-function uploadtheme()
-{
-    global $db;
-    global $body;
-    global $trayicon;
-    global $navigation;
+function uploadtheme() {
+	global $db;
+	global $body;	
+	global $trayicon;
+	global $navigation;
 
-    $body = <<<EOD
+	$body = <<<EOD
 	$navigation
 	<form action="?module=themes&action=uploadthemeprocess" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -643,64 +630,63 @@ function uploadtheme()
 
 EOD;
 
-    template();
+	template();
 
 }
 
-function uploadthemeprocess()
-{
-    checktoken();
+function uploadthemeprocess() {
+	checktoken();
 
-    global $db;
-    global $body;
-    global $trayicon;
-    global $navigation;
-    global $themes;
+	global $db;
+	global $body;	
+	global $trayicon;
+	global $navigation;
+	global $themes;
 
-    $extension = '';
-    $error = '';
+	$extension = '';
+	$error = '';
 
-    if (!empty($_FILES["file"]["size"])) {
-        if ($_FILES["file"]["error"] > 0) {
-            $error = "Theme corrupted. Please try again.";
-        } else {
-            if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"])) {
-                unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"]);
-            }
+	if (!empty($_FILES["file"]["size"])) {
+		if ($_FILES["file"]["error"] > 0) {
+			$error = "Theme corrupted. Please try again.";
+		} else {
+			if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"])) {
+				unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"]);
+			}
 
-            if (!move_uploaded_file($_FILES["file"]["tmp_name"], dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"])) {
-                $error = "Unable to copy to temp folder. Please CHMOD temp folder to 777.";
-            }
-        }
-    } else {
-        $error = "Theme not found. Please try again.";
-    }
+			if (!move_uploaded_file($_FILES["file"]["tmp_name"], dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"])) {
+				$error = "Unable to copy to temp folder. Please CHMOD temp folder to 777.";
+			}
+		}
+	} else {
+		$error = "Theme not found. Please try again.";
+	}
+	
+	if (!empty($error)) {
+		$_SESSION['cometchat']['error'] = $error;
+		header("Location: ?module=themes&action=uploadtheme");
+		exit;
+	}
 
-    if (!empty($error)) {
-        $_SESSION['cometchat']['error'] = $error;
-        header("Location: ?module=themes&action=uploadtheme");
-        exit;
-    }
+	require_once('pclzip.lib.php');
 
-    require_once('pclzip.lib.php');
+	$filename = $_FILES['file']['name'];
 
-    $filename = $_FILES['file']['name'];
+	$archive = new PclZip(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"]);
 
-    $archive = new PclZip(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"]);
+	if ($archive->extract(PCLZIP_OPT_PATH, dirname(dirname(__FILE__))) == 0) {
+		$error = "Unable to unzip archive. Please upload the contents of the zip file to themes folder.";
+	}
 
-    if ($archive->extract(PCLZIP_OPT_PATH, dirname(dirname(__FILE__))) == 0) {
-        $error = "Unable to unzip archive. Please upload the contents of the zip file to themes folder.";
-    }
+	if (!empty($error)) {
+		$_SESSION['cometchat']['error'] = $error;
+		header("Location: ?module=themes&action=uploadtheme");
+		exit;
+	}
 
-    if (!empty($error)) {
-        $_SESSION['cometchat']['error'] = $error;
-        header("Location: ?module=themes&action=uploadtheme");
-        exit;
-    }
+	unlink(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."temp" .DIRECTORY_SEPARATOR. $_FILES["file"]["name"]);
 
-    unlink(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "temp" . DIRECTORY_SEPARATOR . $_FILES["file"]["name"]);
-
-    header("Location: ?module=themes");
-    exit;
-
+	header("Location: ?module=themes");
+	exit;
+	
 }

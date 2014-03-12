@@ -53,59 +53,59 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
+include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
 
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
-    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
+if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
+	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
 }
 
-if ($p_ < 4) exit;
+if ($p_<4) exit;
 
 if ($_GET['action'] == 'request') {
 
-    $grp = $_REQUEST['id'];
+	$grp = $_REQUEST['id'];
+	
+	sendMessageTo($_REQUEST['to'],$screenshare_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$grp."');\">".$screenshare_language[3]."</a> ".$screenshare_language[4]);
+	$temp_callback = $_REQUEST['callback'];
+	$_REQUEST['callback'] = time();
+	sendSelfMessage($_REQUEST['to'],$screenshare_language[5]);
+	$_REQUEST['callback'] = $temp_callback;	
 
-    sendMessageTo($_REQUEST['to'], $screenshare_language[2] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept('" . $userid . "','" . $grp . "');\">" . $screenshare_language[3] . "</a> " . $screenshare_language[4]);
-    $temp_callback = $_REQUEST['callback'];
-    $_REQUEST['callback'] = time();
-    sendSelfMessage($_REQUEST['to'], $screenshare_language[5]);
-    $_REQUEST['callback'] = $temp_callback;
-
-    if (!empty($_GET['callback'])) {
-        header('content-type: application/json; charset=utf-8');
-        echo $_GET['callback'] . '()';
-    }
+	if (!empty($_GET['callback'])) {
+		header('content-type: application/json; charset=utf-8');
+		echo $_GET['callback'].'()';
+	}
 }
 
 if ($_GET['action'] == 'accept') {
-    sendMessageTo($_REQUEST['to'], $screenshare_language[6]);
-
-    if (!empty($_GET['callback'])) {
-        header('content-type: application/json; charset=utf-8');
-        echo $_GET['callback'] . '()';
-    }
+	sendMessageTo($_REQUEST['to'],$screenshare_language[6]);
+	
+	if (!empty($_GET['callback'])) {
+		header('content-type: application/json; charset=utf-8');
+		echo $_GET['callback'].'()';
+	}
 }
 
 if ($_GET['action'] == 'screenshare') {
-    global $lightboxWindows;
+	global $lightboxWindows;
 
-    $id = $_GET['id'];
-    $type = $_GET['type'];
+	$id = $_GET['id'];
+	$type = $_GET['type'];
 
+	
+	if (!empty($_GET['chatroommode'])) {
+		sendChatroomMessage($_GET['roomid'],$screenshare_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept('".$userid."','".$_GET['id']."');\">".$screenshare_language[3]."</a>");
+	}
 
-    if (!empty($_GET['chatroommode'])) {
-        sendChatroomMessage($_GET['roomid'], $screenshare_language[2] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccscreenshare.accept('" . $userid . "','" . $_GET['id'] . "');\">" . $screenshare_language[3] . "</a>");
-    }
+	ini_set('display_errors', 0);
+	
+	$connectUrl = "rtmp://" . $hostAddress . "/" . $application;
 
-    ini_set('display_errors', 0);
-
-    $connectUrl = "rtmp://" . $hostAddress . "/" . $application;
-
-    if ($screensharePluginType == '0') {
-        if ($type == 1) {
-            echo <<<EOD
+if ($screensharePluginType == '0') {
+	if ($type == 1) {
+		echo <<<EOD
 			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 			<html>
 			<head>
@@ -158,8 +158,8 @@ if ($_GET['action'] == 'screenshare') {
 			</body>
 			</html>
 EOD;
-        } else {
-            echo <<<EOD
+	} else {
+		echo <<<EOD
 		<html>
 			<head>
 			<title>ScreenViewer</title>
@@ -185,43 +185,43 @@ EOD;
 			</body>
 			</html>
 EOD;
-        }
-    } else {
-
-        if ($type == 1) {
-            $data = '<div id="tut8CtrlWrapper" class="controls-wrapper">
+	}
+} else {
+	
+	if ($type == 1) {
+		$data = '<div id="tut8CtrlWrapper" class="controls-wrapper">
 				<div class="controls-wrapper">
 					<!--Screen capture source selection -->
 					<div class="ctrl-wrapper">
 						<div class="scr-share-src-wrapper">
 							<ul class="scr-share-src-list" id="screenShareSources" style="margin-left: 10px;">
 								<img src="loadingwhite.gif" style="position: absolute; top: 30%; left: 43%;">
-								<p id="message" style="display:none;margin-top:10px">To use ScreenShare, you need to install a quick plug-in to make it all work. You just need to install this plug-in once.</p><a id="installBtn" class="installBtn" href="#">' . $screenshare_language[10] . '</a>
+								<p id="message" style="display:none;margin-top:10px">To use ScreenShare, you need to install a quick plug-in to make it all work. You just need to install this plug-in once.</p><a id="installBtn" class="installBtn" href="#">'.$screenshare_language[10].'</a>
 							</ul>
 						</div>
 						<div class="clearer"></div>
 					</div>
 					<!-- Control button -->
 					<div class="ctrl-wrapper">
-						<a id="refreshBtn" style="margin: 0px 10px;" href="javascript://nop" class="btn btn-primary disabled">' . $screenshare_language[8] . '</a>' . $screenshare_language[9] . '
+						<a id="refreshBtn" style="margin: 0px 10px;" href="javascript://nop" class="btn btn-primary disabled">'.$screenshare_language[8].'</a>'.$screenshare_language[9].'
 					</div>
 				</div>
 			</div><script type="text/javascript">
 				window.onresize = function() { window.resizeTo(825,415); }
 			</script>
 			<!-- End of the user controls section -->';
-        } else {
-            $data = '<div class="main">
+			} else {
+				$data = '<div class="main">
 							<div id="renderRemoteUser"><img src="loading.gif" style="position: absolute; top: 40%; left: 43%;">
 								<div id="info" style="position: absolute; top: 2%; padding: 0px;">
 									<p id="message" style="display:none;margin-left:10px;color:#ffffff">To use ScreenShare, you need to install a quick plug-in to make it all work. You just need to install this plug-in once.</p>
-									<a id="installBtn" class="installBtn" href="#" style="margin-left: 10px;">' . $screenshare_language[10] . '</a>
+									<a id="installBtn" class="installBtn" href="#" style="margin-left: 10px;">'.$screenshare_language[10].'</a>
 								</div>
 							</div>
 						</div>';
-        }
+			}
 
-        echo <<<EOD
+		echo <<<EOD
 		<html>
 		<head>
 			<title>{$screenshare_language[7]}</title>
@@ -249,5 +249,5 @@ EOD;
 		</script>
 		</html>
 EOD;
-    }
+}
 }

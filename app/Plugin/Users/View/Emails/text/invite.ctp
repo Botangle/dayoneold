@@ -3,6 +3,5 @@
 </head>
 <body>
 <?php echo $invite?>
-
-</body>
-</html>
+ 
+</body></html>

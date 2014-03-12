@@ -12,32 +12,30 @@ App::uses('AppHelper', 'View/Helper');
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://www.croogo.org
  */
-class WysiwygHelper extends AppHelper
-{
+class WysiwygHelper extends AppHelper {
 
-    /**
-     * Other helpers used by this helper
-     *
-     * @var array
-     * @access public
-     */
-    public $helpers = array(
-        'Html',
-    );
+/**
+ * Other helpers used by this helper
+ *
+ * @var array
+ * @access public
+ */
+	public $helpers = array(
+		'Html',
+	);
 
-    /**
-     * beforeRender
-     *
-     * @param string $viewFile
-     * @return void
-     */
-    public function beforeRender($viewFile)
-    {
-        Configure::write('Js.Wysiwyg.uploadsPath', Router::url('/uploads/'));
-        Configure::write('Js.Wysiwyg.attachmentsPath',
-            $this->Html->url(Configure::read('Wysiwyg.attachmentBrowseUrl'))
-        );
+/**
+ * beforeRender
+ *
+ * @param string $viewFile
+ * @return void
+ */
+	public function beforeRender($viewFile) {
+		Configure::write('Js.Wysiwyg.uploadsPath', Router::url('/uploads/'));
+		Configure::write('Js.Wysiwyg.attachmentsPath',
+			$this->Html->url(Configure::read('Wysiwyg.attachmentBrowseUrl'))
+		);
 
-        $this->Html->script('/wysiwyg/js/wysiwyg', array('inline' => false));
-    }
+		$this->Html->script('/wysiwyg/js/wysiwyg', array('inline' => false));
+	}
 }

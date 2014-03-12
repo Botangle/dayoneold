@@ -1,2 +1,2 @@
 <?php
-$extensioninfo = array('ads', 'Advertisements');
+$extensioninfo = array('ads','Advertisements');

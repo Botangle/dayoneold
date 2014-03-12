@@ -12,7 +12,7 @@ var Terms = {};
  *
  * @return void
  */
-Terms.documentReady = function () {
+Terms.documentReady = function() {
 
 }
 
@@ -21,11 +21,11 @@ Terms.documentReady = function () {
  *
  * @return void
  */
-Terms.slug = function () {
-    $("#TermTitle").slug({
-        slug: 'slug',
-        hide: false
-    });
+Terms.slug = function() {
+	$("#TermTitle").slug({
+		slug:'slug',
+		hide: false
+	});
 }
 
 /**
@@ -33,11 +33,11 @@ Terms.slug = function () {
  *
  * @return void
  */
-$(document).ready(function () {
-    if (Croogo.params.controller == 'terms') {
-        Terms.documentReady();
-        if (Croogo.params.action == 'admin_add') {
-            Terms.slug();
-        }
-    }
+$(document).ready(function() {
+	if (Croogo.params.controller == 'terms') {
+		Terms.documentReady();
+		if (Croogo.params.action == 'admin_add') {
+			Terms.slug();
+		}
+	}
 });

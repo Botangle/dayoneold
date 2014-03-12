@@ -8,7 +8,6 @@ App::uses('CroogoAppController', 'Croogo.Controller');
  * @package  Croogo
  * @link     http://www.croogo.org
  */
-class AppController extends CroogoAppController
-{
+class AppController extends CroogoAppController {
 
 }

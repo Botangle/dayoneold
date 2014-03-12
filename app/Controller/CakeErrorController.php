@@ -2,7 +2,6 @@
 
 App::uses('CroogoErrorController', 'Croogo.Controller');
 
-class CakeErrorController extends CroogoErrorController
-{
+class CakeErrorController extends CroogoErrorController {
 
 }

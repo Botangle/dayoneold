@@ -9,8 +9,8 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of the files must retain the above copyright notice.
  *
- * @copyright      Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright	  Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link	      http://cakephp.org CakePHP(tm) Project
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
@@ -21,11 +21,11 @@ App::uses('FormAuthenticate', 'Controller/Component/Auth');
  * hashing. Can be used by configuring AuthComponent to use it via the AuthComponent::$authenticate setting.
  *
  * {{{
- *    $this->Auth->authenticate = array(
- *        'Blowfish' => array(
- *            'scope' => array('User.active' => 1)
- *        )
- *    )
+ * 	$this->Auth->authenticate = array(
+ * 		'Blowfish' => array(
+ * 			'scope' => array('User.active' => 1)
+ * 		)
+ * 	)
  * }}}
  *
  * When configuring BlowfishAuthenticate you can pass in settings to which fields, model and additional conditions
@@ -34,24 +34,22 @@ App::uses('FormAuthenticate', 'Controller/Component/Auth');
  * For initial password hashing/creation see Security::hash(). Other than how the password is initially hashed,
  * BlowfishAuthenticate works exactly the same way as FormAuthenticate.
  *
- * @package    Cake.Controller.Component.Auth
+ * @package	Cake.Controller.Component.Auth
  * @since CakePHP(tm) v 2.3
- * @see    AuthComponent::$authenticate
+ * @see	AuthComponent::$authenticate
  * @deprecated Since 2.4. Just use FormAuthenticate with 'passwordHasher' setting set to 'Blowfish'
  */
-class BlowfishAuthenticate extends FormAuthenticate
-{
+class BlowfishAuthenticate extends FormAuthenticate {
 
-    /**
-     * Constructor. Sets default passwordHasher to Blowfish
-     *
-     * @param ComponentCollection $collection The Component collection used on this request.
-     * @param array $settings Array of settings to use.
-     */
-    public function __construct(ComponentCollection $collection, $settings)
-    {
-        $this->settings['passwordHasher'] = 'Blowfish';
-        parent::__construct($collection, $settings);
-    }
+/**
+ * Constructor. Sets default passwordHasher to Blowfish
+ *
+ * @param ComponentCollection $collection The Component collection used on this request.
+ * @param array $settings Array of settings to use.
+ */
+	public function __construct(ComponentCollection $collection, $settings) {
+		$this->settings['passwordHasher'] = 'Blowfish';
+		parent::__construct($collection, $settings);
+	}
 
 }

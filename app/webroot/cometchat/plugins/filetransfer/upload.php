@@ -53,63 +53,63 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
-    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
+include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
+if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
+	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
 }
 
 $message = '';
 $mediauploaded = 1;
 
 if (isset($_REQUEST['callbackfn']) && $_REQUEST['callbackfn'] == 'mobileapp') {
-    $filename = preg_replace("/[^a-zA-Z0-9 ]/", "", $_POST['name']);
-    $filename = str_replace(" ", "_", $filename);
-    $md5filename = md5($filename . "cometchat");
+	$filename = preg_replace("/[^a-zA-Z0-9 ]/", "", $_POST['name']);
+	$filename = str_replace(" ", "_", $filename);
+	$md5filename = md5($filename."cometchat");	
 } else {
-    $filename = preg_replace("/[^a-zA-Z0-9 ]/", "", $_FILES['Filedata']['name']);
-    $filename = str_replace(" ", "_", $filename);
-    $md5filename = md5($filename . "cometchat");
+	$filename = preg_replace("/[^a-zA-Z0-9 ]/", "", $_FILES['Filedata']['name']);
+	$filename = str_replace(" ", "_", $filename);
+	$md5filename = md5($filename."cometchat");	
 }
 
 if (!(!isset($_FILES['Filedata']) || !is_uploaded_file($_FILES['Filedata']['tmp_name']))) {
-    if (!move_uploaded_file($_FILES['Filedata']['tmp_name'], dirname(__FILE__) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $md5filename)) {
-        $message = 'An error has occurred. Please contact administrator. Closing Window.';
-        $mediauploaded = 0;
-    }
+	if (!move_uploaded_file($_FILES['Filedata']['tmp_name'], dirname(__FILE__).DIRECTORY_SEPARATOR.'uploads' .DIRECTORY_SEPARATOR. $md5filename)) {
+		$message = 'An error has occurred. Please contact administrator. Closing Window.';
+		$mediauploaded = 0;
+	}
 }
 
 if (empty($message)) {
-    if (!empty($_POST['chatroommode'])) {
-        sendChatroomMessage($_POST['to'], $filetransfer_language[9] . " (" . $_FILES['Filedata']['name'] . "). <a href=\"" . BASE_URL . "plugins/filetransfer/download.php?file=" . $_FILES['Filedata']['name'] . "\" target=\"_blank\">" . $filetransfer_language[6] . "</a>");
-    } else {
-
-        if (isset($_REQUEST['callbackfn']) && $_REQUEST['callbackfn'] == 'mobileapp') {
-            sendMessageTo($_POST['to'], $filetransfer_language[5] . " (" . $_POST['name'] . "). <a href=\"" . BASE_URL . "plugins/filetransfer/download.php?file=" . $_POST['name'] . "\" target=\"_blank\" imageheight=\"" . $_POST['imageheight'] . "\" imagewidth=\"" . $_POST['imagewidth'] . "\">" . $filetransfer_language[6] . "</a>");
-            sendSelfMessage($_POST['to'], "<a href=\"" . BASE_URL . "plugins/filetransfer/download.php?file=" . $_POST['name'] . "\" target=\"_blank\" imageheight=\"" . $_POST['imageheight'] . "\" imagewidth=\"" . $_POST['imagewidth'] . "\">" . $filetransfer_language[6] . "</a>");
-        } else {
-            sendMessageTo($_POST['to'], $filetransfer_language[5] . " (" . $_FILES['Filedata']['name'] . "). <a href=\"" . BASE_URL . "plugins/filetransfer/download.php?file=" . $_FILES['Filedata']['name'] . "\" target=\"_blank\">" . $filetransfer_language[6] . "</a>");
-            sendSelfMessage($_POST['to'], $filetransfer_language[7] . " (" . $_FILES['Filedata']['name'] . ").");
-        }
-    }
-    $message = $filetransfer_language[8];
+	if (!empty($_POST['chatroommode'])) {
+		sendChatroomMessage($_POST['to'],$filetransfer_language[9]." (".$_FILES['Filedata']['name']."). <a href=\"".BASE_URL."plugins/filetransfer/download.php?file=".$_FILES['Filedata']['name']."\" target=\"_blank\">".$filetransfer_language[6]."</a>");
+	} else {
+		
+		if (isset($_REQUEST['callbackfn']) && $_REQUEST['callbackfn'] == 'mobileapp') {
+			sendMessageTo($_POST['to'],$filetransfer_language[5]." (".$_POST['name']."). <a href=\"".BASE_URL."plugins/filetransfer/download.php?file=".$_POST['name']."\" target=\"_blank\" imageheight=\"".$_POST['imageheight']."\" imagewidth=\"".$_POST['imagewidth']."\">".$filetransfer_language[6]."</a>");
+			sendSelfMessage($_POST['to'],"<a href=\"".BASE_URL."plugins/filetransfer/download.php?file=".$_POST['name']."\" target=\"_blank\" imageheight=\"".$_POST['imageheight']."\" imagewidth=\"".$_POST['imagewidth']."\">".$filetransfer_language[6]."</a>");
+		} else {		
+			sendMessageTo($_POST['to'],$filetransfer_language[5]." (".$_FILES['Filedata']['name']."). <a href=\"".BASE_URL."plugins/filetransfer/download.php?file=".$_FILES['Filedata']['name']."\" target=\"_blank\">".$filetransfer_language[6]."</a>");
+			sendSelfMessage($_POST['to'],$filetransfer_language[7]." (".$_FILES['Filedata']['name'].").");
+		}
+	}
+	$message = $filetransfer_language[8];
 }
 
 $embed = '';
 $embedcss = '';
 $close = "setTimeout('window.close()',2000);";
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
-    $embed = 'web';
-    $embedcss = 'embed';
-    $close = "parent.closeCCPopup('filetransfer');";
-} elseif (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
-    $embed = 'desktop';
-    $embedcss = 'embed';
-    $close = "parentSandboxBridge.closeCCPopup('filetransfer');";
+if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
+	$embed = 'web';
+	$embedcss = 'embed';
+	$close = "parent.closeCCPopup('filetransfer');";
+} elseif (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
+	$embed = 'desktop';
+	$embedcss = 'embed';
+	$close = "parentSandboxBridge.closeCCPopup('filetransfer');";
 }
 if (isset($_REQUEST['callbackfn']) && $_REQUEST['callbackfn'] == 'mobileapp') {
-    echo $mediauploaded;
+	echo $mediauploaded; 
 } else {
     echo <<<EOD
     <!DOCTYPE html>

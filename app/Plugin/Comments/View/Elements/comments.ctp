@@ -1,5 +1,5 @@
 <div class="comments">
-    <?php
+<?php
 	$commentHeading = $node['Node']['comment_count'] . ' ';
 	if ($node['Node']['comment_count'] == 1) {
 		$commentHeading .= __d('croogo', 'Comment');
@@ -8,8 +8,8 @@
 	}
 	echo $this->Html->tag('h3', $commentHeading);
 
-    foreach ($comments as $comment) {
-    echo $this->element('Comments.comment', array('comment' => $comment, 'level' => 1));
-    }
-    ?>
+	foreach ($comments as $comment) {
+		echo $this->element('Comments.comment', array('comment' => $comment, 'level' => 1));
+	}
+?>
 </div>

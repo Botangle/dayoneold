@@ -53,10 +53,7 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) {
-    echo "NO DICE";
-    exit;
-}
+if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 $navigation = <<<EOD
 	<div id="leftnav">
@@ -64,64 +61,64 @@ $navigation = <<<EOD
 	</div>
 EOD;
 
-function index()
-{
-    global $db;
-    global $body;
-    global $extensions;
-    global $navigation;
-    global $lang;
+function index() {
+	global $db;
+	global $body;	
+	global $extensions;
+	global $navigation;
+	global $lang;
 
-    $aextensions = array();
+	$aextensions = array();
+	
+	if ($handle = opendir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions')) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file) && is_file(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$file.DIRECTORY_SEPARATOR.'code.php')) {
+				$aextensions[] = $file;
+			}
+		}
+		closedir($handle);
+	}
 
-    if ($handle = opendir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions')) {
-        while (false !== ($file = readdir($handle))) {
-            if ($file != "." && $file != ".." && is_dir(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file) && is_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $file . DIRECTORY_SEPARATOR . 'code.php')) {
-                $aextensions[] = $file;
-            }
-        }
-        closedir($handle);
-    }
+	$extensionslist = '';
+	
+	foreach ($aextensions as $extension) {
+		require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$extension.DIRECTORY_SEPARATOR.'code.php';
+		
+		$extensionhref = 'href="?module=extensions&action=addextension&data='.$extensioninfo[0].'&token='.$_SESSION['token'].'"';
+		if (in_array($extension, $extensions)) {
+			$extensionhref = 'href="javascript: void(0)" style="opacity: 0.5;cursor: default;"';
+		}
+		
+		$extensionslist .= '<li class="ui-state-default"><img src="../extensions/'.$extensioninfo[0].'/icon.png" style="margin:0;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;width:100px">'.$extensioninfo[1].'</span><span style="font-size:11px;float:right;margin-top:2px;margin-right:5px;"><a '.$extensionhref.' id="'.$extensioninfo[0].'">add</a></span><div style="clear:both"></div></li>';
+	}
 
-    $extensionslist = '';
+	$activeextensions = '';
+	$no_extensions = '';
+	$no = 0;
 
-    foreach ($aextensions as $extension) {
-        require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $extension . DIRECTORY_SEPARATOR . 'code.php';
+	foreach ($extensions as $ti) {
 
-        $extensionhref = 'href="?module=extensions&action=addextension&data=' . $extensioninfo[0] . '&token=' . $_SESSION['token'] . '"';
-        if (in_array($extension, $extensions)) {
-            $extensionhref = 'href="javascript: void(0)" style="opacity: 0.5;cursor: default;"';
-        }
+		$title = ucwords($ti);
 
-        $extensionslist .= '<li class="ui-state-default"><img src="../extensions/' . $extensioninfo[0] . '/icon.png" style="margin:0;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;width:100px">' . $extensioninfo[1] . '</span><span style="font-size:11px;float:right;margin-top:2px;margin-right:5px;"><a ' . $extensionhref . ' id="' . $extensioninfo[0] . '">add</a></span><div style="clear:both"></div></li>';
-    }
+		if (file_exists(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$ti.DIRECTORY_SEPARATOR.'code.php')) {
+			require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'extensions'.DIRECTORY_SEPARATOR.$ti.DIRECTORY_SEPARATOR.'code.php';
+			$title = $extensioninfo[1];
+		}
 
-    $activeextensions = '';
-    $no_extensions = '';
-    $no = 0;
+		++$no;
+		
+		$activeextensions .= '<li class="ui-state-default" id="'.$no.'" d1="'.$ti.'" rel="'.$ti.'"><img src="../extensions/'.$ti.'/icon.png" style="margin:0;margin-top:2px;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="'.$ti.'_title">'.stripslashes($title).'</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="javascript:void(0)" onclick="javascript:extensions_configextension(\''.$ti.'\')" style="margin-right:5px"><img src="images/config.png" title="Configure Extension"></a><a href="javascript:void(0)" onclick="javascript:extensions_removeextension(\''.$no.'\')"><img src="images/remove.png" title="Remove Extension" rel="'.$extensioninfo[0].'"></a></span><div style="clear:both"></div></li>';
+	}
 
-    foreach ($extensions as $ti) {
-
-        $title = ucwords($ti);
-
-        if (file_exists(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $ti . DIRECTORY_SEPARATOR . 'code.php')) {
-            require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'extensions' . DIRECTORY_SEPARATOR . $ti . DIRECTORY_SEPARATOR . 'code.php';
-            $title = $extensioninfo[1];
-        }
-
-        ++$no;
-
-        $activeextensions .= '<li class="ui-state-default" id="' . $no . '" d1="' . $ti . '" rel="' . $ti . '"><img src="../extensions/' . $ti . '/icon.png" style="margin:0;margin-top:2px;margin-right:5px;float:left;"></img><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;" id="' . $ti . '_title">' . stripslashes($title) . '</span><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;"><a href="javascript:void(0)" onclick="javascript:extensions_configextension(\'' . $ti . '\')" style="margin-right:5px"><img src="images/config.png" title="Configure Extension"></a><a href="javascript:void(0)" onclick="javascript:extensions_removeextension(\'' . $no . '\')"><img src="images/remove.png" title="Remove Extension" rel="' . $extensioninfo[0] . '"></a></span><div style="clear:both"></div></li>';
-    }
-
-    if (!$activeextensions) {
-        $no_extensions .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">You haven\'t activated any CometChat Extension yet. To activate a extension, please add the extension from the list of available extensions.</div>';
-    } else {
-        $activeextensions = '<ul id="modules_liveextensions">' . $activeextensions . '</ul>';
-    }
+	if(!$activeextensions){
+		$no_extensions .= '<div id="no_plugin" style="width: 480px;float: left;color: #333333;">You haven\'t activated any CometChat Extension yet. To activate a extension, please add the extension from the list of available extensions.</div>';
+	}
+	else{
+		$activeextensions = '<ul id="modules_liveextensions">'.$activeextensions.'</ul>';
+	}
 
 
-    $body = <<<EOD
+	$body = <<<EOD
 	$navigation
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -146,54 +143,52 @@ function index()
 
 EOD;
 
-    template();
+	template();
 
 }
 
-function addextension()
-{
-    checktoken();
+function addextension() {
+	checktoken();
 
-    global $extensions;
+	global $extensions;
 
-    if (!empty($_GET['data'])) {
+	if (!empty($_GET['data'])) {
+	
+		$extensiondata = '$extensions = array(';
 
-        $extensiondata = '$extensions = array(';
+		foreach ($extensions as $extension) {
+			$extensiondata .= "'$extension',";
+		}
 
-        foreach ($extensions as $extension) {
-            $extensiondata .= "'$extension',";
-        }
+		$extensiondata .= "'{$_GET['data']}',";
 
-        $extensiondata .= "'{$_GET['data']}',";
+		$extensiondata = substr($extensiondata,0,-1).');';
+	
+		configeditor('EXTENSIONS',$extensiondata);
+	}
 
-        $extensiondata = substr($extensiondata, 0, -1) . ');';
-
-        configeditor('EXTENSIONS', $extensiondata);
-    }
-
-    header("Location:?module=extensions");
+	header("Location:?module=extensions");
 }
 
-function updateorder()
-{
-    checktoken();
+function updateorder() {
+	checktoken();
 
-    if (!empty($_POST['order'])) {
+	if (!empty($_POST['order'])) {
 
-        $extensiondata = '$extensions = array(';
+		$extensiondata = '$extensions = array(';
 
-        $extensiondata .= $_POST['order'];
+		$extensiondata .= $_POST['order'];
 
-        $extensiondata = substr($extensiondata, 0, -1) . ');';
+		$extensiondata = substr($extensiondata,0,-1).');';
+	
+		configeditor('EXTENSIONS',$extensiondata);
+	} else {
+		
+		$extensiondata = '$extensions = array();';	
+		configeditor('EXTENSIONS',$extensiondata);
 
-        configeditor('EXTENSIONS', $extensiondata);
-    } else {
+	}
 
-        $extensiondata = '$extensions = array();';
-        configeditor('EXTENSIONS', $extensiondata);
-
-    }
-
-    echo "1";
+	echo "1";
 
 }

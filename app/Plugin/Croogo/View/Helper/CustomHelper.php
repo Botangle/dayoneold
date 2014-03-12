@@ -19,29 +19,26 @@ App::uses('Helper', 'View/Helper');
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://www.croogo.org
  */
-class CustomHelper extends Helper
-{
+class CustomHelper extends Helper {
 
-    /**
-     * Other helpers used by this helper
-     *
-     * @var array
-     * @access public
-     */
-    public $helpers = array();
-
-    public function getNewsList()
-    {
-        App::import("Model", "News.News");
-        $model = new News();
-        $r = $model->find('all', array(
-            'conditions' => array('status' => '1'),
-            'order' => array('date desc'),
-            'limit' => 3,
-        ));
-        /*$log = $model->getDataSource()->getLog(false, false);
+/**
+ * Other helpers used by this helper
+ *
+ * @var array
+ * @access public
+ */
+	public $helpers = array();
+	public function getNewsList(){
+		App::import("Model", "News.News");  
+	$model = new News();  
+		 $r = $model->find('all',array(
+		 'conditions'=>array('status'=>'1'),
+		 'order'=>array('date desc'),
+		 'limit'=>3	,
+		 ));
+		 /*$log = $model->getDataSource()->getLog(false, false);
 debug($log);*/
-        return $r;
-
-    }
+return $r;
+		    
+	}
 }

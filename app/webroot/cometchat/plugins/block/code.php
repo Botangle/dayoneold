@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('block', 'Block User');
+$plugininfo = array('block','Block User');

@@ -53,10 +53,7 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) {
-    echo "NO DICE";
-    exit;
-}
+if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 $online = onlineusers();
 
@@ -67,14 +64,13 @@ $navigation = <<<EOD
 	</div>
 EOD;
 
-function index()
-{
-    global $body;
-    global $navigation;
-    $overlay = '';
+function index() {
+	global $body;
+	global $navigation;
+	$overlay = '';
 
-    if (USE_COMET == 1 && SAVE_LOGS == 0) {
-        $overlay = <<<EOD
+	if(USE_COMET == 1 && SAVE_LOGS == 0) {
+		$overlay = <<<EOD
 
 			<script>
 			jQuery('#content').before('<div id="overlaymain" style="position:relative"></div>');
@@ -104,9 +100,9 @@ function index()
 						}).appendTo('#overlaymain');
 		</script>
 EOD;
-    }
+	}
 
-    $body = <<<EOD
+	$body = <<<EOD
 	$navigation
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
 		<h2>Monitor</h2>
@@ -131,74 +127,73 @@ EOD;
 	{$overlay}						
 EOD;
 
-    template();
+	template();
 
 }
 
-function data()
-{
+function data() {
 
-    if (USE_COMET == 1 && SAVE_LOGS == 0) {
-        echo 0;
-    } else {
-        checktoken();
+	if(USE_COMET == 1 && SAVE_LOGS == 0) {
+		echo 0;
+	} else {
+		checktoken();
 
-        global $db;
-        global $guestsMode;
-        global $guestnamePrefix;
+		global $db;
+		global $guestsMode;
+		global $guestnamePrefix;
+		
+		$usertable = TABLE_PREFIX.DB_USERTABLE;
+		$usertable_username = DB_USERTABLE_NAME;
+		$usertable_userid = DB_USERTABLE_USERID;	
+		$guestpart = "";
+		
+		$criteria = "cometchat.id > '".mysql_real_escape_string($_POST['timestamp'])."' and ";
+		$criteria2 = 'desc';
+		
+		if($guestsMode) {	
+			$guestpart = "UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read,CONCAT('$guestnamePrefix',' ',f.name) fromu, CONCAT('$guestnamePrefix',' ',t.name) tou from cometchat, cometchat_guests f, cometchat_guests t where $criteria f.id = cometchat.from and t.id = cometchat.to) UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, f.".$usertable_username." fromu, CONCAT('$guestnamePrefix',' ',t.name) tou from cometchat, ".$usertable." f, cometchat_guests t where $criteria f.".$usertable_userid." = cometchat.from and t.id = cometchat.to) UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, CONCAT('$guestnamePrefix',' ',f.name) fromu, t.".$usertable_username." tou from cometchat, cometchat_guests f, ".$usertable." t where $criteria f.id = cometchat.from and t.".$usertable_userid." = cometchat.to) ";
+		}
+	
+		$response = array();
+		$messages = array();
+		
+		if (empty($_POST['timestamp'])) {
+			$criteria = '';
+			$criteria2 = 'desc limit 20';
+			
+		}
 
-        $usertable = TABLE_PREFIX . DB_USERTABLE;
-        $usertable_username = DB_USERTABLE_NAME;
-        $usertable_userid = DB_USERTABLE_USERID;
-        $guestpart = "";
+		$sql = ("(select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, f.$usertable_username fromu, t.$usertable_username tou from cometchat, $usertable f, $usertable t where $criteria f.$usertable_userid = cometchat.from and t.$usertable_userid = cometchat.to ) ".$guestpart." order by id $criteria2");
 
-        $criteria = "cometchat.id > '" . mysql_real_escape_string($_POST['timestamp']) . "' and ";
-        $criteria2 = 'desc';
+		$query = mysql_query($sql); 
+	 
+		$timestamp = $_POST['timestamp'];
+		
+		while ($chat = mysql_fetch_array($query)) {
 
-        if ($guestsMode) {
-            $guestpart = "UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read,CONCAT('$guestnamePrefix',' ',f.name) fromu, CONCAT('$guestnamePrefix',' ',t.name) tou from cometchat, cometchat_guests f, cometchat_guests t where $criteria f.id = cometchat.from and t.id = cometchat.to) UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, f." . $usertable_username . " fromu, CONCAT('$guestnamePrefix',' ',t.name) tou from cometchat, " . $usertable . " f, cometchat_guests t where $criteria f." . $usertable_userid . " = cometchat.from and t.id = cometchat.to) UNION (select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, CONCAT('$guestnamePrefix',' ',f.name) fromu, t." . $usertable_username . " tou from cometchat, cometchat_guests f, " . $usertable . " t where $criteria f.id = cometchat.from and t." . $usertable_userid . " = cometchat.to) ";
-        }
+			if (function_exists('processName')) {
+				$chat['fromu'] = processName($chat['fromu']);
+				$chat['tou'] = processName($chat['tou']);
+			}
+		
+			$time = date('g:iA M dS', $chat['sent']);
 
-        $response = array();
-        $messages = array();
+			array_unshift($messages,  array('id' => $chat['id'], 'from' => $chat['from'], 'to' => $chat['to'], 'fromu' => $chat['fromu'], 'tou' => $chat['tou'], 'message' => $chat['message'], 'time' => $time));
+			
+			if ($chat['id'] > $timestamp) {
+				$timestamp = $chat['id'];
+			}
+		}
 
-        if (empty($_POST['timestamp'])) {
-            $criteria = '';
-            $criteria2 = 'desc limit 20';
+		$response['timestamp'] = $timestamp;		
+		$response['online'] = onlineusers();
 
-        }
-
-        $sql = ("(select cometchat.id id, cometchat.from, cometchat.to, cometchat.message, cometchat.sent, cometchat.read, f.$usertable_username fromu, t.$usertable_username tou from cometchat, $usertable f, $usertable t where $criteria f.$usertable_userid = cometchat.from and t.$usertable_userid = cometchat.to ) " . $guestpart . " order by id $criteria2");
-
-        $query = mysql_query($sql);
-
-        $timestamp = $_POST['timestamp'];
-
-        while ($chat = mysql_fetch_array($query)) {
-
-            if (function_exists('processName')) {
-                $chat['fromu'] = processName($chat['fromu']);
-                $chat['tou'] = processName($chat['tou']);
-            }
-
-            $time = date('g:iA M dS', $chat['sent']);
-
-            array_unshift($messages, array('id' => $chat['id'], 'from' => $chat['from'], 'to' => $chat['to'], 'fromu' => $chat['fromu'], 'tou' => $chat['tou'], 'message' => $chat['message'], 'time' => $time));
-
-            if ($chat['id'] > $timestamp) {
-                $timestamp = $chat['id'];
-            }
-        }
-
-        $response['timestamp'] = $timestamp;
-        $response['online'] = onlineusers();
-
-        if (!empty($messages)) {
-            $response['messages'] = $messages;
-        }
-
-        header('Content-type: application/json; charset=utf-8');
-        echo json_encode($response);
-    }
-    exit;
+		if (!empty($messages)) {
+			$response['messages'] = $messages;
+		}
+		
+		header('Content-type: application/json; charset=utf-8');
+		echo json_encode($response);
+	}	
+	exit;
 }

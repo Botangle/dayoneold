@@ -53,54 +53,52 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
+include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
 
-if ($p_ < 2) exit;
+if ($p_<2) exit;
 
 $id = $_GET['id'];
 $sql = getUserDetails($id);
 
 if ($guestsMode && $id >= 10000000) {
-    $sql = getGuestDetails($id);
+	$sql = getGuestDetails($id);
 }
 
 $query = mysql_query($sql);
-if (defined('DEV_MODE') && DEV_MODE == '1') {
-    echo mysql_error();
-}
+if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
 $user = mysql_fetch_array($query);
 if (function_exists('processName')) {
-    $user['username'] = processName($user['username']);
+	$user['username'] = processName($user['username']);
 }
 
 $log = '';
-$filename = 'Conversation with ' . $user['username'] . ' on ' . date('M jS Y');
+$filename = 'Conversation with '.$user['username'].' on '.date('M jS Y');
 
 $messages = array();
 
 getChatboxData($id);
 
-$log .= 'Conversation with ' . $user['username'] . ' on ' . date('M jS Y');
+$log .= 'Conversation with '.$user['username'].' on '.date('M jS Y');
 $log .= "\r\n-------------------------------------------------------\r\n\r\n";
 
 foreach ($messages as $chat) {
-    if ($chat['self'] == 1) {
-        $log .= '(' . date('g:iA', $chat['sent']) . ") " . $language[10] . ': ' . $chat['message'] . "\r\n";
-    } else {
-        $log .= '(' . date('g:iA', $chat['sent']) . ") " . $user['username'] . ': ' . $chat['message'] . "\r\n";
-    }
+	if ($chat['self'] == 1) {
+		$log .= '('.date('g:iA', $chat['sent']).") ".$language[10].': '.$chat['message']."\r\n";
+	} else {
+		$log .= '('.date('g:iA', $chat['sent']).") ".$user['username'].': '.$chat['message']."\r\n";
+	}
 }
 
-if (strpos($log, 'cometchat_smiley') !== false) {
-    foreach ($smileys as $pattern => $result) {
-        $title = str_replace("-", " ", ucwords(preg_replace("/\.(.*)/", "", $result)));
-        $log = preg_replace('/<img[^>]*title="' . $title . '"[^>]*>/i', '(' . $title . ')', $log);
-    }
+if (strpos($log,'cometchat_smiley') !== false) {
+	foreach ($smileys as $pattern => $result) {
+		$title = str_replace("-"," ",ucwords(preg_replace("/\.(.*)/","",$result)));
+		$log =  preg_replace('/<img[^>]*title="'.$title.'"[^>]*>/i','('.$title.')',$log);
+	}
 }
 $log = strip_tags($log);
 header('Content-Description: File Transfer');
 header('Content-Type: application/force-download');
-header('Content-Disposition: attachment; filename="' . $filename . '.txt"');
+header('Content-Disposition: attachment; filename="'.$filename.'.txt"');
 header('Content-Transfer-Encoding: binary');
 header('Expires: 0');
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');

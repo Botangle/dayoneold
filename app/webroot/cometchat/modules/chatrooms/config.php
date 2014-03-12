@@ -28,15 +28,18 @@ $moderatorUserIDs = array();
 /* MODERATOR END */
 
 
+
 if (USE_COMET == 1 && COMET_CHATROOMS == 1) {
-    $minHeartbeat = $maxHeartbeat = REFRESH_BUDDYLIST . '000';
-    $hideEnterExit = 1;
+	$minHeartbeat = $maxHeartbeat = REFRESH_BUDDYLIST.'000';
+	$hideEnterExit = 1;
 }
 
 /* ADDITIONAL SETTINGS */
 
-$chatroomLongNameLength = 60; // The chatroom length after which characters will be truncated
-$chatroomShortNameLength = 30; // The chatroom length after which characters will be truncated
+$chatroomLongNameLength = 60;	// The chatroom length after which characters will be truncated
+$chatroomShortNameLength = 30;	// The chatroom length after which characters will be truncated
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

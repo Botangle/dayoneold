@@ -15,67 +15,64 @@ App::uses('AuthComponent', 'Controller/Component');
  */
 class New extends CategoryAppModel {
 
-    /**
-     * Model name
-     *
-     * @var string
-     * @access public
-     */
-    public
-    $name = 'New';
+/**
+ * Model name
+ *
+ * @var string
+ * @access public
+ */
+	public $name = 'New';
 
-    /**
-     * Order
-     *
-     * @var string
-     * @access public
-     */
-    public
-    $order = 'New.title ASC';
+/**
+ * Order
+ *
+ * @var string
+ * @access public
+ */
+	public $order = 'New.title ASC';
+ 
 
+/**
+ * Model associations: belongsTo
+ *
+ * @var array
+ * @access public
+ */
+ 
+/**
+ * Validation
+ *
+ * @var array
+ * @access public
+ */
+	public $validate = array(
+		 
+		'name' => array(
+			'notEmpty' => array(
+				'rule' => 'notEmpty',
+				'message' => 'This field cannot be left blank.',
+				'last' => true,
+			),
+			 
+		),
+		 
+	);
 
-    /**
-     * Model associations: belongsTo
-     *
-     * @var array
-     * @access public
-     */
-
-    /**
-     * Validation
-     *
-     * @var array
-     * @access public
-     */
-    public
-    $validate = array(
-
-        'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
-                'message' => 'This field cannot be left blank.',
-                'last' => true,
-            ),
-
-        ),
-
-    );
-
-
-    /**
-     * Display fields for this model
-     *
-     * @var array
-     */
-    protected
-    $_displayFields = array(
-        'id',
-        'title',
-        'details',
-        'date',
-        'status' => array('type' => 'boolean'),
-
-    );
-
+ 
+/**
+ * Display fields for this model
+ *
+ * @var array
+ */
+	protected $_displayFields = array(
+		'id', 
+		'title',
+		'details',
+		'date',
+		'status' => array('type' => 'boolean'),
+		 
+	);
+	
+ 
 
 }

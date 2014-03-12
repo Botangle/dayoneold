@@ -53,16 +53,13 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) {
-    echo "NO DICE";
-    exit;
-}
+if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 if (empty($_GET['process'])) {
-    global $getstylesheet;
-    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
-
-    echo <<<EOD
+	global $getstylesheet;
+	require dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php';
+	
+echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 $getstylesheet
@@ -101,10 +98,10 @@ $('.button').live('click',function(e){
 </form>
 EOD;
 } else {
+	
+	$data = '$adCode = <<<EOD'."\r\n".str_replace('CC_LT','<',str_replace('CC_GT','>',$_POST['adCode']))."\r\nEOD;\r\n";
+	$data .= '$adHeight = \''.$_POST['adHeight']."';\r\n";
 
-    $data = '$adCode = <<<EOD' . "\r\n" . str_replace('CC_LT', '<', str_replace('CC_GT', '>', $_POST['adCode'])) . "\r\nEOD;\r\n";
-    $data .= '$adHeight = \'' . $_POST['adHeight'] . "';\r\n";
-
-    configeditor('SETTINGS', $data, 0, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php');
-    header("Location:?module=dashboard&action=loadexternal&type=extension&name=ads");
+	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
+	header("Location:?module=dashboard&action=loadexternal&type=extension&name=ads");
 }

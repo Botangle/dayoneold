@@ -70,52 +70,51 @@ foreach ($screenshare_language as $i => $l) {
 
 function setupApp()
 {
-    screenViewer = document.getElementById("screenViewerID");
+	screenViewer = document.getElementById("screenViewerID");
 
-    }
+}
 
 function stopApp()
 {
-    if (screenViewer != null)
-    {
-    screenViewer.windowCloseEvent();
-    }
+	if (screenViewer != null)
+	{
+		screenViewer.windowCloseEvent();
+	}
 }
 
 function getParameter(string, parm, delim) {
 
-    if (string.length == 0) {
-    return '';
-    }
+	 if (string.length == 0) {
+		return '';
+	 }
 
-var sPos = string.indexOf(parm + "=");
+	 var sPos = string.indexOf(parm + "=");
 
-if (sPos == -1) {return '';}
+	 if (sPos == -1) {return '';}
 
-sPos = sPos + parm.length + 1;
-var ePos = string.indexOf(delim, sPos);
+	 sPos = sPos + parm.length + 1;
+	 var ePos = string.indexOf(delim, sPos);
 
-if (ePos == -1) {
-    ePos = string.length;
-    }
+	 if (ePos == -1) {
+		ePos = string.length;
+	 }
 
-return unescape(string.substring(sPos, ePos));
+	 return unescape(string.substring(sPos, ePos));
 }
 
 function getPageParameter(parameterName, defaultValue) {
 
-    var s = self.location.search;
+	var s = self.location.search;
 
-    if ((s == null) || (s.length < 1)) {
-    return defaultValue;
-    }
+	if ((s == null) || (s.length < 1)) {
+		return defaultValue;
+	}
 
-s = getParameter(s, parameterName, '&');
+	s = getParameter(s, parameterName, '&');
 
-if ((s == null) || (s.length
-    < 1)) {
-        s = defaultValue;
-        }
+	if ((s == null) || (s.length < 1)) {
+		s = defaultValue;
+	}
 
-    return s;
-    }
+	return s;
+}

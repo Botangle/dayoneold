@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('transliterate', 'Transliterate');
+$plugininfo = array('transliterate','Transliterate');

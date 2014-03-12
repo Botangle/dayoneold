@@ -53,62 +53,62 @@ THE SOFTWARE.
 
 */
 
-$data = explode(';', $_GET['tid']);
+$data = explode(';',$_GET['tid']);
 $_REQUEST['basedata'] = $data[1];
 
-include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
+include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
 
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
-    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
+if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
+	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
 }
 
-$data = explode(';', $_GET['tid']);
+$data = explode(';',$_GET['tid']);
 $_GET['tid'] = $data[0];
 $_GET['embed'] = $data[2];
 
-$randomImage = md5(rand(0, 9999999999) . time());
+$randomImage = md5(rand(0,9999999999).time());
 
-$file = fopen(dirname(__FILE__) . DIRECTORY_SEPARATOR . "uploads" . DIRECTORY_SEPARATOR . $randomImage . ".jpg", "w");
+$file = fopen(dirname(__FILE__).DIRECTORY_SEPARATOR."uploads".DIRECTORY_SEPARATOR.$randomImage.".jpg","w");
 
-if (isset($GLOBALS["HTTP_RAW_POST_DATA"])) {
-    $jpg = $GLOBALS["HTTP_RAW_POST_DATA"];
-    fwrite($file, $jpg);
+if (isset($GLOBALS["HTTP_RAW_POST_DATA"])) { 
+    $jpg = $GLOBALS["HTTP_RAW_POST_DATA"]; 
+    fwrite($file,$jpg);
     fclose($file);
 } else {
-    $inputSocket = fopen('php://input', 'rb');
-    $jpg = stream_get_contents($inputSocket);
-    fclose($inputSocket);
-    fwrite($file, $jpg);
+	$inputSocket = fopen('php://input','rb');
+	$jpg = stream_get_contents($inputSocket);
+	fclose($inputSocket);
+	fwrite($file,$jpg);
     fclose($file);
 }
 
-$linkToImage = BASE_URL . "plugins/handwrite/uploads/" . $randomImage . ".jpg";
+$linkToImage = BASE_URL."plugins/handwrite/uploads/".$randomImage.".jpg";
 
-$text = '<a href="' . $linkToImage . '" target="_blank" style="display:inline-block;margin-bottom:3px;margin-top:3px;"><img src="' . $linkToImage . '" border="0" style="padding:0px;display: inline-block;border:1px solid #666;" height="90"></a>';
+$text = '<a href="'.$linkToImage.'" target="_blank" style="display:inline-block;margin-bottom:3px;margin-top:3px;"><img src="'.$linkToImage.'" border="0" style="padding:0px;display: inline-block;border:1px solid #666;" height="90"></a>'; 
 
-if (substr($_GET['tid'], 0, 1) == 'c') {
-    $_GET['tid'] = substr($_GET['tid'], 1);
-    sendChatroomMessage($_GET['tid'], $handwrite_language[3] . "<br/>$text");
+if (substr($_GET['tid'],0,1) == 'c') {
+	$_GET['tid'] = substr($_GET['tid'],1);
+	sendChatroomMessage($_GET['tid'],$handwrite_language[3]."<br/>$text");
 } else {
-    sendMessageTo($_GET['tid'], $handwrite_language[1] . "<br/>$text");
-    sendSelfMessage($_GET['tid'], $handwrite_language[2] . "<br/>$text");
+	sendMessageTo($_GET['tid'],$handwrite_language[1]."<br/>$text");
+	sendSelfMessage($_GET['tid'],$handwrite_language[2]."<br/>$text");
 }
 
 $embed = '';
 $embedcss = '';
 $close = "setTimeout('window.close()',2000);";
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'web') {
-    $embed = 'web';
-    $embedcss = 'embed';
-    $close = "parent.closeCCPopup('handwrite');";
-}
+if (!empty($_GET['embed']) && $_GET['embed'] == 'web') { 
+	$embed = 'web';
+	$embedcss = 'embed';
+	$close = "parent.closeCCPopup('handwrite');";
+}	
 
-if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') {
-    $embed = 'desktop';
-    $embedcss = 'embed';
-    $close = "parentSandboxBridge.closeCCPopup('handwrite');";
+if (!empty($_GET['embed']) && $_GET['embed'] == 'desktop') { 
+	$embed = 'desktop';
+	$embedcss = 'embed';
+	$close = "parentSandboxBridge.closeCCPopup('handwrite');";
 }
 
 echo <<<EOD

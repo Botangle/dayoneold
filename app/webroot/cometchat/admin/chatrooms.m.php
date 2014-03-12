@@ -53,10 +53,7 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) {
-    echo "NO DICE";
-    exit;
-}
+if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 $navigation = <<<EOD
 	<div id="leftnav">
@@ -66,58 +63,55 @@ $navigation = <<<EOD
 	</div>
 EOD;
 
-function index()
-{
-    global $db;
-    global $body;
-    global $trayicon;
-    global $navigation;
+function index() {
+	global $db;
+	global $body;	
+	global $trayicon;
+	global $navigation;
+	
+	require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'chatrooms'.DIRECTORY_SEPARATOR.'config.php';
 
-    require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'chatrooms' . DIRECTORY_SEPARATOR . 'config.php';
+	$sql = ("select * from cometchat_chatrooms order by lastactivity desc");
+	$query = mysql_query($sql);
+	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
 
-    $sql = ("select * from cometchat_chatrooms order by lastactivity desc");
-    $query = mysql_query($sql);
-    if (defined('DEV_MODE') && DEV_MODE == '1') {
-        echo mysql_error();
-    }
+	$chatroomlist = '';
+	
+	while ($chatroom = mysql_fetch_array($query)) {
 
-    $chatroomlist = '';
+		$type = '';
+		
+		if ($chatroom['type'] == '1') {
+			$type = ' (password protected)';
+		} else if ($chatroom['type'] == '2') {
+			$type = ' (invitation only)';
+		}
 
-    while ($chatroom = mysql_fetch_array($query)) {
+		$typeuser = '';
 
-        $type = '';
+ 
+		if ($chatroom['createdby'] != 0) {
+			$typeuser = ' (user created)';
+		}
 
-        if ($chatroom['type'] == '1') {
-            $type = ' (password protected)';
-        } else if ($chatroom['type'] == '2') {
-            $type = ' (invitation only)';
-        }
+		$time = date('g:iA M dS', ($chatroom['lastactivity'] + $_SESSION['cometchat']['timedifference']));
 
-        $typeuser = '';
+		$css = '';
+		$extra = '';
 
+		if(getTimeStamp()-$chatroom['lastactivity'] > $chatroomTimeout * 100 ) {
+			$css = 'background-color:#FFE2E2';
+		} else if(getTimeStamp()-$chatroom['lastactivity'] > $chatroomTimeout && getTimeStamp()-$chatroom['lastactivity'] < $chatroomTimeout * 100 ) {
+			$css = 'background-color:rgba(245, 255, 0, 0.09)';
+		}
+		if (empty($type)) {
+			$extra = '<a href="../modules/chatrooms/index.php?id='.$chatroom['id'].'" target="_blank" style="margin-right:5px;"><img src="images/link.png" title="Direct link to chatroom"></a><a onclick="javascript:embed_link(\''.BASE_URL.'modules/chatrooms/index.php?id='.$chatroom['id'].'\',\'500\',\'300\');" href="#" style="margin-right:5px;"><img src="images/embed.png" title="Embed code for chatroom"></a>';
+		}
 
-        if ($chatroom['createdby'] != 0) {
-            $typeuser = ' (user created)';
-        }
+		$chatroomlist .= '<li class="ui-state-default" style="'.$css.'"><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;max-width: 400px;text-overflow: ellipsis;overflow: hidden;">'.$chatroom['name'].' (ID: '. $chatroom['id'].')'.$type.$typeuser.'('.$time.')</span><p style="float:right"></p><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;">'.$extra.'<a href="?module=chatrooms&action=deletechatroom&data='.$chatroom['id'].'&token='.$_SESSION['token'].'"><img src="images/remove.png" title="Delete Chatroom"></a></span><div style="clear:both"></div></li>';
+	}
 
-        $time = date('g:iA M dS', ($chatroom['lastactivity'] + $_SESSION['cometchat']['timedifference']));
-
-        $css = '';
-        $extra = '';
-
-        if (getTimeStamp() - $chatroom['lastactivity'] > $chatroomTimeout * 100) {
-            $css = 'background-color:#FFE2E2';
-        } else if (getTimeStamp() - $chatroom['lastactivity'] > $chatroomTimeout && getTimeStamp() - $chatroom['lastactivity'] < $chatroomTimeout * 100) {
-            $css = 'background-color:rgba(245, 255, 0, 0.09)';
-        }
-        if (empty($type)) {
-            $extra = '<a href="../modules/chatrooms/index.php?id=' . $chatroom['id'] . '" target="_blank" style="margin-right:5px;"><img src="images/link.png" title="Direct link to chatroom"></a><a onclick="javascript:embed_link(\'' . BASE_URL . 'modules/chatrooms/index.php?id=' . $chatroom['id'] . '\',\'500\',\'300\');" href="#" style="margin-right:5px;"><img src="images/embed.png" title="Embed code for chatroom"></a>';
-        }
-
-        $chatroomlist .= '<li class="ui-state-default" style="' . $css . '"><span style="font-size:11px;float:left;margin-top:3px;margin-left:5px;max-width: 400px;text-overflow: ellipsis;overflow: hidden;">' . $chatroom['name'] . ' (ID: ' . $chatroom['id'] . ')' . $type . $typeuser . '(' . $time . ')</span><p style="float:right"></p><span style="font-size:11px;float:right;margin-top:0px;margin-right:5px;">' . $extra . '<a href="?module=chatrooms&action=deletechatroom&data=' . $chatroom['id'] . '&token=' . $_SESSION['token'] . '"><img src="images/remove.png" title="Delete Chatroom"></a></span><div style="clear:both"></div></li>';
-    }
-
-    $body = <<<EOD
+	$body = <<<EOD
 	$navigation
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -146,30 +140,28 @@ function index()
 
 EOD;
 
-    template();
+	template();
 
 }
 
-function deletechatroom()
-{
-    checktoken();
+function deletechatroom() {
+	checktoken();
 
-    if (!empty($_GET['data'])) {
-        $sql = ("delete from cometchat_chatrooms where id = '" . mysql_real_escape_string(sanitize_core($_GET['data'])) . "'");
-        $query = mysql_query($sql);
-    }
+	if (!empty($_GET['data'])) {
+		$sql = ("delete from cometchat_chatrooms where id = '".mysql_real_escape_string(sanitize_core($_GET['data']))."'");
+		$query = mysql_query($sql);
+	}
 
-    header("Location:?module=chatrooms");
+	header("Location:?module=chatrooms");
 }
 
-function newchatroom()
-{
-    global $db;
-    global $body;
-    global $trayicon;
-    global $navigation;
+function newchatroom() {
+	global $db;
+	global $body;	
+	global $trayicon;
+	global $navigation;
 
-    $body = <<<EOD
+	$body = <<<EOD
 	
 	$navigation
 	<form action="?module=chatrooms&action=newchatroomprocess" method="post" enctype="multipart/form-data">
@@ -202,56 +194,52 @@ function newchatroom()
 
 EOD;
 
-    template();
+	template();
 
 }
 
-function newchatroomprocess()
-{
-    checktoken();
+function newchatroomprocess() {
+	checktoken();
 
-    $chatroom = $_POST['chatroom'];
-    $type = $_POST['type'];
-    $password = $_POST['ppassword'];
+	$chatroom = $_POST['chatroom'];
+	$type = $_POST['type'];
+	$password = $_POST['ppassword'];
 
-    if (!empty($password) && ($type == 1 || $type == 2)) {
-        $password = sha1($password);
-    } else {
-        $password = '';
-    }
-    if (!empty($chatroom)) {
-        $sql = ("insert into cometchat_chatrooms (name,createdby,lastactivity,password,type) values ('" . mysql_real_escape_string(sanitize_core($chatroom)) . "', '0','" . getTimeStamp() . "','" . mysql_real_escape_string($password) . "','" . mysql_real_escape_string($type) . "')");
-        $query = mysql_query($sql);
-    }
+	if (!empty($password) && ($type == 1 || $type == 2)) {
+		$password = sha1($password);
+	} else {
+		$password = '';
+	}
+	if(!empty($chatroom)) {
+		$sql = ("insert into cometchat_chatrooms (name,createdby,lastactivity,password,type) values ('".mysql_real_escape_string(sanitize_core($chatroom))."', '0','".getTimeStamp()."','".mysql_real_escape_string($password)."','".mysql_real_escape_string($type)."')");
+		$query = mysql_query($sql);
+	}
 
-    header("Location: ?module=chatrooms");
+	header( "Location: ?module=chatrooms" ); 
 }
 
-function moderator()
-{
+function moderator() {
 
-    global $db;
-    global $body;
-    global $trayicon;
-    global $navigation;
-    global $moderatorUserIDs;
-    $usertable = TABLE_PREFIX . DB_USERTABLE;
-    $usertable_username = DB_USERTABLE_NAME;
-    $usertable_userid = DB_USERTABLE_USERID;
+	global $db;
+	global $body;	
+	global $trayicon;
+	global $navigation;
+	global $moderatorUserIDs;
+	$usertable = TABLE_PREFIX.DB_USERTABLE;
+	$usertable_username = DB_USERTABLE_NAME;
+	$usertable_userid = DB_USERTABLE_USERID;	
 
-    require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'chatrooms' . DIRECTORY_SEPARATOR . 'config.php';
+	require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'chatrooms'.DIRECTORY_SEPARATOR.'config.php';	
+	
+	if (defined('DEV_MODE') && DEV_MODE == '1') { echo mysql_error(); }
 
-    if (defined('DEV_MODE') && DEV_MODE == '1') {
-        echo mysql_error();
-    }
+	$moderatorids = '';
 
-    $moderatorids = '';
+		foreach ($moderatorUserIDs as $b) {
+			$moderatorids .= $b.',';		
+		}
 
-    foreach ($moderatorUserIDs as $b) {
-        $moderatorids .= $b . ',';
-    }
-
-    $body = <<<EOD
+	$body = <<<EOD
 	$navigation
 	
 		<form action="?module=chatrooms&action=moderatorprocess" method="post">
@@ -277,29 +265,27 @@ function moderator()
 		</div>
 	<div style="clear:both"></div>
 EOD;
-    template();
+	template();
 
 }
 
-function moderatorprocess()
-{
-    require dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'chatrooms' . DIRECTORY_SEPARATOR . 'config.php';
-
-    $_SESSION['cometchat']['error'] = 'Moderator list successfully modified.';
-    $data = '$moderatorUserIDs = array(' . $_POST['moderatorids'] . ');' . "\r\n";
-    configeditor('MODERATOR', $data, 0, dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'chatrooms' . DIRECTORY_SEPARATOR . 'config.php');
-
-
-    header("Location:?module=chatrooms&action=moderator");
+function moderatorprocess() {
+	require dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'chatrooms'.DIRECTORY_SEPARATOR.'config.php';			
+	
+		$_SESSION['cometchat']['error'] = 'Moderator list successfully modified.';
+		$data = '$moderatorUserIDs = array('.$_POST['moderatorids'].');'."\r\n";
+		configeditor('MODERATOR',$data,0,dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'chatrooms'.DIRECTORY_SEPARATOR.'config.php');	
+	
+	
+	header("Location:?module=chatrooms&action=moderator");
 }
 
-function finduser()
-{
-    global $db;
-    global $body;
-    global $navigation;
+function finduser() {
+	global $db;
+	global $body;	
+	global $navigation;
 
-    $body = <<<EOD
+	$body = <<<EOD
 	$navigation
 	<form action="?module=chatrooms&action=searchlogs" method="post" enctype="multipart/form-data">
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -322,42 +308,41 @@ function finduser()
 
 EOD;
 
-    template();
+	template();
 
 }
 
 
-function searchlogs()
-{
-    checktoken();
+function searchlogs() {
+	checktoken();
 
-    global $usertable_userid;
-    global $usertable_username;
-    global $usertable;
-    global $navigation;
-    global $body;
+	global $usertable_userid;
+	global $usertable_username;
+	global $usertable;
+	global $navigation;
+	global $body;
+	
+	$username = $_POST['susername'];
 
-    $username = $_POST['susername'];
+	if (empty($username)) {
+		// Base 64 Encoded
+		$username = 'Q293YXJkaWNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgc2FmZT8NCkV4cGVkaWVuY3kgYXNrcyB0aGUgcXVlc3Rpb24gLSBpcyBpdCBwb2xpdGljPw0KVmFuaXR5IGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcG9wdWxhcj8NCkJ1dCBjb25zY2llbmNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcmlnaHQ/DQpBbmQgdGhlcmUgY29tZXMgYSB0aW1lIHdoZW4gb25lIG11c3QgdGFrZSBhIHBvc2l0aW9uDQp0aGF0IGlzIG5laXRoZXIgc2FmZSwgbm9yIHBvbGl0aWMsIG5vciBwb3B1bGFyOw0KYnV0IG9uZSBtdXN0IHRha2UgaXQgYmVjYXVzZSBpdCBpcyByaWdodC4=';
+	}
 
-    if (empty($username)) {
-        // Base 64 Encoded
-        $username = 'Q293YXJkaWNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgc2FmZT8NCkV4cGVkaWVuY3kgYXNrcyB0aGUgcXVlc3Rpb24gLSBpcyBpdCBwb2xpdGljPw0KVmFuaXR5IGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcG9wdWxhcj8NCkJ1dCBjb25zY2llbmNlIGFza3MgdGhlIHF1ZXN0aW9uIC0gaXMgaXQgcmlnaHQ/DQpBbmQgdGhlcmUgY29tZXMgYSB0aW1lIHdoZW4gb25lIG11c3QgdGFrZSBhIHBvc2l0aW9uDQp0aGF0IGlzIG5laXRoZXIgc2FmZSwgbm9yIHBvbGl0aWMsIG5vciBwb3B1bGFyOw0KYnV0IG9uZSBtdXN0IHRha2UgaXQgYmVjYXVzZSBpdCBpcyByaWdodC4=';
-    }
+	$sql = ("select $usertable_userid id, $usertable_username username from $usertable where $usertable_username LIKE '%".mysql_real_escape_string(sanitize_core($username))."%'");
+	$query = mysql_query($sql);
 
-    $sql = ("select $usertable_userid id, $usertable_username username from $usertable where $usertable_username LIKE '%" . mysql_real_escape_string(sanitize_core($username)) . "%'");
-    $query = mysql_query($sql);
+	$userslist = '';
 
-    $userslist = '';
+	while ($user = mysql_fetch_array($query)) {
+		if (function_exists('processName')) {
+			$user['username'] = processName($user['username']);
+		}
 
-    while ($user = mysql_fetch_array($query)) {
-        if (function_exists('processName')) {
-            $user['username'] = processName($user['username']);
-        }
+		$userslist .= '<li class="ui-state-default"><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">'.$user['username'].' - '.$user['id'].'</span><div style="clear:both"></div></li>';
+	}
 
-        $userslist .= '<li class="ui-state-default"><span style="font-size:11px;float:left;margin-top:2px;margin-left:5px;">' . $user['username'] . ' - ' . $user['id'] . '</span><div style="clear:both"></div></li>';
-    }
-
-    $body = <<<EOD
+	$body = <<<EOD
 	$navigation
 
 	<div id="rightcontent" style="float:left;width:720px;border-left:1px dotted #ccc;padding-left:20px;">
@@ -376,6 +361,6 @@ function searchlogs()
 	<div style="clear:both"></div>
 
 EOD;
-
-    template();
+	
+	template();
 }

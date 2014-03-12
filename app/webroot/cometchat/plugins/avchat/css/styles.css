@@ -128,6 +128,7 @@ h2#tutorialSubTitle {
 
 /* Tutorial 7 stuff */
 
+
 .chat-widget {
     width: 400px;
     height: 500px;
@@ -145,7 +146,8 @@ h2#tutorialSubTitle {
     padding: 2px 5px
 }
 
-.messages-input textarea {
+.messages-input textarea
+{
     width: 380px;
     height: 45px;
     resize: none;

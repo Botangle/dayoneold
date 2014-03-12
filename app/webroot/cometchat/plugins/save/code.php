@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('save', 'Save Conversation');
+$plugininfo = array('save','Save Conversation');

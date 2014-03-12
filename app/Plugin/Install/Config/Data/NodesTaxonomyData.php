@@ -1,16 +1,14 @@
 <?php
+class NodesTaxonomyData {
 
-class NodesTaxonomyData
-{
+	public $table = 'nodes_taxonomies';
 
-    public $table = 'nodes_taxonomies';
-
-    public $records = array(
-        array(
-            'id' => '1',
-            'node_id' => '1',
-            'taxonomy_id' => '1'
-        ),
-    );
+	public $records = array(
+		array(
+			'id' => '1',
+			'node_id' => '1',
+			'taxonomy_id' => '1'
+		),
+	);
 
 }

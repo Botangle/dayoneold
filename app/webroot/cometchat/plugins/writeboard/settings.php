@@ -53,16 +53,13 @@ THE SOFTWARE.
 
 */
 
-if (!defined('CCADMIN')) {
-    echo "NO DICE";
-    exit;
-}
+if (!defined('CCADMIN')) { echo "NO DICE"; exit; }
 
 if (empty($_GET['process'])) {
-    global $getstylesheet;
-    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
+	global $getstylesheet;
+	require dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php';
 
-    echo <<<EOD
+echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 $getstylesheet
@@ -86,12 +83,12 @@ $getstylesheet
 </form>
 EOD;
 } else {
+	
+	$data = '';
+	foreach ($_POST as $field => $value) {
+		$data .= '$'.$field.' = \''.$value.'\';'."\r\n";
+	}
 
-    $data = '';
-    foreach ($_POST as $field => $value) {
-        $data .= '$' . $field . ' = \'' . $value . '\';' . "\r\n";
-    }
-
-    configeditor('SETTINGS', $data, 0, dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php');
-    header("Location:?module=dashboard&action=loadexternal&type=plugin&name=writeboard");
+	configeditor('SETTINGS',$data,0,dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');	
+	header("Location:?module=dashboard&action=loadexternal&type=plugin&name=writeboard");
 }

@@ -1,1 +1,2 @@
-<?php echo $this->Nodes->field('body'); ?>
+
+	<?php echo $this->Nodes->field('body'); ?>

@@ -53,95 +53,102 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
+include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
 
 
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
-    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
+if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
+	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
 }
 
-if ($p_ < 3) exit;
+if ($p_<3) exit;
 
 if ($_GET['action'] == 'request') {
-    sendMessageTo($_REQUEST['to'], $whiteboard_language[2] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwhiteboard.accept('" . $userid . "','" . $_REQUEST['id'] . "');\">" . $whiteboard_language[3] . "</a> " . $whiteboard_language[4]);
+	sendMessageTo($_REQUEST['to'],$whiteboard_language[2]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwhiteboard.accept('".$userid."','".$_REQUEST['id']."');\">".$whiteboard_language[3]."</a> ".$whiteboard_language[4]);
 
-    sendSelfMessage($_REQUEST['to'], $whiteboard_language[5]);
+	sendSelfMessage($_REQUEST['to'],$whiteboard_language[5]);
 
-
-    if (!empty($_GET['callback'])) {
-        header('content-type: application/json; charset=utf-8');
-        echo $_GET['callback'] . '()';
-    }
+	
+	if (!empty($_GET['callback'])) {
+		header('content-type: application/json; charset=utf-8');
+		echo $_GET['callback'].'()';
+	}
 
 }
 
 if ($_GET['action'] == 'accept') {
-    sendMessageTo($_REQUEST['to'], $whiteboard_language[6]);
-
-    if (!empty($_GET['callback'])) {
-        header('content-type: application/json; charset=utf-8');
-        echo $_GET['callback'] . '()';
-    }
+	sendMessageTo($_REQUEST['to'],$whiteboard_language[6]);
+		
+	if (!empty($_GET['callback'])) {
+		header('content-type: application/json; charset=utf-8');
+		echo $_GET['callback'].'()';
+	}
 }
 
 if ($_GET['action'] == 'whiteboard') {
+	
+	$id = $_GET['id'];
+	$type = 'whiteboard';
 
-    $id = $_GET['id'];
-    $type = 'whiteboard';
+	if (!empty($_GET['chatroommode'])) {
+		if (!empty($_GET['subaction'])) {
+		sendChatroomMessage($_GET['id'],$whiteboard_language[7]." <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwhiteboard.accept('".$id."');\">".$whiteboard_language[8]."</a>");
+		}
+		$id .= "chatroom";
+		
+	}
+	else
+	{
+		$id =  abs($userid*$userid*$userid-$id*$id*$id)."users";
+	}
+	ini_set('display_errors', 0);
+	 
 
-    if (!empty($_GET['chatroommode'])) {
-        if (!empty($_GET['subaction'])) {
-            sendChatroomMessage($_GET['id'], $whiteboard_language[7] . " <a href='javascript:void(0);' onclick=\"javascript:jqcc.ccwhiteboard.accept('" . $id . "');\">" . $whiteboard_language[8] . "</a>");
-        }
-        $id .= "chatroom";
-
-    } else {
-        $id = abs($userid * $userid * $userid - $id * $id * $id) . "users";
-    }
-    ini_set('display_errors', 0);
 
 
-    $displayName = "Unknown" . rand(0, 999);
-    $username = $displayName;
+
+	$displayName = "Unknown".rand(0,999);
+	$username = $displayName;
 
     $sql = getUserDetails($userid);
 
-    if ($guestsMode && $userid >= 10000000) {
-        $sql = getGuestDetails($userid);
-    }
+	if ($guestsMode && $userid >= 10000000) {
+		$sql = getGuestDetails($userid);
+	}
 
-    $result = mysql_query($sql);
+	$result = mysql_query($sql);
+	
+	if($row = mysql_fetch_array($result)) {
+		
+		if (function_exists('processName')) {
+			$row['username'] = processName($row['username']);
+		}
 
-    if ($row = mysql_fetch_array($result)) {
-
-        if (function_exists('processName')) {
-            $row['username'] = processName($row['username']);
-        }
-
-        $displayName = $row['username'];
-        $username = $row['username'];
-    }
-
+		$displayName = $row['username'];
+		$username = $row['username'];
+	}
+    
     $role = 0;
+	
+	if (empty($hostAddress)) {
+	
+		echo "<div style='background:white;'>Please configure this plugin using administration centre before using.</div>"; exit;
+	}
+	
+	if(!empty($port))
+	{
+		$connectUrl = "rtmp://" . $hostAddress .":".$port. "/" . $application;
+	}
+	else
+	{
+		$connectUrl = "rtmp://" . $hostAddress . "/" . $application;
+	}
+	$baseURL = str_replace('_','',str_replace(':','_', str_replace('.','_',str_replace('/','_',BASE_URL.$_SERVER['SERVER_NAME']))));
+	$connectUrl = "{$connectUrl}/{$id}"."{$baseURL}";
+	
 
-    if (empty($hostAddress)) {
-
-        echo "<div style='background:white;'>Please configure this plugin using administration centre before using.</div>";
-        exit;
-    }
-
-    if (!empty($port)) {
-        $connectUrl = "rtmp://" . $hostAddress . ":" . $port . "/" . $application;
-    } else {
-        $connectUrl = "rtmp://" . $hostAddress . "/" . $application;
-    }
-    $baseURL = str_replace('_', '', str_replace(':', '_', str_replace('.', '_', str_replace('/', '_', BASE_URL . $_SERVER['SERVER_NAME']))));
-    $connectUrl = "{$connectUrl}/{$id}" . "{$baseURL}";
-
-
-    echo <<<EOD
+echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>

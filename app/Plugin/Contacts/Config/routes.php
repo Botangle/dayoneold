@@ -2,5 +2,5 @@
 
 // Contact
 CroogoRouter::connect('/contact', array(
-    'plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', 'contact'
+	'plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', 'contact'
 ));

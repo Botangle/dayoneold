@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('chattime', 'Chat Time');
+$plugininfo = array('chattime','Chat Time');

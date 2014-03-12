@@ -13,15 +13,14 @@ App::uses('UsersAppModel', 'Users.Model');
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://www.croogo.org
  */
-class Usermessage extends UsersAppModel
-{
-    public $name = 'Usermessage';
-
-
-    public $virtualFields = array(
+class Usermessage extends UsersAppModel {
+ public $name = 'Usermessage';
+ 
+ 
+  public $virtualFields = array(
         'date' => 'MAX(date)',
-        'id' => 'MAX( `Usermessage`.`id` )',
-        'userids' => '((CASE WHEN Usermessage.send_to = "$this->Auth->user(id)" THEN sent_from ELSE send_to END))',
-    );
-
+		'id' => 'MAX( `Usermessage`.`id` )',
+		'userids'=>'((CASE WHEN Usermessage.send_to = "$this->Auth->user(id)" THEN sent_from ELSE send_to END))',  
+		);
+ 
 }

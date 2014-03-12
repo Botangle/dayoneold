@@ -20,10 +20,10 @@
 App::uses('HttpSocketResponse', 'Network/Http');
 
 if (class_exists('HttpResponse')) {
-    trigger_error(__d(
-        'cake_dev',
-        "HttpResponse is deprecated due to naming conflicts. Use HttpSocketResponse instead."
-    ), E_USER_ERROR);
+	trigger_error(__d(
+		'cake_dev',
+		"HttpResponse is deprecated due to naming conflicts. Use HttpSocketResponse instead."
+	), E_USER_ERROR);
 }
 
 /**
@@ -32,7 +32,6 @@ if (class_exists('HttpResponse')) {
  * @package       Cake.Network.Http
  * @deprecated This class is deprecated as it has naming conflicts with pecl/http
  */
-class HttpResponse extends HttpSocketResponse
-{
+class HttpResponse extends HttpSocketResponse {
 
 }

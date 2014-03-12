@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('smilies', 'Smilies');
+$plugininfo = array('smilies','Smilies');

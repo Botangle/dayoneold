@@ -3,11 +3,11 @@
 <?php
 	$url = Router::url(array(
 		'controller' => 'users',
-'action' => 'reset',
-$user['User']['username'],
-$activationKey,
-), true);
-echo __d('croogo', 'Please visit this link to reset your password: %s', $url);
+		'action' => 'reset',
+		$user['User']['username'],
+		$activationKey,
+	), true);
+	echo __d('croogo', 'Please visit this link to reset your password: %s', $url);
 ?>
 
 

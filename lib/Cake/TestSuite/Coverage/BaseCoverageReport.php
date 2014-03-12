@@ -25,162 +25,155 @@
  *
  * @package       Cake.TestSuite.Coverage
  */
-abstract class BaseCoverageReport
-{
+abstract class BaseCoverageReport {
 
-    /**
-     * coverage data
-     *
-     * @var string
-     */
-    protected $_rawCoverage;
+/**
+ * coverage data
+ *
+ * @var string
+ */
+	protected $_rawCoverage;
 
-    /**
-     * is the test an app test
-     *
-     * @var string
-     */
-    public $appTest = false;
+/**
+ * is the test an app test
+ *
+ * @var string
+ */
+	public $appTest = false;
 
-    /**
-     * is the test a plugin test
-     *
-     * @var string
-     */
-    public $pluginTest = false;
+/**
+ * is the test a plugin test
+ *
+ * @var string
+ */
+	public $pluginTest = false;
 
-    /**
-     * Array of test case file names. Used to do basename() matching with
-     * files that have coverage to decide which results to show on page load.
-     *
-     * @var array
-     */
-    protected $_testNames = array();
+/**
+ * Array of test case file names. Used to do basename() matching with
+ * files that have coverage to decide which results to show on page load.
+ *
+ * @var array
+ */
+	protected $_testNames = array();
 
-    /**
-     * Constructor
-     *
-     * @param array $coverage Array of coverage data from PHPUnit_Test_Result
-     * @param CakeBaseReporter $reporter A reporter to use for the coverage report.
-     */
-    public function __construct($coverage, CakeBaseReporter $reporter)
-    {
-        $this->_rawCoverage = $coverage;
-        $this->_setParams($reporter);
-    }
+/**
+ * Constructor
+ *
+ * @param array $coverage Array of coverage data from PHPUnit_Test_Result
+ * @param CakeBaseReporter $reporter A reporter to use for the coverage report.
+ */
+	public function __construct($coverage, CakeBaseReporter $reporter) {
+		$this->_rawCoverage = $coverage;
+		$this->_setParams($reporter);
+	}
 
-    /**
-     * Pulls params out of the reporter.
-     *
-     * @param CakeBaseReporter $reporter Reporter to suck params out of.
-     * @return void
-     */
-    protected function _setParams(CakeBaseReporter $reporter)
-    {
-        if ($reporter->params['app']) {
-            $this->appTest = true;
-        }
-        if ($reporter->params['plugin']) {
-            $this->pluginTest = Inflector::camelize($reporter->params['plugin']);
-        }
-    }
+/**
+ * Pulls params out of the reporter.
+ *
+ * @param CakeBaseReporter $reporter Reporter to suck params out of.
+ * @return void
+ */
+	protected function _setParams(CakeBaseReporter $reporter) {
+		if ($reporter->params['app']) {
+			$this->appTest = true;
+		}
+		if ($reporter->params['plugin']) {
+			$this->pluginTest = Inflector::camelize($reporter->params['plugin']);
+		}
+	}
 
-    /**
-     * Set the coverage data array
-     *
-     * @param array $coverage Coverage data to use.
-     * @return void
-     */
-    public function setCoverage($coverage)
-    {
-        $this->_rawCoverage = $coverage;
-    }
+/**
+ * Set the coverage data array
+ *
+ * @param array $coverage Coverage data to use.
+ * @return void
+ */
+	public function setCoverage($coverage) {
+		$this->_rawCoverage = $coverage;
+	}
 
-    /**
-     * Gets the base path that the files we are interested in live in.
-     *
-     * @return void
-     */
-    public function getPathFilter()
-    {
-        $path = ROOT . DS;
-        if ($this->appTest) {
-            $path .= APP_DIR . DS;
-        } elseif ($this->pluginTest) {
-            $path = App::pluginPath($this->pluginTest);
-        } else {
-            $path = CAKE;
-        }
-        return $path;
-    }
+/**
+ * Gets the base path that the files we are interested in live in.
+ *
+ * @return void
+ */
+	public function getPathFilter() {
+		$path = ROOT . DS;
+		if ($this->appTest) {
+			$path .= APP_DIR . DS;
+		} elseif ($this->pluginTest) {
+			$path = App::pluginPath($this->pluginTest);
+		} else {
+			$path = CAKE;
+		}
+		return $path;
+	}
 
-    /**
-     * Filters the coverage data by path. Files not in the provided path will be removed.
-     *
-     * @param string $path Path to filter files by.
-     * @return array Array of coverage data for files that match the given path.
-     */
-    public function filterCoverageDataByPath($path)
-    {
-        $files = array();
-        foreach ($this->_rawCoverage as $fileName => $fileCoverage) {
-            if (strpos($fileName, $path) !== 0) {
-                continue;
-            }
-            $files[$fileName] = $fileCoverage;
-        }
-        return $files;
-    }
+/**
+ * Filters the coverage data by path. Files not in the provided path will be removed.
+ *
+ * @param string $path Path to filter files by.
+ * @return array Array of coverage data for files that match the given path.
+ */
+	public function filterCoverageDataByPath($path) {
+		$files = array();
+		foreach ($this->_rawCoverage as $fileName => $fileCoverage) {
+			if (strpos($fileName, $path) !== 0) {
+				continue;
+			}
+			$files[$fileName] = $fileCoverage;
+		}
+		return $files;
+	}
 
-    /**
-     * Calculates how many lines are covered and what the total number of executable lines is.
-     *
-     * Handles both PHPUnit3.5 and 3.6 formats.
-     *
-     * 3.5 uses -1 for uncovered, and -2 for dead.
-     * 3.6 uses array() for uncovered and null for dead.
-     *
-     * @param array $fileLines
-     * @param array $coverageData
-     * @return array Array of covered, total lines.
-     */
-    protected function _calculateCoveredLines($fileLines, $coverageData)
-    {
-        $covered = $total = 0;
+/**
+ * Calculates how many lines are covered and what the total number of executable lines is.
+ *
+ * Handles both PHPUnit3.5 and 3.6 formats.
+ *
+ * 3.5 uses -1 for uncovered, and -2 for dead.
+ * 3.6 uses array() for uncovered and null for dead.
+ *
+ * @param array $fileLines
+ * @param array $coverageData
+ * @return array Array of covered, total lines.
+ */
+	protected function _calculateCoveredLines($fileLines, $coverageData) {
+		$covered = $total = 0;
 
-        //shift line numbers forward one
-        array_unshift($fileLines, ' ');
-        unset($fileLines[0]);
+		//shift line numbers forward one
+		array_unshift($fileLines, ' ');
+		unset($fileLines[0]);
 
-        foreach ($fileLines as $lineno => $line) {
-            if (!isset($coverageData[$lineno])) {
-                continue;
-            }
-            if (is_array($coverageData[$lineno]) && !empty($coverageData[$lineno])) {
-                $covered++;
-                $total++;
-            } elseif ($coverageData[$lineno] === -1 || $coverageData[$lineno] === array()) {
-                $total++;
-            }
-        }
-        return array($covered, $total);
-    }
+		foreach ($fileLines as $lineno => $line) {
+			if (!isset($coverageData[$lineno])) {
+				continue;
+			}
+			if (is_array($coverageData[$lineno]) && !empty($coverageData[$lineno])) {
+				$covered++;
+				$total++;
+			} elseif ($coverageData[$lineno] === -1 || $coverageData[$lineno] === array()) {
+				$total++;
+			}
+		}
+		return array($covered, $total);
+	}
 
-    /**
-     * Generates report to display.
-     *
-     * @return string compiled html report.
-     */
-    abstract public function report();
+/**
+ * Generates report to display.
+ *
+ * @return string compiled html report.
+ */
+	abstract public function report();
 
-    /**
-     * Generates an coverage 'diff' for $file based on $coverageData.
-     *
-     * @param string $filename Name of the file having coverage generated
-     * @param array $fileLines File data as an array. See file() for how to get one of these.
-     * @param array $coverageData Array of coverage data to use to generate HTML diffs with
-     * @return string prepared report for a single file.
-     */
-    abstract public function generateDiff($filename, $fileLines, $coverageData);
+/**
+ * Generates an coverage 'diff' for $file based on $coverageData.
+ *
+ * @param string $filename Name of the file having coverage generated
+ * @param array $fileLines File data as an array. See file() for how to get one of these.
+ * @param array $coverageData Array of coverage data to use to generate HTML diffs with
+ * @return string prepared report for a single file.
+ */
+	abstract public function generateDiff($filename, $fileLines, $coverageData);
 
 }

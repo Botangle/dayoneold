@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('broadcast', 'Audio/Video Broadcast');
+$plugininfo = array('broadcast','Audio/Video Broadcast');

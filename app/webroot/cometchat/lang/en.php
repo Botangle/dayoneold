@@ -50,6 +50,6 @@ $language[41] = 'Loading...';
 $language[42] = '';
 $language[43] = 'My Name';
 $language[44] = 'Set my name';
-$language[45] = 'Type your Name/Status and hit the enter key!';
+$language[45]= 'Type your Name/Status and hit the enter key!';
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

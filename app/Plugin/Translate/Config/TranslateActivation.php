@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Translate Activation
  *
@@ -8,55 +7,50 @@
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://www.croogo.org
  */
-class TranslateActivation
-{
+class TranslateActivation {
 
-    /**
-     * onActivate will be called if this returns true
-     *
-     * @param  object $controller Controller
-     * @return boolean
-     */
-    public function beforeActivation(&$controller)
-    {
-        return true;
-    }
+/**
+ * onActivate will be called if this returns true
+ *
+ * @param  object $controller Controller
+ * @return boolean
+ */
+	public function beforeActivation(&$controller) {
+		return true;
+	}
 
-    /**
-     * Called after activating the plugin in ExtensionsPluginsController::admin_toggle()
-     *
-     * @param object $controller Controller
-     * @return void
-     */
-    public function onActivation(&$controller)
-    {
-        $controller->Croogo->addAco('Translate/Translate/admin_index');
-        $controller->Croogo->addAco('Translate/Translate/admin_edit');
-        $controller->Croogo->addAco('Translate/Translate/admin_delete');
-        App::uses('CroogoPlugin', 'Extensions.Lib');
-        $CroogoPlugin = new CroogoPlugin();
-        $CroogoPlugin->migrate('Translate');
-    }
+/**
+ * Called after activating the plugin in ExtensionsPluginsController::admin_toggle()
+ *
+ * @param object $controller Controller
+ * @return void
+ */
+	public function onActivation(&$controller) {
+		$controller->Croogo->addAco('Translate/Translate/admin_index');
+		$controller->Croogo->addAco('Translate/Translate/admin_edit');
+		$controller->Croogo->addAco('Translate/Translate/admin_delete');
+		App::uses('CroogoPlugin', 'Extensions.Lib');
+		$CroogoPlugin = new CroogoPlugin();
+		$CroogoPlugin->migrate('Translate');
+	}
 
-    /**
-     * onDeactivate will be called if this returns true
-     *
-     * @param  object $controller Controller
-     * @return boolean
-     */
-    public function beforeDeactivation(&$controller)
-    {
-        return true;
-    }
+/**
+ * onDeactivate will be called if this returns true
+ *
+ * @param  object $controller Controller
+ * @return boolean
+ */
+	public function beforeDeactivation(&$controller) {
+		return true;
+	}
 
-    /**
-     * Called after deactivating the plugin in ExtensionsPluginsController::admin_toggle()
-     *
-     * @param object $controller Controller
-     * @return void
-     */
-    public function onDeactivation(&$controller)
-    {
-        $controller->Croogo->removeAco('Translate');
-    }
+/**
+ * Called after deactivating the plugin in ExtensionsPluginsController::admin_toggle()
+ *
+ * @param object $controller Controller
+ * @return void
+ */
+	public function onDeactivation(&$controller) {
+		$controller->Croogo->removeAco('Translate');
+	}
 }

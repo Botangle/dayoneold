@@ -53,8 +53,8 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "modules.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
+include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."modules.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
 
 echo <<<EOD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -53,33 +53,32 @@ THE SOFTWARE.
 
 */
 
-include dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . "plugins.php";
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . "en.php";
+include dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR."plugins.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR."en.php";
 
-if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php")) {
-    include dirname(__FILE__) . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $lang . ".php";
+if (file_exists(dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php")) {
+	include dirname(__FILE__).DIRECTORY_SEPARATOR."lang".DIRECTORY_SEPARATOR.$lang.".php";
 }
 
-include dirname(__FILE__) . DIRECTORY_SEPARATOR . "config.php";
+include dirname(__FILE__).DIRECTORY_SEPARATOR."config.php";
 
 $id = $_GET['id'];
 
 $text = '';
 
-$colors = explode(',', $colorOptions);
+$colors = explode(',',$colorOptions);
 
 $embed = '';
 $close = "setTimeout('window.close()',100);";
 $before = 'window.opener';
 
-if (!empty($_GET['embed'])) {
-    $before = "$('#cometchat_trayicon_chatrooms_iframe,#cometchat_container_chatrooms .cometchat_iframe,.cometchat_embed_chatrooms',parent.document)[0].contentWindow";
-    $embed = 'embed';
-    $close = "parent.closeCCPopup('colors');";
+if (!empty($_GET['embed'])) { 
+	$before = "$('#cometchat_trayicon_chatrooms_iframe,#cometchat_container_chatrooms .cometchat_iframe,.cometchat_embed_chatrooms',parent.document)[0].contentWindow";
+	$embed = 'embed'; $close = "parent.closeCCPopup('colors');"; 
 }
 
 foreach ($colors as $color) {
-    $text .= '<span onclick="' . $before . '.jqcc.cccolors.updatecolor(\'' . $color . '\');' . $close . '" style="margin:2px;background-color:#' . $color . ';width:20px;height:20px;display:block;float:left;"></span>';
+	$text .= '<span onclick="'.$before.'.jqcc.cccolors.updatecolor(\''.$color.'\');'.$close.'" style="margin:2px;background-color:#'.$color.';width:20px;height:20px;display:block;float:left;"></span>';
 }
 
 echo <<<EOD

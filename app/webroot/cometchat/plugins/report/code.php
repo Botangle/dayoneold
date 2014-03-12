@@ -1,2 +1,2 @@
 <?php
-$plugininfo = array('report', 'Report Conversation');
+$plugininfo = array('report','Report Conversation');

@@ -53,10 +53,10 @@ THE SOFTWARE.
 
 */
 
-include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
+include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php';
 
 if ($useGoogle == 1) {
-    include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'google.php';
+	include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'google.php';
 } else {
-    include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bing.php';
+	include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'bing.php';
 }
