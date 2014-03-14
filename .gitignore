@@ -22,6 +22,8 @@ tmp/
 # Vagrant cache
 .vagrant/
 
+# Development tool folders to ignore
+.idea
 *.~
 1
 *.swp
