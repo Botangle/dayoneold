@@ -18,3 +18,10 @@ tmp/
 !./Plugin/Example
 !./Plugin/Install
 !./Plugin/Translate
+
+# Vagrant cache
+.vagrant/
+
+*.~
+1
+*.swp
