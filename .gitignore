@@ -18,3 +18,13 @@ tmp/
 !./Plugin/Example
 !./Plugin/Install
 !./Plugin/Translate
+
+# Vagrant cache and logs
+.vagrant/
+www/logs
+
+# Development tool folders to ignore
+.idea
+*.~
+1
+*.swp
