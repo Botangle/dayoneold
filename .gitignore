@@ -19,8 +19,9 @@ tmp/
 !./Plugin/Install
 !./Plugin/Translate
 
-# Vagrant cache
+# Vagrant cache and logs
 .vagrant/
+www/logs
 
 # Development tool folders to ignore
 .idea
