@@ -2,7 +2,10 @@
 
 ## Requirements
 
-You just need [Vagrant][vagrant] and vagrant-hostmanager
+You just need [Vagrant][vagrant] and vagrant-hostmanager. Be sure to install Vagrant 1.4.3 and [VirtualBox 4.3][virtualbox] because vagrant-hostmanager breaks with the latest version of Vagrant.
+
+[virtualbox]: https://www.virtualbox.org/wiki/Download_Old_Builds_4_3
+[vagrant]: http://www.vagrantup.com/download-archive/v1.4.3.html
 
 Install vagrant-hostmanager as follows:
 
@@ -132,7 +135,6 @@ Are installed:
 * composer.phar
 * mailcatcher (gem)
 
-[vagrant]: http://vagrantup.com
 [mailcatcher]: http://mailcatcher.me
 
 ## Credit
