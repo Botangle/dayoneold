@@ -21,7 +21,7 @@ Edit the `Vagrantfile`: `vim Vagrantfile`
 
 Then `up` the VM: `vagrant up`
 
-Now you can access to your Yii setup : `http://www.yii2.dev`
+Now you can access to your Botangle setup : `http://app.botangle.dev`
 
 ## MySQL
 
@@ -37,8 +37,9 @@ With the information below you can connect to the MySQL server running on the vi
 * SSH Port: 2222 (default by vagrant)
 * MySQL Host: 127.0.0.1
 * MySQL Port: 3306
-* MySQL User: yii2
-* MySQL Pass: yii2
+* MySQL User: botangle
+* MySQL Pass: botangle
+* MySQL DB:   botangle
 
 ### Import database
 
@@ -62,7 +63,7 @@ If mailcatcher is started: **all emails are catched**.
 
 If you want to start MailCatcher, simply run this command (with vagrant user) : `mailcatcher --ip 0.0.0.0`
 
-Then go to : http://www.yii2.dev:1080
+Then go to : http://app.botangle.dev:1080
 
 If you need to stop the mailcatcher daemon : Clic on "Quit" on the top right corner of the MailCatcher Web UI.
 
