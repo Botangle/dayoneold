@@ -1,3 +1,7 @@
+<?php  $this->Helpers->load('Testimonials.Testimonials');
+ 
+
+ ?>
 <!--Wrapper HomeServices Block Start Here-->
 <div id="HomeServices">
   <div class="container">
@@ -31,11 +35,12 @@
 <header id="HomeQuoteBlock">
   <div class="container text-center">
     <div class="QuoteBlock row-fluid">
-      <div class="span12"> <span class="left">"</span>
+	<?php $this->Testimonials->getTestimonialList(); ?>
+     <!-- <div class="span12"> <span class="left">"</span>
         <p> Hi there, my name is Jack. I'm a college student by day, bike messenger by night, and I'm having trouble with Chem 101. I live in Los Angeles, I used Botangle and now I'm at the top of my class. </p>
         <span class="right">"</span>
         <p class="quote-client"><span>Jack,</span> New York</span> 
-      </div>
+      </div>-->
     </div>
   </div>
 </header>
@@ -62,7 +67,7 @@
 		
 		</div>
         <div class="tutor-title">
-          <h3><a href="<?php echo $this->webroot?>user/<?php echo $user['User']['username']?>"><?php echo ucfirst($user['User']['username']) ?></a></h3>
+          <h3><a href="<?php echo $this->webroot?>user/<?php echo $user['User']['username']?>"><?php echo $user['User']['username']?></a></h3>
           <p><?php echo $user['User']['qualification']?></p>
         </div>
         <div class="tutor-bio">
