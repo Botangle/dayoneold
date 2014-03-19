@@ -15,8 +15,7 @@
         Options all
     </Directory>
 
-    SetEnv YII_DEBUG 1
-    SetEnv YII_ENV dev
+    SetEnv CAKE_ENV dev
 
     AssignUserId vagrant vagrant
 
@@ -46,7 +45,6 @@
 
     AssignUserId vagrant vagrant
 
-    SetEnv YII_DEBUG 1
-    SetEnv YII_ENV dev
+    SetEnv CAKE_ENV dev
 
 </VirtualHost>
