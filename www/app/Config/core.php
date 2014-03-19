@@ -35,3 +35,7 @@ $env = strtolower($env);
 if(file_exists(__DIR__ . 'core-' . $env . '.php')) {
     Configure::load('core-'.$env);
 }
+
+if(file_exists(__DIR__ . 'database-' . $env . '.php')) {
+    Configure::load('database-'.$env);
+}
