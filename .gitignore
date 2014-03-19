@@ -23,6 +23,9 @@ tmp/
 .vagrant/
 www/logs
 
+# Composer
+www/app/vendor/*
+
 # Development tool folders to ignore
 .idea
 *.~
