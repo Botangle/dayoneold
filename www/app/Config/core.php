@@ -48,9 +48,23 @@ $env = strtolower($env);
  */
 if($env == "production") {
     Configure::write('debug', 0);
+
+    // don't try to access the $_SERVER setup if we're running from the command line
+    // http://stackoverflow.com/questions/343557/how-to-distinguish-command-line-and-web-server-invocation
+    if(php_sapi_name() != 'cli') {
+        $siteurl = "http://".$_SERVER['HTTP_HOST'];
+        Configure::write('SiteUrl',$siteurl);
+    }
 }
-if($env == "production") {
+if($env == "dev") {
     Configure::write('debug', 2);
+
+    // don't try to access the $_SERVER setup if we're running from the command line
+    // http://stackoverflow.com/questions/343557/how-to-distinguish-command-line-and-web-server-invocation
+    if(php_sapi_name() != 'cli') {
+        $siteurl = "http://".$_SERVER['HTTP_HOST'];
+        Configure::write('SiteUrl',$siteurl);
+    }
 }
 
 if(file_exists(__DIR__ . 'core-' . $env . '.php')) {
