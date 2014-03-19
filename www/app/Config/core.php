@@ -32,6 +32,27 @@ if (file_exists(APP . 'Config' . DS . 'croogo.php')) {
 $env = getenv('CAKE_ENV');
 if (!$env){$env = 'production';}
 $env = strtolower($env);
+
+/**
+ * CakePHP Debug Level:
+ *
+ * Production Mode:
+ * 	0: No error messages, errors, or warnings shown. Flash messages redirect.
+ *
+ * Development Mode:
+ * 	1: Errors and warnings shown, model caches refreshed, flash messages halted.
+ * 	2: As in 1, but also with full debug messages and SQL output.
+ *
+ * In production mode, flash messages redirect after a time interval.
+ * In development mode, you need to click the flash message to continue.
+ */
+if($env == "production") {
+    Configure::write('debug', 0);
+}
+if($env == "production") {
+    Configure::write('debug', 2);
+}
+
 if(file_exists(__DIR__ . 'core-' . $env . '.php')) {
     Configure::load('core-'.$env);
 }
