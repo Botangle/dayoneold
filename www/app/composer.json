@@ -1,0 +1,11 @@
+{
+    "name": "botangle/botangle",
+    "description": "Botangle main app",
+    "config": {
+        "vendor-dir": "Vendor"
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "composer/installers": "*"
+    }
+}
