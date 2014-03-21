@@ -55,7 +55,7 @@ class mysql::install ( $root_password, $db_name, $db_user, $db_password, $db_nam
     # Import the database dump if it exists
     exec { "import database":
         refreshonly => true,
-        cwd         => "/vagrant",
+        cwd         => "/vagrant/www/dbdump",
         onlyif      => "test -f database.sql.gz",
         command     => "gunzip -c database.sql.gz | mysql -uroot -p${root_password} ${db_name}",
     }

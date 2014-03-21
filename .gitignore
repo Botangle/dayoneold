@@ -10,6 +10,13 @@ webroot/uploads/
 # Cake cache
 tmp/
 
+# By default we leave out our override files
+www/app/Config/*-dev.php
+www/app/Config/*-production.php
+
+# But we want to include our database dev so we can autoconfigure things to use our Vagrant DB
+!www/app/Config/database-dev.php
+
 # Others
 .DS_Store
 ./Plugin/*
@@ -22,6 +29,9 @@ tmp/
 # Vagrant cache and logs
 .vagrant/
 www/logs
+
+# Composer
+www/app/vendor/*
 
 # Development tool folders to ignore
 .idea

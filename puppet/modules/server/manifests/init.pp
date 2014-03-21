@@ -35,4 +35,5 @@ class server ( $hostname ) {
         source  => 'puppet:///modules/server/.screenrc',
     }
 
+    include server::cakeenv
 }

@@ -26,3 +26,51 @@ if (file_exists(APP . 'Config' . DS . 'croogo.php')) {
 		)
 	));
 }
+
+// adding in environment support for CakePHP
+// http://bakery.cakephp.org/articles/stevena0/2010/08/29/use-different-configs-for-different-environments
+$env = getenv('CAKE_ENV');
+if (!$env){$env = 'production';}
+$env = strtolower($env);
+
+/**
+ * CakePHP Debug Level:
+ *
+ * Production Mode:
+ * 	0: No error messages, errors, or warnings shown. Flash messages redirect.
+ *
+ * Development Mode:
+ * 	1: Errors and warnings shown, model caches refreshed, flash messages halted.
+ * 	2: As in 1, but also with full debug messages and SQL output.
+ *
+ * In production mode, flash messages redirect after a time interval.
+ * In development mode, you need to click the flash message to continue.
+ */
+if($env == "production") {
+    Configure::write('debug', 0);
+
+    // don't try to access the $_SERVER setup if we're running from the command line
+    // http://stackoverflow.com/questions/343557/how-to-distinguish-command-line-and-web-server-invocation
+    if(php_sapi_name() != 'cli') {
+        $siteurl = "http://".$_SERVER['HTTP_HOST'];
+        Configure::write('SiteUrl',$siteurl);
+    }
+}
+if($env == "dev") {
+    Configure::write('debug', 2);
+
+    // don't try to access the $_SERVER setup if we're running from the command line
+    // http://stackoverflow.com/questions/343557/how-to-distinguish-command-line-and-web-server-invocation
+    if(php_sapi_name() != 'cli') {
+        $siteurl = "http://".$_SERVER['HTTP_HOST'];
+        Configure::write('SiteUrl',$siteurl);
+    }
+}
+
+if(file_exists(__DIR__ . 'core-' . $env . '.php')) {
+    Configure::load('core-'.$env);
+}
+
+if(file_exists(__DIR__ . 'database-' . $env . '.php')) {
+    Configure::load('database-'.$env);
+}
