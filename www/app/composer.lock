@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "58e62cffde44eeb62516eb4943bc6aa4",
+    "hash": "afb6b691d737cce9f516ddaea7e83fe8",
     "packages": [
         {
             "name": "composer/installers",
@@ -88,6 +88,54 @@
                 "zikula"
             ],
             "time": "2014-02-24 04:21:34"
+        },
+        {
+            "name": "stripe/stripe-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stripe/stripe-php.git",
+                "reference": "66899e8b09b0a07059bab4e9cd83a49b430be44e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/66899e8b09b0a07059bab4e9cd83a49b430be44e",
+                "reference": "66899e8b09b0a07059bab4e9cd83a49b430be44e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.2"
+            },
+            "require-dev": {
+                "simpletest/simpletest": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/Stripe/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stripe and contributors",
+                    "homepage": "https://github.com/stripe/stripe-php/contributors"
+                }
+            ],
+            "description": "Stripe PHP Library",
+            "homepage": "https://stripe.com/",
+            "keywords": [
+                "api",
+                "payment processing",
+                "stripe"
+            ],
+            "time": "2014-03-11 23:55:24"
         }
     ],
     "packages-dev": [
@@ -97,9 +145,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "stripe/stripe-php": 20
+    },
     "platform": {
         "php": ">=5.4.0"
     },

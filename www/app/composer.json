@@ -6,6 +6,7 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "composer/installers": "*"
+        "composer/installers": "*",
+        "stripe/stripe-php": "dev-master"
     }
 }
