@@ -96,12 +96,19 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 );
 	   ?> 
 		 
-				<?php }else{
-		echo $this->Html->link(
-    __('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id']
-     ,
-	array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
-);
+	<?php }else{
+		
+		if($v['Lesson']['is_confirmed']==1){
+		 echo $this->Html->link(
+				__('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id'],
+				array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3 ','style'=>'width:125px;' )
+			);
+		}else{
+			echo $this->Html->link(
+				__('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id'],
+				array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3 ','style'=>'width:125px;','disabled'=>'disabled'  )
+			);
+		}
 }
 	   ?> 
 				 </div>         

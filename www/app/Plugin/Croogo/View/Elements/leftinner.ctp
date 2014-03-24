@@ -42,7 +42,17 @@
      ,
 	array('class'=>$cls1,'title'=>__('faq') )
 );?></li>
-       
+        <li>
+		
+		
+        <?php  
+	  
+	  
+	  echo $this->Html->link(
+    __('Testimonials'),	'/testimonials'
+     ,
+	array('class'=>$cls7,'title'=>__('testimonials') )
+);?>
 		
 		
 		<li>

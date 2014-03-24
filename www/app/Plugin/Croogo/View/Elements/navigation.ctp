@@ -1,6 +1,6 @@
 <?php 
 $homecls = $categoriescls = $topchart = $aboutclas=$reportbug =$logincls= $myaccountcls = $topheadclass="";
-
+/*
 if($this->Session->read('Auth.User.id')){ 
 	if(($this->Session->read('Auth.User.role_id')==2) && ($this->Session->read('Auth.User.claim_status')==0))
 	{
@@ -16,7 +16,7 @@ if($this->Session->read('Auth.User.id')){
 	$topheadclass="claimmargin";
 }
 
-
+*/
 if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
 	$homecls = "active";
 }else if($this->params['controller']=='categories' && $this->params['action']=='index'){
@@ -105,14 +105,6 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
     <!--/.nav-collapse --> 
   </div>
 </div>
-<?php echo $this->Html->script(array('/croogo/js/cbpAnimatedHeader.min.js','/croogo/js/classie.js','/croogo/js/modernizr.custom.js','/croogo/js/jquery.jqtransform.js',)); 
+<?php echo $this->Html->script(array('/croogo/js/cbpAnimatedHeader.min.js','/croogo/js/classie.js','/croogo/js/modernizr.custom.js',)); 
 ?>
-
-<script type="text/javascript">
-$(function() {
-    //find all form with class jqtransform and apply the plugin
-    $("form.jqtransform").jqTransform();
-});
-</script>
-
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>

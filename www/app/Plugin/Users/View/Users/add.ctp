@@ -213,7 +213,7 @@ select: function( event, ui ) {
             </div>
          <?php echo $this->Form->end();?>
         </div>
-        <? } else if($default==4){ ?>
+        <?php } else if($default==4){ ?>
 		  <div class="Signup">
          
          <?php echo $this->Form->create('User',array('class'=>'form-horizontal'));?>
@@ -302,7 +302,7 @@ select: function( event, ui ) {
       
 	  
 		
-		<? } ?>
+		<?php } ?>
       </div>
       <div class="span3 PageRight-Block">
        <p class="FontStyle20"><?php echo __("Already a member?")?> <?php echo __("Sign In here") ?></p>

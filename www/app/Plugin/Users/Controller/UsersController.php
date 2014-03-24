@@ -2,7 +2,7 @@
 
 App::uses('CakeEmail', 'Network/Email');
 App::uses('UsersAppController', 'Users.Controller');
-
+App::Import('ConnectionManager');
 /*
  * Users Controller
  *
@@ -40,7 +40,7 @@ class UsersController extends UsersAppController {
  * @access public
  */
 	public $presetVars = true;
-
+	public $databaseName = "";
 /**
  * Models used by the Controller
  *
@@ -51,7 +51,9 @@ class UsersController extends UsersAppController {
 	public $helper = array('Categories.Category','Session');
 	 
 	function beforeFilter(){
-	 
+	$fields =  ConnectionManager::getDataSource('default');
+	$dsc = $fields->config;
+	  $this->databaseName  = $dsc['database'];
 		parent::beforeFilter();
 		$this->Security->validatePost = false;
 		$this->Security->csrfCheck = false;
@@ -62,7 +64,9 @@ class UsersController extends UsersAppController {
 		 $this->checkpayment();
 		 }
 		
-		 
+  
+  
+	 
 	}
 	/**
 	 * Check the student read lesson and payment not made
@@ -71,8 +75,9 @@ class UsersController extends UsersAppController {
 	
 	function checkpayment(){  
 		$redirect = "";
-		if($this->Session->check('Auth.User')&& $this->request->params['action']!='paymentnotmade' && $this->request->params['action']!='billing' && $this->request->params['action']!='logout'  ){  
-		
+		 
+		if($this->Session->check('Auth.User')&& $this->request->params['action']!='paymentnotmade' && $this->request->params['action']!='billing' && $this->request->params['action']!='logout'  && $this->request->params['action']!='updateremaining'&& $this->request->params['action']!='paymentmade'){  
+		 
 			if($this->Session->read('Auth.User.role_id')==4 ){
 				$redirect = $this->LessonPayment->checkduepayment($this->Session->read('Auth.User.id'));
 			
@@ -303,18 +308,73 @@ class UsersController extends UsersAppController {
 				 
 		if (!empty($this->request->data)) { 
 			 
-			if ($this->User->save($this->request->data)) {
-				$this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
+			if(isset($this->request->data['User']['changepassword']) && $this->request->data['User']['changepassword']=='changepasword'){
+				$oldpassw = AuthComponent::password($this->data['User']['oldpassword']);
 				 $user = $this->User->find('first', array(
-					'conditions' => array('User.id' => $this->request->data['User']['id']))); 
+					'conditions' => array(
+						'User.id' => $this->request->data['User']['id'], 
+					),
+				));
 				 
+				if($oldpassw==$user['User']['password']){
+					if ($this->User->save($this->request->data)) {
+						$this->Session->setFlash(__d('croogo', 'Password has been reset.'), 'default', array('class' => 'success'));
+						$this->redirect(array('action' => 'index'));
+					} else {  
+						$this->Session->setFlash(__d('croogo', 'Password could not be reset. Please, try again.'), 'default', array('class' => 'error'));
+					}
+				}else{
+					$this->Session->setFlash(__d('croogo', 'Password could not be reset. Please, try again.'), 'default', array('class' => 'error'));
+				}
+			}else{ 
+				
+				$filename = null;
+					 
+ 
+if (!empty($this->request->data['User']['profilepic']['tmp_name']) && is_uploaded_file($this->request->data['User']['profilepic']['tmp_name'])) {
+				 
+	$filename = str_replace(" ","_",basename($this->request->data['User']['profilepic']['name']));
+	 $dir = 	WWW_ROOT .'uploads' . DS . $this->request->data['User']['id'] ; 
+	$profiledir=  	WWW_ROOT .'uploads' . DS . $this->request->data['User']['id']. DS . "profile" ;
+        $profiledir=  	WWW_ROOT .'uploads' . DS . $this->request->data['User']['id']. DS . "profile" ;
+        
+				if(!is_dir($dir)){ 
+					mkdir($dir,0777); 
+				}
+				if(!is_dir($profiledir)){
+					mkdir($profiledir,0777); 
+				}
+				move_uploaded_file(
+					$this->data['User']['profilepic']['tmp_name'],
+					$profiledir. DS . $filename
+				);
+                                
 				
 				 
-				$this->Session->write('Auth', $user);				
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__d('croogo', 'Information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
 			}
+				$this->request->data['User']['profilepic'] = $filename;
+				$user = $this->User->find('first', array(
+					'conditions' => array(
+						'User.id' => $this->request->data['User']['id'], 
+					),
+				));
+				 
+			 
+			
+				if ($this->User->save($this->request->data)) {
+					$this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
+					 $user = $this->User->find('first', array(
+						'conditions' => array('User.id' => $this->request->data['User']['id']))); 
+					 
+					
+					 
+					$this->Session->write('Auth', $user);				
+					$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash(__d('croogo', 'Information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
+				}
+			}
+			
 		}  
 		  
 		if($this->Session->read('Auth.User.role_id')==4){
@@ -782,8 +842,11 @@ debug($log);*/
 		return 'croogo@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
 	}
 	public function billing(){
+	App::import("Vendor", "Stripe", array("file"=>"stripe/Stripe.php")); 
+	$id = $this->Session->read('Auth.User.id');
 	if (!empty($this->request->data)) { 
-	
+		 
+		if(isset($this->request->data['Billing']['pagetype']) && ($this->request->data['Billing']['pagetype']=='billing')){
 			if(isset($this->request->data['Billing']['studentpayemtn']) && $this->request->data['Billing']['studentpayemtn']){
 				
 				App::import("Vendor", "Stripe", array("file"=>"stripe/Stripe.php")); 
@@ -795,8 +858,7 @@ debug($log);*/
 				$cartSession['lname'] = $_POST['lname'];
 				$cartSession['card'] = $_POST['card'];
 				$cartSession['acc_number'] = $_POST['acc_number'];
-				 
-				
+				  
 				$cartSession['expiration_month'] = $_POST['expiration_month']; 
 				$cartSession['expiration_year'] = $_POST['expiration_year'];;
 				$cartSession['card_security_code'] = $_POST['card_security_code'];
@@ -811,8 +873,7 @@ debug($log);*/
 				 
 				include('PaypalproController.php');
 				$paypalCont = new PaypalproController();
-						$paypalResponse = $paypalCont->setRequestFields($cartSession,10);
-						
+						$paypalResponse = $paypalCont->setRequestFields($cartSession,10); 
 						if($paypalResponse['ACK']=='Success'){
 							/* PAYMENT MADE NEXT STEP TO SENT EMAIL ADMIN*/
 							$this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
@@ -830,9 +891,49 @@ debug($log);*/
 					$this->Session->setFlash(__d('croogo', 'Information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
 				}
 			}
-		}   
+		}
+		else if(isset($this->request->data['User']['pagetype']) && ($this->request->data['User']['pagetype']=='paymentsettings')){
+			$user = $this->User->find('first',array('conditions'=>array('user.id'=>$id)));
+			$this->User->id = $user['User']['id'];
+			$this->User->saveField('stripe_id', $this->request->data['User']['stripe_id']);
+			$this->User->saveField('secret_key', $this->request->data['User']['secret_key']);
+			$this->User->saveField('public_key', $this->request->data['User']['public_key']);
+			$this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
+			$this->redirect(array('action' => 'billing'));
+			exit();
+		}
+	
+	}   
+		
 		$this->set('ratedata',$this->UserRate->find('first',array('conditions'=>array('UserRate.userid' => $this->Session->read('Auth.User.id'))))); 
 		$this->set('title_for_layout', __d('croogo', 'Billing'));	 
+		
+	
+	Stripe::setApiKey("sk_test_XCR1kNc15GsZReu7hKHXFJZ8"); //admin scret key
+			if (isset($_GET['code'])) { // Redirect w/ code
+				 $code = $_GET['code'];
+				  $token_request_body = array(
+				  'client_secret' => 'sk_test_XCR1kNc15GsZReu7hKHXFJZ8', //admin secret key
+				  'client_id' => 'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
+				  'code' => $code,
+				  'grant_type' => 'authorization_code' 
+				);
+				$refreshtoken ="";  
+				$req = curl_init('https://connect.stripe.com/oauth/token');
+				// set url
+				curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($req, CURLOPT_SSL_VERIFYHOST, false);
+				curl_setopt($req, CURLOPT_SSL_VERIFYPEER, false);   
+				curl_setopt($req, CURLOPT_POST, true );
+				curl_setopt($req, CURLOPT_POSTFIELDS, http_build_query($token_request_body));
+				$respCode = curl_getinfo($req, CURLINFO_HTTP_CODE);
+				$resp = json_decode(curl_exec($req), true);
+				curl_close($req);
+				$refreshtoken= $resp['refresh_token'];
+				$this->User->id = $id;
+				$this->User->saveField('auth_code', $refreshtoken);
+				$this->Session->setFlash(__d('croogo', 'Your Account Connected with Stripe Sucessfully.'), 'default', array('class' => 'success'));
+			}
 		if($this->Session->read('Auth.User.role_id')==4){
 			if($this->Session->check('paymenttutor')){  
 				$userInfo = $this->User->find('list',array('conditions'=>array('role_id'=>2,'status'=>1,'id'=>$this->Session->read('paymenttutor'))));
@@ -840,10 +941,16 @@ debug($log);*/
 				$userInfo = $this->User->find('list',array('conditions'=>array('role_id'=>2,'status'=>1)));
 			}
 			$roleid = 2;
+			$User = $this->User->find('first',array('conditions'=>array('User.id'=>$id)));
+			$this->set(compact('User'));
 			$this->set(compact('userInfo','roleid')); 
+
 			$this->set('paymentamount',$this->Session->read("paymentamount"));
 			$this->render('billing2');
 		}		
+	
+			$User = $this->User->find('first',array('conditions'=>array('User.id'=>$id)));
+			$this->set(compact('User'));
 	}
 	function billing2(){  
 	
@@ -856,14 +963,36 @@ debug($log);*/
 		  
 
 		$this->User->recursive = 0;
-		/* if(isset($this->request->data['Experience_start']) && $this->request->data['Experience_start']!=""){
+		$startExperience = $endExperience  = "";
+		 if(isset($this->request->data['Experience_start']) && $this->request->data['Experience_start']!=""){
 		 $startExperience = $this->request->data['Experience_start'];
 		 
 		 }if(isset($this->request->data['Experience_end']) && $this->request->data['Experience_end']!=""){
 		 $endExperience = $this->request->data['Experience_end'];
+		 } /**/
+		$experienceConditions = "";		 
 		 
-		 }*/
 		  $otherconditions = array("User.status"=>1,"User.role_id"=>2,"User.subject LIKE" =>'%'.trim($searchValue).'%');
+		if($startExperience!="" && $endExperience!=""){
+		//echo format('User.teaching_experience',2);
+		/*"format(teaching_experience,2) > '".$startExperience."','".$endExperience."'"*/
+			/*$otherconditions = array_merge($otherconditions,
+				array(
+					'AND' => array(
+                        array('format(User.teaching_experience,2) >=' => $startExperience,
+                              'format(User.teaching_experience,2) <=' => $endExperience
+                             ),
+					 
+						)
+				)
+			);*/
+			$otherconditions = array_merge($otherconditions,
+				array(
+					 'format(User.teaching_experience,2) BETWEEN'=>intval($startExperience-1),intval($endExperience+1)
+				)
+			);
+		 }
+		 
 		 if(isset($online) && $online!=null){ 
 		 $otherconditions = array_merge($otherconditions,array('is_online'=>1));
 		}
@@ -885,13 +1014,13 @@ debug($log);*/
 		$this->paginate['User']['group']  = array('User.id');
 		$this->set('users', $this->paginate()); 
 		 
-
-		/*$log = $this->User->getDataSource()->getLog(false, false);
+/*
+		$log = $this->User->getDataSource()->getLog(false, false);
 debug($log); die;*/
 	}
 	
 	public function lessons(){
-		
+	  
 		$userconditionsfield = "tutor";
 		$userlessonconditionsfield = "created";
 		$readconditons = "readlessontutor";
@@ -900,22 +1029,23 @@ debug($log); die;*/
 			$userlessonconditionsfield = "tutor";
 			$readconditons = "readlesson";
 		 }
-		  
-		  $activelesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
+		 
+		  $activelesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN 
+		  `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND `Lesson`.`$readconditons` = 0  AND Lesson.lesson_date >= '".date('Y-m-d')."'  
 		");
 		  
 		  
 		  
-		/*echo "Select * from lessons as Lesson INNER JOIN `users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
+		/*echo "Select * from lessons as Lesson INNER JOIN `phelixin_bota`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND `Lesson`.`$readconditons` = 0  AND Lesson.lesson_date >= '".date('Y-m-d')."' ";  die;*/
 		  
 		 
-		$upcomminglesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
+		$upcomminglesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND `Lesson`.`$readconditons` = 1 AND Lesson.lesson_date >= '".date('Y-m-d')."'  
 		");
 		  
-		$pastlesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
+		$pastlesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND Lesson.lesson_date < '".date('Y-m-d')."'  
 		"); 
 		 
@@ -930,8 +1060,9 @@ debug($log); */
 		
 	}
 	public function whiteboarddata($lessonid = null){
-		$lesson = $this->Lesson->find('first',array('conditions'=>array('id'=>$lessonid)));
-		 $this->set(compact('lesson'));
+		$lesson = $this->Lesson->find('first',array('conditions'=>array('id'=>$lessonid)));$lessonPayment = $this->LessonPayment->find('first',array('conditions'=>array('lesson_id'=>$lessonid)));
+		 
+		 $this->set(compact('lesson','lessonPayment'));
 	}
 	public function changelesson($lessonid = null){	
 	 
@@ -1193,7 +1324,7 @@ debug($log);*/
 	$userlessonconditionsfield = "created";
 	$readconditons = "readlessontutor";
 	 
-	$upcomminglesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
+	$upcomminglesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->request->params['userid']."'   
 		");
 	 foreach($upcomminglesson as $k=>$v){
@@ -1215,8 +1346,6 @@ debug($log);*/
 		 $info[$k]['content']="";
 		
 	 }
-	/* pr( $info);
-	  pr( json_decode('[{"date":"27\/2\/2014","title":"Getting Contacts Barcelona - test1","link":"http:\/\/gettingcontacts.com\/events\/view\/barcelona","color":"red"},{"date":"25\/5\/2014","title":"test2","link":"http:\/\/gettingcontacts.com\/events\/view\/barcelona","color":"pink"},{"date":"20\/6\/2014","title":"test2","link":"http:\/\/gettingcontacts.com\/events\/view\/barcelona","color":"green"},{"date":"7\/10\/2014","title":"test3","link":"http:\/\/gettingcontacts.com\/events\/view\/barcelona","color":"blue","class":"miclasse ","content":"contingut popover<img src=\"http:\/\/gettingcontacts.com\/upload\/news\/estiu_productiu.png"}]',true));*/
 	 
 	    echo json_encode($info);
 	  $this->autoRender = false;
@@ -1232,7 +1361,7 @@ debug($log);*/
 			$readconditons = "readlesson";
 		 }
 		 
-		$upcomminglesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
+		$upcomminglesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'   
 		");
 	 foreach($upcomminglesson as $k=>$v){
@@ -1245,69 +1374,7 @@ debug($log);*/
 	 $info['success'] = 1;
 	 
 	  echo json_encode($info);
-	 /*
-		echo '{
-				"success": 1,
-				"result": [
-					{
-						"id": "293",
-						"title": "This is warning class event",
-						"url": "http://www.example.com/",
-						"class": "event-warning",
-						"start": "1362938400000",
-						"end":   "1363197686300"
-					},
-					{
-						"id": "294",
-						"title": "This is information class ",
-						"url": "http://www.example.com/",
-						"class": "event-info",
-						"start": "1363111200000",
-						"end":   "1363284086400"
-					},
-					{
-						"id": "297",
-						"title": "This is success event",
-						"url": "http://www.example.com/",
-						"class": "event-success",
-						"start": "1363284000000",
-						"end":   "1363284086400"
-					},
-					{
-						"id": "54",
-						"title": "This is simple event",
-						"url": "http://www.example.com/",
-						"class": "",
-						"start": "1363629600000",
-						"end":   "1363716086400"
-					},
-					{
-						"id": "532",
-						"title": "This is inverse event",
-						"url": "http://www.example.com/",
-						"class": "event-inverse",
-						"start": "1364407200000",
-						"end":   "1364493686400"
-					},
-					{
-						"id": "548",
-						"title": "This is special event",
-						"url": "http://www.example.com/",
-						"class": "event-special",
-						"start": "1363197600000",
-						"end":   "1363629686400"
-					},
-					{
-						"id": "295",
-						"title": "Event 3",
-						"url": "http://www.example.com/",
-						"class": "event-important",
-						"start": "1364320800000",
-						"end":   "1364407286400"
-					}
-				]
-			}
-			';*/
+	 
 		  $this->autoRender = false;
 		   $this->layouts =  false;		
 	}
@@ -1363,34 +1430,126 @@ debug($log); */
 		
 	}
 	public function updateremaining(){
- 
+	
 		$this->Lesson->id    = $this->params->query['lessonid']; 
+		$roletype    = $this->params->query['roletype']; 
 		$checktwiddlaid = $this->Lesson->find('first',array('conditions'=>array('id'=>$this->params->query['lessonid']))); 
-		$totaltime = $checktwiddlaid['Lesson']['remainingduration'] + ($this->params->query['time'] * 60);
-		$this->Lesson->saveField('remainingduration', $totaltime); 
-		$totalduration = $checktwiddlaid['Lesson']['duration'] * 60 * 60;
-		if($totalduration<=$totaltime){
-			$u = $this->UserRate->find('first',array('conditions'=>array('userid'=>$checktwiddlaid['Lesson']['created']))); 
-			$pritype = $u['UserRate']['price_type'];
-			$pricerate = $u['UserRate']['rate'];
-			$totalamount = 0;
-			$totaltime = $checktwiddlaid['Lesson']['duration'];
-			if($pritype == 'per min'){
-				$totalamount =   ($totaltime * 60 * 60) * $pricerate;
-			}else{
-				$pricerate = $pricerate / 60;
-				$totalamount =   $totaltime * $pricerate * 100;
+		$totaltime=0;
+		if($roletype == 2){
+			
+			$totaltime = $checktwiddlaid['Lesson']['remainingduration'] +  60;
+			$this->Lesson->saveField('remainingduration', $totaltime); 
+			if(isset($this->params->query['completelesson']) && ($this->params->query['completelesson']==1)){
+				$lessonPayment = $this->LessonPayment->find('first',array('conditions'=>array('student_id'=>$checktwiddlaid['Lesson']['tutor'],'tutor_id'=>$checktwiddlaid['Lesson']['created'],'lesson_id'=>$this->params->query['lessonid']))); 
+				if(empty($lessonPayment)){
+				$u = $this->UserRate->find('first',array('conditions'=>array('userid'=>$checktwiddlaid['Lesson']['created']))); 
+				$pritype = $u['UserRate']['price_type'];
+				$pricerate = $u['UserRate']['rate'];
+				$totalamount = 0;
+				if($pritype == 'per min'){
+					$totaltimeuseinmin = $totaltime / 60; 
+					$totalamount =   ($totaltimeuseinmin) * $pricerate;
+				}else{
+					$pricerate = $pricerate / 60;
+					$totaltimeuseinmin = $totaltime / 60; 
+					$totalamount =   $totaltimeuseinmin * $pricerate;
+				}
+				$this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
+				$this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+				$this->request->data['LessonPayment']['payment_amount'] = $totalamount;
+				 
+				$this->request->data['LessonPayment']['payment_complete'] = 0;
+				$this->request->data['LessonPayment']['lesson_id'] = $this->params->query['lessonid'];
+				$this->LessonPayment->save($this->request->data);
+			}else{  
+				$u = $this->UserRate->find('first',array('conditions'=>array('userid'=>$checktwiddlaid['Lesson']['created']))); 
+				$pritype = $u['UserRate']['price_type'];
+				$pricerate = $u['UserRate']['rate'];
+				$totalamount = 0;
+				if($pritype == 'per min'){
+					$totaltimeuseinmin = $totaltime / 60; 
+					$totalamount =   ($totaltimeuseinmin) * $pricerate;
+				}else{
+					$pricerate = $pricerate / 60;
+					$totaltimeuseinmin = $totaltime / 60; 
+					$totalamount =   $totaltimeuseinmin * $pricerate;
+				}
+				$this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
+				$this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+				$this->request->data['LessonPayment']['payment_amount'] = $totalamount;
+				$this->request->data['LessonPayment']['id']  =  $lessonPayment['LessonPayment']['id'];
+				$this->LessonPayment->save($this->request->data);
 			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				$this->request->data['LessonPayment']['lesson_id'] = $this->params->query['lessonid'];
+				$this->request->data['LessonPayment']['lesson_complete_tutor'] = 1;
+				$this->request->data['LessonPayment']['lesson_complete_student'] = 1;
+				$this->LessonPayment->save($this->request->data);
+			  
+			}
+		}else if($roletype == 4){ 
+			$totaltime = $checktwiddlaid['Lesson']['student_lessontaekn_time'] +  60;
+			$this->Lesson->saveField('student_lessontaekn_time', $totaltime);  
+			$lessonPayment = $this->LessonPayment->find('first',array('conditions'=>array('student_id'=>$checktwiddlaid['Lesson']['tutor'],'tutor_id'=>$checktwiddlaid['Lesson']['created'],'lesson_id'=>$this->params->query['lessonid']))); 
+			if(isset($this->params->query['completelesson']) && ($this->params->query['completelesson']==1)){
+			 	 
+				$this->request->data['LessonPayment']['lesson_complete_tutor'] = 1;
+				$this->request->data['LessonPayment']['lesson_complete_student'] = 1;
+			}
+		 
+			if(empty($lessonPayment)){
+				$u = $this->UserRate->find('first',array('conditions'=>array('userid'=>$checktwiddlaid['Lesson']['created']))); 
+				$pritype = $u['UserRate']['price_type'];
+				$pricerate = $u['UserRate']['rate'];
+				$totalamount = 0;
+				if($pritype == 'per min'){
+					$totaltimeuseinmin = $totaltime / 60; 
+					$totalamount =   ($totaltimeuseinmin) * $pricerate;
+				}else{
+					$pricerate = $pricerate / 60;
+					$totaltimeuseinmin = $totaltime / 60; 
+					$totalamount =   $totaltimeuseinmin * $pricerate;
+				}
 				$this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
 				$this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
 				$this->request->data['LessonPayment']['payment_amount'] = $totalamount;
 				$this->request->data['LessonPayment']['lesson_take'] =1;
 				$this->request->data['LessonPayment']['payment_complete'] = 0;
 				$this->request->data['LessonPayment']['lesson_id'] = $this->params->query['lessonid'];
-				
 				$this->LessonPayment->save($this->request->data);
+			}else{  
+				$u = $this->UserRate->find('first',array('conditions'=>array('userid'=>$checktwiddlaid['Lesson']['created']))); 
+				$pritype = $u['UserRate']['price_type'];
+				$pricerate = $u['UserRate']['rate'];
+				$totalamount = 0;
+				if($pritype == 'per min'){
+					$totaltimeuseinmin = $totaltime / 60; 
+					$totalamount =   ($totaltimeuseinmin) * $pricerate;
+				}else{
+					$pricerate = $pricerate / 60;
+					$totaltimeuseinmin = $totaltime / 60; 
+					$totalamount =   $totaltimeuseinmin * $pricerate;
+				}
+				$this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
+				$this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+				$this->request->data['LessonPayment']['payment_amount'] = $totalamount;
+				$this->request->data['LessonPayment']['id']  =  $lessonPayment['LessonPayment']['id'];
+				$this->LessonPayment->save($this->request->data);
+			}
+		
 		}
-		echo json_encode(array('totaltime'=>$totaltime));
+	 
+		 $u = $this->LessonPayment->find('first',array('conditions'=>array('lesson_id'=>$this->params->query['lessonid']))); 
+		 
+		echo json_encode(array('totaltime'=>$totaltime,'lessonResponse'=>$u));
 		$this->autoRender = false;
 		$this->layouts =  false;		
 	}
@@ -1523,12 +1682,12 @@ debug($log); */
 			}
 			
 			
-			$User = $this->User->find('first',array('conditions'=>array('user.id'=>$id)));
+			$User = $this->User->find('first',array('conditions'=>array('User.id'=>$id)));
 			$this->set(compact('User'));
 		
 		}
-		
-		
+	}
+	function paymentnotmade(){
 	}
 	
 	

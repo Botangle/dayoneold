@@ -1,5 +1,5 @@
 <?php
-
+/*
 Configure::write('Wysiwyg.attachmentBrowseUrl', array(
 	'plugin' => 'file_manager',
 	'controller' => 'attachments',
@@ -40,4 +40,4 @@ CroogoNav::add('media', array(
 			),
 		),
 	),
-));
+));*/

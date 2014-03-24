@@ -5,7 +5,6 @@ App::uses('CroogoPlugin', 'Extensions.Lib');
 App::uses('CroogoEventManager', 'Croogo.Event');
 App::uses('Croogo', 'Croogo.Lib');
 App::uses('CroogoNav', 'Croogo.Lib');
-App::import('Vendor', 'stripe/stripe.php');
 
 CakePlugin::load(array('Extensions'), array('bootstrap' => true));
 require_once 'croogo_bootstrap.php';

@@ -164,6 +164,13 @@ class CroogoAppController extends Controller {
 		if (isset($this->request->params['locale'])) {
 			Configure::write('Config.language', $this->request->params['locale']);
 		}
+		
+		$this->loadModel('Users');	
+		$userjo= $this->Users->find('count', array('conditions' => array('Users.status =' => '1') ));
+		$useron= $this->Users->find('count', array('conditions' => array('Users.status =' => '1','Users.is_online =' => 1)));
+		$this->set("userjo",$userjo);
+		$this->set("useron",$useron);
+		
 	}
 
 /**

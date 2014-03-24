@@ -1,10 +1,8 @@
 <script>
   $(document).ready(function() {
- 
-     $(".Message-lists").niceScroll({cursorborder:"",cursorcolor:"#F38918",boxzoom:true}); // First scrollable DIV
-	 
-	 var $t = $('.Message-lists');
-    $t.animate({"scrollTop": $('.Message-lists')[0].scrollHeight}, "slow");
+ 		$(".Message-lists").niceScroll({cursorborder:"",cursorcolor:"#F38918",boxzoom:true}); // First scrollable DIV
+	 	var $t = $('.Message-lists');
+    	$t.animate({"scrollTop": $('.Message-lists')[0].scrollHeight}, "slow");
  });
 </script>
 <?php 
@@ -20,7 +18,6 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 	
 	?>
 
-<!--Wrapper main-content Block Start Here-->
 <div id="main-content">
   <div class="container">
     <div class="row-fluid">
@@ -31,21 +28,14 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
     <div class="row-fluid">
     <?php echo $this->Element("myaccountleft") ?> 
       <div class="span9">
-     <!-- <h2 class="page-title">Messages <p class="pull-right"><button class="btn btn-primary btn-primary1" type="submit">Send New Messages</button></p></h2> -->
       <div class="StaticPageRight-Block">
       <div class="row-fluid">
       <div class="span4 Message-List-Block">
 		<?php
-	 
-		
-		if(!empty($userData)){ 
+	 	if(!empty($userData)){ 
 				foreach($userData as $k=>$v){
-				 
 			 ?>
-			
-			
-			<a class="" title="jaindeepak" href="/demos/botangle/users/messages/<?php echo $v['User']['username']; ?>">
-			
+			<a class="" title="<?php echo $v['User']['username']; ?>" href="/users/messages/<?php echo $v['User']['username']; ?>">
 			<div class="Message-row">
 			<div class="row-fluid">
         	<div class="span4 sender-img">
@@ -58,28 +48,19 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		 <?php } ?>
 			</div>
             <div class="span8 sender-name"> 
-			<?php /* echo $this->Html->link(__($v['User']['username']), '/users/messages/'.$v['User']['username'],
-		array('class' => '', 'title' => __($v['User']['username']))); */?>
-		
-		  <?php echo ucfirst($v['User']['username']); ?>
-			 
-<br><span class="FontStyle11"><?php echo $this->User->GettimedifferencedayBase($v['Usermessage']['date']);?></span></div>             
-            </div>
+			 <?php echo ucfirst($v['User']['username']); ?>
+			 	<br><span class="FontStyle11"><?php echo $this->User->GettimedifferencedayBase($v['Usermessage']['date']);?></span></div>              </div>
             </div>
 			
 		</a>	
-		<? }
+		<?php
+		 	}
 		}
 		?>
-			
-         
-     </div>
-	 
-	 
-        <div class="span8 Message-detail-Block" id="boxscroll">
+ </div>
+	  <div class="span8 Message-detail-Block" id="boxscroll">
         <div class="Message-lists">
 		<?php
-		
 		if(!empty($sent_from)){
 			foreach($sent_from as $k=>$v){ 
 			if($v['Usermessage']['sent_from']==$loginUser){
@@ -100,8 +81,6 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
         <?php echo nl2br($v['Usermessage']['body'])?></p>
         <p class="msg-time"><?php echo $this->User->Gettimedifference($v['Usermessage']['date']);?></p>
       </div>
-      
-      
       </div>
 	 <? } else { ?>
 	  <div class="row-fluid">
@@ -140,45 +119,16 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
       <div id="Write-msg">
      		 
 			 <?php echo $this->Form->textarea('body',array('class'=>'textarea','placeholder'=>"Type Your message",'rows'=>3));?>
-           <?php /*   <div style="position:relative;" class="span2 FontStyle11">
-		<a class='' href='javascript:;'>
-			<span class="glyphicon glyphicon-paperclip"></span>
-			Attach file
-			<?php
-			echo $this->Form->file('attached_files',array('style'=>'position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;'))
-			?>
-			 
-		</a>
-		&nbsp;
-		<span class='label label-info' id="upload-file-info"></span>
-	</div> */ ?>
-             <!--<div class="span2 FontStyle11"><a href="#"> <span class="glyphicon glyphicon-paperclip"></span> Attach file</a></div>-->
+           
+             
              <div class="span5 pull-right msg-send-btn"> <?php echo $this->Form->button(__("Send Message"), array('type' => 'submit','class'=>'btn btn-primary')); 
 			 ?></div>
       </div>
-      <?php echo $this->Form->end();?>
-        
-      
+      <?php echo $this->Form->end(); ?>
       </div>
-      
-      
       </div>
-   
-        
-        
-        
-        
-       </div>
-  
-  
-      </div>
+   </div>
+  </div>
       </div>
     </div>
-    <!-- @end .row --> 
-    
- 
-    
-    
-    
-  </div>
-  <!-- @end .container --> 
+</div>

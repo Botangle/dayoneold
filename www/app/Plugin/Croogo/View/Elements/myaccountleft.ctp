@@ -50,11 +50,11 @@ if($this->params['action']=='accountsetting'){
 	   ?> </li>
         <li>
 		<?php
-		echo $this->Html->link(
+	/*	echo $this->Html->link(
     __('Account Settings'),	'/users/accountsetting'
      ,
 	array('title'=>__('Account Settings'),'class'=>$accountsetting )
-);
+);*/
 	   ?>
 		 </li> 
 		 <li>
@@ -66,22 +66,22 @@ if($this->params['action']=='accountsetting'){
 );
 	   ?>
 		 </li> 
-		  <li>  <a href="<?php echo $this->webroot?>users/invite" title="Lessons" class="<?php echo $accountinvite?>">Invite Users<span class="badge pull-right"><?php 
+		<!--  <li>  <a href="<?php echo $this->webroot?>users/invite" title="Lessons" class="<?php echo $accountinvite?>">Invite Users<span class="badge pull-right"><?php 
 		
-		echo $this->User->GetInvitesCount($this->Session->read('Auth.User') ); ?></span></a></li>
+		echo $this->User->GetInvitesCount($this->Session->read('Auth.User') ); ?></span></a></li> -->
 		
 		
-		 <li>
-		<?php
+		<?php /*<li>
+		
 		echo $this->Html->link(
     __('Payment Setting'),	'/users/paymentsetting'
      ,
 	array('title'=>__('Payment Setting'),'class'=>$paymentsetting )
 );
-	   ?>
 		 </li> 
 		
-		
+		*/
+	   ?>
 		  
     </ul>
     
