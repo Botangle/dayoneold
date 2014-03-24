@@ -90,9 +90,9 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 				<?php if($this->Session->read('Auth.User.role_id')==2){ ?>
 				 <?php
 		echo $this->Html->link(
-    __('Confirmed'),	'/users/confirmedbytutor/'.$v['Lesson']['id']
+    __('Confirm'),	'/users/confirmedbytutor/'.$v['Lesson']['id']
      ,
-	array('title'=>__('Confirmed') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
+	array('title'=>__('Confirm') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
 );
 	   ?> 
 		 
