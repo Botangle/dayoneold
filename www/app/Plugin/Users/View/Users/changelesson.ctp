@@ -86,8 +86,8 @@ echo $this->Html->script(array(
                 <label class="control-label" for="repeats">Repeats:</label>
                 <div class="controls">
                 <?php 
-                $options = array('Signle lesson' => 'Signle lesson','Daily' => 'Daily','Weekly' => 'Weekly');
-			$attributes = array('legend' => false,'checked' => $Lesson['Lesson']['repet'],'value'=>'Signle lesson',
+                $options = array('Single lesson' => 'Single lesson','Daily' => 'Daily','Weekly' => 'Weekly');
+			$attributes = array('legend' => false,'checked' => $Lesson['Lesson']['repet'],'value'=>'Single lesson',
 			'label' => array('class' => 'radio'));
 			echo $this->Form->radio('repet', $options, $attributes);?>
                 

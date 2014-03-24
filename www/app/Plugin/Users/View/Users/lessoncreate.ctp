@@ -96,8 +96,8 @@ if(isset($user)){
                 <label class="control-label" for="repeats">Repeats:</label>
                 <div class="controls">
                 <?php 
-                $options = array('Signle lesson' => 'Signle lesson','Daily' => 'Daily','Weekly' => 'Weekly');
-			$attributes = array('legend' => false,'checked' => 'Signle lesson','value'=>'Signle lesson',
+                $options = array('Single lesson' => 'Single lesson','Daily' => 'Daily','Weekly' => 'Weekly');
+			$attributes = array('legend' => false,'checked' => 'Single lesson','value'=>'Single lesson',
 			'label' => array('class' => 'radio'));
 			echo $this->Form->radio('repet', $options, $attributes);?>
                 
