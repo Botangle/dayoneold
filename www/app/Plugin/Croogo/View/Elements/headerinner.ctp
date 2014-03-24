@@ -36,7 +36,7 @@
         <div class="Header-search">
           <input name="searchvalue" id="searchvalue" type="text" />
           <?php echo $this->Html->image('/croogo/img/search-img.jpg',array('class'=>'submit','id'=>'search'));?> </div>
-        <div class="Header-Free-info"> Find help immediatly?<br>
+        <div class="Header-Free-info">Find help immediately?<br>
           <span>Try for 7 days free!</span> </div>
       </div>
 	  </form>
