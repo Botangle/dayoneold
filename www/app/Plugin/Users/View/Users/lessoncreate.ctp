@@ -21,7 +21,7 @@ if(isset($user)){
       <div class="PageLeft-Block">
         <p class="FontStyle20 color1"><?php echo __("Propose Lesson Meeting")?></p>
         
-         <?php echo $this->Form->create('Lesson',array('class'=>'form-horizontal','url' => array('controller' => 'users', 'action' => 'createlessons')));?>
+         <?php echo $this->Form->create('Lesson',array('class'=>'form-horizontal','url' => array('controller' => 'users', 'action' => 'lessons_add')));?>
       
             <div class="control-group">
            
