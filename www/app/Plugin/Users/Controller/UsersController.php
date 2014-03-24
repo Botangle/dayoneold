@@ -1046,7 +1046,7 @@ debug($log); */
 		  if($this->Session->read('Auth.User.role_id')==4){
 
 		 }
-		 $this->render('lessons2');
+		 $this->render('lessons');
 
 	}
 	public function whiteboarddata($lessonid = null){
