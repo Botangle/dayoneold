@@ -8,7 +8,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="shortcut icon" href="ico/favi.png">
-<title>Botangle - New concept for Online Edication</title>
+<title>Botangle - A new concept for Online Education</title>
 
 <!-- Bootstrap core CSS -->
 <link href="<?php echo $this->webroot?>css/bootstrap.css" rel="stylesheet">
