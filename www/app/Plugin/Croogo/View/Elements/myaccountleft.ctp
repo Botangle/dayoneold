@@ -75,11 +75,11 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'payme
  			?>
 		</li>
     <li>
-			<?php
+			<?php /*
 				echo $this->Html->link(
 					__('Account Settings'),	'/users/accountsetting',
 					array('title'=>__('Account Settings'),'class'=>$accountsetting )
-				);
+				); */
 			?>
 		</li>
 		<li>
@@ -90,7 +90,7 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'payme
 				);
  			?>
 		</li>
-  	<li>
+<?php /*  	<li>
 			<a href="<?php echo $this->webroot ?>users/invite" title="Lessons" class="<?php echo $accountinvite ?>">
 				Invite Users
 				<span class="badge pull-right">
@@ -99,14 +99,14 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'payme
 					?>
 				</span>
 			</a>
-		</li>
-		<li>
+		</li> */?>
+<?php /*		<li>
 			<?php
 				echo $this->Html->link(
 					__('Payment Setting'),	'/users/paymentsetting',
 					array('title'=>__('Payment Setting'),'class'=>$paymentsetting )
 				);
  			?>
-		</li>
+		</li> */ ?>
 	</ul>
 </div>

@@ -26,7 +26,9 @@
         
         <div class="row-fluid Add-Payment-blocks">
         <div class="span5">
-		<?php  echo $this->Form->create('Billing',array('class'=>'form-horizontal'));?>
+		<?php  echo $this->Form->create('Billing',array('class'=>'form-horizontal'));
+		 echo $this->Form->input('pagetype',array('value'=>"billing",'type'=>'hidden'));
+		?>
 		<div class="control-group">
                 <label class="control-label" for="postalAddress"><?php echo __("Select Tutor:")?></label>
                 <div class="controls">
@@ -96,42 +98,42 @@
                 </div>
               </div>
 			 <!--  <div class="control-group">
-                <label class="control-label" for="postalAddress"><?php echo __("Billing Address")?></label>
+                <label class="control-label" for="postalAddress"><?php //echo __("Billing Address")?></label>
                 <div class="controls">
                  <input type="text" value="63/68" name="bill_addressline1" />
                  
                 </div>
               </div>
 			  <div class="control-group">
-                <label class="control-label" for="postalAddress"><?php echo __("Billing Address2")?></label>
+                <label class="control-label" for="postalAddress"><?php //echo __("Billing Address2")?></label>
                 <div class="controls">
                  <input type="text" value="63/68" name="bill_addressline2" />
                  
                 </div>
               </div>
 			  <div class="control-group">
-                <label class="control-label" for="postalAddress"><?php echo __("City")?></label>
+                <label class="control-label" for="postalAddress"><?php //echo __("City")?></label>
                 <div class="controls">
                  <input type="text" value="jaipur" name="bill_city" />
                  
                 </div>
               </div>
 			   <div class="control-group">
-                <label class="control-label" for="postalAddress"><?php echo __("State")?></label>
+                <label class="control-label" for="postalAddress"><?php //echo __("State")?></label>
                 <div class="controls">
                  <input type="text" value="rajasthan" name="bill_state" />
                  
                 </div>
               </div>
 			   <div class="control-group">
-                <label class="control-label" for="postalAddress"><?php echo __("Zip")?></label>
+                <label class="control-label" for="postalAddress"><?php //echo __("Zip")?></label>
                 <div class="controls">
                  <input type="text" value="302020" name="bill_zip" />
                  
                 </div>
               </div>
 			  <div class="control-group">
-                <label class="control-label" for="postalAddress"><?php echo __("Country")?></label>
+                <label class="control-label" for="postalAddress"><?php// echo __("Country")?></label>
                 <div class="controls">
                  <input type="text" value="india" name="bill_country" />
                  
@@ -139,13 +141,13 @@
               </div>-->
 			  
          <div class="row-fluid payment-blocks">
-        <div class="span5">
+        <div class="span6">
           &nbsp;
           </div>
 		 
 		  
           <div class="span5">
-          <button type="submit" class="btn btn-primary">Deposit Payment</button>
+          <button type="submit" class="btn btn-primary clsmarginleft">Deposit Payment</button>
           </div>
           </div>
 		  
@@ -157,6 +159,102 @@
 
        
            
+        
+       </div>
+   
+        
+        
+        
+       </div>
+      </div>
+       
+      <h2 class="page-title"><?php echo __("Payment Setting")?></h2>
+      <div class="StaticPageRight-Block">
+      <div class="PageLeft-Block">
+      
+      <div class="row-fluid Add-Payment-blocks">
+        <div class="span12">
+          <p class="FontStyle20 color1"><?php echo __("Setup Account:")?></p>
+          </div>
+          
+          <?php 
+		 $this->request->data = $this->Session->read("Auth.User");
+		 
+		 echo $this->Form->create('User',array('class'=>'form-horizontal'));
+		  echo $this->Form->input('pagetype',array('value'=>"paymentsettings",'type'=>'hidden'));
+ 		?>
+            <div class="control-group">
+              <label class="control-label span5"><?php echo __("Strip Account Email:")?></label>
+              <div class="controls">
+                <label class="radio inline span4">
+                   <?php echo $this->Form->input('stripe_id',array('placeholder'=>"Account Email",'label' => false,'value'=>$User['User']['stripe_id'],'type'=>'text'));?>
+                </label>
+                
+              </div>
+              
+          </div>
+          
+          <div class="control-group">
+              <label class="control-label span5"><?php echo __("Strip Secret Key:")?></label>
+              <div class="controls">
+                <label class="radio inline span4">
+                   <?php echo $this->Form->input('secret_key',array('placeholder'=>"Secret Key",'label' => false,'value'=>$User['User']['secret_key'],'type'=>'text'));?>
+                </label>
+                
+              </div>
+          </div>
+          
+          
+           <div class="control-group">
+              <label class="control-label span5"><?php echo __("Strip Publisher Key:")?></label>
+              <div class="controls">
+                <label class="radio inline span4">
+                   <?php echo $this->Form->input('public_key',array('placeholder'=>"Publisher Key",'label' => false,'value'=>$User['User']['public_key'],'type'=>'text'));?>
+                </label>
+                
+              </div>
+              
+          </div>
+          
+          
+		   <div class="control-group">
+              <label class="control-label span5"><?php echo __("Authorized with stripe")?></label>
+              <div class="controls">
+                <label class="radio inline span4">
+				<?php
+					$authorize_request_body = array(
+				  'response_type' => 'code',
+				  'scope' => 'read_write',
+				  'client_id' =>'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC'
+				);
+				$url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
+				echo "<a href='$url' id='connectstripe'>Connect with Stripe</a>";
+				echo"<script type='text/javascript' src='js/jquery.min.js'></script>";
+				echo "<script>$(document).ready(function() { $('#connectstripe').trigger('click'); });</script>";
+				?>
+                </label>
+                
+              </div>
+              
+          </div>
+		  
+		  
+		   
+		  
+		  
+          
+        <div class="row-fluid Add-Payment-blocks">
+        <div class="span5">
+          
+          </div>
+          <div class="span5">
+          <button type="submit" class="btn btn-primary">Update</button>
+          </div>
+          </div>
+  
+         <?php echo $this->Form->end();?>
+
+      
         
        </div>
    

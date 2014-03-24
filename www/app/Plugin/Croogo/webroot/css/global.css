@@ -46,7 +46,7 @@ body {
 	background: url("../images/banner-bg.png") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
-	height: auto;
+	height: auto; margin-top:80px;
 	padding: 20px 0;
 	width: 100%;
 }
@@ -258,7 +258,7 @@ a.join-btn:hover{ display:block; background:#2d2d2d; color:#fff; text-decoration
 	background: url("../images/banner-bg.png") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
-	height: auto;
+	height: auto;  margin-top:80px;
 	padding: 50px 0;
 	width: 100%;
 }
@@ -342,7 +342,7 @@ input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-fa
 .marT10{ margin:18px 0 0 0; }
 
 
-.LeftMenu-Block{ float:left; width:100%; height:auto; padding:0px 0 30px 0; margin:0px; background:url(../images/line1.gif) repeat-y right;  }
+.LeftMenu-Block{ float:left; width:100%; height:auto; padding:0px 0 30px 0; margin:0px;/* background:url(../images/line1.gif) repeat-y right;*/ border-right:1px solid #d5d5d5;  }
 .LeftMenu-Block ul{ padding:0px; margin:0px; }
 .LeftMenu-Block ul li{ float:left; width:90%; margin:3px 10px; list-style-type:none; padding:0px; }
 .LeftMenu-Block ul li a{ float:left; width:90%; margin:0px; list-style-type:none; padding:12px 15px; color:#2b2b2b; text-decoration:none; font-size:15px; font-family: 'Roboto', sans-serif;  font-weight:200; border:1px solid #eaeaea; background:#fff;  }
@@ -772,4 +772,37 @@ input.textbox{ width:80%; }
 
 .termcls { line-height:12px;}
 
+@media(max-width:320px) {
+.twitter-box, .facebook-box, .latest-news-box {
+    color: #FFFFFF;
+    font-size: 16px;
+    overflow: hidden;
+    padding: 0 0 25px;
+    width: 250px;
+}
+}
 
+@media(min-width:321px) and (max-width:360px) {
+.twitter-box, .facebook-box, .latest-news-box {
+    color: #FFFFFF;
+    font-size: 16px;
+    overflow: hidden;
+    padding: 0 0 25px;
+    width: 300px;
+}
+}
+
+
+@media(min-width:361px) and (max-width:1024px {
+.twitter-box, .facebook-box, .latest-news-box {
+    color: #FFFFFF;
+    font-size: 16px;
+    overflow: hidden;
+    padding: 0 0 25px;
+    width: 250px;
+}
+}
+
+
+.clsmarginleft {
+margin-left: 15px; }

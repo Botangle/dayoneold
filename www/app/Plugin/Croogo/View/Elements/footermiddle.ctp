@@ -3,20 +3,18 @@
     <div class="row-fluid">
       <div class="span3 joined-member-box">
         <div class="joined-member"> Joined members
-          <p>470</p>
+		 <p><?php echo $userjo;?></p>
         </div>
         <div class="joined-member"> Online members
-          <p>152</p>
+          <p><?php echo $useron;?></p>
         </div>
       </div>
       <div class="span5 social-updates">
-        <div class="twitter-box">
-          <p class="title1">Twitter Updates</p>
-          <?php echo $this->Html->image('/croogo/img/twitter-update.png');?></div>
-        <div class="facebook-box">
+    
+		<div class="facebook-box">
           <p class="title1">Likes on Facebook</p>
           
-		  <iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fphelixportfolio.com%2Fdemos%2Fbotangle%2F&amp;width=401&amp;layout=standard&amp;action=like&amp;show_faces=false&amp;share=false&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:401px; height:35px;" allowTransparency="true"></iframe>
+		 <iframe src="//www.facebook.com/plugins/likebox.php?href=https%3A%2F%2Fwww.facebook.com%2FBotangle&amp;width=430&amp;height=258&amp;colorscheme=dark&amp;show_faces=true&amp;header=false&amp;stream=false&amp;show_border=false" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:430px; height:258px;" allowTransparency="true"></iframe>
 		  </div>
       </div>
 <?php

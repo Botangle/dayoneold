@@ -67,7 +67,7 @@ echo $this->Layout->js();
 		));
 		?>
 		<script>
-var suburl = "/demos/botangle/subject/search";
+var suburl = "/subject/search";
 if(document.URL.indexOf('127.0.0.1')>=0){
 var suburl = "/botangle/subject/search"
 } 	

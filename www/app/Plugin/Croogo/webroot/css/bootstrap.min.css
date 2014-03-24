@@ -4638,3 +4638,9 @@ font-style:normal;font-weight:normal;line-height:1;-moz-osx-font-smoothing:grays
     
 }
 .claimmargin { margin-top:40px;}
+
+#box_jbeeb_7, #box_jbeeb_11, #box_jbeeb_15{
+ display:none !important;
+
+}
+#stage_jbeeb_3{ margin:0px auto !important; }

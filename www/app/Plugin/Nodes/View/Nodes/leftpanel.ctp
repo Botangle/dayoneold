@@ -1,4 +1,6 @@
- <?php  
+ <div class="span3 LeftMenu-Block"><ul>
+    	<li>
+		 <?php  
 		$cls = "";
 		$cls1 = "";
 		$cls2 = "";
@@ -24,16 +26,15 @@
 	   }else if(isset($this->params['named']['slug']) && $this->params['named']['slug']=='testimonials'){
 		$cls7 = "active";
 	   }
-	   ?>
- <div class="span3 LeftMenu-Block"><ul>
-    	<li><?php
-		 
+	   
+	   
 	  echo $this->Html->link(
     __('About Us'),	'/about'
      ,
 	array('class'=>$cls,'title'=>__('About Us') )
-);?></li>
-        <li><?php  
+);?>
+	 
+        <li> <?php  
 	  
 	  
 	  echo $this->Html->link(
@@ -41,8 +42,19 @@
      ,
 	array('class'=>$cls1,'title'=>__('faq') )
 );?></li>
- 
-       
+        <li>
+		
+		
+        <?php  
+	  
+	  
+	  echo $this->Html->link(
+    __('Testimonials'),	'/testimonials'
+     ,
+	array('class'=>$cls7,'title'=>__('testimonials') )
+);?>
+		
+		
 		<li>
 		<?php  
 	  
@@ -54,7 +66,7 @@
 );?>
 		
 	 </li>
-        <li><?php  
+        <li> <?php  
 	  
 	  
 	  echo $this->Html->link(
@@ -62,7 +74,8 @@
      ,
 	array('class'=>$cls2,'title'=>__('Terms of use') )
 );?></li>
-        <li><?php  
+        <li>
+		<?php  
 	  
 	  
 	  echo $this->Html->link(
@@ -70,8 +83,12 @@
      ,
 	array('class'=>$cls5,'title'=>__('Updates') )
 );?>
+		
+		
 		</li> 
-        <li><?php  
+        <li>
+		
+		<?php  
 	  
 	  
 	  echo $this->Html->link(
@@ -79,7 +96,10 @@
      ,
 	array('class'=>$cls6,'title'=>__('Media') )
 );?>
-		</li>    <li>
+		
+		
+		</li>  
+		  <li>
 		  <?php  
 	  
 	  

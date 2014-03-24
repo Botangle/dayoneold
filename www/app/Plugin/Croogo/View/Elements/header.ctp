@@ -15,7 +15,7 @@ echo $this->Layout->js();
  
  
 $(function() {
-$.getJSON( "/demos/botangle/subject/search",function(response){
+$.getJSON( "/subject/search",function(response){
 	data = response;
  
  $( "#searchvalue" ).autocomplete({
