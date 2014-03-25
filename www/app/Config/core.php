@@ -1,4 +1,6 @@
 <?php
+// include the Composer autoloader
+require_once dirname(__DIR__) . '/Vendor/autoload.php';
 
 // adding in environment support for CakePHP
 // http://bakery.cakephp.org/articles/stevena0/2010/08/29/use-different-configs-for-different-environments
@@ -74,5 +76,6 @@ if (file_exists(APP . 'Config' . DS . 'croogo.php')) {
 
 Configure::write('TokBox', array(
         'apiKey' => (isset($tokBoxApiKey) ? $tokBoxApiKey : ''),
+        'apiSecret' => (isset($tokBoxApiSecret) ? $tokBoxApiSecret : ''),
         'scriptUrl' => 'https://swww.tokbox.com/webrtc/v2.0/js/TB.min.js',
     ));

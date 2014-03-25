@@ -7,6 +7,7 @@
     "require": {
         "php": ">=5.4.0",
         "composer/installers": "*",
-        "stripe/stripe-php": "dev-master"
+        "stripe/stripe-php": "dev-master",
+        "opentok/opentok": "dev-master"
     }
 }
