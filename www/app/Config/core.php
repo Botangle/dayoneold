@@ -71,3 +71,8 @@ if (file_exists(APP . 'Config' . DS . 'croogo.php')) {
             )
         ));
 }
+
+Configure::write('TokBox', array(
+        'apiKey' => (isset($tokBoxApiKey) ? $tokBoxApiKey : ''),
+        'scriptUrl' => 'https://swww.tokbox.com/webrtc/v2.0/js/TB.min.js',
+    ));
