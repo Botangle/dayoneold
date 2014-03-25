@@ -1082,17 +1082,28 @@ debug($log); */
 
     }
 
-    public function whiteboarddata($lessonid = null)
-    {
-        $lesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
-        $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('lesson_id' => $lessonid)));
+    public function whiteboarddata($lessonid = null){
+        $lesson = $this->Lesson->find('first',array('conditions'=>array('id'=>$lessonid)));
+        $lessonPayment = $this->LessonPayment->find('first',array('conditions'=>array('lesson_id'=>$lessonid)));
 
-        $this->set(compact('lesson', 'lessonPayment'));
+        $lesson_id = (int)$lesson['Lesson']['id'];
+        $role_id = (int)$this->Session->read('Auth.User.role_id');
+
+        $tox_box_session_id = "1_MX40NDY5MjkxMn5-VHVlIE1hciAyNSAwOTo1ODoyMSBQRFQgMjAxNH4wLjc2MjY3ODU2fg"; // $lesson['Lesson']['id']
+
+        // @TODO: pass in a token id if there is one for this user in session
+
+        $this->set(compact(
+                'lesson',
+                'lessonPayment',
+                'lesson_id',
+                'role_id',
+                'tox_box_session_id'
+            ));
     }
 
     public function changelesson($lessonid = null)
     {
-
         if (!empty($this->request->data)) {
             $this->Lesson->create();
             $this->request->data['Lesson']['add_date'] = date('Y-m-d');

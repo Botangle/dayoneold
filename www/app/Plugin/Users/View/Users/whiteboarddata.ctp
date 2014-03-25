@@ -12,10 +12,6 @@ if(!empty($lessonPayment)){
     }
 }
 
-$lesson_id = (int)$lesson['Lesson']['id'];
-$role_id = (int)$this->Session->read('Auth.User.role_id');
-
-
 echo $this->element("breadcrame",array('breadcrumbs'=>
 	array(__("Whiteboard")=>__("Whiteboard")))
 	);?>
@@ -43,7 +39,8 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
     <div class="row-fluid">
 	
 	  <?php echo $this->Element("whiteboard-left", array(
-            'disabled' => $disbled,
+              'disabled'            => $disbled,
+              'tox_box_session_id'  => $tox_box_session_id,
           )) ?>
       <div class="span9">
       

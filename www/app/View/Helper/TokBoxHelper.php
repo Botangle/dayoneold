@@ -32,16 +32,19 @@ class TokBoxHelper extends AppHelper {
      * Returns the appropriate video information
      * @return string
      */
-    public function videoInformation()
+    public function videoInformation($session_id)
     {
+        $apiObj = new OpenTokSDK($this->settings['apiKey'], $this->settings['apiSecret']);
+        $token = $apiObj->generateToken($session_id);
+
         $videoHtml = <<<THEEND
 
         <script type="text/javascript" charset="utf-8">
         TB.addEventListener("exception", exceptionHandler);
 
         var apiKey = '{$this->settings['apiKey']}';
-        var sessionId = "1_MX40NDY5MjkxMn5-TW9uIE1hciAyNCAxMDo0NDoxNSBQRFQgMjAxNH4wLjE4MDkwMzAyfg";
-        var token = "T1==cGFydG5lcl9pZD00NDY5MjkxMiZzZGtfdmVyc2lvbj10YnJ1YnktdGJyYi12MC45MS4yMDExLTAyLTE3JnNpZz05YmUxNzFlMjhlYTEwNmIzMjUxOTkxYzA4NTE4YjA2MTg1MzgxMWU3OnJvbGU9cHVibGlzaGVyJnNlc3Npb25faWQ9MV9NWDQwTkRZNU1qa3hNbjUtVFc5dUlFMWhjaUF5TkNBeE1EbzBORG94TlNCUVJGUWdNakF4Tkg0d0xqRTRNRGt3TXpBeWZnJmNyZWF0ZV90aW1lPTEzOTU2ODMwNTUmbm9uY2U9MC44MTE0NzU4NTM2NTg2ODUxJmV4cGlyZV90aW1lPTEzOTU3Njk0NTcmY29ubmVjdGlvbl9kYXRhPQ==";
+        var sessionId = "{$session_id}";
+        var token = "{$token}";
 
         var session = TB.initSession(sessionId); // Replace with your own session ID. See https://dashboard.tokbox.com/projects
         session.addEventListener("sessionConnected", sessionConnectedHandler);
