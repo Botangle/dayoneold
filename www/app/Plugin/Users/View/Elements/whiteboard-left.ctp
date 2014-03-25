@@ -1,6 +1,5 @@
 <div class="span3 LeftMenu-Block">
-    <?php echo $this->Element("whiteboard_video_chat", array(
-        )) ?>
+    <?php echo $this->Element("whiteboard_video_chat") ?>
 
     <?php /* @TODO: put a chat log down this left sidebar long-term, per our mockups */ ?>
 

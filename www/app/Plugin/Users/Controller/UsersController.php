@@ -1089,7 +1089,8 @@ debug($log); */
         $lesson_id = (int)$lesson['Lesson']['id'];
         $role_id = (int)$this->Session->read('Auth.User.role_id');
 
-        $tox_box_session_id = "1_MX40NDY5MjkxMn5-VHVlIE1hciAyNSAwOTo1ODoyMSBQRFQgMjAxNH4wLjc2MjY3ODU2fg"; // $lesson['Lesson']['id']
+        $opentok_session_id = $lesson['Lesson']['opentok_session_id'];
+//        $opentok_session_id = "1_MX40NDY5MjkxMn5-VHVlIE1hciAyNSAwOTo1ODoyMSBQRFQgMjAxNH4wLjc2MjY3ODU2fg"; // $lesson['Lesson']['id']
 
         // @TODO: pass in a token id if there is one for this user in session
 
@@ -1098,7 +1099,7 @@ debug($log); */
                 'lessonPayment',
                 'lesson_id',
                 'role_id',
-                'tox_box_session_id'
+                'opentok_session_id'
             ));
     }
 

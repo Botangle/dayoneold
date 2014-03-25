@@ -40,7 +40,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 	
 	  <?php echo $this->Element("whiteboard-left", array(
               'disabled'            => $disbled,
-              'tox_box_session_id'  => $tox_box_session_id,
+              'opentok_session_id'  => $opentok_session_id,
           )) ?>
       <div class="span9">
       
