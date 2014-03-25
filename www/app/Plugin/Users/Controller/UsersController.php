@@ -1012,32 +1012,30 @@ debug($log); die;*/
 
 	public function lessons(){
 		$userconditionsfield = "tutor";
-		$userlessonconditionsfield = "created";
+		$userlessonconditionsfield = "tutor";
 		$readconditons = "readlessontutor";
+
 		 if($this->Session->read('Auth.User.role_id')==4){
 			$userconditionsfield = "created";
-			$userlessonconditionsfield = "tutor";
+			$userlessonconditionsfield = "created";
 			$readconditons = "readlesson";
 		 }
 
-		  $activelesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN 
-		  `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND `Lesson`.`$readconditons` = 0  AND Lesson.lesson_date >= '".date('Y-m-d')."'  
-		");
+        $activeLessonSQL = "Select * from lessons as Lesson INNER JOIN
+		  `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
+        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND `Lesson`.`$readconditons` = 0  AND Lesson.lesson_date >= '".date('Y-m-d')."'";
+
+		  $activelesson =  $this->Lesson->query($activeLessonSQL);
 		  
 		  
 		  
-		/*echo "Select * from lessons as Lesson INNER JOIN `phelixin_bota`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND `Lesson`.`$readconditons` = 0  AND Lesson.lesson_date >= '".date('Y-m-d')."' ";  die;*/
-		  
-		 
-		$upcomminglesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND `Lesson`.`$readconditons` = 1 AND Lesson.lesson_date >= '".date('Y-m-d')."'  
-		");
-		  
-		$pastlesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND Lesson.lesson_date < '".date('Y-m-d')."'  
-		"); 
+        $upcomingLessonSQL = "Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
+        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND `Lesson`.`$readconditons` = 1 AND Lesson.lesson_date >= '".date('Y-m-d')."'";
+		$upcomminglesson =  $this->Lesson->query($upcomingLessonSQL);
+
+        $pastLessonSQL = "Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
+        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND Lesson.lesson_date < '".date('Y-m-d')."'";
+		$pastlesson =  $this->Lesson->query($pastLessonSQL);
 		 
 		
 		$this->set(compact('activelesson','upcomminglesson','pastlesson'));
