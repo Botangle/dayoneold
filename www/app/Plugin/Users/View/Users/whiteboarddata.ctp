@@ -1,6 +1,18 @@
 <!--Wrapper HomeServices Block Start Here-->
  
 <?php
+
+// @TODO: move these items into the controller long-term
+$disbled = "";
+$showtimerId = "realtime";
+if(!empty($lessonPayment)){
+    if($lessonPayment['LessonPayment']['lesson_complete_student']==1){
+        $disbled = "disabled='disabled'";
+        $showtimerId = "realtime2";
+    }
+}
+
+
 echo $this->element("breadcrame",array('breadcrumbs'=>
 	array(__("Whiteboard")=>__("Whiteboard")))
 	);?>
@@ -27,7 +39,9 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
     </div>
     <div class="row-fluid">
 	
-	  <?php echo $this->Element("myaccountleft") ?> 
+	  <?php echo $this->Element("whiteboard-left", array(
+            'disabled' => $disbled,
+          )) ?>
       <div class="span9">
       
       <div class="StaticPageRight-Block">
@@ -197,15 +211,6 @@ function secondsToTime($seconds)
 		}
 	$usetime = $usetime['h'].":".$usetime['m'].":".$usetime['s'];
 	}
-	 $disbled = "";
-	 $showtimerId = "realtime";
-	 if(!empty($lessonPayment)){
-		 if($lessonPayment['LessonPayment']['lesson_complete_student']==1){
-			$disbled = "disabled='disabled'";
-			$showtimerId = "realtime2";
-		 }
-	 }
-	 
 		?>
 			  <div id="<?php echo $showtimerId?>"><?php echo $usetime?></div> <!--<img src="<?php //echo $this->webroot?>croogo/images/timer.jpg" />--></div>
 			  	<input type="hidden" name="roletype" id="roletype" value="<?php echo $this->Session->read('Auth.User.role_id')?>" />
@@ -223,8 +228,7 @@ function secondsToTime($seconds)
 				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&guestname=deep&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe> 
 			 <?php }
 			}?>
-			<input type="button" value="Exit / Complete Lesson" class="btn btn-primary" id="exitlesson" onclick="exitLesson('<?php echo $this->Session->read('Auth.User.role_id')?>')" <?php echo $disbled?>/>
-			 
+
             </div>
             </div>
         

@@ -14,6 +14,7 @@
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
 	<?php
 		echo $this->Meta->meta();
+        echo $this->fetch('meta');
 		echo $this->Layout->feed();
 		echo $this->Html->css(array(
 			'/croogo/css/bootstrap',
