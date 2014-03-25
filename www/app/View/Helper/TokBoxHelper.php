@@ -88,11 +88,6 @@ class TokBoxHelper extends AppHelper {
         }
     </script>
 
-    <div class="video-chat">
-        <div id="videoChatBox">Your tutor</div>
-        <div id="small-stream">Me</div>
-    </div>
-
 THEEND;
         return $videoHtml;
     }
