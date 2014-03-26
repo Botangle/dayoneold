@@ -70,6 +70,13 @@ Then go to : http://app.botangle.dev:1080
 
 If you need to stop the mailcatcher daemon : Clic on "Quit" on the top right corner of the MailCatcher Web UI.
 
+## Running Migrations for CakePHP
+Inside of the vagrant machine (you can use `vagrant ssh` to get in) in the app folder (`/var/www/app`), run this command:
+
+```Console/cake Migrations.migration run```
+
+More details available here: https://github.com/CakeDC/migrations/blob/2.1/readme.md
+
 ## Packages
 
 Are installed:
