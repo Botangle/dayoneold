@@ -1151,27 +1151,29 @@ debug($log);
 				}
 				$this->Lesson->create();
 
+                 // this gets run when a student proposes a lesson to a tutor
 				 if(isset($this->request->data['Lesson']['tutor']) && $this->request->data['Lesson']['tutor']!=""){
 					$tutorid = $this->request->data['Lesson']['tutor'];
-					$this->request->data['Lesson']['tutor'] = $this->Auth->user('id');
-					$this->request->data['Lesson']['created']= $tutorid;
-					$this->request->data['Lesson']['add_date'] = date('Y-m-d');
-					$this->request->data['Lesson']['readlesson'] = '0';
-					$this->request->data['Lesson']['readlessontutor'] = '0';
-					$this->request->data['Lesson']['is_confirmed'] = '0';
-					 $this->request->data['Lesson']['laststatus_tutor'] = 1;
-					$this->request->data['Lesson']['laststatus_student'] = 0;
-				}else{
-					$tutorid = $this->User->find('first',array('conditions'=>array('username'=>$this->request->data['Lesson']['tutorname'])));
-					$tutorid = $tutorid['User']['id'];
-					$this->request->data['Lesson']['tutor'] =  $tutorid;
+					$this->request->data['Lesson']['tutor'] = $tutorid;
 					$this->request->data['Lesson']['created']= $this->Auth->user('id');
 					$this->request->data['Lesson']['add_date'] = date('Y-m-d');
 					$this->request->data['Lesson']['readlesson'] = '0';
 					$this->request->data['Lesson']['readlessontutor'] = '0';
 					$this->request->data['Lesson']['is_confirmed'] = '0';
-					$this->request->data['Lesson']['laststatus_tutor'] = 0;
+					 $this->request->data['Lesson']['laststatus_tutor'] = 0;
 					$this->request->data['Lesson']['laststatus_student'] = 1;
+				}else{
+                     // this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
+					$tutorid = $this->User->find('first',array('conditions'=>array('username'=>$this->request->data['Lesson']['tutorname'])));
+					$tutorid = $tutorid['User']['id'];
+					$this->request->data['Lesson']['tutor'] =  $this->Auth->user('id');
+					$this->request->data['Lesson']['created']= $tutorid;
+					$this->request->data['Lesson']['add_date'] = date('Y-m-d');
+					$this->request->data['Lesson']['readlesson'] = '0';
+					$this->request->data['Lesson']['readlessontutor'] = '0';
+					$this->request->data['Lesson']['is_confirmed'] = '0';
+					$this->request->data['Lesson']['laststatus_tutor'] = 1;
+					$this->request->data['Lesson']['laststatus_student'] = 0;
 				}
 
 
