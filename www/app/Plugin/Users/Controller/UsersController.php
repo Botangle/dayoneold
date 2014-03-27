@@ -1089,17 +1089,26 @@ debug($log); */
         $lesson_id = (int)$lesson['Lesson']['id'];
         $role_id = (int)$this->Session->read('Auth.User.role_id');
 
+        // handle all our video stuff with Opentok
         $opentok_session_id = $lesson['Lesson']['opentok_session_id'];
-//        $opentok_session_id = "1_MX40NDY5MjkxMn5-VHVlIE1hciAyNSAwOTo1ODoyMSBQRFQgMjAxNH4wLjc2MjY3ODU2fg"; // $lesson['Lesson']['id']
 
-        // @TODO: pass in a token id if there is one for this user in session
+        if($opentok_session_id == "") {
+            // @TODO: consider changing this to generate a new session id and save it to the DB, instead of throwing an error
+            throw new InternalErrorException("Could not load our video system up for some reason. Please try again or contact us.");
+        }
+
+        $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+        $opentok_api_key = $this->OpenTok->apiKey;
+        $opentok_token = $this->OpenTok->generateToken($opentok_session_id);
 
         $this->set(compact(
                 'lesson',
                 'lessonPayment',
                 'lesson_id',
                 'role_id',
-                'opentok_session_id'
+                'opentok_api_key',
+                'opentok_session_id',
+                'opentok_token'
             ));
     }
 

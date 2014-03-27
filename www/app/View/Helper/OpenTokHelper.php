@@ -1,6 +1,6 @@
 <?php
 /**
- * TokBoxHelper.php
+ * OpenTokHelper.php
  * Makes it possible to use the TokBox system as needed in the system
  *
  * @author: David Baker <dbaker@acorncomputersolutions.com
@@ -9,7 +9,7 @@
  */
 
 App::uses('AppHelper', 'View/Helper');
-class TokBoxHelper extends AppHelper {
+class OpenTokHelper extends AppHelper {
 
     public $helpers = array('Html');
 
@@ -32,14 +32,14 @@ class TokBoxHelper extends AppHelper {
      * Returns the appropriate video information
      * @return string
      */
-    public function videoInformation($tokbox_api_key, $tokbox_session_id, $tokbox_token)
+    public function videoInformation($api_key, $session_id, $token)
     {
         $videoHtml = <<<THEEND
 
         <script type="text/javascript" charset="utf-8">
         TB.addEventListener("exception", exceptionHandler);
 
-        var apiKey = '{$this->settings['apiKey']}';
+        var apiKey = '{$api_key}';
         var sessionId = "{$session_id}";
         var token = "{$token}";
 
