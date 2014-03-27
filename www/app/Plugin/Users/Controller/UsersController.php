@@ -514,6 +514,12 @@ class UsersController extends UsersAppController
         }
     }
 
+    /**
+     * Account Setting 2
+     *
+     * If the logged-in user is of `role_id` 4, then render the accountsetting2
+     * view, under `../View/Users/accountsetting2.ctp`
+     */
     public function accountsetting2()
     {
         if ($this->Session->read('Auth.User.role_id') == 4) {
@@ -522,15 +528,13 @@ class UsersController extends UsersAppController
     }
 
     /**
-     * Add
+     * Add a user to the database
      *
      * @return void
      * @access public
      */
     public function add()
     {
-
-
         $this->set('title_for_layout', __d('croogo', 'Register'));
         if (!empty($this->request->data)) {
             $this->User->create();
@@ -565,7 +569,6 @@ class UsersController extends UsersAppController
                             }
                         }
                     }
-
 
                     $this->request->data['Userpoint']['user_id'] = $newUser;
                     $this->request->data['Userpoint']['point'] = 5;
@@ -612,7 +615,7 @@ class UsersController extends UsersAppController
     }
 
     /**
-     * Activate
+     * Activate the user (via email confirmation)
      *
      * @param string $username
      * @param string $key
@@ -650,13 +653,14 @@ class UsersController extends UsersAppController
      *
      * @return void
      * @access public
+     * @TODO
      */
     public function edit()
     {
     }
 
     /**
-     * Forgot
+     * Forgot password
      *
      * @return void
      * @access public
@@ -699,12 +703,17 @@ class UsersController extends UsersAppController
         }
     }
 
+    /**
+     * Recover Password
+     *
+     * @TODO
+     */
     function passwordrecovery()
     {
     }
 
     /**
-     * Reset
+     * Reset password
      *
      * @param string $username
      * @param string $key
@@ -865,6 +874,15 @@ debug($log);*/
         return 'croogo@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
     }
 
+/************************** BEGIN BILLING FUNCTIONS **************************/
+
+    /**
+     * Billing - the main billing function
+     *
+     * This contains the Stripe information for sending/receiving payments.
+     *
+     * @package billing
+     */
     public function billing()
     {
         App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
@@ -977,12 +995,12 @@ debug($log);*/
         $this->set(compact('User'));
     }
 
-    function billing2()
-    {
-
-
-    }
-
+    /**
+     * Search function
+     *
+     * Searches for lessons given certen parameters of experience, online status,
+     * subjects, and user input value.
+     */
     public function search($categoryname = null, $online = null)
     {
 
@@ -1047,6 +1065,12 @@ debug($log);*/
         debug($log); die;*/
     }
 
+    /**
+     * lessons function
+     *
+     * Lists the active, upcoming, and past lessons according to logged-in user,
+     * insofar as the user is a tutor.
+     */
     public function lessons()
     {
         $userconditionsfield = "tutor";
@@ -1064,7 +1088,6 @@ debug($log);*/
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "' AND Lesson.is_confirmed = 0 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
         $activelesson = $this->Lesson->query($activeLessonSQL);
 
-
         $upcomingLessonSQL = "Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'  AND Lesson.is_confirmed = 1 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
         $upcomminglesson = $this->Lesson->query($upcomingLessonSQL);
@@ -1073,10 +1096,11 @@ debug($log);*/
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'  AND Lesson.lesson_date < '" . date('Y-m-d') . "'";
         $pastlesson = $this->Lesson->query($pastLessonSQL);
 
-
         $this->set(compact('activelesson', 'upcomminglesson', 'pastlesson'));
         /* $log = $this->User->getDataSource()->getLog(false, false);
 debug($log); */
+
+        /* @todo find out why this if statement is empty... */
         if ($this->Session->read('Auth.User.role_id') == 4) {
 
         }
@@ -1084,9 +1108,19 @@ debug($log); */
 
     }
 
-    public function whiteboarddata($lessonid = null){
-        $lesson = $this->Lesson->find('first',array('conditions'=>array('id'=>$lessonid)));
-        $lessonPayment = $this->LessonPayment->find('first',array('conditions'=>array('lesson_id'=>$lessonid)));
+    /**
+     * White board data
+     *
+     * Selects lesson information from the database, and begins the payment
+     * workflow. Presumably, this would also manage the whiteboard content, once
+     * the feature is in its fully-functional form.
+     *
+     * @package billing
+     */
+    public function whiteboarddata($lessonid = null)
+    {
+        $lesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
+        $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('lesson_id' => $lessonid)));
 
         $lesson_id = (int)$lesson['Lesson']['id'];
         $role_id = (int)$this->Session->read('Auth.User.role_id');
@@ -1117,6 +1151,11 @@ debug($log); */
             ));
     }
 
+    /**
+     * Change lesson
+     *
+     * Manages creating and saving lessons
+     */
     public function changelesson($lessonid = null)
     {
         if (!empty($this->request->data)) {
@@ -1214,10 +1253,17 @@ debug($log);
         $this->set(compact('Lesson'));
     }
 
+    /**
+     * Lessons add
+     *
+     * Binds a student's proposed lesson to a tutor's account. Also seems to
+     * manage the messages between the student and tutor.
+     */
     public function lessons_add()
     {
         if (!empty($this->request->data)) {
 
+            /* @todo find out why this if-statement is empty... */
             if (isset($this->request->data['Lesson']['tutorname']) && $this->request->data['Lesson']['tutorname'] != "") {
 
             } else {
@@ -1308,6 +1354,11 @@ debug($log);
 
     }
 
+    /**
+     * Search student
+     *
+     * Searches for a certain student in the database by usename (I think)
+     */
     public function searchstudent()
     {
         $this->User->recursive = 0;
@@ -1347,6 +1398,11 @@ debug($log);*/
         $this->layouts = false;
     }
 
+    /**
+     * Lesson Reviews
+     *
+     * Handles reviews of how the lesson went, ex-post-facto.
+     */
     public function lessonreviews($lessonid = null)
     {
         if (!empty($this->request->data)) {
@@ -1360,7 +1416,17 @@ debug($log);*/
         $this->set(compact('Lesson'));
     }
 
-    public function confirmedbytutor($lessonid = null){
+    /**
+     * Confirmed by tutor
+     *
+     * Handles the confirmation of a lesson. A student proposes a lesson to the tutor,
+     * then the tutor confirms it. This function then establishes the twiddla
+     * meeting details.
+     *
+     * @package billing
+     */
+    public function confirmedbytutor($lessonid = null)
+    {
         $data = $this->Lesson->find('first',array('conditions'=>array('id'=>(int)$lessonid)));
 
         $data['Lesson']['readlessontutor']    = 1;
@@ -1497,6 +1563,22 @@ debug($log); */
         exit();
     }
 
+    /**
+     * Update remaining
+     *
+     * A very general function, should probably be separated in the future.
+     *
+     * This function checks if the lesson has ended (verifies with twiddla).
+     * If it has, and if no payment has yet been made, it calculates the payment
+     * and saves the calculation.
+     *
+     * How the payment should be calculated:
+     *    30% goes to Botangle
+     *    70% goes to tutor
+     *    Prices are set and calculated on a per-minute price.
+     *
+     * @package billing
+     */
     public function updateremaining()
     {
         $this->Lesson->id = $this->params->query['lessonid'];
@@ -1613,6 +1695,13 @@ debug($log); */
         $this->layouts = false;
     }
 
+    /**
+     * Payment made
+     *
+     * This also seems to calculate the payment...
+     *
+     * @package billing
+     */
     public function paymentmade()
     {
         $payment = $this->params->query['tutor'];
@@ -1636,7 +1725,13 @@ debug($log); */
         exit();
     }
 
-
+    /**
+     * Claim offer
+     *
+     * Handles offer claims. Free trials and such.
+     *
+     * @package billing
+     */
     public function claimoffer()
     {
         App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
@@ -1691,6 +1786,13 @@ debug($log); */
         }
     }
 
+    /**
+     * Payment setting
+     *
+     * Sets payment info, connects with Stripe, and asserts the transaction
+     *
+     * @package billing
+     */
     public function paymentsetting()
     {
         App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
@@ -1762,5 +1864,4 @@ debug($log); */
             $this->redirect('/user/' . $this->request->data['Users']['username']);
         }
     }
-
 }
