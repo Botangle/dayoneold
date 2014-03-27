@@ -24,7 +24,7 @@ class TokBoxHelper extends AppHelper {
      */
     public function addHeadItems()
     {
-        $this->Html->script($this->settings['scriptUrl'], array('inline' => false));
+        $this->Html->script('https://swww.tokbox.com/webrtc/v2.0/js/TB.min.js', array('inline' => false));
         $this->Html->meta(array('http-equiv' => 'X-UA-Compatible', 'content' => 'chrome=1'), null, array('inline' => false));
     }
 
@@ -32,11 +32,8 @@ class TokBoxHelper extends AppHelper {
      * Returns the appropriate video information
      * @return string
      */
-    public function videoInformation($session_id)
+    public function videoInformation($tokbox_api_key, $tokbox_session_id, $tokbox_token)
     {
-        $apiObj = new OpenTokSDK($this->settings['apiKey'], $this->settings['apiSecret']);
-        $token = $apiObj->generateToken($session_id);
-
         $videoHtml = <<<THEEND
 
         <script type="text/javascript" charset="utf-8">
