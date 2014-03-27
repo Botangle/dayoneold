@@ -1,6 +1,6 @@
 <?php
 /**
- * TokBoxComponent.php
+ * TokBoxHelper.php
  * Makes it possible to use the TokBox system as needed in the system
  *
  * @author: David Baker <dbaker@acorncomputersolutions.com
