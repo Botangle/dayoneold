@@ -74,19 +74,6 @@ if(isset($categoryname) && ($categoryname!="")){
 						 <?php } ?>
 							   </a>
 							  </div>
-							  <div class="search-result-title">
-							  
-								  <p class="FontStyle20">
-											<?php
-									echo $this->Html->link(
-								__(ucfirst($user['User']['username'])),	'/user/'.$user['User']['username']
-								 ,
-								array('title'=>__($user['User']['username']) )
-							);
-								   ?>
-											 </p>
-								<span><?php echo $user['User']['qualification']?> </span></div>
-							  <div class="search-result-details"><?php echo $user['User']['extracurricular_interests']?></div>
 							  <div class="search-result-options">
 								<div class="pull-left"><input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="0" value="<?php echo round($user[0]['rating']) ?>"/></div>
 								 <div class="search-result-chat pull-right">
@@ -108,6 +95,19 @@ if(isset($categoryname) && ($categoryname!="")){
                     
                 </div>
 							  </div>
+							  <div class="search-result-title">
+							  
+								  <p class="FontStyle20">
+											<?php
+									echo $this->Html->link(
+								__(ucfirst($user['User']['username'])),	'/user/'.$user['User']['username']
+								 ,
+								array('title'=>__($user['User']['username']) )
+							);
+								   ?>
+											 </p>
+								<span><?php echo $user['User']['qualification']?> </span></div>
+							  <div class="search-result-details"><?php echo $user['User']['extracurricular_interests']?></div>
 							</div>
 						   
 					<?php 
