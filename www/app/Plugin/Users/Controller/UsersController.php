@@ -1352,6 +1352,27 @@ debug($log);*/
         $this->set(compact('Lesson'));
     }
 
+	public function confirmedbytutor($lessonid = null){
+        $data = $this->Lesson->find('first',array('conditions'=>array('id'=>(int)$lessonid)));
+
+        $data['Lesson']['readlessontutor']    = 1;
+        $data['Lesson']['is_confirmed']       = 1;
+
+		if($data['Lesson']['twiddlameetingid'] == 0) {
+            $data['Lesson']['twiddlameetingid'] = $this->gettwiddlameetingid();
+		}
+
+        // retrieve our opentok session id for the upcoming lesson
+        if($data['Lesson']['opentok_session_id'] == 0){
+            $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+            $data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
+        }
+
+        $this->Lesson->save($data);
+
+        $this->redirect(array('action' => 'lessons'));
+	}
+
     public function confirmedbytutor($lessonid = null)
     {
         $this->Lesson->id = $lessonid;
@@ -1379,8 +1400,7 @@ debug($log);*/
         $readconditons = "readlessontutor";
 
         $upcomminglesson = $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->request->params['userid'] . "'
-		");
+        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->request->params['userid'] . "'");
         foreach ($upcomminglesson as $k => $v) {
 
             $d = explode("-", $v['Lesson']['lesson_date']);
