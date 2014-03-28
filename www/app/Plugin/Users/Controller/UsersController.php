@@ -1165,7 +1165,7 @@ debug($log); */
                 }
                 $this->request->data['Usermessage']['readmessage'] = 0;
                 $this->request->data['Usermessage']['date'] = date('Y-m-d H:i:s');
-                $this->request->data['Usermessage']['body'] = " Request to Chagne Lesson. Please click here to read.";
+                $this->request->data['Usermessage']['body'] = " Request to Change Lesson. Please click here to read.";
                 $this->request->data['Usermessage']['parent_id'] = 0;
                 $this->Usermessage->save($this->request->data);
                 $lastId = $this->Usermessage->getLastInsertId();
