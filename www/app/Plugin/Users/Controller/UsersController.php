@@ -1101,14 +1101,17 @@ debug($log); */
         $opentok_api_key = $this->OpenTok->apiKey;
         $opentok_token = $this->OpenTok->generateToken($opentok_session_id);
 
+        $username = $this->Session->read('Auth.User.username');
+
         $this->set(compact(
                 'lesson',
                 'lessonPayment',
                 'lesson_id',
-                'role_id',
                 'opentok_api_key',
                 'opentok_session_id',
-                'opentok_token'
+                'opentok_token',
+                'role_id',
+                'username'
             ));
     }
 
@@ -1235,8 +1238,13 @@ debug($log);
             }
 
             if ($this->request->data['Lesson']['tutorname'] == "") {
-                $meetingid = $this->gettwiddlameetingid();
-                $this->request->data['Lesson']['twiddlameetingid'] = $meetingid;
+                // generate our twiddla id ahead of time
+                $this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
+                $this->request->data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
+
+                // and our opentok session id
+                $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+                $this->request->data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
             }
 
             if ($this->Lesson->save($this->request->data, false)) {
@@ -1285,19 +1293,6 @@ debug($log);
             $this->render('lessoncreate');
         }
 
-    }
-
-    public function gettwiddlameetingid()
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://www.twiddla.com/API/CreateMeeting.aspx");
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,
-            "username=deepakjain&password=123456789&controltype=1");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $server_output = curl_exec($ch);
-        curl_close($ch);
-        return $server_output;
     }
 
     public function searchstudent()
@@ -1359,7 +1354,8 @@ debug($log);*/
         $data['Lesson']['is_confirmed']       = 1;
 
 		if($data['Lesson']['twiddlameetingid'] == 0) {
-            $data['Lesson']['twiddlameetingid'] = $this->gettwiddlameetingid();
+            $this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
+            $data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
 		}
 
         // retrieve our opentok session id for the upcoming lesson
