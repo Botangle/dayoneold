@@ -34,6 +34,7 @@ class UsersController extends UsersAppController
                 'filterEmpty' => true,
             ),
         ),
+        'Stripe.Stripe'
     );
 
     /**
