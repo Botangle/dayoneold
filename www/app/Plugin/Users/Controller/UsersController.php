@@ -1238,8 +1238,13 @@ debug($log);
             }
 
             if ($this->request->data['Lesson']['tutorname'] == "") {
+                // generate our twiddla id ahead of time
                 $this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
                 $this->request->data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
+
+                // and our opentok session id
+                $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+                $this->request->data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
             }
 
             if ($this->Lesson->save($this->request->data, false)) {
