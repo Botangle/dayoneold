@@ -974,6 +974,7 @@ debug($log);*/
             $this->User->saveField('auth_code', $refreshtoken);
             $this->Session->setFlash(__d('croogo', 'Your Account Connected with Stripe Sucessfully.'), 'default', array('class' => 'success'));
         }
+        // role_id == 4 is student. Finally figured that out.
         if ($this->Session->read('Auth.User.role_id') == 4) {
             if ($this->Session->check('paymenttutor')) {
                 $userInfo = $this->User->find('list', array('conditions' => array('role_id' => 2, 'status' => 1, 'id' => $this->Session->read('paymenttutor'))));
@@ -991,6 +992,47 @@ debug($log);*/
 
         $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
         $this->set(compact('User'));
+    }
+
+    /**
+     * Charge function
+     *
+     * Handles the payment with Stripe. The user submits the payment information
+     * from the `/users/billing`
+     */
+     public function charge() {
+
+        // See docs here: https://github.com/chronon/CakePHP-StripeComponent-Plugin
+       $data = array(
+            'amount' => '7.59',
+            'stripeToken' => 'tok_0NAEASV7h0m7ny',
+            'description' => 'Casi Robot - casi@robot.com'
+        );
+
+        $result = $this->Stripe->charge($data);
+
+       /* Example code from https://stripe.com/docs/tutorials/charges
+       if ($this->Session->read('Auth.User.role_id') == 4) {
+          // Set your secret key: remember to change this to your live secret key in production
+          // See your keys here https://manage.stripe.com/account
+          Stripe::setApiKey("sk_test_XCR1kNc15GsZReu7hKHXFJZ8");
+
+          // Get the credit card details submitted by the form
+          $token = $_POST['stripeToken'];
+
+          // Create the charge on Stripe's servers - this will charge the user's card
+          try {
+            $charge = Stripe_Charge::create(array(
+              "amount" => 1000, // amount in cents, again
+              "currency" => "usd",
+              "card" => $token,
+              "description" => "payinguser@example.com")
+            );
+          } catch(Stripe_CardError $e) {
+            // The card has been declined
+          }
+          $this->render('charge'); // Render the `charge.ctp` view for confirmation
+        }*/
     }
 
     /**
