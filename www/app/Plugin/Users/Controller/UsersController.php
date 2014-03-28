@@ -886,14 +886,12 @@ debug($log);*/
      */
     public function billing()
     {
-        App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
         $id = $this->Session->read('Auth.User.id');
         if (!empty($this->request->data)) {
 
             if (isset($this->request->data['Billing']['pagetype']) && ($this->request->data['Billing']['pagetype'] == 'billing')) {
                 if (isset($this->request->data['Billing']['studentpayemtn']) && $this->request->data['Billing']['studentpayemtn']) {
 
-                    App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
                     $user = $this->User->find('first', array('conditions' => array('user.id' => $id)));
 
                     $cartSession = "";
@@ -952,7 +950,6 @@ debug($log);*/
         $this->set('title_for_layout', __d('croogo', 'Billing'));
 
 
-        Stripe::setApiKey("sk_test_XCR1kNc15GsZReu7hKHXFJZ8"); //admin scret key
         if (isset($_GET['code'])) { // Redirect w/ code
             $code = $_GET['code'];
             $token_request_body = array(
@@ -1735,7 +1732,6 @@ debug($log); */
      */
     public function claimoffer()
     {
-        App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
 
         $this->autoRender = false;
         $this->layouts = false;
@@ -1797,7 +1793,6 @@ debug($log); */
      */
     public function paymentsetting()
     {
-        App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
         $id = $this->Session->read('Auth.User.id');
         if (!empty($this->request->data)) {
             $user = $this->User->find('first', array('conditions' => array('user.id' => $id)));
