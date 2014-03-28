@@ -78,3 +78,8 @@ Configure::write('OpenTokComponent', array(
         'apiKey' => (isset($tokBoxApiKey) ? $tokBoxApiKey : ''),
         'apiSecret' => (isset($tokBoxApiSecret) ? $tokBoxApiSecret : ''),
     ));
+
+Configure::write('TwiddlaComponent', array(
+        'username' => (isset($twiddlaUsername) ? $twiddlaUsername : ''),
+        'password' => (isset($twiddlaPassword) ? $twiddlaPassword : ''),
+    ));
