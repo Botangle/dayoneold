@@ -221,11 +221,21 @@ function secondsToTime($seconds)
 					<button type="submit">Make Payment</button>
 				</form>
 			  <?php }else{
-			  if($role_id==4){ ?>
-				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&guestname=<?php echo $username; ?>&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
-			 <?php } else {?>
-				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&guestname=<?php echo $username; ?>&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
-			 <?php }
+
+                 $twiddlaUrl = 'http://www.twiddla.com/api/start.aspx?';
+
+                 $items = array(
+                     'sessionid'    => $twiddlaid,
+                     'guestname'    => $username,
+                     'autostart'    => 1,
+                     'exiturl'      => 'http://www.botangle.com',
+                 );
+
+                 $twiddlaUrl .= http_build_query($items);
+
+			  ?>
+				 <iframe src="<?php echo $twiddlaUrl ?>" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
+			 <?php
 			}?>
 
             </div>
