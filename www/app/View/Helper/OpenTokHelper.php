@@ -53,9 +53,9 @@ class OpenTokHelper extends AppHelper {
             var properties = {
                 width: 75,
                 height: 56,
-//					style: {
-//						buttonDisplayMode: 'off', // this is to disable the mute button
-//					}
+					style: {
+						buttonDisplayMode: 'off', // this is to disable the mute button
+					}
             };
             var publisher = TB.initPublisher(apiKey, 'small-stream', properties);
             session.publish(publisher);
@@ -76,11 +76,10 @@ class OpenTokHelper extends AppHelper {
 
         function displayOtherStream(stream) {
             var div = document.createElement('div');
-            div.setAttribute('id', 'stream' + stream.streamId);
-            div.setAttribute('class', 'small-stream');
-            var streamsContainer = document.getElementById('videoChatBox');
-            streamsContainer.appendChild(div);
-            subscriber = session.subscribe(stream, 'stream' + stream.streamId);
+			div.setAttribute('id', 'stream' + stream.streamId);
+			div.setAttribute('class', 'small-stream');
+			$('#videoChatBox').html(div);
+			theirStream = session.subscribe(stream, 'stream' + stream.streamId);
         }
 
         function exceptionHandler(event) {
