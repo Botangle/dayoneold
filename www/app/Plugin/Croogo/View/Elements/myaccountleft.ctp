@@ -1,4 +1,7 @@
 <?php
+/**
+ * @todo this should be moved to /app/View/Elements/
+ */
 
 $accountsetting = $index = $accountbilling = $accountmessages = $accountLessons = $accountcalander = $accountinvite = $paymentsetting = "";
 

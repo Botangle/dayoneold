@@ -1761,11 +1761,11 @@ debug($log); */
                 $tokenid = $token['id'];
                 // Charge the order:
                 $charge = Stripe_Charge::create(array(
-                        "amount" => 500,
-                        "currency" => "usd",
-                        "card" => $tokenid, // obtained with Stripe.js
-                        "description" => "claim $5 form botangle"
-                    ));
+                    "amount" => 500,
+                    "currency" => "usd",
+                    "card" => $tokenid, // obtained with Stripe.js
+                    "description" => "claim $5 from botangle"
+                ));
 
                 if ($charge->paid == true) {
                     /* end stripe code */
@@ -1789,7 +1789,8 @@ debug($log); */
     /**
      * Payment setting
      *
-     * Sets payment info, connects with Stripe, and asserts the transaction
+     * Sets payment info, connects with Stripe, and asserts the transaction. Also
+     * renders the view found in http://app.botangle.dev/users/paymentsetting
      *
      * @package billing
      */
