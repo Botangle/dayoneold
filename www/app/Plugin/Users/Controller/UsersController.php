@@ -1373,21 +1373,6 @@ debug($log);*/
         $this->redirect(array('action' => 'lessons'));
 	}
 
-    public function confirmedbytutor($lessonid = null)
-    {
-        $this->Lesson->id = $lessonid;
-        $this->Lesson->saveField('readlessontutor', '1');
-        $this->Lesson->saveField('is_confirmed', '1');
-
-        $checktwiddlaid = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
-
-        if ($checktwiddlaid['Lesson']['twiddlameetingid'] == 0) {
-            $meetingid = $this->gettwiddlameetingid();
-            $this->Lesson->saveField('twiddlameetingid', $meetingid);
-        }
-        $this->redirect(array('action' => 'lessons'));
-    }
-
     public function mycalander()
     {
 
