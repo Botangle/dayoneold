@@ -1082,17 +1082,38 @@ debug($log); */
 
     }
 
-    public function whiteboarddata($lessonid = null)
-    {
-        $lesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
-        $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('lesson_id' => $lessonid)));
+    public function whiteboarddata($lessonid = null){
+        $lesson = $this->Lesson->find('first',array('conditions'=>array('id'=>$lessonid)));
+        $lessonPayment = $this->LessonPayment->find('first',array('conditions'=>array('lesson_id'=>$lessonid)));
 
-        $this->set(compact('lesson', 'lessonPayment'));
+        $lesson_id = (int)$lesson['Lesson']['id'];
+        $role_id = (int)$this->Session->read('Auth.User.role_id');
+
+        // handle all our video stuff with Opentok
+        $opentok_session_id = $lesson['Lesson']['opentok_session_id'];
+
+        if($opentok_session_id == "") {
+            // @TODO: consider changing this to generate a new session id and save it to the DB, instead of throwing an error
+            throw new InternalErrorException("Could not load our video system up for some reason. Please try again or contact us.");
+        }
+
+        $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+        $opentok_api_key = $this->OpenTok->apiKey;
+        $opentok_token = $this->OpenTok->generateToken($opentok_session_id);
+
+        $this->set(compact(
+                'lesson',
+                'lessonPayment',
+                'lesson_id',
+                'role_id',
+                'opentok_api_key',
+                'opentok_session_id',
+                'opentok_token'
+            ));
     }
 
     public function changelesson($lessonid = null)
     {
-
         if (!empty($this->request->data)) {
             $this->Lesson->create();
             $this->request->data['Lesson']['add_date'] = date('Y-m-d');
@@ -1331,20 +1352,26 @@ debug($log);*/
         $this->set(compact('Lesson'));
     }
 
-    public function confirmedbytutor($lessonid = null)
-    {
-        $this->Lesson->id = $lessonid;
-        $this->Lesson->saveField('readlessontutor', '1');
-        $this->Lesson->saveField('is_confirmed', '1');
+	public function confirmedbytutor($lessonid = null){
+        $data = $this->Lesson->find('first',array('conditions'=>array('id'=>(int)$lessonid)));
 
-        $checktwiddlaid = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
+        $data['Lesson']['readlessontutor']    = 1;
+        $data['Lesson']['is_confirmed']       = 1;
 
-        if ($checktwiddlaid['Lesson']['twiddlameetingid'] == 0) {
-            $meetingid = $this->gettwiddlameetingid();
-            $this->Lesson->saveField('twiddlameetingid', $meetingid);
+		if($data['Lesson']['twiddlameetingid'] == 0) {
+            $data['Lesson']['twiddlameetingid'] = $this->gettwiddlameetingid();
+		}
+
+        // retrieve our opentok session id for the upcoming lesson
+        if($data['Lesson']['opentok_session_id'] == 0){
+            $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+            $data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
         }
+
+        $this->Lesson->save($data);
+
         $this->redirect(array('action' => 'lessons'));
-    }
+	}
 
     public function mycalander()
     {
@@ -1358,8 +1385,7 @@ debug($log);*/
         $readconditons = "readlessontutor";
 
         $upcomminglesson = $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->request->params['userid'] . "'
-		");
+        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->request->params['userid'] . "'");
         foreach ($upcomminglesson as $k => $v) {
 
             $d = explode("-", $v['Lesson']['lesson_date']);

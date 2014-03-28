@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "afb6b691d737cce9f516ddaea7e83fe8",
+    "hash": "5f6048fe5656994df2209a1984daa3d3",
     "packages": [
         {
             "name": "composer/installers",
@@ -90,6 +90,49 @@
             "time": "2014-02-24 04:21:34"
         },
         {
+            "name": "opentok/opentok",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentok/Opentok-PHP-SDK.git",
+                "reference": "e991b877b44431b8dea7bd90287bb4030433e6c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentok/Opentok-PHP-SDK/zipball/e991b877b44431b8dea7bd90287bb4030433e6c5",
+                "reference": "e991b877b44431b8dea7bd90287bb4030433e6c5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "OpenTokSDK.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "TokBox",
+                    "homepage": "http://www.tokbox.com"
+                },
+                {
+                    "name": "Community contributors",
+                    "homepage": "https://github.com/opentok/Opentok-PHP-SDK/graphs/contributors"
+                }
+            ],
+            "description": "PHP library for TokBox OpenTok",
+            "homepage": "https://github.com/opentok/Opentok-PHP-SDK",
+            "keywords": [
+                "OpenTok",
+                "TokBox",
+                "php"
+            ],
+            "time": "2013-09-27 17:39:06"
+        },
+        {
             "name": "stripe/stripe-php",
             "version": "dev-master",
             "source": {
@@ -146,7 +189,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "stripe/stripe-php": 20
+        "stripe/stripe-php": 20,
+        "opentok/opentok": 20
     },
     "platform": {
         "php": ">=5.4.0"

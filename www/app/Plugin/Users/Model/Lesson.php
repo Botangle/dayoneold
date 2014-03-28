@@ -66,13 +66,14 @@ class Lesson extends UsersAppModel {
 				'last' => true,
 			)
 		),
-		'repet' => array(
-			'notEmpty' => array(
-				'rule' => 'notEmpty',
-				'message' => 'This field cannot be left blank.',
-				'last' => true,
-			),
-		),
+// @TODO: this was breaking
+//		'repet' => array(
+//			'notEmpty' => array(
+//				'rule' => 'notEmpty',
+//				'message' => 'This field cannot be left blank.',
+//				'last' => true,
+//			),
+//		),
 		'notes' => array(
 			'notEmpty' => array(
 				'rule' => 'notEmpty',

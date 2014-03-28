@@ -1,6 +1,17 @@
 <!--Wrapper HomeServices Block Start Here-->
  
 <?php
+
+// @TODO: move these items into the controller long-term
+$disbled = "";
+$showtimerId = "realtime";
+if(!empty($lessonPayment)){
+    if($lessonPayment['LessonPayment']['lesson_complete_student']==1){
+        $disbled = "disabled='disabled'";
+        $showtimerId = "realtime2";
+    }
+}
+
 echo $this->element("breadcrame",array('breadcrumbs'=>
 	array(__("Whiteboard")=>__("Whiteboard")))
 	);?>
@@ -27,7 +38,10 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
     </div>
     <div class="row-fluid">
 	
-	  <?php echo $this->Element("myaccountleft") ?> 
+	  <?php echo $this->Element("whiteboard-left", array(
+              'disabled'            => $disbled,
+              'opentok_session_id'  => $opentok_session_id,
+          )) ?>
       <div class="span9">
       
       <div class="StaticPageRight-Block">
@@ -60,21 +74,20 @@ function startCount()
 function exitLesson(roletype){
 	 
 	updatetime = 0;
- 
- 
+
 if(roletype==4){	 
  var r = window.confirm("Lesson duration complete. Please Make payment");
  if(r){
-	 jQuery.post(Croogo.basePath+"users/updateremaining/?time=1&lessonid=<?php echo $lesson['Lesson']['id']?>&roletype="+roletype+"&completelesson=1",function(e,v){ 
+	 jQuery.post(Croogo.basePath+"users/updateremaining/?time=1&lessonid=<?php echo $lesson_id?>&roletype="+roletype+"&completelesson=1",function(e,v){
 		clearInterval(timer);
 		jQuery("#exitlesson").attr('disabled','disabled');
-			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson['Lesson']['id']?>');
+			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson_id?>');
 			return false;
 		})
  }
  
  }if(roletype==2){	
-	jQuery.post(Croogo.basePath+"users/updateremaining/?time=1&lessonid=<?php echo $lesson['Lesson']['id']?>&roletype="+roletype+"&completelesson=1",function(e,v){ 
+	jQuery.post(Croogo.basePath+"users/updateremaining/?time=1&lessonid=<?php echo $lesson_id?>&roletype="+roletype+"&completelesson=1",function(e,v){
 		var donetime = eval('('+e+')') 
 		clearInterval(timer);
 		jQuery("#exitlesson").attr('disabled','disabled');
@@ -117,13 +130,13 @@ if( $("#realtime").text()== $("#max").text()){
  if(updatetime%60==0){
 	console.log("update");
 	updatetime = 0;
-	jQuery.post(Croogo.basePath+"users/updateremaining/?time=1&lessonid=<?php echo $lesson['Lesson']['id']?>&roletype=<?php echo $this->Session->read('Auth.User.role_id')?>",function(e,v){  
+	jQuery.post(Croogo.basePath+"users/updateremaining/?time=1&lessonid=<?php echo $lesson_id?>&roletype=<?php echo $role_id?>",function(e,v){
 		var donetime = eval('('+e+')')  
 		if(donetime.lessonResponse.LessonPayment.lesson_complete_student==1){
-			var roltype = '<?php echo $this->Session->read('Auth.User.role_id')?>';
+			var roltype = '<?php echo $role_id?>';
 			if(roltype==4){
 			alert("Tutor finish lesson. Now you redirect on the payment page to make payment")
-			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson['Lesson']['id']?>');
+			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson_id?>');
 			 }
 			clearInterval(timer);
 			return false;
@@ -171,7 +184,7 @@ function secondsToTime($seconds)
     return $obj;
 }	
 	$usetime = "00:00:00";
-	if($this->Session->read('Auth.User.role_id')==4){ 	
+	if($role_id==4){
 	$usetime =  secondsToTime($lesson['Lesson']['student_lessontaekn_time']);	
 	 $usetime = $usetime['h'].":".$usetime['m'].":".$usetime['s'];
 	}else{
@@ -197,34 +210,24 @@ function secondsToTime($seconds)
 		}
 	$usetime = $usetime['h'].":".$usetime['m'].":".$usetime['s'];
 	}
-	 $disbled = "";
-	 $showtimerId = "realtime";
-	 if(!empty($lessonPayment)){
-		 if($lessonPayment['LessonPayment']['lesson_complete_student']==1){
-			$disbled = "disabled='disabled'";
-			$showtimerId = "realtime2";
-		 }
-	 }
-	 
 		?>
 			  <div id="<?php echo $showtimerId?>"><?php echo $usetime?></div> <!--<img src="<?php //echo $this->webroot?>croogo/images/timer.jpg" />--></div>
-			  	<input type="hidden" name="roletype" id="roletype" value="<?php echo $this->Session->read('Auth.User.role_id')?>" />
+			  	<input type="hidden" name="roletype" id="roletype" value="<?php echo $role_id?>" />
 			 <?php if($timeduration <= 0 ){ ?>
-				<form method="get" action="<?php echo $this->webroot?>users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson['Lesson']['id']?>">
+				<form method="get" action="<?php echo $this->webroot?>users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson_id?>">
 					<input type="hidden" name="tutor" value="<?php echo $lesson['Lesson']['created']?>" />
 				
-					<input type="hidden" name="lessonid" value="<?php echo $lesson['Lesson']['id']?>" />
+					<input type="hidden" name="lessonid" value="<?php echo $lesson_id?>" />
 					<button type="submit">Make Payment</button>
 				</form>
 			  <?php }else{
-			  if($this->Session->read('Auth.User.role_id')==4){ ?>
-				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe> 
+			  if($role_id==4){ ?>
+				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
 			 <?php } else {?>
-				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&guestname=deep&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe> 
+				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&guestname=deep&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
 			 <?php }
 			}?>
-			<input type="button" value="Exit / Complete Lesson" class="btn btn-primary" id="exitlesson" onclick="exitLesson('<?php echo $this->Session->read('Auth.User.role_id')?>')" <?php echo $disbled?>/>
-			 
+
             </div>
             </div>
         
