@@ -222,9 +222,9 @@ function secondsToTime($seconds)
 				</form>
 			  <?php }else{
 			  if($role_id==4){ ?>
-				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
+				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&guestname=<?php echo $username; ?>&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
 			 <?php } else {?>
-				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&guestname=deep&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
+				 <iframe src="http://www.twiddla.com/api/start.aspx?sessionid=<?php echo $twiddlaid?>&guestname=<?php echo $username; ?>&autostart=1" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
 			 <?php }
 			}?>
 

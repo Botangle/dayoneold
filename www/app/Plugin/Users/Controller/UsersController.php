@@ -1101,14 +1101,17 @@ debug($log); */
         $opentok_api_key = $this->OpenTok->apiKey;
         $opentok_token = $this->OpenTok->generateToken($opentok_session_id);
 
+        $username = $this->Session->read('Auth.User.username');
+
         $this->set(compact(
                 'lesson',
                 'lessonPayment',
                 'lesson_id',
-                'role_id',
                 'opentok_api_key',
                 'opentok_session_id',
-                'opentok_token'
+                'opentok_token',
+                'role_id',
+                'username'
             ));
     }
 
