@@ -86,36 +86,22 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 );
 	   ?>   </div>
 			   
-                <div class="span2 mark"> 
-				<?php if($this->Session->read('Auth.User.role_id')==2){ ?>
-				 <?php
-		echo $this->Html->link(
-    __('Confirm'),	'/users/confirmedbytutor/'.$v['Lesson']['id']
-     ,
-	array('title'=>__('Confirm') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
-);
-	   ?> 
-		 
-	<?php }else{
-		
-		if($v['Lesson']['is_confirmed']==1){
-		 echo $this->Html->link(
-				__('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id'],
-				array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3 ','style'=>'width:125px;' )
-			);
-		}else{
-			echo $this->Html->link(
-				__('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id'],
-				array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3 ','style'=>'width:125px;','disabled'=>'disabled'  )
-			);
-		}
-}
-	   ?> 
-				 </div>         
-            </div>
-            </div>
-        <?php } 
-		}
+                <div class="span2 mark">
+                    <?php if($this->Session->read('Auth.User.role_id')==2){ ?>
+                        <?php
+                        echo $this->Html->link(
+                            __('Confirm'),	'/users/confirmedbytutor/'.$v['Lesson']['id']
+                            ,
+                            array('title'=>__('Confirm') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'  )
+                        );
+                        ?>
+
+                    <?php } ?>
+                </div>
+         </div>
+        </div>
+        <?php }
+         }
 		?>
         
         
@@ -178,12 +164,16 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 						array('title'=>__('Change') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal"  )
 					);
 					echo '</div><div class="span2 mark"> ';
-					$usedisabled = "disabled";
-					if($v['Lesson']['is_confirmed']==1){
-						$usedisabled = "";
+
+                    $usedisabled = "disabled";
+                    $url =  "javascript:void(0)";
+
+                    if($v['Lesson']['lesson_date'] == $currentdate){
+                        $usedisabled = "";
+                        $url =   $this->webroot.'users/whiteboarddata/'.$v['Lesson']['id'] ;
 					}
 						echo $this->Html->link(
-						__('Go To Lesson'),	'/users/whiteboarddata/'.$v['Lesson']['id'] ,
+						__('Go To Lesson'),	$url,
 						array('title'=>__('Go To Lesson') ,'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','disabled'=>$usedisabled)
 						); echo '</div>';
 				} ?>

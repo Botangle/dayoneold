@@ -1058,13 +1058,12 @@ debug($log);*/
 
         $activeLessonSQL = "Select * from lessons as Lesson INNER JOIN
 		  `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'  AND `Lesson`.`$readconditons` = 0  AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
-
+        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "' AND Lesson.is_confirmed = 0 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
         $activelesson = $this->Lesson->query($activeLessonSQL);
 
 
         $upcomingLessonSQL = "Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'  AND `Lesson`.`$readconditons` = 1 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
+        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'  AND Lesson.is_confirmed = 1 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
         $upcomminglesson = $this->Lesson->query($upcomingLessonSQL);
 
         $pastLessonSQL = "Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
@@ -1118,30 +1117,42 @@ debug($log); */
     public function changelesson($lessonid = null)
     {
         if (!empty($this->request->data)) {
-            $this->Lesson->create();
-            $this->request->data['Lesson']['add_date'] = date('Y-m-d');
+            $lesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
+
+            // copy out two key pieces of information that we're going to leave alone without room for change
+            $studentId = $lesson['Lesson']['created'];
+            $tutorId = $lesson['Lesson']['tutor'];
+
+            // @TODO: this could be a real security risk, potentially, we're allowing total overwrite from the UI
+            $data = array_merge($lesson, $this->request->data);
+            unset($this->request->data['Lesson']);
+
+            $data['Lesson']['add_date'] = date('Y-m-d');
+
+            // put back our key pieces of data
+            $data['Lesson']['created'] = $studentId;
+            $data['Lesson']['tutor'] = $tutorId;
+
             if ($this->Auth->user('role_id') == 4) {
-                $this->request->data['Lesson']['created'] = $this->request->data['Lesson']['tutor'];
-                $this->request->data['Lesson']['tutor'] = $this->Auth->user('id');
-                $this->request->data['Lesson']['readlesson'] = '1';
-                $this->request->data['Lesson']['readlessontutor'] = '0';
-                $this->request->data['Lesson']['laststatus_tutor'] = 1;
-                $this->request->data['Lesson']['laststatus_student'] = 0;
+                $data['Lesson']['is_confirmed'] = 0;
+                $data['Lesson']['readlesson'] = '1';
+                $data['Lesson']['readlessontutor'] = '0';
+                $data['Lesson']['laststatus_tutor'] = 1;
+                $data['Lesson']['laststatus_student'] = 0;
             } else if ($this->Auth->user('role_id') == 2) {
-                $this->request->data['Lesson']['created'] = $this->Auth->user('id');
-                $this->request->data['Lesson']['tutor'] = $this->request->data['Lesson']['tutor'];
-                $this->request->data['Lesson']['readlesson'] = '0';
-                $this->request->data['Lesson']['readlessontutor'] = '1';
-                $this->request->data['Lesson']['laststatus_tutor'] = 0;
-                $this->request->data['Lesson']['laststatus_student'] = 1;
+                $data['Lesson']['is_confirmed'] = 0;
+                $data['Lesson']['readlesson'] = '0';
+                $data['Lesson']['readlessontutor'] = '1';
+                $data['Lesson']['laststatus_tutor'] = 0;
+                $data['Lesson']['laststatus_student'] = 1;
             }
 
-            if ($this->Lesson->save($this->request->data)) {
+            if ($this->Lesson->save($data)) {
                 $lessondid = $this->Lesson->getLastInsertId();
-                $sentByid = $this->request->data['Lesson']['tutor'];
-                if (!isset($this->request->data['Lesson']['parent_id'])) {
-                    unset($this->request->data['Lesson']);
-                    $this->request->data['Lesson']['parent_id'] = $lessondid;;
+                $sentByid = $data['Lesson']['tutor'];
+                if (!isset($data['Lesson']['parent_id'])) {
+                    unset($data['Lesson']);
+                    $data['Lesson']['parent_id'] = $lessondid;
                     $this->Lesson->save($this->request->data);
                 }
 
@@ -1154,9 +1165,8 @@ debug($log); */
                 }
                 $this->request->data['Usermessage']['readmessage'] = 0;
                 $this->request->data['Usermessage']['date'] = date('Y-m-d H:i:s');
-                $this->request->data['Usermessage']['body'] = " Request to Chagne Lesson. Please click here to read.";
+                $this->request->data['Usermessage']['body'] = " Request to Change Lesson. Please click here to read.";
                 $this->request->data['Usermessage']['parent_id'] = 0;
-                unset($this->request->data['Lesson']);
                 $this->Usermessage->save($this->request->data);
                 $lastId = $this->Usermessage->getLastInsertId();
                 if ($this->request->data['Usermessage']['parent_id'] == 0) {
@@ -1218,7 +1228,7 @@ debug($log);
                 $this->request->data['Lesson']['tutor'] = $tutorid;
                 $this->request->data['Lesson']['created'] = $this->Auth->user('id');
                 $this->request->data['Lesson']['add_date'] = date('Y-m-d');
-                $this->request->data['Lesson']['readlesson'] = '0';
+                $this->request->data['Lesson']['readlesson'] = '1';
                 $this->request->data['Lesson']['readlessontutor'] = '0';
                 $this->request->data['Lesson']['is_confirmed'] = '0';
                 $this->request->data['Lesson']['laststatus_tutor'] = 0;
@@ -1231,7 +1241,7 @@ debug($log);
                 $this->request->data['Lesson']['created'] = $tutorid;
                 $this->request->data['Lesson']['add_date'] = date('Y-m-d');
                 $this->request->data['Lesson']['readlesson'] = '0';
-                $this->request->data['Lesson']['readlessontutor'] = '0';
+                $this->request->data['Lesson']['readlessontutor'] = '1';
                 $this->request->data['Lesson']['is_confirmed'] = '0';
                 $this->request->data['Lesson']['laststatus_tutor'] = 1;
                 $this->request->data['Lesson']['laststatus_student'] = 0;
