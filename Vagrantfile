@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :vmware_fusion do |vmware, override|
 
     # Which box?
-    override.vm.box = "precise32"
+    override.vm.box = "debian-wheezy-fusion"
     override.vm.box_url = "http://boxes.monsieurbiz.com/debian-wheezy-fusion.box"
 
     # Customize VM
