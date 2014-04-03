@@ -183,18 +183,19 @@ input[type="file"] {
                  
                 </div>
               </div>
-			   <div class="row-fluid"><label class="control-label for="Username2">Select Your Pic</label>
+<?php /*			   <div class="row-fluid"><label class="control-label for="Username2">Select Your Pic</label>
 			  <div class="form-group span7 controls">
-				
+
 				<?php
 				 echo $this->Form->input('profilepic',array( 'type' => 'file','label'=>false));
 				 ?>
 			  </div>
 
-			 
+
 			  </div>
+ */ ?>
             </div>
-           
+
             <div class="control-group form-actions">
 			<?php 
 			echo $this->Form->button(__('Update Info'), array('type' => 'submit','class'=>'btn btn-primary')); 

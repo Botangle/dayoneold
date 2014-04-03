@@ -342,30 +342,30 @@ class UsersController extends UsersAppController
                 }
             } else {
 
-                $filename = null;
-
-
-                if (!empty($this->request->data['User']['profilepic']['tmp_name']) && is_uploaded_file($this->request->data['User']['profilepic']['tmp_name'])) {
-
-                    $filename = str_replace(" ", "_", basename($this->request->data['User']['profilepic']['name']));
-                    $dir = WWW_ROOT . 'uploads' . DS . $this->request->data['User']['id'];
-                    $profiledir = WWW_ROOT . 'uploads' . DS . $this->request->data['User']['id'] . DS . "profile";
-                    $profiledir = WWW_ROOT . 'uploads' . DS . $this->request->data['User']['id'] . DS . "profile";
-
-                    if (!is_dir($dir)) {
-                        mkdir($dir, 0777);
-                    }
-                    if (!is_dir($profiledir)) {
-                        mkdir($profiledir, 0777);
-                    }
-                    move_uploaded_file(
-                        $this->data['User']['profilepic']['tmp_name'],
-                        $profiledir . DS . $filename
-                    );
-
-
-                }
-                $this->request->data['User']['profilepic'] = $filename;
+//                $filename = null;
+//
+//
+//                if (!empty($this->request->data['User']['profilepic']['tmp_name']) && is_uploaded_file($this->request->data['User']['profilepic']['tmp_name'])) {
+//
+//                    $filename = str_replace(" ", "_", basename($this->request->data['User']['profilepic']['name']));
+//                    $dir = WWW_ROOT . 'uploads' . DS . $this->request->data['User']['id'];
+//                    $profiledir = WWW_ROOT . 'uploads' . DS . $this->request->data['User']['id'] . DS . "profile";
+//                    $profiledir = WWW_ROOT . 'uploads' . DS . $this->request->data['User']['id'] . DS . "profile";
+//
+//                    if (!is_dir($dir)) {
+//                        mkdir($dir, 0777);
+//                    }
+//                    if (!is_dir($profiledir)) {
+//                        mkdir($profiledir, 0777);
+//                    }
+//                    move_uploaded_file(
+//                        $this->data['User']['profilepic']['tmp_name'],
+//                        $profiledir . DS . $filename
+//                    );
+//
+//
+//                }
+//                $this->request->data['User']['profilepic'] = $filename;
                 $user = $this->User->find('first', array(
                         'conditions' => array(
                             'User.id' => $this->request->data['User']['id'],

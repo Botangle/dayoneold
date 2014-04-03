@@ -43,7 +43,7 @@ input[type="file"] {
         <?php 
 		 $this->request->data = $this->Session->read("Auth.User");
 		 
-		 echo $this->Form->create('User',array('class'=>'form-horizontal','type' => 'file'));
+		 echo $this->Form->create('User',array('class'=>'form-horizontal'));
 			echo $this->Form->input('id',array('value'=>$this->request->data['id']));
 			 
 			 
@@ -76,14 +76,14 @@ input[type="file"] {
                  <?php echo $this->Form->input('email',array('class'=>'textbox','placeholder'=>"test@test.com",'label' => false,'value'=>$this->request->data['email'],'disabled'=>'disabled'));?>
                 </div>
               </div>
-			   <div class="row-fluid"><label class="control-label for="Username2">Select Your Pic</label>
+<?php /*			   <div class="row-fluid"><label class="control-label for="Username2">Select Your Pic</label>
 			  <div class="form-group span7 controls">
 				
 				<?php
 				 echo $this->Form->input('profilepic',array( 'type' => 'file','label'=>false));
 				 ?>
 			  </div>
-
+*/ ?>
 			 
 			  </div>
 			  <?php /*
