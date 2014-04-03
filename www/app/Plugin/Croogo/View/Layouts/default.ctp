@@ -33,17 +33,7 @@
 		echo $this->Blocks->get('script');
 		$CurrentController = $this->params['controller'];
 		$CurrentAction = $this->params['action'];
-	/*	if($_SERVER['HTTP_HOST']=='127.0.0.1'){
-	?>
-	
-	<!--
-	<link type="text/css" href="/botangle/app/webroot/cometchat/cometchatcss.php" rel="stylesheet" charset="utf-8">
-<script type="text/javascript" src="/botangle/app/webroot/cometchat/cometchatjs.php" charset="utf-8"></script>
-<?php } else { ?>
-<link type="text/css" href="/demos/botangle/app/webroot/cometchat/cometchatcss.php" rel="stylesheet" charset="utf-8">
-<script type="text/javascript" src="/demos/botangle/app/webroot/cometchat/cometchatjs.php" charset="utf-8"></script>
-<?php } */ ?>
-
+?>
 </head>
 <body>
 <?php echo $this->element('navigation'); ?>

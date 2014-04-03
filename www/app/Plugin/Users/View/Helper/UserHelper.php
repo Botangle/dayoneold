@@ -44,7 +44,7 @@ class UserHelper extends AppHelper {
 			}
 		}
 		if($years==0 && $months==0 && $days==0 && $hours==0 && $minuts==0){
-			$string = "Few min ";
+			$string = "A few minutes ";
 		}
 		 return $string." ago";
 	}

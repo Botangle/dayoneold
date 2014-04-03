@@ -31,7 +31,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
     <div class="row-fluid">
      <?php echo $this->Element("myaccountleft") ?> 
       <div class="span9">
-      <h2 class="page-title"><?php echo __("My Calander")?></h2>
+      <h2 class="page-title"><?php echo __("My Calendar")?></h2>
       <div class="StaticPageRight-Block">
       <div class="PageLeft-Block">
       <div class="My-Calendar">
