@@ -63,7 +63,7 @@ echo $this->element(
                                                     <?php } ?>
                                                 </div>
                                                 <div class="span8 sender-name">
-                                                    <?php echo ucfirst($v['User']['username']); ?>
+                                                    <?php echo ucfirst(h($v['User']['username'])); ?>
                                                     <br><span
                                                         class="FontStyle11"><?php echo $this->User->GettimedifferencedayBase(
                                                             $v['Usermessage']['date']
@@ -104,11 +104,11 @@ echo $this->element(
                                                 <div class="span10 sender-text">
                                                     <div id="tip-left">&nbsp;</div>
                                                     <p class="sender-name"><?php echo ucfirst(
-                                                            $v['User']['username']
+                                                            h($v['User']['username'])
                                                         ) ?></p>
 
                                                     <p class="msg-content">
-                                                        <?php echo nl2br($v['Usermessage']['body']) ?></p>
+                                                        <?php echo nl2br(h($v['Usermessage']['body'])) ?></p>
 
                                                     <p class="msg-time"><?php echo $this->User->Gettimedifference(
                                                             $v['Usermessage']['date']
@@ -121,11 +121,11 @@ echo $this->element(
                                                 <div class="span10 sender-text">
                                                     <div id="tip-right">&nbsp;</div>
                                                     <p class="sender-name"><?php echo ucfirst(
-                                                            $v['User']['username']
+                                                            h($v['User']['username'])
                                                         ) ?></p>
 
                                                     <p class="msg-content">
-                                                        <?php echo nl2br($v['Usermessage']['body']) ?></p>
+                                                        <?php echo nl2br(h($v['Usermessage']['body'])) ?></p>
 
                                                     <p class="msg-time"><?php echo $this->User->Gettimedifference(
                                                             $v['Usermessage']['date']
