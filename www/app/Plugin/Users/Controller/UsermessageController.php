@@ -75,6 +75,11 @@ class UsermessageController extends UsersAppController
                 );
             }
         }
+
+        // track the status of the original person we were trying to talk to
+        // so we can determine if we should exit out and just display a welcome message below
+        $originalUserName = $username;
+
         if ($username == null) {
             $username = $this->Auth->user('username');
         }
@@ -107,7 +112,7 @@ class UsermessageController extends UsersAppController
         );
 
         // if we don't have anything to show, then show our welcome to the messages page
-        if(count($sent_from) == 0) {
+        if(count($sent_from) == 0 && $originalUserName == null) {
             return $this->render('Usermessage/welcome');
         }
 
@@ -150,6 +155,11 @@ class UsermessageController extends UsersAppController
                 'order' => 'id desc'
             )
         );
+
+        // handle the case where we haven't talked with this person before
+        if(count($userData) == 0) {
+            $userData = array($user);
+        }
 
         $this->set(compact('user', 'userData', 'sent_from', 'loginUser', 'parentid'));
     }

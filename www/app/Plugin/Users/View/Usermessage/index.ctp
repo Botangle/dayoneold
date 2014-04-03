@@ -63,10 +63,17 @@ echo $this->element(
                                                 </div>
                                                 <div class="span8 sender-name">
                                                     <?php echo ucfirst(h($v['User']['username'])); ?>
-                                                    <br><span
-                                                        class="FontStyle11"><?php echo $this->User->GettimedifferencedayBase(
-                                                            $v['Usermessage']['date']
-                                                        ); ?></span></div>
+                                                    <br><span class="FontStyle11">
+                                                        <?php
+                                                        // we check to see if we have a message, as if we're
+                                                        // messaging this person for the first time, we won't
+                                                        // have this
+                                                        if(isset($v['Usermessage'])) {
+                                                            echo $this->User->GettimedifferencedayBase(
+                                                                $v['Usermessage']['date']
+                                                            );
+                                                        }
+                                                    ?></span></div>
                                             </div>
                                         </div>
 
