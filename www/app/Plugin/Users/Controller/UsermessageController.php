@@ -40,26 +40,7 @@ class UsermessageController extends UsersAppController {
 			$this->request->data['Usermessage']['readmessage'] = 0;
 			
 			$this->request->data['Usermessage']['date'] = date('Y-m-d H:i:s');
-			 $filename = "";
-if (!empty($this->request->data['Usermessage']['attached_files']['tmp_name']) && is_uploaded_file($this->request->data['Usermessage']['attached_files']['tmp_name'])) {
-				 
-	$filename = str_replace(" ","_",basename($this->request->data['Usermessage']['attached_files']['name']));
-	 $dir = 	WWW_ROOT .'uploads' . DS . $this->request->data['Usermessage']['send_to'] ; 
-	$profiledir=  	WWW_ROOT .'uploads' . DS . $this->request->data['Usermessage']['send_to']. DS . "message" ;
-				if(!is_dir($dir)){ 
-					mkdir($dir,0777); 
-				}
-				if(!is_dir($profiledir)){
-					mkdir($profiledir,0777); 
-				}
-				move_uploaded_file(
-					$this->data['Usermessage']['attached_files']['tmp_name'],
-					$profiledir. DS . $filename
-				);
-				
-				 
-			}
-			 $this->request->data['Usermessage']['attached_files'] = $filename;
+
 			if ($this->Usermessage->save($this->request->data)) {
 				$lastId = $this->Usermessage->getLastInsertId();   
 				if($this->request->data['Usermessage']['parent_id']==0){   

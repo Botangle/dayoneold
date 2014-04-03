@@ -159,7 +159,7 @@ echo $this->element(
                             </div>
                             <?php echo $this->Form->create(
                                 'Usermessage',
-                                array('class' => 'form-inline form-horizontal', "role" => "form", 'type' => 'file')
+                                array('class' => 'form-inline form-horizontal', "role" => "form")
                             );
                             $this->request->data = $this->Session->read("Auth.User");
                             echo $this->Form->input('id', array('value' => ''));
