@@ -91,8 +91,8 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'payme
 		<li>
 			<?php
 				echo $this->Html->link(
-					__('My Calender'),	'/users/mycalander',
-					array('title'=>__('My Calender'),'class'=>$accountcalander )
+					__('My Calendar'),	'/users/mycalander',
+					array('title'=>__('My Calendar'),'class'=>$accountcalander )
 				);
  			?>
 		</li>
