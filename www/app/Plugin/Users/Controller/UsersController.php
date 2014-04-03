@@ -50,7 +50,7 @@ class UsersController extends UsersAppController
      * @var array
      * @access public
      */
-    public $uses = array('Users.User', 'Users.UserRate', 'Users.Lesson', 'Users.Usermessage', 'Users.Review', 'Categories.Category', 'Users.Userpoint', 'Users.LessonPayment');
+    public $uses = array('Users.User', 'Users.UserRate', 'Users.Lesson', 'Users.Usermessage', 'Users.Review', 'Categories.Category', 'Users.Userpoint', 'Users.LessonPayment', 'Users.Mystatus');
     public $helper = array('Categories.Category', 'Session');
 
     function beforeFilter()
@@ -63,7 +63,7 @@ class UsersController extends UsersAppController
         $this->Security->csrfCheck = false;
 
         $this->Security->unlockedActions = array('*');
-        $this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting');
+        $this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
         if ($this->Session->check('Auth.User') && $this->Session->read('Auth.User.role_id') == 4) {
             $this->checkpayment();
         }
@@ -325,10 +325,10 @@ class UsersController extends UsersAppController
             if (isset($this->request->data['User']['changepassword']) && $this->request->data['User']['changepassword'] == 'changepasword') {
                 $oldpassw = AuthComponent::password($this->data['User']['oldpassword']);
                 $user = $this->User->find('first', array(
-                    'conditions' => array(
-                        'User.id' => $this->request->data['User']['id'],
-                    ),
-                ));
+                        'conditions' => array(
+                            'User.id' => $this->request->data['User']['id'],
+                        ),
+                    ));
 
                 if ($oldpassw == $user['User']['password']) {
                     if ($this->User->save($this->request->data)) {
@@ -367,16 +367,16 @@ class UsersController extends UsersAppController
                 }
                 $this->request->data['User']['profilepic'] = $filename;
                 $user = $this->User->find('first', array(
-                    'conditions' => array(
-                        'User.id' => $this->request->data['User']['id'],
-                    ),
-                ));
+                        'conditions' => array(
+                            'User.id' => $this->request->data['User']['id'],
+                        ),
+                    ));
 
 
                 if ($this->User->save($this->request->data)) {
                     $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
                     $user = $this->User->find('first', array(
-                        'conditions' => array('User.id' => $this->request->data['User']['id'])));
+                            'conditions' => array('User.id' => $this->request->data['User']['id'])));
 
 
                     $this->Session->write('Auth', $user);
@@ -476,10 +476,10 @@ class UsersController extends UsersAppController
                 }
                 $this->request->data['User']['profilepic'] = $filename;
                 $user = $this->User->find('first', array(
-                    'conditions' => array(
-                        'User.id' => $this->request->data['User']['id'],
-                    ),
-                ));
+                        'conditions' => array(
+                            'User.id' => $this->request->data['User']['id'],
+                        ),
+                    ));
 
                 if ($this->User->save($this->request->data)) {
                     $this->Session->setFlash(__d('croogo', 'Profile Picture has been saved.'), 'default', array('class' => 'success'));
@@ -490,10 +490,10 @@ class UsersController extends UsersAppController
             } else {
                 $oldpassw = AuthComponent::password($this->data['User']['oldpassword']);
                 $user = $this->User->find('first', array(
-                    'conditions' => array(
-                        'User.id' => $this->request->data['User']['id'],
-                    ),
-                ));
+                        'conditions' => array(
+                            'User.id' => $this->request->data['User']['id'],
+                        ),
+                    ));
 
 
                 if ($oldpassw == $user['User']['password']) {
@@ -551,11 +551,11 @@ class UsersController extends UsersAppController
                 if ($this->Session->check('requestedbyuser')) {
                     if ($newUser < 100) {
                         $requesteduser = $this->User->find('first', array(
-                            'conditions' => array(
-                                'User.id' => $this->Session->read('requestedbyuser'),
+                                'conditions' => array(
+                                    'User.id' => $this->Session->read('requestedbyuser'),
 
-                            ),
-                        ));
+                                ),
+                            ));
 
                         if ($this->Session->check('requestedbyuser')) {
                             if ($requesteduser['User']['role_id'] == 2) {
@@ -626,10 +626,10 @@ class UsersController extends UsersAppController
         }
 
         if ($this->User->hasAny(array(
-            'User.username' => $username,
-            'User.activation_key' => $key,
-            'User.status' => 0,
-        ))
+                'User.username' => $username,
+                'User.activation_key' => $key,
+                'User.status' => 0,
+            ))
         ) {
             $user = $this->User->findByUsername($username);
             $this->User->id = $user['User']['id'];
@@ -721,11 +721,11 @@ class UsersController extends UsersAppController
         }
 
         $user = $this->User->find('first', array(
-            'conditions' => array(
-                'User.username' => $username,
-                'User.activation_key' => $key,
-            ),
-        ));
+                'conditions' => array(
+                    'User.username' => $username,
+                    'User.activation_key' => $key,
+                ),
+            ));
         if (!isset($user['User']['id'])) {
             $this->Session->setFlash(__d('croogo', 'An error occurred.'), 'default', array('class' => 'error'));
             $this->redirect(array('action' => 'login'));
@@ -819,37 +819,40 @@ class UsersController extends UsersAppController
         $userRate = $this->UserRate->find('first', array('conditions' => array('UserRate.userid' => $user['User']['id'])));
 
         $userRating = $this->Review->find('first', array('conditions' => array('Review.rate_to' => $user['User']['id']),
-            'fields' => array('avg(rating) as avg'),
-        ));
+                'fields' => array('avg(rating) as avg'),
+            ));
         $userReviews = $this->Review->find('all', array(
-            'joins' => array(array(
-                'table' => 'users',
-                'alias' => 'User',
-                'type' => 'INNER',
-                'conditions' => array(
-                    "User.id = Review.rate_by"
-                )),
-                array(
-                    'table' => 'lessons',
-                    'alias' => 'Lesson',
-                    'type' => 'left',
+                'joins' => array(array(
+                    'table' => 'users',
+                    'alias' => 'User',
+                    'type' => 'INNER',
                     'conditions' => array(
-                        "Lesson.id = Review.lesson_id"
-                    ))
-            ),
+                        "User.id = Review.rate_by"
+                    )),
+                    array(
+                        'table' => 'lessons',
+                        'alias' => 'Lesson',
+                        'type' => 'left',
+                        'conditions' => array(
+                            "Lesson.id = Review.lesson_id"
+                        ))
+                ),
 
 
-            'fields' => array('*'),
-            'conditions' => array('Review.rate_to' => $user['User']['id'])
-        ));
+                'fields' => array('*'),
+                'conditions' => array('Review.rate_to' => $user['User']['id'])
+            ));
         $lessonClasscount = $this->Lesson->find('all', array('conditions' => array('created' => $user['User']['id'], 'is_confirmed' => 1),
                 'fields' => array('count(id) as totalrecords,sum(duration) as totalduration'))
         );
+
+        $userstatus = $this->Mystatus->find('all',array('conditions'=>array('Mystatus.created_by_id' => $user['User']['id']),'order' => array('Mystatus.created' => 'desc')) );
+
         /*
        $log = $this->User->getDataSource()->getLog(false, false);
 debug($log);*/
 
-        $this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount'));
+        $this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'userstatus'));
 
 
         if ($user['User']['role_id'] == 4) {
@@ -1190,19 +1193,19 @@ debug($log); */
             $readconditons = "readlesson";
         }
         $Lesson = $this->Lesson->find('first', array(
-            'joins' => array(
-                array(
-                    'table' => 'users',
-                    'alias' => 'User',
-                    'type' => 'INNER',
-                    'conditions' => array(
-                        "User.id = Lesson.$userconditionsfield"
+                'joins' => array(
+                    array(
+                        'table' => 'users',
+                        'alias' => 'User',
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            "User.id = Lesson.$userconditionsfield"
+                        )
                     )
-                )
-            ),
-            'fields' => array('User.username', 'User.id', 'Lesson.*'),
-            'conditions' => array("Lesson.id" => $lessonid)
-        ));
+                ),
+                'fields' => array('User.username', 'User.id', 'Lesson.*'),
+                'conditions' => array("Lesson.id" => $lessonid)
+            ));
         /*$log = $this->User->getDataSource()->getLog(false, false);
 debug($log);
          */
@@ -1315,18 +1318,18 @@ debug($log);
             $cond = array('status' => "1", 'role_id' => "4", array('OR' => array('name LIKE ' => "$name%", 'username LIKE ' => "$name%")));
         }
         $c = $this->User->find('list', array(
-            'joins' => array(
-                array(
-                    'table' => 'usermessages',
-                    'alias' => 'usermessage',
-                    'type' => 'INNER',
-                    'conditions' => array(
-                        'usermessage.sent_from = User.id'
+                'joins' => array(
+                    array(
+                        'table' => 'usermessages',
+                        'alias' => 'usermessage',
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            'usermessage.sent_from = User.id'
+                        )
                     )
-                )
-            ),
+                ),
 
-            'conditions' => $cond, 'group' => 'id', 'fields' => array('id', 'username')));
+                'conditions' => $cond, 'group' => 'id', 'fields' => array('id', 'username')));
         $q = strtolower($this->request->query['term']);
         $result = array();
 
@@ -1357,16 +1360,16 @@ debug($log);*/
         $this->set(compact('Lesson'));
     }
 
-	public function confirmedbytutor($lessonid = null){
+    public function confirmedbytutor($lessonid = null){
         $data = $this->Lesson->find('first',array('conditions'=>array('id'=>(int)$lessonid)));
 
         $data['Lesson']['readlessontutor']    = 1;
         $data['Lesson']['is_confirmed']       = 1;
 
-		if($data['Lesson']['twiddlameetingid'] == 0) {
+        if($data['Lesson']['twiddlameetingid'] == 0) {
             $this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
             $data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
-		}
+        }
 
         // retrieve our opentok session id for the upcoming lesson
         if($data['Lesson']['opentok_session_id'] == 0){
@@ -1377,7 +1380,7 @@ debug($log);*/
         $this->Lesson->save($data);
 
         $this->redirect(array('action' => 'lessons'));
-	}
+    }
 
     public function mycalander()
     {
@@ -1652,22 +1655,22 @@ debug($log); */
 
                 //Create charge
                 $token = Stripe_Token::create(array(
-                    "card" => array(
-                        "number" => "4242424242424242",
-                        "exp_month" => 3,
-                        "exp_year" => 2015,
-                        "cvc" => "314"
-                    )
-                ));
+                        "card" => array(
+                            "number" => "4242424242424242",
+                            "exp_month" => 3,
+                            "exp_year" => 2015,
+                            "cvc" => "314"
+                        )
+                    ));
 
                 $tokenid = $token['id'];
                 // Charge the order:
                 $charge = Stripe_Charge::create(array(
-                    "amount" => 500,
-                    "currency" => "usd",
-                    "card" => $tokenid, // obtained with Stripe.js
-                    "description" => "claim $5 form botangle"
-                ));
+                        "amount" => 500,
+                        "currency" => "usd",
+                        "card" => $tokenid, // obtained with Stripe.js
+                        "description" => "claim $5 form botangle"
+                    ));
 
                 if ($charge->paid == true) {
                     /* end stripe code */
@@ -1733,4 +1736,31 @@ debug($log); */
     function paymentnotmade()
     {
     }
+
+    function mystatus()
+    {
+        $this->autoRender = false;
+        $this->layouts = false;
+        if (!empty($this->request->data)) {
+            $this->request->data['Mystatus']['status_text'] = $this->request->data['Users']['status_text'];
+            $this->request->data['Mystatus']['created'] = date('Y-m-d h:i:s');
+            $this->request->data['Mystatus']['status'] = '1';
+            $this->request->data['Mystatus']['created_by_id'] = $this->Session->read('Auth.User.id');
+            if ($this->Mystatus->save($this->request->data)) {
+                $this->Session->setFlash(
+                    __d('croogo', 'Your Status Update Sucessfully.'),
+                    'default',
+                    array('class' => 'success')
+                );
+            } else {
+                $this->Session->setFlash(
+                    __d('croogo', 'Some Error Occured. Please try again.'),
+                    'default',
+                    array('class' => 'error')
+                );
+            }
+            $this->redirect('/user/' . $this->request->data['Users']['username']);
+        }
+    }
+
 }
