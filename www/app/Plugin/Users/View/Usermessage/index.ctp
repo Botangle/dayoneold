@@ -9,7 +9,6 @@
 echo $this->Layout->js();
 echo $this->Html->script(
     array(
-        '/croogo/js/fileupload',
         '/croogo/js/jquery/bootstrap',
         '/croogo/js/jquery.nicescroll.min',
     )
