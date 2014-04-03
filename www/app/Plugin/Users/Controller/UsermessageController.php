@@ -151,33 +151,6 @@ class UsermessageController extends UsersAppController
             )
         );
 
-        /* $log = $this->Usermessage->getDataSource()->getLog(false, false);
-debug($log);die; 
-
-
-pr($r);
-SELECT MAX( `Usermessage`.`id` ) AS id, `Usermessage`.`send_to` , `Usermessage`.`sent_from` , `Usermessage`.`parent_id` , MAX( `Usermessage`.`date` ) AS date, (
-(
-
-CASE WHEN Usermessage.send_to =8
-THEN sent_from
-ELSE send_to
-END
-)
-) AS UserName
-FROM `phelixin_bota`.`usermessages` AS `Usermessage`
-WHERE (
-(
-`sent_from` =8
-)
-OR (
-`send_to` =8
-)
-)
-GROUP BY parent_id
-ORDER BY id DESC
-LIMIT 0 , 30
-*/
         $this->set(compact('user', 'userData', 'sent_from', 'loginUser', 'parentid'));
     }
 
