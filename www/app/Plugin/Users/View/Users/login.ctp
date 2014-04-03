@@ -15,7 +15,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
     <div class="row-fluid">
       <div class="span9 PageLeft-Block">
         <p class="FontStyle20">Already a Botangle member?</p>
-        <p>Please enter your botangle Username /Password to access the botangle account.</p>
+        <p>Please enter your Botangle username/password to access your Botangle account.</p>
         <div class="Signup">
          <?php echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' => 'login'),'class'=>'form-inline form-horizontal'));?>
 
@@ -43,7 +43,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
       </div>
       <div class="span12 mar0">
 	  <?php
-	  echo $this->Html->link(__("Did you forgot your username /password?"), array('action'=> 'forgot'))
+	  echo $this->Html->link(__("Did you forget your username /password?"), array('action'=> 'forgot'))
 	  ?>
 	  
        </div>
