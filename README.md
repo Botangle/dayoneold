@@ -13,16 +13,7 @@ Install vagrant-hostmanager as follows:
 
 ## How start
 
-Edit the `Vagrantfile`: `vim Vagrantfile`
-
-*   Change the VM IP if needed. Default is: `192.168.200.20` (`192.168.200.1` is your machine)
-*   Change the RAM or number of CPUs if needed.
-*   On the puppet part: change the factors
-    *   Change `hostname` with the development domain of your website
-    *   Change `db_*` variables with your information or keep default values
-    *   If you change the `document_root` don't forget to change the synced directory
-
-Then `up` the VM: `vagrant up`
+In the Terminal / console, type `vagrant up`
 
 Now you can access to your Botangle setup : `http://app.botangle.dev`
 
@@ -34,7 +25,7 @@ With the information below you can connect to the MySQL server running on the vi
 
 ## Default information
 
-* SSH Host: 192.168.200.20
+* SSH Host: 192.168.200.20 (`192.168.200.1` is your machine)
 * SSH User: vagrant
 * SSH Pass: vagrant
 * SSH Port: 2222 (default by vagrant)
