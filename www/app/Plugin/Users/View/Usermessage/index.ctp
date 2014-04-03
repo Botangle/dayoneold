@@ -103,9 +103,7 @@ echo $this->element(
                                                     <?php } ?></div>
                                                 <div class="span10 sender-text">
                                                     <div id="tip-left">&nbsp;</div>
-                                                    <p class="sender-name"><?php echo ucfirst(
-                                                            h($v['User']['username'])
-                                                        ) ?></p>
+                                                    <p class="sender-name">You</p>
 
                                                     <p class="msg-content">
                                                         <?php echo nl2br(h($v['Usermessage']['body'])) ?></p>
