@@ -365,7 +365,9 @@ input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-fa
     vertical-align: baseline;
     white-space: nowrap; }
 
-.LeftMenu-Block ul li a:hover .badge{ background-color: #fff;
+.LeftMenu-Block ul li a.active .badge,
+.LeftMenu-Block ul li a:hover .badge{
+    background-color: #fff;
     color: #f38918;
 }
 
