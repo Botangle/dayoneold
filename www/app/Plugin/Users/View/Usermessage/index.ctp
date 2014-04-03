@@ -115,7 +115,7 @@ echo $this->element(
                                                         ); ?></p>
                                                 </div>
                                             </div>
-                                        <? } else { ?>
+                                        <?php } else { ?>
                                             <div class="row-fluid">
 
                                                 <div class="span10 sender-text">
