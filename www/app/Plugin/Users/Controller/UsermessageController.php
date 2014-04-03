@@ -106,6 +106,13 @@ class UsermessageController extends UsersAppController
             )
         );
 
+        // if we don't have anything to show, then show our welcome to the messages page
+        if(count($sent_from) == 0) {
+            return $this->render('Usermessage/welcome');
+        }
+
+        // otherwise, we've got things to display, so let's display them
+
         /* UPDATE MESSAGE AS READ */
         $this->Usermessage->query(
             " UPDATE `usermessages` SET readmessage = '1' WHERE ((`send_to`= '" . $user['User']['id'] . "' && `sent_from`='" . $this->Auth->user(
