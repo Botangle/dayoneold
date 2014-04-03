@@ -109,7 +109,7 @@ $subject = explode(",",$user['User']['subject']);
 <div class="row-fluid">
       <span class="span12 profile-tabs">
             <ul id="myTab" class="nav nav-tabs">
-                <li class="active"><a href="#home" data-toggle="tab">Timeline</a></li>
+                <li class="active"><a href="#home" data-toggle="tab">Feed</a></li>
                 <li class=""><a href="#aboutprofile" data-toggle="tab">About Me</a></li>
                 <li class=""><a href="#profile" data-toggle="tab">My Reviews</a></li>
 
@@ -137,7 +137,8 @@ $subject = explode(",",$user['User']['subject']);
                                     <div class="control-group"><br/>
                                         <div>
                                             <label class="inline span11">
-                                                <?php echo $this->Form->textarea('status_text',array('placeholder'=>"What's in your mind?",'label' => false,'value'=>'','type'=>'text','class'=>'userstatus'));?>
+                                                <?php echo $this->Form->textarea('status_text',array('placeholder'=>"What's in your mind?",'label' => false,'value'=>'','type'=>'text','class'=>'userstatus','maxlength'=>'300'));?>
+                                                <div id="textarea_feedback" class="chrremaing"></div>
                                                 <?php echo $this->Form->hidden('username',array('value'=>$user['User']['username'],'type'=>'text'));?>
                                             </label>
                                         </div>
@@ -162,9 +163,9 @@ $subject = explode(",",$user['User']['subject']);
                                             if($i%2 !=0)
                                             { ?>
                                                 <div class="timelinestatus">
+                                                    <p class="status"><?php echo $userstatues['Mystatus']['status_text']; ?></p>
                                                     <p class="time"><?php echo date('d M Y | l',strtotime($userstatues['Mystatus']['created']));?>
                                                         <?php echo date('h:i a',strtotime($userstatues['Mystatus']['created']));?></p>
-                                                    <p class="status"><?php echo $userstatues['Mystatus']['status_text']; ?></p>
                                                 </div>
                                             <?php }
                                             $i++;
@@ -175,9 +176,9 @@ $subject = explode(",",$user['User']['subject']);
                                             if($j%2 ==0)
                                             { ?>
                                                 <div class="timelinestatusright right">
+                                                    <p class="status"><?php echo $userstatues['Mystatus']['status_text']; ?></p>
                                                     <p class="time"><?php echo date('d M Y | l',strtotime($userstatues['Mystatus']['created']));?>
                                                         <?php echo date('h:i a',strtotime($userstatues['Mystatus']['created']));?></p>
-                                                    <p class="status"><?php echo $userstatues['Mystatus']['status_text']; ?></p>
                                                 </div>
                                             <?php }
 
@@ -406,6 +407,18 @@ echo $this->Html->script(array(
 
 ?>
 <script type="text/javascript">
+    $(document).ready(function() {
+        var text_max = 300;
+        var charre=text_max - $('#UsersStatusText').val().length;
+        $('#textarea_feedback').html(charre + ' characters remaining');
+
+        $('#UsersStatusText').keyup(function() {
+            var text_length = $('#UsersStatusText').val().length;
+            var text_remaining = text_max - text_length;
+
+            $('#textarea_feedback').html(text_remaining + ' characters remaining');
+        });
+    });
     function callPopup(){
 
         var currentclass = jQuery(this).hasClass('reviews')

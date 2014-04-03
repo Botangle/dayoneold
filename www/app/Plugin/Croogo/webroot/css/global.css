@@ -1056,9 +1056,14 @@ h3.timeline-title {
 
 .timeline1 .right{float:right;} 
 .timeline1 .left{float:left;}
-.timeline1 .width50{width:50%;} 
-.timeline1  .status{ color:#F38918; padding-left:5px; padding-bottom:10px;  border-top:1px solid #ccc; margin-top:10px; padding-top:10px;}
-.timeline1 .time{ font-size:12px; padding-top:5px; padding-left:5px;}
+.timeline1 .width50{width:50%;}
+.timeline1  .status{
+    border-bottom: 1px solid #CCCCCC;
+    font-weight: 300;
+    padding-bottom: 20px;
+    padding-left: 5px;
+}
+.timeline1 .time{ font-size:12px; padding-top:5px; padding-left:5px;  color:#F38918; padding-bottom:0px !important; margin-bottom:0px !important;}
 .timeline1 .clr { clear:both;}
 
 .timelinestatus {  width:97%; border:1px solid #ccc; margin-right:35px; margin-bottom:20px; border-bottom:2px solid #F38918;  box-shadow: 0 0 5px #CCCCCC; padding:15px; }
@@ -1066,3 +1071,4 @@ h3.timeline-title {
 .lefttimeline {float:left;}
 
 .timelinestatusright{  width:97%; border:1px solid #ccc; margin-bottom:20px; border-bottom:2px solid #F38918;  box-shadow: 0 0 5px #CCCCCC;  padding:15px;}
+.chrremaing { float:right; font-size:14px; color:#aaa;}

@@ -38,7 +38,13 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'payme
 
 <div class="span3 LeftMenu-Block">
 	<ul>
-		<li>
+        <?php if ($this->Session->read('Auth.User.id') && $this->Session->read('Auth.User.role_id') == 2) : ?>
+            <li>
+                <a href="<?php echo $this->webroot ?>user/<?php echo $this->Session->read('Auth.User.username'); ?>"
+                   title="Messages"><?php echo __('My Profile') ?></a>
+            </li>
+        <?php endif; ?>
+        <li>
 			<a href="<?php echo $this->webroot ?>users/messages" title="Messages" class="<?php echo $accountmessages ?>">
 				<?php echo __('Messages')?>
 				<span class="badge pull-right">
