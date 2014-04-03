@@ -258,7 +258,8 @@ a.join-btn:hover{ display:block; background:#2d2d2d; color:#fff; text-decoration
 	background: url("../images/banner-bg.png") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
-	height: auto;  margin-top:80px;
+	height: auto;
+    margin-top:0px;
 	padding: 50px 0;
 	width: 100%;
 }
