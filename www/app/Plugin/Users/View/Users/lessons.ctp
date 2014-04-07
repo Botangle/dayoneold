@@ -74,7 +74,18 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 			 
 			  $hr = explode(":",$v['Lesson']['lesson_time']);
 			  echo $hr[0].":".$hr[1]  ?></div>
-               <div class="span1 mins"> <?php echo h($v['Lesson']['duration']) ?> </div>
+               <div class="span1 mins"> <?php
+                   $duration = $v['Lesson']['duration'];
+                   if($duration == .5) {
+                       $duration = '30 min';
+                   } elseif($duration == 1.0) {
+                       $duration = '1 hour';
+                   } else {
+                       $duration .= ' hours';
+                   }
+
+                   echo h($duration) ?>
+               </div>
                 <div class="span2 subject"> <?php echo h($v['Lesson']['subject']) ?>  </div>
 				 
                <div class="span2 mark"> 
