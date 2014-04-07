@@ -68,14 +68,14 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		<?php }else{		 ?>
 		 <img src="<?php echo $this->webroot?>images/thumb-typ1.png" class="img-circle" alt="student">
 		 <?php } ?> </div>
-            <div class="span2 tutor-name"> <a href="#"><?php echo $v['User']['username']?></a></div>
+            <div class="span2 tutor-name"> <a href="#"><?php echo h($v['User']['username']) ?></a></div>
              <div class="span1 date"> <?php echo date('M d',strtotime($v['Lesson']['lesson_date'])) ?></div>
               <div class="span1 time"> <?php 
 			 
 			  $hr = explode(":",$v['Lesson']['lesson_time']);
 			  echo $hr[0].":".$hr[1]  ?></div>
-               <div class="span1 mins"> <?php echo $v['Lesson']['duration'] ?> </div>
-                <div class="span2 subject"> <?php echo $v['Lesson']['subject'] ?>  </div>
+               <div class="span1 mins"> <?php echo h($v['Lesson']['duration']) ?> </div>
+                <div class="span2 subject"> <?php echo h($v['Lesson']['subject']) ?>  </div>
 				 
                <div class="span2 mark"> 
 			   <?php
