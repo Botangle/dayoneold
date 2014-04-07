@@ -17,6 +17,9 @@ In the Terminal / console, type `vagrant up`
 
 Now you can access to your Botangle setup : `http://app.botangle.dev`
 
+## To start sending in code
+Please see the Contributing.md file
+
 ## MySQL
 
 You need to use an SSH connection.
