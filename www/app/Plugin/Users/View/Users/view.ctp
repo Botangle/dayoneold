@@ -81,7 +81,7 @@ $subject = explode(",",$user['User']['subject']);
         </div>
 
 
-
+<?php /*
         <p>Share:
 	  <span class="profile-share">
 	 	 <a href="#">
@@ -98,7 +98,7 @@ $subject = explode(",",$user['User']['subject']);
            <img src="<?php echo $this->webroot?>images/mail.png" alt="email">
        </a>
 	  </span></p>
-
+*/?>
 
     </div>
 
