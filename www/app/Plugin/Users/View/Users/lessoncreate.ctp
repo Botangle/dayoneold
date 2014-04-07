@@ -11,7 +11,9 @@ if(isset($user)){
 	$studetnanem = $user['User']['username'];
 	$studetnanemid = $user['User']['id'];
 	$readonly = "readonly='readonly'";
-} ?>
+}
+
+?>
 
 
 
@@ -67,21 +69,27 @@ if(isset($user)){
                 <?php //echo $this->Form->input('duration',array('class'=>'textbox','placeholder'=>"Duration",'label' => false));?>
 				 
                   <select name="data[Lesson][duration]" id="Lessonduration">
-				  <?php for($i=0;$i<24;$i=$i+.5){
+                      <option value="-1">-- Please choose --</option>
+				  <?php for($i=.5;$i<12.5;$i=$i+.5){
 						$sel = "";
-						if($Lesson['Lesson']['duration']==$i){
+						if(isset($Lesson) && $Lesson['Lesson']['duration']==$i){
 							$sel = 'selected="selected"';
-						 
 						}
 						$pos = explode(".",$i);
 						 
 						$show=$i;
 						if(isset($pos[1]) && $pos[1]=='5'){
-							  $show = $pos[0].".30";  
+							  $show = $pos[0].".5";
 						}
-				  ?>
-					<option value="<?php echo $i?>" <?php echo $sel?> ><?php echo $show?>  Hour</option>
-				  <?php } ?>
+
+                      if($i == .5) {
+                          echo '<option value="' . $i .'" ' . $sel . '>30 min</option>';
+                      } elseif($i == 1.0) {
+                          echo '<option value="' . $i .'" ' . $sel . '>1 hour</option>';
+                      } else {
+                         echo '<option value="' . $i .'" ' . $sel . '>' . $show . ' hours</option>';
+                      }
+				  } ?>
 				  </select>
                 </div>
               </div>
