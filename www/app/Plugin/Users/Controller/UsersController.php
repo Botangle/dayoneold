@@ -854,10 +854,11 @@ debug($log);*/
 
         $this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'userstatus'));
 
-
-        if ($user['User']['role_id'] == 4) {
-            $this->render('view2');
-        }
+        // if this person we're viewing is a student, then show the student view
+        // @TODO: get this working, right now the view is all hard-coded and wouldn't be good to show
+        // if ($user['User']['role_id'] == 4) {
+        //    $this->render('view2');
+        //}
     }
 
     protected function _getSenderEmail()
