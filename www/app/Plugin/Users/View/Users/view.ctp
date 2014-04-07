@@ -40,12 +40,11 @@ $subject = explode(",",$user['User']['subject']);
 
                         echo $userRate['UserRate']['rate']."/". $userRatePrice; } else{ echo 0; } ?></strong></span></p>
         <p class="FontStyle28 color1"><?php echo ucfirst($user['User']['name']." ".$user['User']['lname']);?>
-            <?php if($user['User']['is_online'] == 1){ ?>
+            <?php /* if($user['User']['is_online'] == 1){ ?>
                 <img src="<?php echo $this->webroot?>images/online.png" alt="online">
-            <?php } else { ?>
+            <?php } else {  ?>
                 <img src="<?php echo $this->webroot?>images/offline.png" alt="onffline">
-
-            <?php } ?>
+            <?php } */ ?>
             <br /><span style="font-size:13px"><?php echo ucfirst($user['User']['username']);?></span>
             <br/>
             <?php if(isset($userstatus[0]['Mystatus']['status_text'])) { ?>
