@@ -68,21 +68,21 @@ CakeLog::config('error', array(
 CakePlugin::load('Croogo', array('bootstrap' => true));
 CakePlugin::load('Migrations');
 
+/**
+ * Stripe Configuration
+ *
+ * Sets the secret keys and other environment conditions for use with the CakePHP-
+ * Stripe plugin.
+ *
+ * For documentation, go to https://github.com/chronon/CakePHP-StripeComponent-Plugin
+ */
 CakePlugin::load('Stripe');
 
-/** Stripe Configuration **/
 Configure::write('Stripe.TestSecret', 'sk_test_XCR1kNc15GsZReu7hKHXFJZ8');
 Configure::write('Stripe.LiveSecret', 'yourStripeLiveAPIKeyHere'); /* @todo */
 Configure::write('Stripe.mode', 'Test');
-/*
-Configure::write('Stripe.fields', array(
-    'stripe_id' => 'id',
-    'stripe_last4' => array('card' => 'last4'),
-    'stripe_address_zip_check' => array('card' => 'address_zip_check'),
-    'stripe_cvc_check' => array('card' => 'cvc_check'),
-    'stripe_amount' => 'amount'
-));
-*/
+
+/* We best do some logging */
 CakeLog::config('stripe', array(
     'engine' => 'FileLog',
     'types' => array('info', 'error'),
