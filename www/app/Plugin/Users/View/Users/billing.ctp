@@ -133,12 +133,13 @@ $1000</p> </div> </div>
 											<?php
                     		$authorize_request_body = array(
 													'response_type' => 'code',
-													'scope' => 'read_write',
-													'client_id' =>'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC'
+													'scope'         => 'read_write',
+													'client_id'     =>'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
+													'redirect_uri'  => 'http://app.botangle.dev/users/billing'
 												);
 												$url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
 												echo "<a href='$url' id='connectstripe'>Connect with Stripe</a>";
-												echo"<script type='text/javascript' src='js/jquery.min.js'></script>";
+												echo "<script type='text/javascript' src='js/jquery.min.js'></script>";
 												echo "<script>$(document).ready(function() { $('#connectstripe').trigger('click'); });</script>";
 											?>
 										</label>

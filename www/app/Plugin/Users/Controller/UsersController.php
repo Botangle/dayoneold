@@ -884,15 +884,22 @@ debug($log);*/
     public function billing()
     {
         $id = $this->Session->read('Auth.User.id');
+
         if (!empty($this->request->data)) {
 
+            // Continue if POST data is not empty...
             if (isset($this->request->data['Billing']['pagetype']) && ($this->request->data['Billing']['pagetype'] == 'billing')) {
-                if (isset($this->request->data['Billing']['studentpayemtn']) && $this->request->data['Billing']['studentpayemtn']) {
+                // ...and if the Billing page is 'student_payment'
+                if (isset($this->request->data['Billing']['student_payment']) && $this->request->data['Billing']['student_payment']) {
 
+                    // Store the user object in $user according to logged-in $id
                     $user = $this->User->find('first', array('conditions' => array('user.id' => $id)));
 
+                    // There should be a control flow switch for Paypal vs. Stripe here
+                    // Stripe uses a `$token` object to store all sensitive information, so we never
+                    // actually have to manipulate it.
+                    // That is, $cartSession : Paypal :: $token : Stripe
                     $cartSession = "";
-
                     $cartSession['fname'] = $this->request->data['Billing']['tutor_id'];
                     $cartSession['lname'] = $_POST['lname'];
                     $cartSession['card'] = $_POST['card'];
@@ -910,9 +917,12 @@ debug($log);*/
                     $cartSession['payamount'] = $_POST['payamount'];
                     $cartSession['paymentCurrency'] = "USD";
 
+                    // The below code is for processing the payment with Paypal
+                    // I'm commenting it out for now, so we can just use Stripe
+                    /*
                     include('PaypalproController.php');
                     $paypalCont = new PaypalproController();
-                    $paypalResponse = $paypalCont->setRequestFields($cartSession, 10);
+                    $paypalResponse = $paypalCont->setRequestFields($cartSession, 10); // Send the Paypal request
                     if ($paypalResponse['ACK'] == 'Success') {
                         // PAYMENT MADE NEXT STEP TO SENT EMAIL ADMIN
                         $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
@@ -920,23 +930,35 @@ debug($log);*/
                     } else {
                         $this->Session->setFlash(__d('croogo', 'Payment could not be made,please try again.'), 'default', array('class' => 'error'));
                     }
+                    */
 
+                    // Finally we can actually charge the customer with Stripe
+                    // We will use the protected `charge()` function:
+                    $amount = $_POST['payamount'];
+                    $token  = $_POST['stripeToken'];
+                    charge($user, $token, $amount);
                 } else {
+                    // We assume that the user wants to save some data if the Billing page is not `student_payment`...
                     if ($this->UserRate->save($this->request->data)) {
                         $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                        $this->redirect(array('action' => 'billing'));
+                        $this->redirect(array('action' => 'billing_tutor'));
                     } else {
                         $this->Session->setFlash(__d('croogo', 'Information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
                     }
                 }
             } else if (isset($this->request->data['User']['pagetype']) && ($this->request->data['User']['pagetype'] == 'paymentsettings')) {
+                // If the pagetype is `paymentsetting`, the the user is interacting with the "Payment Setting" box
+                // at the bottom of http://app.botangle.dev/users/billing
+                // This is the Stripe Connect feature. We basically just save the user's Stripe ID and keys to our database
+                // Also, this flow should definitely be re-worked. The module should be saved in a View Block:
+                // http://book.cakephp.org/2.0/en/views.html
                 $user = $this->User->find('first', array('conditions' => array('user.id' => $id)));
                 $this->User->id = $user['User']['id'];
                 $this->User->saveField('stripe_id', $this->request->data['User']['stripe_id']);
                 $this->User->saveField('secret_key', $this->request->data['User']['secret_key']);
                 $this->User->saveField('public_key', $this->request->data['User']['public_key']);
                 $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                $this->redirect(array('action' => 'billing'));
+                $this->redirect(array('action' => 'billing_tutor'));
                 exit();
             }
         }
@@ -945,16 +967,18 @@ debug($log);*/
         $this->set('title_for_layout', __d('croogo', 'Billing'));
 
 
-        if (isset($_GET['code'])) { // Redirect w/ code
+        // Begin actual Stripe integration with Stripe Connect
+        // https://stripe.com/docs/connect
+        if (isset($_GET['code'])) { // Redirect w/ code from the Stripe Connect OAuth
             $code = $_GET['code'];
             $token_request_body = array(
-                'client_secret' => 'sk_test_XCR1kNc15GsZReu7hKHXFJZ8', //admin secret key
-                'client_id' => 'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
+                'client_secret' => 'sk_test_XCR1kNc15GsZReu7hKHXFJZ8', //admin test secret key
+                'client_id' => 'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',  //the dev ID
                 'code' => $code,
                 'grant_type' => 'authorization_code'
             );
             $refreshtoken = "";
-            $req = curl_init('https://connect.stripe.com/oauth/token');
+            $req = curl_init('https://connect.stripe.com/oauth/authorize');
             // set url
             curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($req, CURLOPT_SSL_VERIFYHOST, false);
@@ -965,11 +989,14 @@ debug($log);*/
             $resp = json_decode(curl_exec($req), true);
             curl_close($req);
             $refreshtoken = $resp['refresh_token'];
+            $customerID   = $resp['stripe_user_id'];
+            $accessToken  = $resp['access_token'];
             $this->User->id = $id;
             $this->User->saveField('auth_code', $refreshtoken);
             $this->Session->setFlash(__d('croogo', 'Your Account Connected with Stripe Sucessfully.'), 'default', array('class' => 'success'));
         }
         // role_id == 4 is student. Finally figured that out.
+        // If the student is the one currently trying to pay the tutor:
         if ($this->Session->read('Auth.User.role_id') == 4) {
             if ($this->Session->check('paymenttutor')) {
                 $userInfo = $this->User->find('list', array('conditions' => array('role_id' => 2, 'status' => 1, 'id' => $this->Session->read('paymenttutor'))));
@@ -992,42 +1019,37 @@ debug($log);*/
     /**
      * Charge function
      *
-     * Handles the payment with Stripe. The user submits the payment information
-     * from the `/users/billing`
+     * Handles the payment with Stripe, and customer retrieval/creation.
+     *
+     * @access protected
+     * @param  $user     : The CakePHP user object
+     * @param  $token    : The Stripe token
+     * @param  $amount   : Payment amount
      */
-     public function charge() {
+     protected function charge( $user, $token, $amount ) {
+       // The Stripe plugin automatically handles data validation and error handling
+       // See docs here: https://github.com/chronon/CakePHP-StripeComponent-Plugin
 
-        // See docs here: https://github.com/chronon/CakePHP-StripeComponent-Plugin
-       $data = array(
-            'amount' => '7.59',
-            'stripeToken' => 'tok_0NAEASV7h0m7ny',
-            'description' => 'Casi Robot - casi@robot.com'
+       if (isset($customerID)) {
+         $customer = $this->StripeComponent->customerRetrieve($customerID);
+       } else {
+         // Create the customer
+         $customer = array(
+           'stripeToken' => $accessToken,
+           'email'       => $user['email']
+         );
+         // Create the customer
+         $result = $this->StripeComponent->customerCreate($customer);
+       }
+
+       $charge = array(
+         'amount' => $amount,
+         'stripeToken' => $token,
+         'stripeCustomer' => $customer['stripe_id']
         );
 
-        $result = $this->Stripe->charge($data);
-
-       /* Example code from https://stripe.com/docs/tutorials/charges
-       if ($this->Session->read('Auth.User.role_id') == 4) {
-          // Set your secret key: remember to change this to your live secret key in production
-          // See your keys here https://manage.stripe.com/account
-          Stripe::setApiKey("sk_test_XCR1kNc15GsZReu7hKHXFJZ8");
-
-          // Get the credit card details submitted by the form
-          $token = $_POST['stripeToken'];
-
-          // Create the charge on Stripe's servers - this will charge the user's card
-          try {
-            $charge = Stripe_Charge::create(array(
-              "amount" => 1000, // amount in cents, again
-              "currency" => "usd",
-              "card" => $token,
-              "description" => "payinguser@example.com")
-            );
-          } catch(Stripe_CardError $e) {
-            // The card has been declined
-          }
-          $this->render('charge'); // Render the `charge.ctp` view for confirmation
-        }*/
+        $result = $this->Stripe->charge($charge);
+        $this->render('paymentsetting');
     }
 
     /**
