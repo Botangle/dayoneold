@@ -941,7 +941,7 @@ debug($log);*/
                     // We assume that the user wants to save some data if the Billing page is not `student_payment`...
                     if ($this->UserRate->save($this->request->data)) {
                         $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                        $this->redirect(array('action' => 'billing_tutor'));
+                        $this->redirect(array('action' => 'billing'));
                     } else {
                         $this->Session->setFlash(__d('croogo', 'Information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
                     }
@@ -958,7 +958,7 @@ debug($log);*/
                 $this->User->saveField('secret_key', $this->request->data['User']['secret_key']);
                 $this->User->saveField('public_key', $this->request->data['User']['public_key']);
                 $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                $this->redirect(array('action' => 'billing_tutor'));
+                $this->redirect(array('action' => 'billing'));
                 exit();
             }
         }
