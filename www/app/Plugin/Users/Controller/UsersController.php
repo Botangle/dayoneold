@@ -988,6 +988,7 @@ debug($log);*/
 
             $this->set('paymentamount', $this->Session->read("paymentamount"));
             $this->render('billing2');
+            $this->render('billing_student');
         }
 
         $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));

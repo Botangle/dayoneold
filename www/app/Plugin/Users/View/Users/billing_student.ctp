@@ -23,7 +23,7 @@
           			<p class="FontStyle20 color1"><?php echo __("Make Payment:")?></p>
           		</div>
 
-<!-- @stripe -->
+<!-- @stripe
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 
 <script type="text/javascript">
@@ -75,7 +75,7 @@
   </script>
 </form>
 
-<!--
+-->
 							<div class="row-fluid Add-Payment-blocks">
         				<div class="span5">
 									<?php  echo $this->Form->create('Billing',array('class'=>'form-horizontal'));
@@ -85,7 +85,7 @@
                 		<label class="control-label" for="postalAddress"><?php echo __("Select Tutor:")?></label>
                 		<div class="controls">
                 			<?php
-												echo $this->Form->input('studentpayemtn',array('type'=>'hidden','value'=>'studentpayemtn','name'=>'data[Billing][studentpayemtn]'));
+												echo $this->Form->input('student_payment',array('type'=>'hidden','value'=>'student_payment','name'=>'data[Billing][student_payment]'));
 												echo $this->Form->input('tutor_id', array('class' => 'chzn-select', 'options' => $userInfo, 'label' => false, 'div' => array('class' => 'formRight noSearch', 'name'=>'fname', 'empty' => '(choose one)')));
 											?>
                 		</div>
@@ -163,13 +163,13 @@
 						</div>
 					</div>
 
-      		<!-- Hiding this because I don't think it's needed. Stage for removal
+      		<!-- Hiding this because I don't think it's needed. Stage for removal -->
 					<h2 class="page-title"><?php echo __("Payment Setting")?></h2>
       		<div class="StaticPageRight-Block">
       			<div class="PageLeft-Block">
 							<div class="row-fluid Add-Payment-blocks">
 								<div class="span12">
-									<p class="FontStyle20 color1"><?php echo __("Setup Account:")?></p>
+									<p class="FontStyle20 color1"><?php echo __("Connect with Stripe:")?></p>
 								</div>
 
 								<?php
@@ -212,8 +212,9 @@
 											<?php
 												$authorize_request_body = array(
 												  'response_type' => 'code',
-												  'scope' => 'read_write',
-												  'client_id' =>'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC'
+												  'scope'         => 'read_write',
+												  'client_id'     => 'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
+													'redirect_uri'  => 'http://app.botangle.dev/users/billing'
 												);
 												$url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
 												echo "<a href='$url' id='connectstripe'>Connect with Stripe</a>";
