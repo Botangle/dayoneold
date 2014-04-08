@@ -98,7 +98,12 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 	   ?>   </div>
 			   
                 <div class="span2 mark">
-                    <?php if($this->Session->read('Auth.User.role_id')==2){ ?>
+                    <?php if($v['Lesson']['is_confirmed'] == 0 &&
+                        (
+                            ($this->Session->read('Auth.User.role_id')==2 && $v['Lesson']['readlessontutor'] == 0)
+                            || ($this->Session->read('Auth.User.role_id')==4 && $v['Lesson']['readlesson'] == 0)
+                        )
+                    ){ ?>
                         <?php
                         echo $this->Html->link(
                             __('Confirm'),	'/users/confirmedbytutor/'.$v['Lesson']['id']

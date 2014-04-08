@@ -98,11 +98,11 @@ class UserHelper extends AppHelper {
 		$field = "created";
 		 $read = "readlessontutor";
 		if($userObject['role_id'] == 4){
-			$field = "tutor";
+			$field = "created";
 			$read = "readlesson";
 		}
 		if($userObject['role_id'] == 2){
-			$field = "created";
+			$field = "tutor";
 			$read = "readlessontutor";
 		}
 		  $conditions = "	`$field`  = '". $userObject['id']."' and `$read`='0'"; 
