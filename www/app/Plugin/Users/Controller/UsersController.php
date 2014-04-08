@@ -68,8 +68,6 @@ class UsersController extends UsersAppController
         if ($this->Session->check('Auth.User') && $this->Session->read('Auth.User.role_id') == 4) {
             $this->checkpayment();
         }
-
-
     }
 
     /**
@@ -864,7 +862,6 @@ debug($log);*/
 
         $this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'userstatus'));
 
-
         if ($user['User']['role_id'] == 4) {
             $this->render('view2');
         }
@@ -917,11 +914,10 @@ debug($log);*/
                     $paypalCont = new PaypalproController();
                     $paypalResponse = $paypalCont->setRequestFields($cartSession, 10);
                     if ($paypalResponse['ACK'] == 'Success') {
-                        /* PAYMENT MADE NEXT STEP TO SENT EMAIL ADMIN*/
+                        // PAYMENT MADE NEXT STEP TO SENT EMAIL ADMIN
                         $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
                         $this->redirect(array('action' => 'billing'));
                     } else {
-
                         $this->Session->setFlash(__d('croogo', 'Payment could not be made,please try again.'), 'default', array('class' => 'error'));
                     }
 
@@ -943,7 +939,6 @@ debug($log);*/
                 $this->redirect(array('action' => 'billing'));
                 exit();
             }
-
         }
 
         $this->set('ratedata', $this->UserRate->find('first', array('conditions' => array('UserRate.userid' => $this->Session->read('Auth.User.id')))));
@@ -987,7 +982,6 @@ debug($log);*/
             $this->set(compact('userInfo', 'roleid'));
 
             $this->set('paymentamount', $this->Session->read("paymentamount"));
-            $this->render('billing2');
             $this->render('billing_student');
         }
 
