@@ -19,7 +19,7 @@ Once the first two items are installed, then install `vagrant-hostmanager` as fo
 
 - In the Terminal / console, type `vagrant up`.  This will build a VM for you with our settings applied
 - Once done, type `vagrant ssh` and then `cd /var/www/app`
-- Run `composer install`, which will load up all our various libraries
+- Run `composer.phar install`, which will load up all our various libraries
 - Run `Console/cake Migrations.migration run`
 - Run `Console/cake Migrations.migration run -p Users`
 
