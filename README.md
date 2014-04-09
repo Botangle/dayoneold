@@ -1,24 +1,42 @@
 # Vagrantfile & Puppet manifests for Botangle / CakePHP
 
-## Requirements
+## Software requirements
 
-You just need [Vagrant][vagrant] and vagrant-hostmanager. Be sure to install Vagrant 1.4.3 and [VirtualBox 4.3][virtualbox] because vagrant-hostmanager breaks with the latest version of Vagrant.
+You need to install the following to work with our setup:
 
-[virtualbox]: https://www.virtualbox.org/wiki/Download_Old_Builds_4_3
-[vagrant]: http://www.vagrantup.com/download-archive/v1.4.3.html
+- [VirtualBox][virtualbox]
+- [Vagrant][vagrant]
+- vagrant-hostmanager
 
-Install vagrant-hostmanager as follows:
+[virtualbox]: https://www.virtualbox.org/wiki/Downloads
+[vagrant]: http://www.vagrantup.com/downloads.html
+
+Once the first two items are installed, then install `vagrant-hostmanager` as follows:
 
     vagrant plugin install vagrant-hostmanager
 
-## How start
+## Getting started
 
-In the Terminal / console, type `vagrant up`
+- In the Terminal / console, type `vagrant up`.  This will build a VM for you with our settings applied
+- Once done, type `vagrant ssh` and then `cd /var/www/app`
+- Run `composer install`, which will load up all our various libraries
+- Run `Console/cake Migrations.migration run`
+- Run `Console/cake Migrations.migration run -p Users`
 
-Now you can access to your Botangle setup : `http://app.botangle.dev`
+You should be able to access your Botangle setup now in a web browser: [http://app.botangle.dev](http://app.botangle.dev)
+
+Note: we use migrations (see above) heavily as we make changes to the DB, so if you haven't used them before, please
+spend a bit of time learning how they work.
 
 ## To start sending in code
 Please see the Contributing.md file
+
+## Other things to know
+There is a backend to the system ([http://app.botangle.dev/admin](http://app.botangle.dev/admin)).  You can get in with
+the following credentials:
+
+User: admin
+Password: 123456
 
 ## MySQL
 
