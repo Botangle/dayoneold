@@ -3,8 +3,52 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5f6048fe5656994df2209a1984daa3d3",
+    "hash": "0f7e32e3bc14039703001acb07bef29b",
     "packages": [
+        {
+            "name": "chronon/stripe",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chronon/CakePHP-StripeComponent-Plugin.git",
+                "reference": "6eeb97ad4d951f444b2134139bc616cc8cdfe519"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chronon/CakePHP-StripeComponent-Plugin/zipball/6eeb97ad4d951f444b2134139bc616cc8cdfe519",
+                "reference": "6eeb97ad4d951f444b2134139bc616cc8cdfe519",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "*",
+                "ext-curl": "*",
+                "php": ">=5.3.0",
+                "stripe/stripe-php": "1.11.*"
+            },
+            "type": "cakephp-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gregory Gaskill",
+                    "email": "one@chronon.com",
+                    "homepage": "http://technokracy.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A CakePHP 2.x Stripe Payment Processing Component.",
+            "homepage": "https://github.com/chronon/CakePHP-StripeComponent-Plugin",
+            "keywords": [
+                "cakephp",
+                "component",
+                "payments",
+                "plugin",
+                "stripe"
+            ],
+            "time": "2014-02-07 21:08:13"
+        },
         {
             "name": "composer/installers",
             "version": "v1.0.12",
@@ -134,16 +178,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "dev-master",
+            "version": "v1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "66899e8b09b0a07059bab4e9cd83a49b430be44e"
+                "reference": "375227f845c99b2550a5c26d2a4911313cadb97c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/66899e8b09b0a07059bab4e9cd83a49b430be44e",
-                "reference": "66899e8b09b0a07059bab4e9cd83a49b430be44e",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/375227f845c99b2550a5c26d2a4911313cadb97c",
+                "reference": "375227f845c99b2550a5c26d2a4911313cadb97c",
                 "shasum": ""
             },
             "require": {
@@ -153,7 +197,7 @@
                 "php": ">=5.2"
             },
             "require-dev": {
-                "simpletest/simpletest": "*"
+                "vierbergenlars/simpletest": "*"
             },
             "type": "library",
             "autoload": {
@@ -178,7 +222,7 @@
                 "payment processing",
                 "stripe"
             ],
-            "time": "2014-03-11 23:55:24"
+            "time": "2014-01-30 01:00:33"
         }
     ],
     "packages-dev": [
@@ -189,8 +233,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "stripe/stripe-php": 20,
-        "opentok/opentok": 20
+        "opentok/opentok": 20,
+        "chronon/stripe": 20
     },
     "platform": {
         "php": ">=5.4.0"

@@ -10,5 +10,5 @@
         "opentok/opentok": "dev-master",
         "stripe/stripe-php": "1.11.*",
         "chronon/stripe": "dev-master"
-    },
+    }
 }
