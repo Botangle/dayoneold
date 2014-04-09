@@ -91,7 +91,7 @@ $1000</p> </div> </div>
 								?>
 
                 <div class="control-group">
-                  <label class="control-label span5"><?php echo __("Strip Account Email:")?></label>
+                  <label class="control-label span5"><?php echo __("Stripe Account Email:")?></label>
                   <div class="controls">
                     <label class="radio inline span4">
 											<?php
@@ -118,7 +118,7 @@ $1000</p> </div> </div>
                   </div>
                 </div>
                 <div class="control-group">
-                  <label class="control-label span5"><?php echo __("Strip Publisher
+                  <label class="control-label span5"><?php echo __("Stripe Publisher
                   Key:")?></label>
                   <div class="controls">
                     <label class="radio inline span4"><?php echo
