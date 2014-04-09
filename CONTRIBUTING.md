@@ -1,73 +1,30 @@
-# How to contribute
+# How to work with our setup
 
-CakePHP loves to welcome your contributions. There are several ways to help out:
-* Create an [issue](https://github.com/cakephp/cakephp/issues) on GitHub, if you have found a bug
-* Write testcases for open bug issues
-* Write patches for open bug/feature issues, preferably with testcases included
-* Contribute to the [documentation](https://github.com/cakephp/docs)
+## Code Formatting
+We use PSR-2 as the base standard for code formatting at this point.  Older code may not be formatted that way, but all
+new code going in should have that style applied in your editor.  Pull requests may get rejected (or need further updates)
+if these styles aren't applied.  Details and samples available here:
+[https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md#11-example](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md#11-example)
 
-There are a few guidelines that we need contributors to follow so that we have a
-chance of keeping on top of things.
+When updating formatting in files you are working on, please do so all in one commit and make the formatting change
+  separate from any other changes you are making.  Otherwise deciphering what you've been doing is really painful.
 
-## Getting Started
+## Line Endings
+We intend to have all files end in LF (Unix-style line endings).  Pull requests with different line endings will
+need to be updated to the correct settings before we can merge them.  More details available here:
+[https://help.github.com/articles/dealing-with-line-endings](https://help.github.com/articles/dealing-with-line-endings)
 
-* Make sure you have a [GitHub account](https://github.com/signup/free).
-* Submit an [issue](https://github.com/cakephp/cakephp/issues), assuming one does not already exist.
-  * Clearly describe the issue including steps to reproduce when it is a bug.
-  * Make sure you fill in the earliest version that you know has the issue.
-* Fork the repository on GitHub.
+## Branching model
+We use the Gitflow branching model, described here: http://nvie.com/posts/a-successful-git-branching-model/
 
-## Making Changes
+All bug fixes / feature requests should be based off the development branch unless your fix is a hotfix for production.
 
-* Create a topic branch from where you want to base your work.
-  * This is usually the master branch.
-  * Only target release branches if you are certain your fix must be on that
-    branch.
-  * To quickly create a topic branch based on master; `git branch
-    master/my_contribution master` then checkout the new branch with `git
-    checkout master/my_contribution`. Better avoid working directly on the
-    `master` branch, to avoid conflicts if you pull in updates from origin.
-* Make commits of logical units.
-* Check for unnecessary whitespace with `git diff --check` before committing.
-* Use descriptive commit messages and reference the #issue number.
-* Core testcases should continue to pass. You can run tests locally or enable
-  [travis-ci](https://travis-ci.org/) for your fork, so all tests and codesniffs
-  will be executed.
-* Your work should apply the CakePHP coding standards.
+## Workflow model
+We use the Integration Manager workflow described here: http://git-scm.com/book/en/Distributed-Git-Distributed-Workflows
 
-## Which branch to base the work
+You should fork our main repo and submit pull requests from your repository.  This keeps things cleaner and prevents
+major issues if someone accidentally rebases something wrong ;-)
 
-* Bugfix branches will be based on master.
-* New features that are backwards compatible will be based on next minor release
-  branch.
-* New features or other non-BC changes will go in the next major release branch.
-
-## Submitting Changes
-
-* Push your changes to a topic branch in your fork of the repository.
-* Submit a pull request to the repository in the cakephp organization, with the
-  correct target branch.
-
-## Testcases and codesniffer
-
-CakePHP tests requires [PHPUnit](http://www.phpunit.de/manual/current/en/installation.html)
-3.5 or higher. To run the testcases locally use the following command:
-
-    ./lib/Cake/Console/cake test core AllTests --stderr
-
-To run the sniffs for CakePHP coding standards:
-
-    phpcs -p --extensions=php --standard=CakePHP ./lib/Cake
-
-Check the [cakephp-codesniffer](https://github.com/cakephp/cakephp-codesniffer)
-repository to setup the CakePHP standard. The README contains installation info
-for the sniff and phpcs.
-
-
-# Additional Resources
-
-* [CakePHP coding standards](http://book.cakephp.org/2.0/en/contributing/cakephp-coding-conventions.html)
-* [Existing issues](https://github.com/cakephp/cakephp/issues)
-* [General GitHub documentation](https://help.github.com/)
-* [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
-* #cakephp IRC channel on freenode.org
+## Editor
+If you're looking for a good IDE, we'd suggest PhpStorm.  It's not free, but it's one of the best-known out there
+and reliably keeps up with the PHP community as it grows and improves. [http://www.jetbrains.com/phpstorm/](http://www.jetbrains.com/phpstorm/)
