@@ -1000,7 +1000,13 @@ debug($log);*/
             $stripe_setup = true;
         }
 
-        $this->set(compact('stripe_setup', 'User'));
+        $stripe_client_id = Configure::read('Stripe.client_id');
+
+        $this->set(compact(
+                'stripe_client_id',
+                'stripe_setup',
+                'User'
+            ));
     }
 
     /**
@@ -1016,7 +1022,8 @@ debug($log);*/
         // https://stripe.com/docs/connect
         if (isset($_GET['code'])) { // Redirect w/ code from the Stripe Connect OAuth
             $token_request_body = array(
-                'client_secret' => 'sk_test_XCR1kNc15GsZReu7hKHXFJZ8', // Stripe test secret key @TODO: get this out of here and change it to our live key
+                // use our own Stripe private key, either test or production depending on our environment
+                'client_secret' => Configure::read('Stripe.secret'),
                 'code' => $_GET['code'],
                 'grant_type' => 'authorization_code'
             );

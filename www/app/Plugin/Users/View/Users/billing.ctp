@@ -98,7 +98,7 @@ $1000</p> </div> </div>
                   $authorize_request_body = array(
                       'response_type' => 'code',
                       'scope'         => 'read_write',
-                      'client_id'     =>'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
+                      'client_id'     => $stripe_client_id,
                       'redirect_uri'  => 'http://app.botangle.dev/users/billing' // @TODO: shift to /billing/stripe-connect as soon as possible
                   );
                   $url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
