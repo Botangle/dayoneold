@@ -1432,19 +1432,6 @@ debug($log);
 
             if($this->Lesson->add($this->request->data)) {
 
-                // @TODO: check on these items, there may be bugs.  Looks like we're unsetting our lesson data before trying to save a lesson
-                // that probably won't work.  Or rather, it may generate duplicate lessons with no data or an error?
-                if (isset($this->request->data['Lesson']['parent_id']) && $this->request->data['Lesson']['parent_id'] != "") {
-                    unset($this->request->data['Lesson']);
-                    $this->request->data['Lesson']['parent_id'] = $this->Lesson->id;
-                    $this->Lesson->save($this->request->data);
-                }
-                if (!isset($this->request->data['Lesson']['parent_id'])) {
-                    unset($this->request->data['Lesson']);
-                    $this->request->data['Lesson']['parent_id'] = $this->Lesson->id;
-                    $this->Lesson->save($this->request->data);
-                }
-
                 // if we need billing info, then we'll need to put our lesson message and session id generation
                 // on hold and work on the billing stuff instead
                 if($needsBillingInfo) {

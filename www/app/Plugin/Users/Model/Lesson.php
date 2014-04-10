@@ -77,6 +77,20 @@ class Lesson extends UsersAppModel {
 
         if ($this->save($data, false)) {
             $this->id = $this->getLastInsertId();
+
+            // @TODO: check on these items, there may be bugs.  Looks like we're unsetting our lesson data before trying to save a lesson
+            // that probably won't work.  Or rather, it may generate duplicate lessons with no data or an error?
+            if (isset($data['Lesson']['parent_id']) && $data['Lesson']['parent_id'] != "") {
+                unset($data['Lesson']);
+                $data['Lesson']['parent_id'] = $this->id;
+                $this->save($data);
+            }
+            if (!isset($data['Lesson']['parent_id'])) {
+                unset($data['Lesson']);
+                $data['Lesson']['parent_id'] = $this->id;
+                $this->save($data);
+            }
+
             return true;
         } else {
             return false;
