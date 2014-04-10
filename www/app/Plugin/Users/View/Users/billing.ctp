@@ -91,58 +91,60 @@ $1000</p> </div> </div>
 								?>
 
                 <div class="control-group">
-                  <label class="control-label span5"><?php echo __("Stripe Account Email:")?></label>
+                  <label class="control-label span5"><?php echo __("User Id:")?></label>
                   <div class="controls">
                     <label class="radio inline span4">
 											<?php
-												echo $this->Form->input('stripe_id',array(
-													'placeholder'=>"Account Email",
-													'label' => false,'value'=>$User['User']['stripe_id'],
+												echo $this->Form->input('stripe_user_id',array(
+													'placeholder'=>"User Id",
+													'label' => false,'value'=>$User['User']['stripe_user_id'],
 													'type'=>'text'));
 											?>
 										</label>
                   </div>
                 </div>
                 <div class="control-group">
-                  <label class="control-label span5"><?php echo __("Stripe Secret Key:")?></label>
+                  <label class="control-label span5"><?php echo __("Stripe Access Token:")?></label>
                   <div class="controls">
                     <label class="radio inline span4">
 											<?php
-												echo $this->Form->input('secret_key',array(
-													'placeholder'=>"Secret Key",
+												echo $this->Form->input('access_token',array(
+													'placeholder'=>"Access Token",
 													'label' => false,
-													'value'=>$User['User']['secret_key'],
+													'value'=>$User['User']['access_token'],
 													'type'=>'text'));
 											?>
 										</label>
                   </div>
                 </div>
                 <div class="control-group">
-                  <label class="control-label span5"><?php echo __("Stripe Publisher
+                  <label class="control-label span5"><?php echo __("Stripe Publishable
                   Key:")?></label>
                   <div class="controls">
                     <label class="radio inline span4"><?php echo
-                    $this->Form->input('public_key',array('placeholder'=>"Publisher Key",'label' =>
-                    false,'value'=>$User['User']['public_key'],'type'=>'text'));?></label>
+                    $this->Form->input('stripe_publishable_key',array('placeholder'=>"Publishable Key",'label' =>
+                    false,'value'=>$User['User']['stripe_publishable_key'],'type'=>'text'));?></label>
                   </div>
                 </div>
                 <div class="control-group">
                   <label class="control-label span5"><?php echo __("Authorized with Stripe")?></label>
                   <div class="controls">
                     <label class="radio inline span4">
-											<?php
-                    		$authorize_request_body = array(
-													'response_type' => 'code',
-													'scope'         => 'read_write',
-													'client_id'     =>'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
-													'redirect_uri'  => 'http://app.botangle.dev/users/billing'
-												);
-												$url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
-												echo "<a href='$url' id='connectstripe'>Connect with Stripe</a>";
-												echo "<script type='text/javascript' src='js/jquery.min.js'></script>";
-												echo "<script>$(document).ready(function() { $('#connectstripe').trigger('click'); });</script>";
-											?>
-										</label>
+                        <?php
+                        // @TODO: work out how to make the below cleaner, do we need all of this here?
+                        $authorize_request_body = array(
+                            'response_type' => 'code',
+                            'scope'         => 'read_write',
+                            'client_id'     =>'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
+                            'redirect_uri'  => 'http://app.botangle.dev/users/billing' // @TODO: shift to /billing/stripe-connect as soon as possible
+                        );
+
+                        $url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
+                        echo "<a href='$url' id='connectstripe'>Connect with Stripe</a>";
+                        echo "<script type='text/javascript' src='js/jquery.min.js'></script>";
+                        echo "<script>$(document).ready(function() { $('#connectstripe').trigger('click'); });</script>";
+                        ?>
+                    </label>
                   </div>
                 </div>
                 <div class="row-fluid Add-Payment-blocks">

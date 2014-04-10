@@ -966,35 +966,12 @@ debug($log);*/
         $this->set('ratedata', $this->UserRate->find('first', array('conditions' => array('UserRate.userid' => $this->Session->read('Auth.User.id')))));
         $this->set('title_for_layout', __d('croogo', 'Billing'));
 
-
-        // Begin actual Stripe integration with Stripe Connect
-        // https://stripe.com/docs/connect
+        // @TODO: shift out of this billing action as soon as we can.  Have to work out the details on ARO/ACO first,
+        // we'll need to update the info about the appropriate redirect uri / webhook uri with Stripe too
         if (isset($_GET['code'])) { // Redirect w/ code from the Stripe Connect OAuth
-            $code = $_GET['code'];
-            $token_request_body = array(
-                'client_secret' => 'sk_test_XCR1kNc15GsZReu7hKHXFJZ8', //admin test secret key
-                'client_id' => 'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',  //the dev ID
-                'code' => $code,
-                'grant_type' => 'authorization_code'
-            );
-            $refreshtoken = "";
-            $req = curl_init('https://connect.stripe.com/oauth/authorize');
-            // set url
-            curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($req, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($req, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($req, CURLOPT_POST, true);
-            curl_setopt($req, CURLOPT_POSTFIELDS, http_build_query($token_request_body));
-            $respCode = curl_getinfo($req, CURLINFO_HTTP_CODE);
-            $resp = json_decode(curl_exec($req), true);
-            curl_close($req);
-            $refreshtoken = $resp['refresh_token'];
-            $customerID   = $resp['stripe_user_id'];
-            $accessToken  = $resp['access_token'];
-            $this->User->id = $id;
-            $this->User->saveField('auth_code', $refreshtoken);
-            $this->Session->setFlash(__d('croogo', 'Your Account Connected with Stripe Sucessfully.'), 'default', array('class' => 'success'));
+            $this->billing_connect();
         }
+
         // role_id == 4 is student. Finally figured that out.
         // If the student is the one currently trying to pay the tutor:
         if ($this->Session->read('Auth.User.role_id') == 4) {
@@ -1014,6 +991,115 @@ debug($log);*/
 
         $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
         $this->set(compact('User'));
+    }
+
+    /**
+     * Handles the Stripe Connect system so we properly hook our tutor's Stripe account up with our application
+     *
+     * This then allows us to bill for a tutor and take a cut of the proceeds ourselves.
+     */
+    public function billing_connect()
+    {
+        $id = $this->Session->read('Auth.User.id');
+
+        // Begin actual Stripe integration with Stripe Connect
+        // https://stripe.com/docs/connect
+        if (isset($_GET['code'])) { // Redirect w/ code from the Stripe Connect OAuth
+            $token_request_body = array(
+                'client_secret' => 'sk_test_XCR1kNc15GsZReu7hKHXFJZ8', // Stripe test secret key @TODO: get this out of here and change it to our live key
+                'code' => $_GET['code'],
+                'grant_type' => 'authorization_code'
+            );
+
+            // @TODO: let's abstract this out into Guzzle long-term, it'd be nice to be able to have auto-retries
+            // so we don't have to bug our tutors again if things fail for some reason the first time
+            $refreshtoken = "";
+            $req = curl_init('https://connect.stripe.com/oauth/token');
+            // set url
+            curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($req, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($req, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($req, CURLOPT_POST, true);
+            curl_setopt($req, CURLOPT_POSTFIELDS, http_build_query($token_request_body));
+            $respCode = curl_getinfo($req, CURLINFO_HTTP_CODE);
+            $resp = json_decode(curl_exec($req), true);
+
+            curl_close($req);
+
+            // check to make sure we're not having errors
+            if(isset($resp['error'])) {
+
+                // possible problems
+                // invalid_grant (if this is happening, it's potentially more severe)
+                // invalid_request, unsupported_grant_type, invalid_scope, unsupported_response_type
+
+                // @TODO: improve the error number passed, see about making it different for each of the above items
+                $this->handleStripeError($resp, 500); // we'll make these errors in the 500 range
+            }
+
+            // @TODO: does Stripe notify us if a tutor revokes access to our app?
+            // Ideally we'd need to know this for the UI so we can display that they need to hook back up again
+            // Tweeted their support, we'll see if they respond
+
+            // if we only have read access, whoa, we've got errors.  We need read/write to handle transactions
+            if($resp['scope'] == 'read_write') {
+                // Error 600: permissions problems
+                $this->handleStripeError($resp, 600, "Sorry, we need read/write privileges in order to handle transactions for you.");
+            }
+
+            // @TODO: if we're not in debug mode, then let's check this
+//            if($resp['livemode'] == false) {
+//                    Error 601: wrong payment mode, we need to be in live mode instead of debug mode
+//                    $this->handleStripeError($resp, 601);
+//            }
+
+            if(!isset($resp['stripe_user_id']) ||
+                !isset($resp['access_token']) ||
+                !isset($resp['stripe_publishable_key']) ||
+                !isset($resp['refresh_token'])
+            ) {
+                // Error 602: permissions problems
+                $this->handleStripeError($resp, 600, "Sorry, we need read/write privileges in order to handle transactions for you.");
+            }
+
+
+//            $resp = array(
+//                'refresh_token'             => 'random characters',
+//                'access_token'              => 'sk_test_randomcharacters',
+//                'stripe_user_id'            => 'random_id',
+//                'stripe_publishable_key'    => 'pk_test_random_publishable_key_characters',
+//            );
+
+            $data = array(
+                'id'                        => $id,
+                'stripe_user_id'            => $resp['stripe_user_id'],         // not really if sure we need to keep this, but we will for now
+                'access_token'              => $resp['access_token'],           // used when billing for a tutor instead of a normal Stripe secret API key
+                'stripe_publishable_key'    => $resp['stripe_publishable_key'], // used when we bill students for a tutor (it's visible on the frontend)
+                'refresh_token'             => $resp['refresh_token'],          // used to generate test access tokens in production
+            );
+            $this->User->save($data);
+
+            $this->Session->setFlash(__d('croogo', "We've connected your account with Stripe successfully."), 'default', array('class' => 'success'));
+
+            $this->redirect(array('action' => 'billing'));
+        }
+    }
+
+    /**
+     * @TODO: Move this into a separate component
+     */
+    private function handleStripeError($response, $errorNumber, $message = 'We had problems connecting to Stripe. Please try again.')
+    {
+        $this->Session->setFlash(__d('croogo', $message . " Error #:") . $errorNumber, 'default', array('class' => 'error'));
+
+        // don't redirect and die, we want a bit more control over things
+        $this->redirect('billing', null, false);
+        $this->response->send();
+
+        // @TODO: log things, adjusting based on the error number?
+
+        // stop once we're done logging things
+        $this->_stop();
     }
 
     /**
