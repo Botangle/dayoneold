@@ -86,10 +86,12 @@ Configure::write('Stripe.LiveSecret', $stripeLiveSecret);
 if($env == "production") {
     Configure::write('Stripe.mode', 'Live');
     Configure::write('Stripe.client_id', $stripeLiveClientId);
+    Configure::write('Stripe.publishable_key', $stripeLivePublishableKey);
     Configure::write('Stripe.secret', $stripeLiveSecret); // we put this in this way too so by default we can look here
 } else {
     Configure::write('Stripe.mode', 'Test');
     Configure::write('Stripe.client_id', $stripeTestClientId);
+    Configure::write('Stripe.publishable_key', $stripeTestPublishableKey);
     Configure::write('Stripe.secret', $stripeTestSecret); // we put this in this way too so by default we can look here
 }
 

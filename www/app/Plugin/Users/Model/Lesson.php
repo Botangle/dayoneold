@@ -26,8 +26,19 @@ class Lesson extends UsersAppModel {
     public $user_id_to_message;
 
     public $vistor_id;
- 
 
+    /**
+     * Whether the student user already has a stripe account or not
+     * @var bool
+     */
+    public $need_stripe_account_setup = false;
+
+    /**
+     * @TODO: Preferably we would run validation on all the data before we do things here ...
+     *
+     * @param $data
+     * @return bool
+     */
     public function add($data)
     {
         // this gets run when a student proposes a lesson to a tutor
@@ -51,7 +62,7 @@ class Lesson extends UsersAppModel {
             $student = $user->find('first', array('conditions' => array('User.id' => $this->vistor_id)));
 
             // if we don't have a stripe customer id for this student, then we need billing info
-            $needsBillingInfo = (!isset($student['User']['stripe_customer_id'])
+            $this->need_stripe_account_setup = (!isset($student['User']['stripe_customer_id'])
                 || $student['User']['stripe_customer_id'] == "")
                 ? true
                 : false;
@@ -63,7 +74,7 @@ class Lesson extends UsersAppModel {
             $tutorid = $tutorid['User']['id'];
 
             // we'll want to message this person below
-            $this->user_id_to_message = $tutorid;
+            $this->user_id_to_message = (int)$tutorid;
 
             $data['Lesson']['tutor'] = $this->vistor_id;
             $data['Lesson']['created'] = $tutorid;

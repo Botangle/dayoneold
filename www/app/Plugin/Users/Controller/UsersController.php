@@ -889,77 +889,17 @@ debug($log);*/
 
             // Continue if POST data is not empty...
             if (isset($this->request->data['Billing']['pagetype']) && ($this->request->data['Billing']['pagetype'] == 'billing')) {
-                // ...and if the Billing page is 'student_payment'
-                if (isset($this->request->data['Billing']['student_payment']) && $this->request->data['Billing']['student_payment']) {
-
-                    // Store the user object in $user according to logged-in $id
-                    $user = $this->User->find('first', array('conditions' => array('user.id' => $id)));
-
-                    // There should be a control flow switch for Paypal vs. Stripe here
-                    // Stripe uses a `$token` object to store all sensitive information, so we never
-                    // actually have to manipulate it.
-                    // That is, $cartSession : Paypal :: $token : Stripe
-                    $cartSession = "";
-                    $cartSession['fname'] = $this->request->data['Billing']['tutor_id'];
-                    $cartSession['lname'] = $_POST['lname'];
-                    $cartSession['card'] = $_POST['card'];
-                    $cartSession['acc_number'] = $_POST['acc_number'];
-
-                    $cartSession['expiration_month'] = $_POST['expiration_month'];
-                    $cartSession['expiration_year'] = $_POST['expiration_year'];;
-                    $cartSession['card_security_code'] = $_POST['card_security_code'];
-                    /* $cartSession['bill_addressline1'] = $_POST['bill_addressline1'];
-                    $cartSession['bill_addressline2'] = $_POST['bill_addressline2'];
-                    $cartSession['bill_city'] = $_POST['bill_city'];
-                    $cartSession['bill_state'] = $_POST['bill_state'];
-                    $cartSession['bill_zip'] = $_POST['bill_zip'];
-                    $cartSession['bill_country'] = $_POST['bill_country']; */
-                    $cartSession['payamount'] = $_POST['payamount'];
-                    $cartSession['paymentCurrency'] = "USD";
-
-                    // The below code is for processing the payment with Paypal
-                    // I'm commenting it out for now, so we can just use Stripe
-                    /*
-                    include('PaypalproController.php');
-                    $paypalCont = new PaypalproController();
-                    $paypalResponse = $paypalCont->setRequestFields($cartSession, 10); // Send the Paypal request
-                    if ($paypalResponse['ACK'] == 'Success') {
-                        // PAYMENT MADE NEXT STEP TO SENT EMAIL ADMIN
-                        $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                        $this->redirect(array('action' => 'billing'));
-                    } else {
-                        $this->Session->setFlash(__d('croogo', 'Payment could not be made,please try again.'), 'default', array('class' => 'error'));
-                    }
-                    */
-
-                    // Finally we can actually charge the customer with Stripe
-                    // We will use the protected `charge()` function:
-                    $amount = $_POST['payamount'];
-                    $token  = $_POST['stripeToken'];
-                    charge($user, $token, $amount);
+                // We assume that the user wants to save some data if the Billing page is not `student_setup`...
+                if ($this->UserRate->save($this->request->data)) {
+                    $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
+                    $this->redirect(array('action' => 'billing'));
                 } else {
-                    // We assume that the user wants to save some data if the Billing page is not `student_payment`...
-                    if ($this->UserRate->save($this->request->data)) {
-                        $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                        $this->redirect(array('action' => 'billing'));
-                    } else {
-                        $this->Session->setFlash(__d('croogo', 'Information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
-                    }
+                    $this->Session->setFlash(__d('croogo', 'Information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
                 }
-            } else if (isset($this->request->data['User']['pagetype']) && ($this->request->data['User']['pagetype'] == 'paymentsettings')) {
-                // If the pagetype is `paymentsetting`, the the user is interacting with the "Payment Setting" box
-                // at the bottom of http://app.botangle.dev/users/billing
-                // This is the Stripe Connect feature. We basically just save the user's Stripe ID and keys to our database
-                // Also, this flow should definitely be re-worked. The module should be saved in a View Block:
-                // http://book.cakephp.org/2.0/en/views.html
-                $user = $this->User->find('first', array('conditions' => array('user.id' => $id)));
-                $this->User->id = $user['User']['id'];
-                $this->User->saveField('stripe_id', $this->request->data['User']['stripe_id']);
-                $this->User->saveField('secret_key', $this->request->data['User']['secret_key']);
-                $this->User->saveField('public_key', $this->request->data['User']['public_key']);
-                $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                $this->redirect(array('action' => 'billing'));
-                exit();
+            }
+
+            if (isset($this->request->data['Billing']['pagetype']) && $this->request->data['Billing']['pagetype'] == 'student_setup') {
+                $this->handleStudentCustomerAccountCreation();
             }
         }
 
@@ -975,38 +915,98 @@ debug($log);*/
         // role_id == 4 is student. Finally figured that out.
         // If the student is the one currently trying to pay the tutor:
         if ($this->Session->read('Auth.User.role_id') == 4) {
-            if ($this->Session->check('paymenttutor')) {
-                $userInfo = $this->User->find('list', array('conditions' => array('role_id' => 2, 'status' => 1, 'id' => $this->Session->read('paymenttutor'))));
-            } else {
-                $userInfo = $this->User->find('list', array('conditions' => array('role_id' => 2, 'status' => 1)));
-            }
             $roleid = 2;
             $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
             $this->set(compact('User'));
-            $this->set(compact('userInfo', 'roleid'));
-
+            $this->set(compact('roleid'));
             $this->set('paymentamount', $this->Session->read("paymentamount"));
+            $this->set('publishable_key', Configure::read('Stripe.publishable_key'));
+
             $this->render('billing_student');
+        } else {
+
+            $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
+
+            $stripe_setup = false;
+            if($User['User']['stripe_user_id'] != "" &&
+                $User['User']['access_token'] != "" &&
+                $User['User']['stripe_publishable_key'] != "" &&
+                $User['User']['refresh_token'] != ""
+            ) {
+                $stripe_setup = true;
+            }
+
+            $stripe_client_id = Configure::read('Stripe.client_id');
+
+            $this->set(compact(
+                    'stripe_client_id',
+                    'stripe_setup',
+                    'User'
+                ));
         }
+    }
 
-        $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
+    /**
+     * Split out our student customer account creation as it's really a separate method showing up under the
+     * same url as a completely different setup
+     */
+    private function handleStudentCustomerAccountCreation()
+    {
+        $id = $this->Session->read('Auth.User.id');
 
-        $stripe_setup = false;
-        if($User['User']['stripe_user_id'] != "" &&
-            $User['User']['access_token'] != "" &&
-            $User['User']['stripe_publishable_key'] != "" &&
-            $User['User']['refresh_token'] != ""
-        ) {
-            $stripe_setup = true;
-        }
+        // Store the user object in $user according to logged-in $id
+        $user = $this->User->find('first', array('conditions' => array('User.id' => $id)));
 
-        $stripe_client_id = Configure::read('Stripe.client_id');
+        // Next, grab the token that represents our customer's credit card in the Stripe system
+        $token  = $_POST['stripeToken'];
 
-        $this->set(compact(
-                'stripe_client_id',
-                'stripe_setup',
-                'User'
+        // The Stripe plugin automatically handles data validation and error handling
+        // See docs here: https://github.com/chronon/CakePHP-StripeComponent-Plugin
+
+        // Create a customer for our student using our stripe component
+        // we're going to create a user for them in our app (not our tutor's) per this shared customer's page:
+        // https://stripe.com/docs/connect/shared-customers
+        // this makes it easier for us to bill them when they are have a lesson with someone else in the future
+        $stripeComponent = $this->Components->load('Stripe.Stripe');
+        $result = $stripeComponent->customerCreate(array(
+                'card'          => $token,
+                // generate a unique identifier for this customer
+                'description'   => $user['User']['id'].'_'.$user['User']['name'].'_'.$user['User']['lname'],
+                'email'         => $user['User']['email'],
             ));
+
+        // now check the results we get back from Stripe. if this isn't an array, then we've got errors
+        if(!is_array($result)) {
+            // @TODO: confirm whether these errors are generic enough to show to the general public, I think they are
+            $this->Session->setFlash(__d('croogo', $result), 'default', array('class' => 'error'));
+
+            // redirect back to the page again and ask for their data again
+            // @TODO: it'd be nice if we'd auto-populate their info with what we know
+            // but we threw a bunch of it away :-)
+            // In reality, we shouldn't have too many errors here as long as the server is setup ok
+            $this->redirect(array('action' => 'billing'));
+        } else {
+
+            // then let's save the user account to the DB so we can refer to it again in the future
+            $user['User']['stripe_customer_id'] = $result['stripe_id']; // our Stripe customer id to refer to this person with again
+
+            // @TODO: we should really make sure this saves in the future ...
+            $this->User->save($user);
+
+            // Now let's see if we're in the middle of an initial lesson setup (instead of someone proactively dealing with setting up their account)
+            // if we are, we'll need to finish up our lesson setup
+            if($this->Session->read('initial_lesson_setup')) {
+                $user_id_to_message = $this->Session->read('new_lesson_user_id_to_message');
+                $lesson_id          = $this->Session->read('new_lesson_lesson_id');
+
+                // clear up our session so we don't have anything else weird happen to this person later on
+                $this->Session->delete('new_lesson_lesson_id');
+                $this->Session->delete('new_lesson_user_id_to_message');
+
+                // a redirect and session flash gets posted here
+                $this->postLessonAddSetup($lesson_id, $user_id_to_message);
+            }
+        }
     }
 
     /**
@@ -1423,37 +1423,26 @@ debug($log);
         if (!empty($this->request->data)) {
 
             $this->Lesson->create();
-
-            $needsBillingInfo = false;
-
-            $user_id_to_message = null;
-
             $this->Lesson->visitor_id = $this->Auth->user('id');
+
+            // @TODO: ideally we'd validate things before we start trying to mess with stuff here ...
 
             if($this->Lesson->add($this->request->data)) {
 
                 // if we need billing info, then we'll need to put our lesson message and session id generation
                 // on hold and work on the billing stuff instead
-                if($needsBillingInfo) {
+                if($this->Lesson->need_stripe_account_setup) {
                     $this->Session->write('initial_lesson_setup', true);
                     $this->Session->write('new_lesson_user_id_to_message', $this->Lesson->user_id_to_message);
                     $this->Session->write('new_lesson_lesson_id', $this->Lesson->id);
 
                     // redirect to our billing page to get setup with Stripe
                     $this->redirect(array('action' => 'billing'));
+                } else {
+                    // otherwise, let's handle the post lesson add setup
+                    $this->postLessonAddSetup($this->Lesson->lesson_id, $this->Lesson->user_id_to_message);
                 }
 
-                // @TODO: do we want to do any type of checking to see if there were problems along the way?
-                $this->addLessonMessage($user_id_to_message);
-
-                // Not sure why we need to only do this if we're a student, but we'll ignore that for now
-                // but we do need to generate lesson session ids so our lessons will work
-                if ($this->request->data['Lesson']['tutorname'] == "") {
-                    $this->generateTwiddlaAndOpenTokSessionIds($this->Lesson->id);
-                }
-
-                $this->Session->setFlash(__d('croogo', 'Your lesson has been added successfully.'), 'default', array('class' => 'success'));
-                $this->redirect(array('action' => 'lessons'));
             } else {
                 $this->Session->setFlash(__d('croogo', 'The Lesson could not be saved. Please, try again.'), 'default', array('class' => 'error'));
             }
@@ -1468,6 +1457,24 @@ debug($log);
             $this->render('lessoncreate');
         }
 
+    }
+
+    /**
+     * Called so we can complete adding a lesson to our system as needed
+     */
+    private function postLessonAddSetup($lesson_id, $user_id_to_message)
+    {
+        // @TODO: do we want to do any type of checking to see if there were problems along the way?
+        $this->addLessonMessage($user_id_to_message);
+
+        // Not sure why we need to only do this if we're a student, but we'll ignore that for now
+        // but we do need to generate lesson session ids so our lessons will work
+        if ($this->request->data['Lesson']['tutorname'] == "") {
+            $this->generateTwiddlaAndOpenTokSessionIds($lesson_id);
+        }
+
+        $this->Session->setFlash(__d('croogo', 'Your lesson has been added successfully.'), 'default', array('class' => 'success'));
+        $this->redirect(array('action' => 'lessons'));
     }
 
     /**
