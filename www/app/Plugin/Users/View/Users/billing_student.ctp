@@ -100,7 +100,7 @@
                                         <label class="control-label" for="postalAddress"><?php echo __("Security Code")?></label>
                                         <div class="controls">
                                             <?php // no name here so the card number never gets sent to our server ?>
-                                            <input type="text" value="456" placeholder="CVV" data-stripe="cvc" />
+                                            <input type="text" value="" placeholder="CVV" data-stripe="cvc" />
                                         </div>
                                     </div>
 
@@ -125,7 +125,7 @@
                                             <select data-stripe="exp-year">
                                                 <?php
                                                 $curyr = date('Y');
-                                                for($i = $curyr+1; $i< ($curyr+25);$i++){
+                                                for($i = $curyr; $i< ($curyr+15);$i++){
                                                     echo '<option value = "'.$i.'">'.$i.'</option>';
                                                 }
                                                 ?>
