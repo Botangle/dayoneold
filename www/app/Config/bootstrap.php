@@ -78,9 +78,14 @@ CakePlugin::load('Migrations');
  */
 CakePlugin::load('Stripe');
 
-Configure::write('Stripe.TestSecret', 'sk_test_XCR1kNc15GsZReu7hKHXFJZ8');
-Configure::write('Stripe.LiveSecret', 'yourStripeLiveAPIKeyHere'); /* @todo */
-Configure::write('Stripe.mode', 'Test');
+Configure::write('Stripe.TestSecret', $stripeTestSecret);
+Configure::write('Stripe.LiveSecret', $stripeLiveSecret);
+
+if($env == "production") {
+    Configure::write('Stripe.mode', 'Live');
+} else {
+    Configure::write('Stripe.mode', 'Test');
+}
 
 /* We best do some logging */
 CakeLog::config('stripe', array(
