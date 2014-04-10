@@ -1416,84 +1416,53 @@ debug($log);
     /**
      * Lessons add
      *
-     * Binds a student's proposed lesson to a tutor's account. Also seems to
-     * manage the messages between the student and tutor.
+     * Binds a student's proposed lesson to a tutor's account. Also notifies a student and tutor with messages about their new lesson
      */
     public function lessons_add()
     {
         if (!empty($this->request->data)) {
 
-            /* @todo find out why this if-statement is empty... */
-            if (isset($this->request->data['Lesson']['tutorname']) && $this->request->data['Lesson']['tutorname'] != "") {
-
-            } else {
-
-            }
             $this->Lesson->create();
 
-            // this gets run when a student proposes a lesson to a tutor
-            if (isset($this->request->data['Lesson']['tutor']) && $this->request->data['Lesson']['tutor'] != "") {
-                $tutorid = $this->request->data['Lesson']['tutor'];
-                $this->request->data['Lesson']['tutor'] = $tutorid;
-                $this->request->data['Lesson']['created'] = $this->Auth->user('id');
-                $this->request->data['Lesson']['add_date'] = date('Y-m-d');
-                $this->request->data['Lesson']['readlesson'] = '1';
-                $this->request->data['Lesson']['readlessontutor'] = '0';
-                $this->request->data['Lesson']['is_confirmed'] = '0';
-                $this->request->data['Lesson']['laststatus_tutor'] = 0;
-                $this->request->data['Lesson']['laststatus_student'] = 1;
-            } else {
-                // this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
-                $tutorid = $this->User->find('first', array('conditions' => array('username' => $this->request->data['Lesson']['tutorname'])));
-                $tutorid = $tutorid['User']['id'];
-                $this->request->data['Lesson']['tutor'] = $this->Auth->user('id');
-                $this->request->data['Lesson']['created'] = $tutorid;
-                $this->request->data['Lesson']['add_date'] = date('Y-m-d');
-                $this->request->data['Lesson']['readlesson'] = '0';
-                $this->request->data['Lesson']['readlessontutor'] = '1';
-                $this->request->data['Lesson']['is_confirmed'] = '0';
-                $this->request->data['Lesson']['laststatus_tutor'] = 1;
-                $this->request->data['Lesson']['laststatus_student'] = 0;
-            }
+            $needsBillingInfo = false;
 
-            if ($this->request->data['Lesson']['tutorname'] == "") {
-                // generate our twiddla id ahead of time
-                $this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
-                $this->request->data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
+            $user_id_to_message = null;
 
-                // and our opentok session id
-                $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
-                $this->request->data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
-            }
+            $this->Lesson->visitor_id = $this->Auth->user('id');
 
-            if ($this->Lesson->save($this->request->data, false)) {
-                $lessondid = $this->Lesson->getLastInsertId();
+            if($this->Lesson->add($this->request->data)) {
 
+                // @TODO: check on these items, there may be bugs.  Looks like we're unsetting our lesson data before trying to save a lesson
+                // that probably won't work.  Or rather, it may generate duplicate lessons with no data or an error?
                 if (isset($this->request->data['Lesson']['parent_id']) && $this->request->data['Lesson']['parent_id'] != "") {
                     unset($this->request->data['Lesson']);
-                    $this->request->data['Lesson']['parent_id'] = $lessondid;;
+                    $this->request->data['Lesson']['parent_id'] = $this->Lesson->id;
                     $this->Lesson->save($this->request->data);
                 }
                 if (!isset($this->request->data['Lesson']['parent_id'])) {
                     unset($this->request->data['Lesson']);
-                    $this->request->data['Lesson']['parent_id'] = $lessondid;
+                    $this->request->data['Lesson']['parent_id'] = $this->Lesson->id;
                     $this->Lesson->save($this->request->data);
                 }
 
-                $this->request->data['Usermessage']['sent_from'] = $this->Auth->user('id');
-                $this->request->data['Usermessage']['sent_to'] = $tutorid;
-                $this->request->data['Usermessage']['readmessage'] = 0;
-                $this->request->data['Usermessage']['date'] = date('Y-m-d H:i:s');
-                $this->request->data['Usermessage']['body'] = " Our Lesson is setup now. Please click here to read.";
-                $this->request->data['Usermessage']['parent_id'] = 0;
+                // if we need billing info, then we'll need to put our lesson message and session id generation
+                // on hold and work on the billing stuff instead
+                if($needsBillingInfo) {
+                    $this->Session->write('initial_lesson_setup', true);
+                    $this->Session->write('new_lesson_user_id_to_message', $this->Lesson->user_id_to_message);
+                    $this->Session->write('new_lesson_lesson_id', $this->Lesson->id);
 
-                unset($this->request->data['Lesson']);
+                    // redirect to our billing page to get setup with Stripe
+                    $this->redirect(array('action' => 'billing'));
+                }
 
-                $this->Usermessage->save($this->request->data);
-                $lastId = $this->Usermessage->getLastInsertId();
+                // @TODO: do we want to do any type of checking to see if there were problems along the way?
+                $this->addLessonMessage($user_id_to_message);
 
-                if ($this->request->data['Usermessage']['parent_id'] == 0) {
-                    $this->Usermessage->query(" UPDATE `usermessages` SET parent_id = '" . $lastId . "' WHERE id = '" . $lastId . "'");
+                // Not sure why we need to only do this if we're a student, but we'll ignore that for now
+                // but we do need to generate lesson session ids so our lessons will work
+                if ($this->request->data['Lesson']['tutorname'] == "") {
+                    $this->generateTwiddlaAndOpenTokSessionIds($this->Lesson->id);
                 }
 
                 $this->Session->setFlash(__d('croogo', 'Your lesson has been added successfully.'), 'default', array('class' => 'success'));
@@ -1512,6 +1481,55 @@ debug($log);
             $this->render('lessoncreate');
         }
 
+    }
+
+    /**
+     * Ideally we might make this an action and redirect, but at the moment our actions are a bit messy with ACL issues
+     * so we'll do this here for now
+     *
+     * @param integer $user_id_to_message
+     */
+    private function addLessonMessage($user_id_to_message)
+    {
+        $data = array();
+        $data['Usermessage']['sent_from'] = $this->Auth->user('id');
+        $data['Usermessage']['sent_to'] = $user_id_to_message;
+        $data['Usermessage']['readmessage'] = 0;
+        $data['Usermessage']['date'] = date('Y-m-d H:i:s');
+        $data['Usermessage']['body'] = " Our Lesson is setup now. Please click here to read."; // @TODO: fix the body so it's clickable
+        $data['Usermessage']['parent_id'] = 0;
+
+        $this->Usermessage->save($data);
+        $lastId = $this->Usermessage->getLastInsertId();
+
+// @TODO: what were we planning to do with this line?  parent_id is always hard-coded to zero above ...
+//        if ($this->request->data['Usermessage']['parent_id'] == 0) {
+            $this->Usermessage->query(" UPDATE `usermessages` SET parent_id = '" . $lastId . "' WHERE id = '" . $lastId . "'");
+//        }
+    }
+
+    /**
+     * Generates some session ids we need to actually run a lesson
+     *
+     * @TODO: It'd be great to move all of this to a separate helper model so we're not cluttering our controller as much
+     * Long-term, let's do that
+     * @param $lessonId
+     */
+    private function generateTwiddlaAndOpenTokSessionIds($lessonId)
+    {
+        $data = array();
+        $data['Lesson']['id']   = $lessonId;
+
+        // generate our twiddla id ahead of time
+        $this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
+        $data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
+
+        // and our opentok session id
+        $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+        $data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
+
+        // @TODO: eventually, we should check to make sure this actually doesn't have errors instead of just assuming :-/
+        $this->Lesson->save($data);
     }
 
     /**
