@@ -917,8 +917,17 @@ debug($log);*/
         if ($this->Session->read('Auth.User.role_id') == 4) {
             $roleid = 2;
             $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
-            $this->set(compact('User'));
-            $this->set(compact('roleid'));
+
+            $needs_payments_setup = true;
+            if($User['User']['stripe_customer_id'] != '') {
+                $needs_payments_setup = false;
+            }
+
+            $this->set(compact(
+                    'needs_payments_setup',
+                    'roleid',
+                    'User'
+                ));
             $this->set('paymentamount', $this->Session->read("paymentamount"));
             $this->set('publishable_key', Configure::read('Stripe.publishable_key'));
 
@@ -1005,6 +1014,8 @@ debug($log);*/
 
                 // a redirect and session flash gets posted here
                 $this->postLessonAddSetup($lesson_id, $user_id_to_message);
+            } else {
+                $this->Session->setFlash(__d('croogo', "You're all setup for payments now.  Thanks!"), 'default', array('class' => 'success'));
             }
         }
     }

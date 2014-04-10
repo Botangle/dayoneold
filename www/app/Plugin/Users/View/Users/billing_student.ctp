@@ -19,6 +19,15 @@
                     <div class="PageLeft-Block">
                         <div class="row-fluid Add-Payment-blocks">
 
+                            <?php if(!$needs_payments_setup): ?>
+                                <div class="span12">
+                                    <p class="FontStyle20 color1"><?php echo __("Payments Setup")?></p>
+                                    <p>Thanks, you're all setup in our system.  At this point, tutors will see your lesson requests
+                                        and you can start arranging the details on when you meet.  Please let us know if
+                                        you have any questions or concerns!</p>
+                                </div>
+
+                            <?php else: ?>
                             <div class="span12">
                                 <p class="FontStyle20 color1"><?php echo __("Setup Payments")?></p>
                                 <p>Congratulations! You're getting close to having your first lesson!  We just need a few more
@@ -133,6 +142,7 @@
                                     <?php echo $this->Form->end();?>
                                 </div>
                             </div>
+                            <?php endif; // if we need payments setup ?>
                         </div>
                     </div>
                 </div>
