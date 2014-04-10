@@ -1248,13 +1248,18 @@ debug($log);*/
         $userlessonconditionsfield = "tutor";
         $readconditons = "readlessontutor";
 
+        // we want to leave lessons off if a student isn't setup to pay
+        $extraConditions = 'INNER JOIN users as student ON (student.id = Lesson.created AND student.stripe_customer_id IS NOT NULL)';
+
         if ($this->Session->read('Auth.User.role_id') == 4) {
             $userconditionsfield = "created";
             $userlessonconditionsfield = "created";
             $readconditons = "readlesson";
+            $extraConditions = '';
         }
 
         $activeLessonSQL = "Select * from lessons as Lesson
+            {$extraConditions}
             INNER JOIN `$this->databaseName`.`users` AS `User`
 		    ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
 		    JOIN (
@@ -1265,9 +1270,12 @@ debug($log);*/
             WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
                 AND Lesson.is_confirmed = 0
                 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
+
+
         $activelesson = $this->Lesson->query($activeLessonSQL);
 
         $upcomingLessonSQL = "Select * from lessons as Lesson
+            {$extraConditions}
             INNER JOIN `$this->databaseName`.`users` AS `User`
             ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
             JOIN (
