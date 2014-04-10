@@ -16,8 +16,9 @@
         <h2 class="page-title">
           <?php echo __("Billing")?>
         </h2>
-        <div class="StaticPageRight-Block">
-          <div class="PageLeft-Block">
+          <?php echo $this->Form->create('UserRate',array('class'=>'form-horizontal')); ?>
+          <div class="StaticPageRight-Block">
+              <div class="PageLeft-Block">
             <div class="row-fluid Add-Payment-blocks">
               <div class="span12">
                 <p class="FontStyle20 color1">
@@ -26,7 +27,6 @@
               </div>
 							<?php
 								$this->request->data = $this->Session->read("Auth.User");
-								echo $this->Form->create('UserRate',array('class'=>'form-horizontal'));
 								echo $this->Form->input('pagetype',array('value'=>"billing",'type'=>'hidden'));
 								echo $this->Form->input('id',array('value'=>isset($ratedata['UserRate']['id'])?$ratedata['UserRate']['id']:"",'type'=>'hidden'));
 								echo $this->Form->input('userid',array('value'=>$this->request->data['id'],'type'=>'hidden'));
@@ -60,14 +60,16 @@
                 <div class="span5">
                   <button type="submit" class="btn btn-primary">Update</button>
                 </div>
-              </div><!-- <div class="row-fluid Add-Payment-blocks"> <div class="span5"> <p class="FontStyle20
+              </div>
+<?php /* <div class="row-fluid Add-Payment-blocks"> <div class="span5"> <p class="FontStyle20
 color1">Add Your Payment Method:</p> </div> <div class="span5"> <button type="submit" class="btn
 btn-primary">Add a Payment Account</button> </div> </div>--><?php echo $this->Form->end();?><!--<div class="row-fluid Add-Payment-blocks"> <div class="span5"> <p class="FontStyle20
 color1">Total Balance:</p> </div> <div class="span5"> <p class="FontStyle20">Total Blanace:
 $1000</p> </div> </div>
 
  <div class="row-fluid payment-blocks"> <div class="span5"> &nbsp; </div> <div class="span5">
-<button type="submit" class="btn btn-primary">Withdrawal</button> </div> </div> -->
+<button type="submit" class="btn btn-primary">Withdrawal</button> </div> </div>
+ */ ?>
             </div>
           </div>
         </div>
@@ -80,83 +82,35 @@ $1000</p> </div> </div>
               <div class="row-fluid Add-Payment-blocks">
                 <div class="span12">
                   <p class="FontStyle20 color1">
-                    <?php echo __("Setup Account:")?>
+                    <?php echo __("Setup Access to a Stripe Account")?>
                   </p>
                 </div>
+                  <p>To help us both get paid, we work closely with Stripe.  Stripe will let us bill your students and
+                      take our percentage once things work out.  We'll need you to click the button below and either
+                      sign up for a Stripe account or authorize us on an existing account you have.</p>
 
-								<?php
-									$this->request->data = $this->Session->read("Auth.User");
-	                echo $this->Form->create('User',array('class'=>'form-horizontal'));
-									echo $this->Form->input('pagetype',array('value'=>"paymentsettings",'type'=>'hidden'));
-								?>
+                  <p>Once that's done, we'll list you as a tutor and start organizing lessons for you!</p>
 
-                <div class="control-group">
-                  <label class="control-label span5"><?php echo __("User Id:")?></label>
-                  <div class="controls">
-                    <label class="radio inline span4">
-											<?php
-												echo $this->Form->input('stripe_user_id',array(
-													'placeholder'=>"User Id",
-													'label' => false,'value'=>$User['User']['stripe_user_id'],
-													'type'=>'text'));
-											?>
-										</label>
-                  </div>
-                </div>
-                <div class="control-group">
-                  <label class="control-label span5"><?php echo __("Stripe Access Token:")?></label>
-                  <div class="controls">
-                    <label class="radio inline span4">
-											<?php
-												echo $this->Form->input('access_token',array(
-													'placeholder'=>"Access Token",
-													'label' => false,
-													'value'=>$User['User']['access_token'],
-													'type'=>'text'));
-											?>
-										</label>
-                  </div>
-                </div>
-                <div class="control-group">
-                  <label class="control-label span5"><?php echo __("Stripe Publishable
-                  Key:")?></label>
-                  <div class="controls">
-                    <label class="radio inline span4"><?php echo
-                    $this->Form->input('stripe_publishable_key',array('placeholder'=>"Publishable Key",'label' =>
-                    false,'value'=>$User['User']['stripe_publishable_key'],'type'=>'text'));?></label>
-                  </div>
-                </div>
-                <div class="control-group">
-                  <label class="control-label span5"><?php echo __("Authorized with Stripe")?></label>
-                  <div class="controls">
-                    <label class="radio inline span4">
-                        <?php
-                        // @TODO: work out how to make the below cleaner, do we need all of this here?
-                        $authorize_request_body = array(
-                            'response_type' => 'code',
-                            'scope'         => 'read_write',
-                            'client_id'     =>'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
-                            'redirect_uri'  => 'http://app.botangle.dev/users/billing' // @TODO: shift to /billing/stripe-connect as soon as possible
-                        );
-
-                        $url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
-                        echo "<a href='$url' id='connectstripe'>Connect with Stripe</a>";
-                        echo "<script type='text/javascript' src='js/jquery.min.js'></script>";
-                        echo "<script>$(document).ready(function() { $('#connectstripe').trigger('click'); });</script>";
-                        ?>
-                    </label>
-                  </div>
-                </div>
-                <div class="row-fluid Add-Payment-blocks">
-                  <div class="span5"></div>
-                  <div class="span5">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                  </div>
-                </div><?php echo $this->Form->end();?>
+                  <?php if($stripe_setup) : ?>
+                      <img src="/images/stripe-white.png" alt="Connect with Stripe"> <span class="ok-button"><i class="icon-large icon-ok icon-white"></i> &nbsp;Connected</span>
+                  <?php else :
+                  // @TODO: work out how to make the below cleaner, do we need all of this here?
+                  $authorize_request_body = array(
+                      'response_type' => 'code',
+                      'scope'         => 'read_write',
+                      'client_id'     =>'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
+                      'redirect_uri'  => 'http://app.botangle.dev/users/billing' // @TODO: shift to /billing/stripe-connect as soon as possible
+                  );
+                  $url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
+                  ?>
+                  <a href="<?php echo $url; ?>" id="connectstripe"><img src="/images/stripe-blue.png" alt="Connect with Stripe"></a>
+                  <script>$(document).ready(function() { $('#connectstripe').trigger('click'); });</script>
+                  <?php endif; ?>
               </div>
             </div>
           </div>
         </div>
+          <?php echo $this->Form->end();?>
       </div>
     </div><!-- @end .row -->
   </div><!-- @end .container -->

@@ -990,7 +990,17 @@ debug($log);*/
         }
 
         $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
-        $this->set(compact('User'));
+
+        $stripe_setup = false;
+        if($User['User']['stripe_user_id'] != "" &&
+            $User['User']['access_token'] != "" &&
+            $User['User']['stripe_publishable_key'] != "" &&
+            $User['User']['refresh_token'] != ""
+        ) {
+            $stripe_setup = true;
+        }
+
+        $this->set(compact('stripe_setup', 'User'));
     }
 
     /**
@@ -1042,7 +1052,7 @@ debug($log);*/
             // Tweeted their support, we'll see if they respond
 
             // if we only have read access, whoa, we've got errors.  We need read/write to handle transactions
-            if($resp['scope'] == 'read_write') {
+            if($resp['scope'] != 'read_write') {
                 // Error 600: permissions problems
                 $this->handleStripeError($resp, 600, "Sorry, we need read/write privileges in order to handle transactions for you.");
             }
@@ -1090,7 +1100,7 @@ debug($log);*/
      */
     private function handleStripeError($response, $errorNumber, $message = 'We had problems connecting to Stripe. Please try again.')
     {
-        $this->Session->setFlash(__d('croogo', $message . " Error #:") . $errorNumber, 'default', array('class' => 'error'));
+        $this->Session->setFlash(__d('croogo', $message . " Error #") . $errorNumber, 'default', array('class' => 'error'));
 
         // don't redirect and die, we want a bit more control over things
         $this->redirect('billing', null, false);
