@@ -1133,37 +1133,29 @@ debug($log);*/
     /**
      * Charge function
      *
-     * Handles the payment with Stripe, and customer retrieval/creation.
+     * Handles payment with Stripe for a pre-setup customer account
      *
      * @access protected
-     * @param  $user     : The CakePHP user object
-     * @param  $token    : The Stripe token
+     * @param  $userId   : The specific User id we should be charging
      * @param  $amount   : Payment amount
+     * @param  $fee      : amount we take as our cut
      */
-     protected function charge( $user, $token, $amount ) {
-       // The Stripe plugin automatically handles data validation and error handling
-       // See docs here: https://github.com/chronon/CakePHP-StripeComponent-Plugin
+     protected function charge( $userId, $amount, $fee) {
 
-       if (isset($customerID)) {
-         $customer = $this->StripeComponent->customerRetrieve($customerID);
-       } else {
-         // Create the customer
-         $customer = array(
-           'stripeToken' => $accessToken,
-           'email'       => $user['email']
+         // we need our customer account ID (from stripe) so we know what credit card to charge
+         $user = $this->User->find('first', array('conditions' => array('User.id' => $userId)));
+
+         // The Stripe plugin automatically handles data validation and error handling
+         // See docs here: https://github.com/chronon/CakePHP-StripeComponent-Plugin
+
+         $charge = array(
+             'stripeCustomer'   => $user['User']['stripe_customer_id'],
+             'amount'           => $amount,
+             'application_fee'  => $fee,
+             'currency'         => 'usd',
          );
-         // Create the customer
-         $result = $this->StripeComponent->customerCreate($customer);
-       }
 
-       $charge = array(
-         'amount' => $amount,
-         'stripeToken' => $token,
-         'stripeCustomer' => $customer['stripe_id']
-        );
-
-        $result = $this->Stripe->charge($charge);
-        $this->render('paymentsetting');
+         return $this->Stripe->charge($charge);
     }
 
     /**
