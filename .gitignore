@@ -25,6 +25,7 @@ www/app/Config/*-production.php
 !./Plugin/Example
 !./Plugin/Install
 !./Plugin/Translate
+www/app/Plugin/Stripe
 
 # Vagrant cache and logs
 .vagrant/
