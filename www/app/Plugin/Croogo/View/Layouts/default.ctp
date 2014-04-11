@@ -11,7 +11,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><?php //echo $title_for_layout; &raquo;?> <?php echo Configure::read('Site.title'); ?></title>
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
 	<?php
 		echo $this->Meta->meta();
         echo $this->fetch('meta');
