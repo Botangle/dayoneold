@@ -1873,8 +1873,6 @@ debug($log); */
                 $this->request->data['LessonPayment']['lesson_take'] = 1;
                 $this->request->data['LessonPayment']['payment_complete'] = 0;
                 $this->request->data['LessonPayment']['lesson_id'] = $this->params->query['lessonid'];
-
-                $this->LessonPayment->save($this->request->data);
             } else {
                 $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                 $pritype = $u['UserRate']['price_type'];
@@ -1892,7 +1890,31 @@ debug($log); */
                 $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                 $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                 $this->request->data['LessonPayment']['id'] = $lessonPayment['LessonPayment']['id'];
-                $this->LessonPayment->save($this->request->data);
+            }
+
+            // we'll only do this stuff as a student (@TODO: let's make sure a student doesn't try to change their role id ...)
+
+            // save our current information to the database
+            $this->LessonPayment->save($this->request->data);
+
+            // then, if our payment isn't complete yet, then let's bill for it
+
+            if($this->request->data['LessonPayment']['payment_complete'] == 0) {
+
+                $amount = $this->request->data['LessonPayment']['payment_amount'];
+                $fee    = $amount * .30; // take a 30% commission
+
+                $results = $this->charge((int)$this->Auth->user('id'), $this->request->data['LessonPayment']['payment_amount'], $fee);
+
+                // if we have success billing, we'll note the fact and save things
+                if(is_array($results)) {
+                    $this->request->data['LessonPayment']['payment_complete'] = 1;
+                    $this->LessonPayment->save($this->request->data);
+                }
+
+                // otherwise we'll leave this for the system to bill again somehow
+
+                // @TODO: should we have an auto-retry system setup here?
             }
         }
 
