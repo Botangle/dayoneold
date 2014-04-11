@@ -1812,7 +1812,7 @@ debug($log); */
                     $pritype = $u['UserRate']['price_type'];
                     $pricerate = $u['UserRate']['rate'];
                     $totalamount = 0;
-                    if ($pritype == 'per min') {
+                    if ($pritype == 'permin') {
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = ($totaltimeuseinmin) * $pricerate;
                     } else {
@@ -1832,7 +1832,7 @@ debug($log); */
                     $pritype = $u['UserRate']['price_type'];
                     $pricerate = $u['UserRate']['rate'];
                     $totalamount = 0;
-                    if ($pritype == 'per min') {
+                    if ($pritype == 'permin') {
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = ($totaltimeuseinmin) * $pricerate;
                     } else {
@@ -1867,7 +1867,7 @@ debug($log); */
                 $pritype = $u['UserRate']['price_type'];
                 $pricerate = $u['UserRate']['rate'];
                 $totalamount = 0;
-                if ($pritype == 'per min') {
+                if ($pritype == 'permin') {
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = ($totaltimeuseinmin) * $pricerate;
                 } else {
@@ -1888,7 +1888,7 @@ debug($log); */
                 $pritype = $u['UserRate']['price_type'];
                 $pricerate = $u['UserRate']['rate'];
                 $totalamount = 0;
-                if ($pritype == 'per min') {
+                if ($pritype == 'permin') {
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = ($totaltimeuseinmin) * $pricerate;
                 } else {
@@ -1928,7 +1928,7 @@ debug($log); */
         $pricerate = $u['UserRate']['rate'];
         $totalamount = 0;
         $totaltime = $ulesson['Lesson']['duration'];
-        if ($pritype == 'per min') {
+        if ($pritype == 'permin') {
             $totalamount = ($totaltime * 60 * 60) * $pricerate;
         } else {
             $pricerate = $pricerate / 60;
