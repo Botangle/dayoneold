@@ -1806,9 +1806,9 @@ debug($log); */
             $totaltime = $checktwiddlaid['Lesson']['remainingduration'] + 60;
             $this->Lesson->saveField('remainingduration', $totaltime);
             if (isset($this->params->query['completelesson']) && ($this->params->query['completelesson'] == 1)) {
-                $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['tutor'], 'tutor_id' => $checktwiddlaid['Lesson']['created'], 'lesson_id' => $this->params->query['lessonid'])));
+                $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['created'], 'tutor_id' => $checktwiddlaid['Lesson']['tutor'], 'lesson_id' => $this->params->query['lessonid'])));
                 if (empty($lessonPayment)) {
-                    $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['created'])));
+                    $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                     $pritype = $u['UserRate']['price_type'];
                     $pricerate = $u['UserRate']['rate'];
                     $totalamount = 0;
@@ -1820,15 +1820,15 @@ debug($log); */
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = $totaltimeuseinmin * $pricerate;
                     }
-                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
-                    $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                     $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
 
                     $this->request->data['LessonPayment']['payment_complete'] = 0;
                     $this->request->data['LessonPayment']['lesson_id'] = $this->params->query['lessonid'];
                     $this->LessonPayment->save($this->request->data);
                 } else {
-                    $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['created'])));
+                    $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                     $pritype = $u['UserRate']['price_type'];
                     $pricerate = $u['UserRate']['rate'];
                     $totalamount = 0;
@@ -1840,8 +1840,8 @@ debug($log); */
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = $totaltimeuseinmin * $pricerate;
                     }
-                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
-                    $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                     $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                     $this->request->data['LessonPayment']['id'] = $lessonPayment['LessonPayment']['id'];
                     $this->LessonPayment->save($this->request->data);
@@ -1855,7 +1855,7 @@ debug($log); */
         } else if ($roletype == 4) {
             $totaltime = $checktwiddlaid['Lesson']['student_lessontaekn_time'] + 60;
             $this->Lesson->saveField('student_lessontaekn_time', $totaltime);
-            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['tutor'], 'tutor_id' => $checktwiddlaid['Lesson']['created'], 'lesson_id' => $this->params->query['lessonid'])));
+            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['created'], 'tutor_id' => $checktwiddlaid['Lesson']['tutor'], 'lesson_id' => $this->params->query['lessonid'])));
             if (isset($this->params->query['completelesson']) && ($this->params->query['completelesson'] == 1)) {
 
                 $this->request->data['LessonPayment']['lesson_complete_tutor'] = 1;
@@ -1863,7 +1863,7 @@ debug($log); */
             }
 
             if (empty($lessonPayment)) {
-                $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['created'])));
+                $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                 $pritype = $u['UserRate']['price_type'];
                 $pricerate = $u['UserRate']['rate'];
                 $totalamount = 0;
@@ -1875,8 +1875,8 @@ debug($log); */
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = $totaltimeuseinmin * $pricerate;
                 }
-                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
-                $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                 $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                 $this->request->data['LessonPayment']['lesson_take'] = 1;
                 $this->request->data['LessonPayment']['payment_complete'] = 0;
@@ -1884,7 +1884,7 @@ debug($log); */
 
                 $this->LessonPayment->save($this->request->data);
             } else {
-                $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['created'])));
+                $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                 $pritype = $u['UserRate']['price_type'];
                 $pricerate = $u['UserRate']['rate'];
                 $totalamount = 0;
@@ -1896,8 +1896,8 @@ debug($log); */
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = $totaltimeuseinmin * $pricerate;
                 }
-                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
-                $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                 $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                 $this->request->data['LessonPayment']['id'] = $lessonPayment['LessonPayment']['id'];
                 $this->LessonPayment->save($this->request->data);
