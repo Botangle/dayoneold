@@ -94,12 +94,10 @@ $1000</p> </div> </div>
                   <?php if($stripe_setup) : ?>
                       <img src="/images/stripe-white.png" alt="Connect with Stripe"> <span class="ok-button"><i class="icon-large icon-ok icon-white"></i> &nbsp;Connected</span>
                   <?php else :
-                  // @TODO: work out how to make the below cleaner, do we need all of this here?
                   $authorize_request_body = array(
                       'response_type' => 'code',
                       'scope'         => 'read_write',
                       'client_id'     => $stripe_client_id,
-                      'redirect_uri'  => 'http://app.botangle.dev/users/billing' // @TODO: shift to /billing/stripe-connect as soon as possible
                   );
                   $url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
                   ?>
