@@ -1938,33 +1938,17 @@ debug($log); */
     }
 
     /**
-     * Payment made
-     *
-     * This also seems to calculate the payment...
+     * Payment made.  This action displays the details on the payment they just made.
      *
      * @package billing
      */
     public function paymentmade()
     {
-        $payment = $this->params->query['tutor'];
-        $lessonid = $this->params->query['lessonid'];
-        $u = $this->UserRate->find('first', array('conditions' => array('userid' => $payment)));
-        $ulesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
-        $pritype = $u['UserRate']['price_type'];
-        $pricerate = $u['UserRate']['rate'];
-        $totalamount = 0;
-        $totaltime = $ulesson['Lesson']['duration'];
-        if ($pritype == 'permin') {
-            $totalamount = ($totaltime * 60 * 60) * $pricerate;
-        } else {
-            $pricerate = $pricerate / 60;
-            $totalamount = $totaltime * $pricerate * 100;
-        }
-        $this->Session->write("paymentamount", round($totalamount));
-        $this->Session->write("paymenttutor", $payment);
-        $this->Session->write("paymentstudent", $this->Session->read('Auth.User.id'));
-        $this->redirect('/users/billing');
-        exit();
+        $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array(
+                'lesson_id' => (int)$this->params->query['lessonid'],
+                'student_id' => $this->Auth->user('id'),
+            )));
+        $this->set(compact('lessonPayment'));
     }
 
     /**
