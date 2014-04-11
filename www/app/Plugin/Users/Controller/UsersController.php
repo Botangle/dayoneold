@@ -864,9 +864,11 @@ debug($log);*/
 
         $this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'userstatus'));
 
-        if ($user['User']['role_id'] == 4) {
-            $this->render('view2');
-        }
+        // if this person we're viewing is a student, then show the student view
+        // @TODO: get this working, right now the view is all hard-coded and wouldn't be good to show
+        // if ($user['User']['role_id'] == 4) {
+        //    $this->render('view2');
+        //}
     }
 
     protected function _getSenderEmail()
@@ -1379,16 +1381,24 @@ debug($log); */
 
             if ($this->Auth->user('role_id') == 4) {
                 $data['Lesson']['is_confirmed'] = 0;
-                $data['Lesson']['readlesson'] = '1';
+
+                // the tutor hasn't confirmed this change yet, but the student has
                 $data['Lesson']['readlessontutor'] = '0';
-                $data['Lesson']['laststatus_tutor'] = 1;
+                $data['Lesson']['readlesson'] = '1';
+
+                // the student made the last change and the tutor didn't
                 $data['Lesson']['laststatus_student'] = 0;
+                $data['Lesson']['laststatus_tutor'] = 1;
             } else if ($this->Auth->user('role_id') == 2) {
                 $data['Lesson']['is_confirmed'] = 0;
+
+                // the student hasn't confirmed this change yet, but the tutor has
                 $data['Lesson']['readlesson'] = '0';
                 $data['Lesson']['readlessontutor'] = '1';
-                $data['Lesson']['laststatus_tutor'] = 0;
-                $data['Lesson']['laststatus_student'] = 1;
+
+                // the tutor made the last change and the student didn't
+                $data['Lesson']['laststatus_tutor'] = 1;
+                $data['Lesson']['laststatus_student'] = 0;
             }
 
             if ($this->Lesson->save($data)) {
@@ -1643,8 +1653,28 @@ debug($log);*/
     {
         $data = $this->Lesson->find('first',array('conditions'=>array('id'=>(int)$lessonid)));
 
-        $data['Lesson']['readlessontutor']    = 1;
-        $data['Lesson']['is_confirmed']       = 1;
+        // if this person is the tutor and they are the one set as the tutor on this lesson
+        // then we want to set things up and confirm
+        if($this->Session->read('Auth.User.role_id') == 2
+            && $data['Lesson']['tutor'] == $this->Session->read('Auth.User.id')
+        ) {
+            $data['Lesson']['readlessontutor']    = 1;
+            $data['Lesson']['is_confirmed']       = 0;
+        }
+        // if this is a student who had a lesson created for them that they need to confirm
+        // then we want to set things up and confirm
+        elseif($this->Session->read('Auth.User.role_id') == 4
+            && $data['Lesson']['created'] == $this->Session->read('Auth.User.id')
+        ) {
+            $data['Lesson']['readlesson']         = 1;
+            $data['Lesson']['is_confirmed']       = 0;
+        } else {
+            throw new CakeException('Sorry, something went badly wrong, please try again.');
+        }
+
+        if($data['Lesson']['readlesson'] == 1 && $data['Lesson']['readlessontutor'] == 1) {
+            $data['Lesson']['is_confirmed']         = 1;
+        }
 
         if($data['Lesson']['twiddlameetingid'] == 0) {
             $this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
