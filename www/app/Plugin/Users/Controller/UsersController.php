@@ -890,7 +890,7 @@ debug($log);*/
         if (!empty($this->request->data)) {
 
             // Continue if POST data is not empty...
-            if (isset($this->request->data['Billing']['pagetype']) && ($this->request->data['Billing']['pagetype'] == 'billing')) {
+            if (isset($this->request->data['UserRate']['pagetype']) && ($this->request->data['UserRate']['pagetype'] == 'billing')) {
                 // We assume that the user wants to save some data if the Billing page is not `student_setup`...
                 if ($this->UserRate->save($this->request->data)) {
                     $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));

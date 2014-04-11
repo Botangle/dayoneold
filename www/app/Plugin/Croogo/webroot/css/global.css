@@ -259,7 +259,7 @@ a.join-btn:hover{ display:block; background:#2d2d2d; color:#fff; text-decoration
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
 	height: auto;
-    margin-top:0px;
+    margin-top:80px;
 	padding: 50px 0;
 	width: 100%;
 }
