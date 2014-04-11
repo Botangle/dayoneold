@@ -1075,3 +1075,16 @@ h3.timeline-title {
 
 .timelinestatusright{  width:97%; border:1px solid #ccc; margin-bottom:20px; border-bottom:2px solid #F38918;  box-shadow: 0 0 5px #CCCCCC;  padding:15px;}
 .chrremaing { float:right; font-size:14px; color:#aaa;}
+
+.ok-button {
+    display: inline-block;
+    background: green;
+    padding: 5px 10px 5px 7px;
+    margin-left: 5px;
+    color: white;
+    font-weight: bold;
+    line-height: 22px;
+}
+.ok-button i {
+    margin-top: 2px;
+}

@@ -1,7 +1,14 @@
 <?php
+
+/* Paypal Controller
+ *
+ * Simply receives and verifies the payment information
+ */
+
 //Yii::import('ext.BMConstants');
 include('BMConstants.php');
-class PaypalproController{	
+
+class PaypalproController{
 	/**
 	 * Send HTTP POST Request
 	 *
@@ -9,41 +16,41 @@ class PaypalproController{
 	 * @param	string	The POST Message fields in &name=value pair format
 	 * @return	array	Parsed HTTP Response body
 	 */
-	function PPHttpPost($methodName_, $nvpStr_) {		
+	function PPHttpPost($methodName_, $nvpStr_) {
 		/* Set up your API credentials, PayPal end point, and API version.*/
-		$API_UserName = urlencode(BMConstants::API_USER_NAME);
-		$API_Password = urlencode(BMConstants::API_PASSWORD);
-		$API_Signature = urlencode(BMConstants::API_SIGNATURE);
-		$API_Endpoint = BMConstants::API_END_POINT;
-		$environment = BMConstants::ENVIRONMENT;	
+		$API_UserName = urlencode(PaypalConstants::API_USER_NAME);
+		$API_Password = urlencode(PaypalConstants::API_PASSWORD);
+		$API_Signature = urlencode(PaypalConstants::API_SIGNATURE);
+		$API_Endpoint = PaypalConstants::API_END_POINT;
+		$environment = PaypalConstants::ENVIRONMENT;
 		if("sandbox" === $environment) {
-			$API_Endpoint = BMConstants::API_END_POINT_SANDBOX;
+			$API_Endpoint = PaypalConstants::API_END_POINT_SANDBOX;
 		}
 		if("beta-sandbox" === $environment) {
-			$API_Endpoint = BMConstants::API_END_POINT_BETA_SANDBOX;
+			$API_Endpoint = PaypalConstants::API_END_POINT_BETA_SANDBOX;
 		}
-		
-		$version = urlencode(BMConstants::API_VERSION);	
+
+		$version = urlencode(PaypalConstants::API_VERSION);
 		/* Set the curl parameters.*/
 		//echo $API_Endpoint; die;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $API_Endpoint);
-		curl_setopt($ch, CURLOPT_VERBOSE, 1);	
+		curl_setopt($ch, CURLOPT_VERBOSE, 1);
 		/* Turn off the server and peer verification (TrustManager Concept).*/
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);	
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 1);	
+		curl_setopt($ch, CURLOPT_POST, 1);
 		/*Set the API operation, version, and API signature in the request.*/
 		 $nvpreq = "METHOD=$methodName_&VERSION=$version&PWD=$API_Password&USER=$API_UserName&SIGNATURE=$API_Signature$nvpStr_";
 		/* Set the request as a POST FIELD for curl.*/
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq);	
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq);
 		/*Get response from the server.*/
-		$httpResponse = curl_exec($ch);	
-		 
+		$httpResponse = curl_exec($ch);
+
 		if(!$httpResponse) {
 			exit("$methodName_ failed: ".curl_error($ch).'('.curl_errno($ch).')');
-		}	
+		}
 		/*Extract the response details.*/
 		$httpResponseAr = explode("&", $httpResponse);
 		$httpParsedResponseAr = array();
@@ -58,12 +65,12 @@ class PaypalproController{
 		}
 		return $httpParsedResponseAr;
 	}
-	
+
 	/* FUNCTION TO SET REQUEST FIELDS */
-	function setRequestFields($cartSession,$totalcartprice){		
+	function setRequestFields($cartSession,$totalcartprice){
 		//$paymentCurrency = GeneralComponent::getPaymentCurrency();
-		//$statename = GeneralComponent::getSingleStateName($cartSession['bill_state']);				
-	 
+		//$statename = GeneralComponent::getSingleStateName($cartSession['bill_state']);
+
 		/* SET REQUEST-SPECIFIC FIELDS.*/
 		$paymentType = urlencode('Sale');
 		$firstName = urlencode($cartSession['fname']);
@@ -72,7 +79,7 @@ class PaypalproController{
 		$creditCardNumber =  urlencode($cartSession['acc_number']);
 		$expDateMonth = $cartSession['expiration_month'];
 		/* MONTH MUST BE PADDED WITH LEADING ZERO  */
-		$padDateMonth = urlencode(str_pad($expDateMonth, 2, '0', STR_PAD_LEFT));		
+		$padDateMonth = urlencode(str_pad($expDateMonth, 2, '0', STR_PAD_LEFT));
 		$expDateYear =  urlencode($cartSession['expiration_year']);
 		$cvv2Number = urlencode($cartSession['card_security_code']);
 		$address1 = urlencode($cartSession['bill_addressline1']);
@@ -84,18 +91,18 @@ class PaypalproController{
 		$amount = urlencode($cartSession['payamount']);
 		$currencyID = urlencode($cartSession['paymentCurrency']);	/* OR OTHER CURRENCY ('GBP', 'EUR', 'JPY', 'CAD', 'AUD') */
 		/*Add request-specific fields to the request string.*/
-		  $nvpStr =	"&PAYMENTACTION=$paymentType&AMT=$amount&CREDITCARDTYPE=$creditCardType&ACCT=$creditCardNumber".
+		$nvpStr =	"&PAYMENTACTION=$paymentType&AMT=$amount&CREDITCARDTYPE=$creditCardType&ACCT=$creditCardNumber".
 					"&EXPDATE=$padDateMonth$expDateYear&CVV2=$cvv2Number&FIRSTNAME=$firstName&LASTNAME=$lastName".
 					"&STREET=$address1&CITY=$city&STATE=$state&ZIP=$zip&COUNTRYCODE=$country&CURRENCYCODE=$currencyID";
 		/*Execute the API operation; see the PPHttpPost function above. */
 		$httpParsedResponseAr = PaypalproController::PPHttpPost('DoDirectPayment', $nvpStr);
-		 
+
 		if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
 			return $httpParsedResponseAr;
 		} else  {
 			return "FALIURE";
 		}
 	}
-	
+
 }
 ?>

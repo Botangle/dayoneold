@@ -34,6 +34,9 @@ class UsersController extends UsersAppController
                 'filterEmpty' => true,
             ),
         ),
+        'Stripe' => array(
+            'className' => 'StripeConnect',
+        ),
     );
 
     /**
@@ -67,8 +70,6 @@ class UsersController extends UsersAppController
         if ($this->Session->check('Auth.User') && $this->Session->read('Auth.User.role_id') == 4) {
             $this->checkpayment();
         }
-
-
     }
 
     /**
@@ -514,6 +515,12 @@ class UsersController extends UsersAppController
         }
     }
 
+    /**
+     * Account Setting 2
+     *
+     * If the logged-in user is of `role_id` 4, then render the accountsetting2
+     * view, under `../View/Users/accountsetting2.ctp`
+     */
     public function accountsetting2()
     {
         if ($this->Session->read('Auth.User.role_id') == 4) {
@@ -522,15 +529,13 @@ class UsersController extends UsersAppController
     }
 
     /**
-     * Add
+     * Add a user to the database
      *
      * @return void
      * @access public
      */
     public function add()
     {
-
-
         $this->set('title_for_layout', __d('croogo', 'Register'));
         if (!empty($this->request->data)) {
             $this->User->create();
@@ -565,7 +570,6 @@ class UsersController extends UsersAppController
                             }
                         }
                     }
-
 
                     $this->request->data['Userpoint']['user_id'] = $newUser;
                     $this->request->data['Userpoint']['point'] = 5;
@@ -612,7 +616,7 @@ class UsersController extends UsersAppController
     }
 
     /**
-     * Activate
+     * Activate the user (via email confirmation)
      *
      * @param string $username
      * @param string $key
@@ -650,13 +654,14 @@ class UsersController extends UsersAppController
      *
      * @return void
      * @access public
+     * @TODO
      */
     public function edit()
     {
     }
 
     /**
-     * Forgot
+     * Forgot password
      *
      * @return void
      * @access public
@@ -699,12 +704,17 @@ class UsersController extends UsersAppController
         }
     }
 
+    /**
+     * Recover Password
+     *
+     * @TODO
+     */
     function passwordrecovery()
     {
     }
 
     /**
-     * Reset
+     * Reset password
      *
      * @param string $username
      * @param string $key
@@ -854,7 +864,6 @@ debug($log);*/
 
         $this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'userstatus'));
 
-
         if ($user['User']['role_id'] == 4) {
             $this->render('view2');
         }
@@ -865,83 +874,175 @@ debug($log);*/
         return 'croogo@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
     }
 
+/************************** BEGIN BILLING FUNCTIONS **************************/
+
+    /**
+     * Billing - the main billing function
+     *
+     * This contains the Stripe information for sending/receiving payments.
+     *
+     * @package billing
+     */
     public function billing()
     {
-        App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
         $id = $this->Session->read('Auth.User.id');
+
         if (!empty($this->request->data)) {
 
+            // Continue if POST data is not empty...
             if (isset($this->request->data['Billing']['pagetype']) && ($this->request->data['Billing']['pagetype'] == 'billing')) {
-                if (isset($this->request->data['Billing']['studentpayemtn']) && $this->request->data['Billing']['studentpayemtn']) {
-
-                    App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
-                    $user = $this->User->find('first', array('conditions' => array('user.id' => $id)));
-
-                    $cartSession = "";
-
-                    $cartSession['fname'] = $this->request->data['Billing']['tutor_id'];
-                    $cartSession['lname'] = $_POST['lname'];
-                    $cartSession['card'] = $_POST['card'];
-                    $cartSession['acc_number'] = $_POST['acc_number'];
-
-                    $cartSession['expiration_month'] = $_POST['expiration_month'];
-                    $cartSession['expiration_year'] = $_POST['expiration_year'];;
-                    $cartSession['card_security_code'] = $_POST['card_security_code'];
-                    /* $cartSession['bill_addressline1'] = $_POST['bill_addressline1'];
-                    $cartSession['bill_addressline2'] = $_POST['bill_addressline2'];
-                    $cartSession['bill_city'] = $_POST['bill_city'];
-                    $cartSession['bill_state'] = $_POST['bill_state'];
-                    $cartSession['bill_zip'] = $_POST['bill_zip'];
-                    $cartSession['bill_country'] = $_POST['bill_country']; */
-                    $cartSession['payamount'] = $_POST['payamount'];
-                    $cartSession['paymentCurrency'] = "USD";
-
-                    include('PaypalproController.php');
-                    $paypalCont = new PaypalproController();
-                    $paypalResponse = $paypalCont->setRequestFields($cartSession, 10);
-                    if ($paypalResponse['ACK'] == 'Success') {
-                        /* PAYMENT MADE NEXT STEP TO SENT EMAIL ADMIN*/
-                        $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                        $this->redirect(array('action' => 'billing'));
-                    } else {
-
-                        $this->Session->setFlash(__d('croogo', 'Payment could not be made,please try again.'), 'default', array('class' => 'error'));
-                    }
-
+                // We assume that the user wants to save some data if the Billing page is not `student_setup`...
+                if ($this->UserRate->save($this->request->data)) {
+                    $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
+                    $this->redirect(array('action' => 'billing'));
                 } else {
-                    if ($this->UserRate->save($this->request->data)) {
-                        $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                        $this->redirect(array('action' => 'billing'));
-                    } else {
-                        $this->Session->setFlash(__d('croogo', 'Information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
-                    }
+                    $this->Session->setFlash(__d('croogo', 'Information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
                 }
-            } else if (isset($this->request->data['User']['pagetype']) && ($this->request->data['User']['pagetype'] == 'paymentsettings')) {
-                $user = $this->User->find('first', array('conditions' => array('user.id' => $id)));
-                $this->User->id = $user['User']['id'];
-                $this->User->saveField('stripe_id', $this->request->data['User']['stripe_id']);
-                $this->User->saveField('secret_key', $this->request->data['User']['secret_key']);
-                $this->User->saveField('public_key', $this->request->data['User']['public_key']);
-                $this->Session->setFlash(__d('croogo', 'Information has been updated'), 'default', array('class' => 'success'));
-                $this->redirect(array('action' => 'billing'));
-                exit();
             }
 
+            if (isset($this->request->data['Billing']['pagetype']) && $this->request->data['Billing']['pagetype'] == 'student_setup') {
+                $this->handleStudentCustomerAccountCreation();
+            }
         }
 
         $this->set('ratedata', $this->UserRate->find('first', array('conditions' => array('UserRate.userid' => $this->Session->read('Auth.User.id')))));
         $this->set('title_for_layout', __d('croogo', 'Billing'));
 
+        // @TODO: shift out of this billing action as soon as we can.  Have to work out the details on ARO/ACO first,
+        // we'll need to update the info about the appropriate redirect uri / webhook uri with Stripe too
+        if (isset($_GET['code'])) { // Redirect w/ code from the Stripe Connect OAuth
+            $this->billing_connect();
+        }
 
-        Stripe::setApiKey("sk_test_XCR1kNc15GsZReu7hKHXFJZ8"); //admin scret key
-        if (isset($_GET['code'])) { // Redirect w/ code
-            $code = $_GET['code'];
+        // role_id == 4 is student. Finally figured that out.
+        // If the student is the one currently trying to pay the tutor:
+        if ($this->Session->read('Auth.User.role_id') == 4) {
+            $roleid = 2;
+            $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
+
+            $needs_payments_setup = true;
+            if($User['User']['stripe_customer_id'] != '') {
+                $needs_payments_setup = false;
+            }
+
+            $this->set(compact(
+                    'needs_payments_setup',
+                    'roleid',
+                    'User'
+                ));
+            $this->set('paymentamount', $this->Session->read("paymentamount"));
+            $this->set('publishable_key', Configure::read('Stripe.publishable_key'));
+
+            $this->render('billing_student');
+        } else {
+
+            $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
+
+            $stripe_setup = false;
+            if($User['User']['stripe_user_id'] != "" &&
+                $User['User']['access_token'] != "" &&
+                $User['User']['stripe_publishable_key'] != "" &&
+                $User['User']['refresh_token'] != ""
+            ) {
+                $stripe_setup = true;
+            }
+
+            $stripe_client_id = Configure::read('Stripe.client_id');
+
+            $this->set(compact(
+                    'stripe_client_id',
+                    'stripe_setup',
+                    'User'
+                ));
+        }
+    }
+
+    /**
+     * Split out our student customer account creation as it's really a separate method showing up under the
+     * same url as a completely different setup
+     */
+    private function handleStudentCustomerAccountCreation()
+    {
+        $id = $this->Session->read('Auth.User.id');
+
+        // Store the user object in $user according to logged-in $id
+        $user = $this->User->find('first', array('conditions' => array('User.id' => $id)));
+
+        // Next, grab the token that represents our customer's credit card in the Stripe system
+        $token  = $_POST['stripeToken'];
+
+        // The Stripe plugin automatically handles data validation and error handling
+        // See docs here: https://github.com/chronon/CakePHP-StripeComponent-Plugin
+
+        // Create a customer for our student using our stripe component
+        // we're going to create a user for them in our app (not our tutor's) per this shared customer's page:
+        // https://stripe.com/docs/connect/shared-customers
+        // this makes it easier for us to bill them when they are have a lesson with someone else in the future
+        $stripeComponent = $this->Components->load('Stripe.Stripe');
+        $result = $stripeComponent->customerCreate(array(
+                'card'          => $token,
+                // generate a unique identifier for this customer
+                'description'   => $user['User']['id'].'_'.$user['User']['name'].'_'.$user['User']['lname'],
+                'email'         => $user['User']['email'],
+            ));
+
+        // now check the results we get back from Stripe. if this isn't an array, then we've got errors
+        if(!is_array($result)) {
+            // @TODO: confirm whether these errors are generic enough to show to the general public, I think they are
+            $this->Session->setFlash(__d('croogo', $result), 'default', array('class' => 'error'));
+
+            // redirect back to the page again and ask for their data again
+            // @TODO: it'd be nice if we'd auto-populate their info with what we know
+            // but we threw a bunch of it away :-)
+            // In reality, we shouldn't have too many errors here as long as the server is setup ok
+            $this->redirect(array('action' => 'billing'));
+        } else {
+
+            // then let's save the user account to the DB so we can refer to it again in the future
+            $user['User']['stripe_customer_id'] = $result['stripe_id']; // our Stripe customer id to refer to this person with again
+
+            // @TODO: we should really make sure this saves in the future ...
+            $this->User->save($user);
+
+            // Now let's see if we're in the middle of an initial lesson setup (instead of someone proactively dealing with setting up their account)
+            // if we are, we'll need to finish up our lesson setup
+            if($this->Session->read('initial_lesson_setup')) {
+                $user_id_to_message = $this->Session->read('new_lesson_user_id_to_message');
+                $lesson_id          = $this->Session->read('new_lesson_lesson_id');
+
+                // clear up our session so we don't have anything else weird happen to this person later on
+                $this->Session->delete('new_lesson_lesson_id');
+                $this->Session->delete('new_lesson_user_id_to_message');
+
+                // a redirect and session flash gets posted here
+                $this->postLessonAddSetup($lesson_id, $user_id_to_message);
+            } else {
+                $this->Session->setFlash(__d('croogo', "You're all setup for payments now.  Thanks!"), 'default', array('class' => 'success'));
+            }
+        }
+    }
+
+    /**
+     * Handles the Stripe Connect system so we properly hook our tutor's Stripe account up with our application
+     *
+     * This then allows us to bill for a tutor and take a cut of the proceeds ourselves.
+     */
+    public function billing_connect()
+    {
+        $id = $this->Session->read('Auth.User.id');
+
+        // Begin actual Stripe integration with Stripe Connect
+        // https://stripe.com/docs/connect
+        if (isset($_GET['code'])) { // Redirect w/ code from the Stripe Connect OAuth
             $token_request_body = array(
-                'client_secret' => 'sk_test_XCR1kNc15GsZReu7hKHXFJZ8', //admin secret key
-                'client_id' => 'ca_3eUUoTUSZsBg8Ly0TA7XjY3noItr8cgC',
-                'code' => $code,
+                // use our own Stripe private key, either test or production depending on our environment
+                'client_secret' => Configure::read('Stripe.secret'),
+                'code' => $_GET['code'],
                 'grant_type' => 'authorization_code'
             );
+
+            // @TODO: let's abstract this out into Guzzle long-term, it'd be nice to be able to have auto-retries
+            // so we don't have to bug our tutors again if things fail for some reason the first time
             $refreshtoken = "";
             $req = curl_init('https://connect.stripe.com/oauth/token');
             // set url
@@ -952,37 +1053,123 @@ debug($log);*/
             curl_setopt($req, CURLOPT_POSTFIELDS, http_build_query($token_request_body));
             $respCode = curl_getinfo($req, CURLINFO_HTTP_CODE);
             $resp = json_decode(curl_exec($req), true);
+
             curl_close($req);
-            $refreshtoken = $resp['refresh_token'];
-            $this->User->id = $id;
-            $this->User->saveField('auth_code', $refreshtoken);
-            $this->Session->setFlash(__d('croogo', 'Your Account Connected with Stripe Sucessfully.'), 'default', array('class' => 'success'));
-        }
-        if ($this->Session->read('Auth.User.role_id') == 4) {
-            if ($this->Session->check('paymenttutor')) {
-                $userInfo = $this->User->find('list', array('conditions' => array('role_id' => 2, 'status' => 1, 'id' => $this->Session->read('paymenttutor'))));
-            } else {
-                $userInfo = $this->User->find('list', array('conditions' => array('role_id' => 2, 'status' => 1)));
+
+            // check to make sure we're not having errors
+            if(isset($resp['error'])) {
+
+                // possible problems
+                // invalid_grant (if this is happening, it's potentially more severe)
+                // invalid_request, unsupported_grant_type, invalid_scope, unsupported_response_type
+
+                // @TODO: improve the error number passed, see about making it different for each of the above items
+                $this->handleStripeError($resp, 500); // we'll make these errors in the 500 range
             }
-            $roleid = 2;
-            $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
-            $this->set(compact('User'));
-            $this->set(compact('userInfo', 'roleid'));
 
-            $this->set('paymentamount', $this->Session->read("paymentamount"));
-            $this->render('billing2');
+            // @TODO: does Stripe notify us if a tutor revokes access to our app?
+            // Ideally we'd need to know this for the UI so we can display that they need to hook back up again
+            // Tweeted their support, we'll see if they respond
+
+            // if we only have read access, whoa, we've got errors.  We need read/write to handle transactions
+            if($resp['scope'] != 'read_write') {
+                // Error 600: permissions problems
+                $this->handleStripeError($resp, 600, "Sorry, we need read/write privileges in order to handle transactions for you.");
+            }
+
+            // @TODO: if we're not in debug mode, then let's check this
+//            if($resp['livemode'] == false) {
+//                    Error 601: wrong payment mode, we need to be in live mode instead of debug mode
+//                    $this->handleStripeError($resp, 601);
+//            }
+
+            if(!isset($resp['stripe_user_id']) ||
+                !isset($resp['access_token']) ||
+                !isset($resp['stripe_publishable_key']) ||
+                !isset($resp['refresh_token'])
+            ) {
+                // Error 602: permissions problems
+                $this->handleStripeError($resp, 600, "Sorry, we need read/write privileges in order to handle transactions for you.");
+            }
+
+
+//            $resp = array(
+//                'refresh_token'             => 'random characters',
+//                'access_token'              => 'sk_test_randomcharacters',
+//                'stripe_user_id'            => 'random_id',
+//                'stripe_publishable_key'    => 'pk_test_random_publishable_key_characters',
+//            );
+
+            $data = array(
+                'id'                        => $id,
+                'stripe_user_id'            => $resp['stripe_user_id'],         // not really if sure we need to keep this, but we will for now
+                'access_token'              => $resp['access_token'],           // used when billing for a tutor instead of a normal Stripe secret API key
+                'stripe_publishable_key'    => $resp['stripe_publishable_key'], // used when we bill students for a tutor (it's visible on the frontend)
+                'refresh_token'             => $resp['refresh_token'],          // used to generate test access tokens in production
+            );
+            $this->User->save($data);
+
+            $this->Session->setFlash(__d('croogo', "We've connected your account with Stripe successfully."), 'default', array('class' => 'success'));
+
+            $this->redirect(array('action' => 'billing'));
         }
-
-        $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
-        $this->set(compact('User'));
     }
 
-    function billing2()
+    /**
+     * @TODO: Move this into a separate component
+     */
+    private function handleStripeError($response, $errorNumber, $message = 'We had problems connecting to Stripe. Please try again.')
     {
+        $this->Session->setFlash(__d('croogo', $message . " Error #") . $errorNumber, 'default', array('class' => 'error'));
 
+        // don't redirect and die, we want a bit more control over things
+        $this->redirect('billing', null, false);
+        $this->response->send();
 
+        // @TODO: log things, adjusting based on the error number?
+
+        // stop once we're done logging things
+        $this->_stop();
     }
 
+    /**
+     * Charge function
+     *
+     * Handles payment with Stripe for a pre-setup customer account
+     *
+     * @access protected
+     * @param  $tutorId   : The specific Tutor id we should be sending money to
+     * @param  $userId   : The specific User id we should be charging
+     * @param  $amount   : Payment amount
+     * @param  $fee      : amount we take as our cut
+     */
+     protected function charge( $tutorId, $userId, $amount, $fee) {
+
+         // we need our tutor access token (from stripe) so we can add application fees and send money to this person
+         $tutor = $this->User->find('first', array('conditions' => array('User.id' => $tutorId)));
+
+         // we need our customer account ID (from stripe) so we know what credit card to charge
+         $user = $this->User->find('first', array('conditions' => array('User.id' => $userId)));
+
+         // The Stripe plugin automatically handles data validation and error handling
+         // See docs here: https://github.com/chronon/CakePHP-StripeComponent-Plugin
+
+         $charge = array(
+             'stripeCustomer'   => $user['User']['stripe_customer_id'],
+             'amount'           => $amount,
+             'application_fee'  => $fee,
+             'currency'         => 'usd',
+         );
+
+         return $this->Stripe->connectCharge($tutor['User']['access_token'],$charge);
+    }
+
+    /**
+     * Search function
+     *
+     * Searches for lessons given certen parameters of experience, online status,
+     * subjects, and user input value.
+     */
     public function search($categoryname = null, $online = null)
     {
 
@@ -1047,36 +1234,75 @@ debug($log);*/
         debug($log); die;*/
     }
 
+    /**
+     * lessons function
+     *
+     * Lists the active, upcoming, and past lessons according to logged-in user,
+     * insofar as the user is a tutor.
+     */
     public function lessons()
     {
         $userconditionsfield = "tutor";
         $userlessonconditionsfield = "tutor";
         $readconditons = "readlessontutor";
 
+        // we want to leave lessons off if a student isn't setup to pay
+        $extraConditions = 'INNER JOIN users as student ON (student.id = Lesson.created AND student.stripe_customer_id IS NOT NULL)';
+
         if ($this->Session->read('Auth.User.role_id') == 4) {
             $userconditionsfield = "created";
             $userlessonconditionsfield = "created";
             $readconditons = "readlesson";
+            $extraConditions = '';
         }
 
-        $activeLessonSQL = "Select * from lessons as Lesson INNER JOIN
-		  `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "' AND Lesson.is_confirmed = 0 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
+        $activeLessonSQL = "Select * from lessons as Lesson
+            {$extraConditions}
+            INNER JOIN `$this->databaseName`.`users` AS `User`
+		    ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
+		    JOIN (
+		        SELECT MAX(id) as ids FROM lessons
+                GROUP BY parent_id
+            ) as newest
+            ON Lesson.id = newest.ids
+            WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
+                AND Lesson.is_confirmed = 0
+                AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
+
+
         $activelesson = $this->Lesson->query($activeLessonSQL);
 
-
-        $upcomingLessonSQL = "Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'  AND Lesson.is_confirmed = 1 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
+        $upcomingLessonSQL = "Select * from lessons as Lesson
+            {$extraConditions}
+            INNER JOIN `$this->databaseName`.`users` AS `User`
+            ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
+            JOIN (
+                SELECT MAX(id) as ids FROM lessons
+                GROUP BY parent_id
+            ) as newest
+            ON Lesson.id = newest.ids
+            WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
+                AND Lesson.is_confirmed = 1
+                AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
         $upcomminglesson = $this->Lesson->query($upcomingLessonSQL);
 
-        $pastLessonSQL = "Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
-        GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'  AND Lesson.lesson_date < '" . date('Y-m-d') . "'";
+        $pastLessonSQL = "Select * from lessons as Lesson
+            INNER JOIN `$this->databaseName`.`users` AS `User`
+            ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
+            JOIN (
+                SELECT MAX(id) as ids FROM lessons
+                GROUP BY parent_id
+            ) as newest
+            ON Lesson.id = newest.ids
+            WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
+                AND Lesson.lesson_date < '" . date('Y-m-d') . "'";
         $pastlesson = $this->Lesson->query($pastLessonSQL);
-
 
         $this->set(compact('activelesson', 'upcomminglesson', 'pastlesson'));
         /* $log = $this->User->getDataSource()->getLog(false, false);
 debug($log); */
+
+        /* @todo find out why this if statement is empty... */
         if ($this->Session->read('Auth.User.role_id') == 4) {
 
         }
@@ -1084,9 +1310,19 @@ debug($log); */
 
     }
 
-    public function whiteboarddata($lessonid = null){
-        $lesson = $this->Lesson->find('first',array('conditions'=>array('id'=>$lessonid)));
-        $lessonPayment = $this->LessonPayment->find('first',array('conditions'=>array('lesson_id'=>$lessonid)));
+    /**
+     * White board data
+     *
+     * Selects lesson information from the database, and begins the payment
+     * workflow. Presumably, this would also manage the whiteboard content, once
+     * the feature is in its fully-functional form.
+     *
+     * @package billing
+     */
+    public function whiteboarddata($lessonid = null)
+    {
+        $lesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
+        $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('lesson_id' => $lessonid)));
 
         $lesson_id = (int)$lesson['Lesson']['id'];
         $role_id = (int)$this->Session->read('Auth.User.role_id');
@@ -1117,6 +1353,11 @@ debug($log); */
             ));
     }
 
+    /**
+     * Change lesson
+     *
+     * Manages creating and saving lessons
+     */
     public function changelesson($lessonid = null)
     {
         if (!empty($this->request->data)) {
@@ -1214,84 +1455,36 @@ debug($log);
         $this->set(compact('Lesson'));
     }
 
+    /**
+     * Lessons add
+     *
+     * Binds a student's proposed lesson to a tutor's account. Also notifies a student and tutor with messages about their new lesson
+     */
     public function lessons_add()
     {
         if (!empty($this->request->data)) {
 
-            if (isset($this->request->data['Lesson']['tutorname']) && $this->request->data['Lesson']['tutorname'] != "") {
-
-            } else {
-
-            }
             $this->Lesson->create();
+            $this->Lesson->visitor_id = $this->Auth->user('id');
 
-            // this gets run when a student proposes a lesson to a tutor
-            if (isset($this->request->data['Lesson']['tutor']) && $this->request->data['Lesson']['tutor'] != "") {
-                $tutorid = $this->request->data['Lesson']['tutor'];
-                $this->request->data['Lesson']['tutor'] = $tutorid;
-                $this->request->data['Lesson']['created'] = $this->Auth->user('id');
-                $this->request->data['Lesson']['add_date'] = date('Y-m-d');
-                $this->request->data['Lesson']['readlesson'] = '1';
-                $this->request->data['Lesson']['readlessontutor'] = '0';
-                $this->request->data['Lesson']['is_confirmed'] = '0';
-                $this->request->data['Lesson']['laststatus_tutor'] = 0;
-                $this->request->data['Lesson']['laststatus_student'] = 1;
-            } else {
-                // this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
-                $tutorid = $this->User->find('first', array('conditions' => array('username' => $this->request->data['Lesson']['tutorname'])));
-                $tutorid = $tutorid['User']['id'];
-                $this->request->data['Lesson']['tutor'] = $this->Auth->user('id');
-                $this->request->data['Lesson']['created'] = $tutorid;
-                $this->request->data['Lesson']['add_date'] = date('Y-m-d');
-                $this->request->data['Lesson']['readlesson'] = '0';
-                $this->request->data['Lesson']['readlessontutor'] = '1';
-                $this->request->data['Lesson']['is_confirmed'] = '0';
-                $this->request->data['Lesson']['laststatus_tutor'] = 1;
-                $this->request->data['Lesson']['laststatus_student'] = 0;
-            }
+            // @TODO: ideally we'd validate things before we start trying to mess with stuff here ...
 
-            if ($this->request->data['Lesson']['tutorname'] == "") {
-                // generate our twiddla id ahead of time
-                $this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
-                $this->request->data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
+            if($this->Lesson->add($this->request->data)) {
 
-                // and our opentok session id
-                $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
-                $this->request->data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
-            }
+                // if we need billing info, then we'll need to put our lesson message and session id generation
+                // on hold and work on the billing stuff instead
+                if($this->Lesson->need_stripe_account_setup) {
+                    $this->Session->write('initial_lesson_setup', true);
+                    $this->Session->write('new_lesson_user_id_to_message', $this->Lesson->user_id_to_message);
+                    $this->Session->write('new_lesson_lesson_id', $this->Lesson->id);
 
-            if ($this->Lesson->save($this->request->data, false)) {
-                $lessondid = $this->Lesson->getLastInsertId();
-
-                if (isset($this->request->data['Lesson']['parent_id']) && $this->request->data['Lesson']['parent_id'] != "") {
-                    unset($this->request->data['Lesson']);
-                    $this->request->data['Lesson']['parent_id'] = $lessondid;;
-                    $this->Lesson->save($this->request->data);
-                }
-                if (!isset($this->request->data['Lesson']['parent_id'])) {
-                    unset($this->request->data['Lesson']);
-                    $this->request->data['Lesson']['parent_id'] = $lessondid;
-                    $this->Lesson->save($this->request->data);
+                    // redirect to our billing page to get setup with Stripe
+                    $this->redirect(array('action' => 'billing'));
+                } else {
+                    // otherwise, let's handle the post lesson add setup
+                    $this->postLessonAddSetup($this->Lesson->lesson_id, $this->Lesson->user_id_to_message);
                 }
 
-                $this->request->data['Usermessage']['sent_from'] = $this->Auth->user('id');
-                $this->request->data['Usermessage']['sent_to'] = $tutorid;
-                $this->request->data['Usermessage']['readmessage'] = 0;
-                $this->request->data['Usermessage']['date'] = date('Y-m-d H:i:s');
-                $this->request->data['Usermessage']['body'] = " Our Lesson is setup now. Please click here to read.";
-                $this->request->data['Usermessage']['parent_id'] = 0;
-
-                unset($this->request->data['Lesson']);
-
-                $this->Usermessage->save($this->request->data);
-                $lastId = $this->Usermessage->getLastInsertId();
-
-                if ($this->request->data['Usermessage']['parent_id'] == 0) {
-                    $this->Usermessage->query(" UPDATE `usermessages` SET parent_id = '" . $lastId . "' WHERE id = '" . $lastId . "'");
-                }
-
-                $this->Session->setFlash(__d('croogo', 'Your lesson has been added successfully.'), 'default', array('class' => 'success'));
-                $this->redirect(array('action' => 'lessons'));
             } else {
                 $this->Session->setFlash(__d('croogo', 'The Lesson could not be saved. Please, try again.'), 'default', array('class' => 'error'));
             }
@@ -1308,6 +1501,78 @@ debug($log);
 
     }
 
+    /**
+     * Called so we can complete adding a lesson to our system as needed
+     */
+    private function postLessonAddSetup($lesson_id, $user_id_to_message)
+    {
+        // @TODO: do we want to do any type of checking to see if there were problems along the way?
+        $this->addLessonMessage($user_id_to_message);
+
+        // Not sure why we need to only do this if we're a student, but we'll ignore that for now
+        // but we do need to generate lesson session ids so our lessons will work
+        if ($this->request->data['Lesson']['tutorname'] == "") {
+            $this->generateTwiddlaAndOpenTokSessionIds($lesson_id);
+        }
+
+        $this->Session->setFlash(__d('croogo', 'Your lesson has been added successfully.'), 'default', array('class' => 'success'));
+        $this->redirect(array('action' => 'lessons'));
+    }
+
+    /**
+     * Ideally we might make this an action and redirect, but at the moment our actions are a bit messy with ACL issues
+     * so we'll do this here for now
+     *
+     * @param integer $user_id_to_message
+     */
+    private function addLessonMessage($user_id_to_message)
+    {
+        $data = array();
+        $data['Usermessage']['sent_from'] = $this->Auth->user('id');
+        $data['Usermessage']['sent_to'] = $user_id_to_message;
+        $data['Usermessage']['readmessage'] = 0;
+        $data['Usermessage']['date'] = date('Y-m-d H:i:s');
+        $data['Usermessage']['body'] = " Our Lesson is setup now. Please click here to read."; // @TODO: fix the body so it's clickable
+        $data['Usermessage']['parent_id'] = 0;
+
+        $this->Usermessage->save($data);
+        $lastId = $this->Usermessage->getLastInsertId();
+
+// @TODO: what were we planning to do with this line?  parent_id is always hard-coded to zero above ...
+//        if ($this->request->data['Usermessage']['parent_id'] == 0) {
+            $this->Usermessage->query(" UPDATE `usermessages` SET parent_id = '" . $lastId . "' WHERE id = '" . $lastId . "'");
+//        }
+    }
+
+    /**
+     * Generates some session ids we need to actually run a lesson
+     *
+     * @TODO: It'd be great to move all of this to a separate helper model so we're not cluttering our controller as much
+     * Long-term, let's do that
+     * @param $lessonId
+     */
+    private function generateTwiddlaAndOpenTokSessionIds($lessonId)
+    {
+        $data = array();
+        $data['Lesson']['id']   = $lessonId;
+
+        // generate our twiddla id ahead of time
+        $this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
+        $data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
+
+        // and our opentok session id
+        $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+        $data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
+
+        // @TODO: eventually, we should check to make sure this actually doesn't have errors instead of just assuming :-/
+        $this->Lesson->save($data);
+    }
+
+    /**
+     * Search student
+     *
+     * Searches for a certain student in the database by usename (I think)
+     */
     public function searchstudent()
     {
         $this->User->recursive = 0;
@@ -1347,6 +1612,11 @@ debug($log);*/
         $this->layouts = false;
     }
 
+    /**
+     * Lesson Reviews
+     *
+     * Handles reviews of how the lesson went, ex-post-facto.
+     */
     public function lessonreviews($lessonid = null)
     {
         if (!empty($this->request->data)) {
@@ -1360,7 +1630,17 @@ debug($log);*/
         $this->set(compact('Lesson'));
     }
 
-    public function confirmedbytutor($lessonid = null){
+    /**
+     * Confirmed by tutor
+     *
+     * Handles the confirmation of a lesson. A student proposes a lesson to the tutor,
+     * then the tutor confirms it. This function then establishes the twiddla
+     * meeting details.
+     *
+     * @package billing
+     */
+    public function confirmedbytutor($lessonid = null)
+    {
         $data = $this->Lesson->find('first',array('conditions'=>array('id'=>(int)$lessonid)));
 
         $data['Lesson']['readlessontutor']    = 1;
@@ -1497,6 +1777,22 @@ debug($log); */
         exit();
     }
 
+    /**
+     * Update remaining
+     *
+     * A very general function, should probably be separated in the future.
+     *
+     * This function checks if the lesson has ended (verifies with twiddla).
+     * If it has, and if no payment has yet been made, it calculates the payment
+     * and saves the calculation.
+     *
+     * How the payment should be calculated:
+     *    30% goes to Botangle
+     *    70% goes to tutor
+     *    Prices are set and calculated on a per-minute price.
+     *
+     * @package billing
+     */
     public function updateremaining()
     {
         $this->Lesson->id = $this->params->query['lessonid'];
@@ -1508,13 +1804,13 @@ debug($log); */
             $totaltime = $checktwiddlaid['Lesson']['remainingduration'] + 60;
             $this->Lesson->saveField('remainingduration', $totaltime);
             if (isset($this->params->query['completelesson']) && ($this->params->query['completelesson'] == 1)) {
-                $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['tutor'], 'tutor_id' => $checktwiddlaid['Lesson']['created'], 'lesson_id' => $this->params->query['lessonid'])));
+                $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['created'], 'tutor_id' => $checktwiddlaid['Lesson']['tutor'], 'lesson_id' => $this->params->query['lessonid'])));
                 if (empty($lessonPayment)) {
-                    $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['created'])));
+                    $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                     $pritype = $u['UserRate']['price_type'];
                     $pricerate = $u['UserRate']['rate'];
                     $totalamount = 0;
-                    if ($pritype == 'per min') {
+                    if ($pritype == 'permin') {
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = ($totaltimeuseinmin) * $pricerate;
                     } else {
@@ -1522,19 +1818,19 @@ debug($log); */
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = $totaltimeuseinmin * $pricerate;
                     }
-                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
-                    $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                     $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
 
                     $this->request->data['LessonPayment']['payment_complete'] = 0;
                     $this->request->data['LessonPayment']['lesson_id'] = $this->params->query['lessonid'];
                     $this->LessonPayment->save($this->request->data);
                 } else {
-                    $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['created'])));
+                    $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                     $pritype = $u['UserRate']['price_type'];
                     $pricerate = $u['UserRate']['rate'];
                     $totalamount = 0;
-                    if ($pritype == 'per min') {
+                    if ($pritype == 'permin') {
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = ($totaltimeuseinmin) * $pricerate;
                     } else {
@@ -1542,8 +1838,8 @@ debug($log); */
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = $totaltimeuseinmin * $pricerate;
                     }
-                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
-                    $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                     $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                     $this->request->data['LessonPayment']['id'] = $lessonPayment['LessonPayment']['id'];
                     $this->LessonPayment->save($this->request->data);
@@ -1557,7 +1853,7 @@ debug($log); */
         } else if ($roletype == 4) {
             $totaltime = $checktwiddlaid['Lesson']['student_lessontaekn_time'] + 60;
             $this->Lesson->saveField('student_lessontaekn_time', $totaltime);
-            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['tutor'], 'tutor_id' => $checktwiddlaid['Lesson']['created'], 'lesson_id' => $this->params->query['lessonid'])));
+            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['created'], 'tutor_id' => $checktwiddlaid['Lesson']['tutor'], 'lesson_id' => $this->params->query['lessonid'])));
             if (isset($this->params->query['completelesson']) && ($this->params->query['completelesson'] == 1)) {
 
                 $this->request->data['LessonPayment']['lesson_complete_tutor'] = 1;
@@ -1565,11 +1861,11 @@ debug($log); */
             }
 
             if (empty($lessonPayment)) {
-                $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['created'])));
+                $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                 $pritype = $u['UserRate']['price_type'];
                 $pricerate = $u['UserRate']['rate'];
                 $totalamount = 0;
-                if ($pritype == 'per min') {
+                if ($pritype == 'permin') {
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = ($totaltimeuseinmin) * $pricerate;
                 } else {
@@ -1577,20 +1873,18 @@ debug($log); */
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = $totaltimeuseinmin * $pricerate;
                 }
-                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
-                $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                 $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                 $this->request->data['LessonPayment']['lesson_take'] = 1;
                 $this->request->data['LessonPayment']['payment_complete'] = 0;
                 $this->request->data['LessonPayment']['lesson_id'] = $this->params->query['lessonid'];
-
-                $this->LessonPayment->save($this->request->data);
             } else {
-                $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['created'])));
+                $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                 $pritype = $u['UserRate']['price_type'];
                 $pricerate = $u['UserRate']['rate'];
                 $totalamount = 0;
-                if ($pritype == 'per min') {
+                if ($pritype == 'permin') {
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = ($totaltimeuseinmin) * $pricerate;
                 } else {
@@ -1598,11 +1892,41 @@ debug($log); */
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = $totaltimeuseinmin * $pricerate;
                 }
-                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['tutor'];
-                $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                 $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                 $this->request->data['LessonPayment']['id'] = $lessonPayment['LessonPayment']['id'];
-                $this->LessonPayment->save($this->request->data);
+            }
+
+            // we'll only do this stuff if our role is a student
+            // @TODO: let's make sure a student doesn't try to change their role id ...
+
+            // save our current information to the database
+            $this->LessonPayment->save($this->request->data);
+
+            // then, if our payment isn't complete yet, then let's bill for it
+
+            if($this->request->data['LessonPayment']['payment_complete'] == 0) {
+
+                $tutorId    = (int)$this->request->data['LessonPayment']['tutor_id'];
+                $userId     = (int)$this->Auth->user('id');
+
+                $amount = $this->request->data['LessonPayment']['payment_amount']; // @TODO: convert this DB column to a decimal instead?
+                $fee    = $amount * .30; // take a 30% commission
+
+                $results = $this->charge($tutorId, $userId, $this->request->data['LessonPayment']['payment_amount'], $fee);
+
+                // if we have success billing, we'll note the fact and save things
+                if(is_array($results)) {
+                    $this->request->data['LessonPayment']['payment_complete'] = 1;
+                    $this->request->data['LessonPayment']['fee']              = $fee; // @TODO: convert this DB column to a decimal instead?
+                    $this->request->data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
+                    $this->LessonPayment->save($this->request->data);
+                }
+
+                // otherwise we'll leave this for the system to bill again somehow
+
+                // @TODO: should we have an auto-retry system setup here?
             }
         }
 
@@ -1613,33 +1937,29 @@ debug($log); */
         $this->layouts = false;
     }
 
+    /**
+     * Payment made.  This action displays the details on the payment they just made.
+     *
+     * @package billing
+     */
     public function paymentmade()
     {
-        $payment = $this->params->query['tutor'];
-        $lessonid = $this->params->query['lessonid'];
-        $u = $this->UserRate->find('first', array('conditions' => array('userid' => $payment)));
-        $ulesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
-        $pritype = $u['UserRate']['price_type'];
-        $pricerate = $u['UserRate']['rate'];
-        $totalamount = 0;
-        $totaltime = $ulesson['Lesson']['duration'];
-        if ($pritype == 'per min') {
-            $totalamount = ($totaltime * 60 * 60) * $pricerate;
-        } else {
-            $pricerate = $pricerate / 60;
-            $totalamount = $totaltime * $pricerate * 100;
-        }
-        $this->Session->write("paymentamount", round($totalamount));
-        $this->Session->write("paymenttutor", $payment);
-        $this->Session->write("paymentstudent", $this->Session->read('Auth.User.id'));
-        $this->redirect('/users/billing');
-        exit();
+        $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array(
+                'lesson_id' => (int)$this->params->query['lessonid'],
+                'student_id' => $this->Auth->user('id'),
+            )));
+        $this->set(compact('lessonPayment'));
     }
 
-
+    /**
+     * Claim offer
+     *
+     * Handles offer claims. Free trials and such.
+     *
+     * @package billing
+     */
     public function claimoffer()
     {
-        App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
 
         $this->autoRender = false;
         $this->layouts = false;
@@ -1666,11 +1986,11 @@ debug($log); */
                 $tokenid = $token['id'];
                 // Charge the order:
                 $charge = Stripe_Charge::create(array(
-                        "amount" => 500,
-                        "currency" => "usd",
-                        "card" => $tokenid, // obtained with Stripe.js
-                        "description" => "claim $5 form botangle"
-                    ));
+                    "amount" => 500,
+                    "currency" => "usd",
+                    "card" => $tokenid, // obtained with Stripe.js
+                    "description" => "claim $5 from botangle"
+                ));
 
                 if ($charge->paid == true) {
                     /* end stripe code */
@@ -1691,9 +2011,16 @@ debug($log); */
         }
     }
 
+    /**
+     * Payment setting
+     *
+     * Sets payment info, connects with Stripe, and asserts the transaction. Also
+     * renders the view found in http://app.botangle.dev/users/paymentsetting
+     *
+     * @package billing
+     */
     public function paymentsetting()
     {
-        App::import("Vendor", "Stripe", array("file" => "stripe/Stripe.php"));
         $id = $this->Session->read('Auth.User.id');
         if (!empty($this->request->data)) {
             $user = $this->User->find('first', array('conditions' => array('user.id' => $id)));
@@ -1762,5 +2089,4 @@ debug($log); */
             $this->redirect('/user/' . $this->request->data['Users']['username']);
         }
     }
-
 }
