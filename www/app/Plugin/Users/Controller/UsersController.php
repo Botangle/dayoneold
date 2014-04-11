@@ -34,7 +34,9 @@ class UsersController extends UsersAppController
                 'filterEmpty' => true,
             ),
         ),
-        'Stripe.Stripe'
+        'Stripe' => array(
+            'className' => 'StripeConnect',
+        ),
     );
 
     /**
@@ -1136,11 +1138,15 @@ debug($log);*/
      * Handles payment with Stripe for a pre-setup customer account
      *
      * @access protected
+     * @param  $tutorId   : The specific Tutor id we should be sending money to
      * @param  $userId   : The specific User id we should be charging
      * @param  $amount   : Payment amount
      * @param  $fee      : amount we take as our cut
      */
-     protected function charge( $userId, $amount, $fee) {
+     protected function charge( $tutorId, $userId, $amount, $fee) {
+
+         // we need our tutor access token (from stripe) so we can add application fees and send money to this person
+         $tutor = $this->User->find('first', array('conditions' => array('User.id' => $tutorId)));
 
          // we need our customer account ID (from stripe) so we know what credit card to charge
          $user = $this->User->find('first', array('conditions' => array('User.id' => $userId)));
@@ -1155,7 +1161,7 @@ debug($log);*/
              'currency'         => 'usd',
          );
 
-         return $this->Stripe->charge($charge);
+         return $this->Stripe->connectCharge($tutor['User']['access_token'],$charge);
     }
 
     /**
@@ -1892,7 +1898,8 @@ debug($log); */
                 $this->request->data['LessonPayment']['id'] = $lessonPayment['LessonPayment']['id'];
             }
 
-            // we'll only do this stuff as a student (@TODO: let's make sure a student doesn't try to change their role id ...)
+            // we'll only do this stuff if our role is a student
+            // @TODO: let's make sure a student doesn't try to change their role id ...
 
             // save our current information to the database
             $this->LessonPayment->save($this->request->data);
@@ -1901,14 +1908,19 @@ debug($log); */
 
             if($this->request->data['LessonPayment']['payment_complete'] == 0) {
 
-                $amount = $this->request->data['LessonPayment']['payment_amount'];
+                $tutorId    = (int)$this->request->data['LessonPayment']['tutor_id'];
+                $userId     = (int)$this->Auth->user('id');
+
+                $amount = $this->request->data['LessonPayment']['payment_amount']; // @TODO: convert this DB column to a decimal instead?
                 $fee    = $amount * .30; // take a 30% commission
 
-                $results = $this->charge((int)$this->Auth->user('id'), $this->request->data['LessonPayment']['payment_amount'], $fee);
+                $results = $this->charge($tutorId, $userId, $this->request->data['LessonPayment']['payment_amount'], $fee);
 
                 // if we have success billing, we'll note the fact and save things
                 if(is_array($results)) {
                     $this->request->data['LessonPayment']['payment_complete'] = 1;
+                    $this->request->data['LessonPayment']['fee']              = $fee; // @TODO: convert this DB column to a decimal instead?
+                    $this->request->data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
                     $this->LessonPayment->save($this->request->data);
                 }
 
