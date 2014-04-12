@@ -39,27 +39,26 @@ $subject = explode(",",$user['User']['subject']);
                         { $userRatePrice='min';} else  { $userRatePrice= $userRate['UserRate']['price_type'];}
 
                         echo $userRate['UserRate']['rate']."/". $userRatePrice; } else{ echo 0; } ?></strong></span></p>
-        <p class="FontStyle28 color1"><?php echo ucfirst($user['User']['name']." ".$user['User']['lname']);?>
-            <?php if($user['User']['is_online'] == 1){ ?>
+        <p class="FontStyle28 color1"><?php echo h(ucfirst($user['User']['name']." ".$user['User']['lname']));?>
+            <?php /* if($user['User']['is_online'] == 1){ ?>
                 <img src="<?php echo $this->webroot?>images/online.png" alt="online">
-            <?php } else { ?>
+            <?php } else {  ?>
                 <img src="<?php echo $this->webroot?>images/offline.png" alt="onffline">
-
-            <?php } ?>
+            <?php } */ ?>
             <br /><span style="font-size:13px"><?php echo ucfirst($user['User']['username']);?></span>
             <br/>
             <?php if(isset($userstatus[0]['Mystatus']['status_text'])) { ?>
-                <span style="font-size:13px"><b>Mood: </b><?php echo(htmlspecialchars($userstatus[0]['Mystatus']['status_text'],ENT_QUOTES)) ;?></span>
+                <span style="font-size:13px"><b>Mood: </b><?php echo(h($userstatus[0]['Mystatus']['status_text'])) ;?></span>
             <?php } ?>
 
         </p>
 
-        <p><?php echo $user['User']['university']?><br>
+        <p><?php echo h($user['User']['university'])?><br>
             <br>
-            <?php echo $user['User']['other_experience']?></p>
+            <?php echo h($user['User']['other_experience'])?></p>
         <p><?php echo __("Subject:");
             foreach($subject as $k=>$v){
-                echo '<span class="tag01">'.$v.'</span> ';
+                echo '<span class="tag01">'.h($v).'</span> ';
             }
             ?>
         </p>
@@ -82,7 +81,7 @@ $subject = explode(",",$user['User']['subject']);
         </div>
 
 
-
+<?php /*
         <p>Share:
 	  <span class="profile-share">
 	 	 <a href="#">
@@ -99,7 +98,7 @@ $subject = explode(",",$user['User']['subject']);
            <img src="<?php echo $this->webroot?>images/mail.png" alt="email">
        </a>
 	  </span></p>
-
+*/?>
 
     </div>
 
@@ -163,7 +162,7 @@ $subject = explode(",",$user['User']['subject']);
                                             if($i%2 !=0)
                                             { ?>
                                                 <div class="timelinestatus">
-                                                    <p class="status"><?php echo $userstatues['Mystatus']['status_text']; ?></p>
+                                                    <p class="status"><?php echo h($userstatues['Mystatus']['status_text']); ?></p>
                                                     <p class="time"><?php echo date('d M Y | l',strtotime($userstatues['Mystatus']['created']));?>
                                                         <?php echo date('h:i a',strtotime($userstatues['Mystatus']['created']));?></p>
                                                 </div>
@@ -176,7 +175,7 @@ $subject = explode(",",$user['User']['subject']);
                                             if($j%2 ==0)
                                             { ?>
                                                 <div class="timelinestatusright right">
-                                                    <p class="status"><?php echo $userstatues['Mystatus']['status_text']; ?></p>
+                                                    <p class="status"><?php echo h($userstatues['Mystatus']['status_text']); ?></p>
                                                     <p class="time"><?php echo date('d M Y | l',strtotime($userstatues['Mystatus']['created']));?>
                                                         <?php echo date('h:i a',strtotime($userstatues['Mystatus']['created']));?></p>
                                                 </div>
@@ -215,7 +214,7 @@ $subject = explode(",",$user['User']['subject']);
                             <img src="<?php echo $this->webroot?>images/aboutme-img.png" alt="about"> </a>
                         <div class="media-body">
                             <h4 class="media-heading"><?php echo __("Teaching Experience")?></h4>
-                            <p><?php echo $user['User']['teaching_experience']?></p>
+                            <p><?php echo h($user['User']['teaching_experience']) ?></p>
                         </div></div>
 
                     <div class="student-profile">
@@ -223,14 +222,14 @@ $subject = explode(",",$user['User']['subject']);
                             <img src="<?php echo $this->webroot?>images/interests-img.png" alt="about"> </a>
                         <div class="media-body">
                             <h4 class="media-heading"><?php echo __("Extracurricular Interests")?></h4>
-                            <p><?php echo $user['User']['extracurricular_interests']?></p>
+                            <p><?php echo h($user['User']['extracurricular_interests']) ?></p>
                         </div></div>
                     <?php if($user['User']['expertise']!=""){ ?>
                         <div class="student-profile">
                             <a class="pull-left" href="#">
                                 <img src="<?php echo $this->webroot?>images/subjects.png" alt="subjects"> </a>
                             <div class="media-body">
-                                <?php echo $user['User']['expertise']?>
+                                <?php echo h($user['User']['expertise']) ?>
 
                             </div></div> <?php } ?>
                 </div>
@@ -258,11 +257,11 @@ $subject = explode(",",$user['User']['subject']);
                                     <?php } ?>
                                 </div>
                                 <div class="span3">
-                                    <p class="FontStyle16">Class: <a href="#"><?php echo $review['Lesson']['subject']?></a></p>
-                                    <p class="FontStyle11">Student: <strong><?php echo $review['User']['username']?></strong></p>
+                                    <p class="FontStyle16">Class: <a href="#"><?php echo h($review['Lesson']['subject']) ?></a></p>
+                                    <p class="FontStyle11">Student: <strong><?php echo h($review['User']['username']) ?></strong></p>
                                 </div>
                                 <div class="span5">
-                                    <?php echo $review['Review']['reviews']?>
+                                    <?php echo h($review['Review']['reviews']) ?>
                                 </div>
                                 <div class="span2">
                                     <p><input type="number" name="your_awesome_parameter" id="some_id" class="rating"   value="<?php echo $review['Review']['rating']?>"/></p>
