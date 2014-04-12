@@ -89,16 +89,16 @@ class UserHelper extends AppHelper {
 	function checkReviews($lessonid ,$rate_to,$rate_by){
 		App::import("Model", "Users.Review");  
 		$model = new Review(); 
-		  $conditions = "	lesson_id  = '". $lessonid."' and `rate_by`='".$rate_by."' AND `rate_to` = '".$rate_to."'"; 
+		  $conditions = "	lesson_id  = '". $lessonid."' and `rate_by`='".(int)$rate_by."' AND `rate_to` = '".(int)$rate_to."'";
 		return $totalUsers = $model->find('first', array('conditions' => $conditions)); 		
 	}
 	function Getunreadlesson($userObject){
 		App::import("Model", "Users.Lesson");  
 		$model = new Lesson(); 
-		$field = "created";
+		$field = "student";
 		 $read = "readlessontutor";
 		if($userObject['role_id'] == 4){
-			$field = "created";
+			$field = "student";
 			$read = "readlesson";
 		}
 		if($userObject['role_id'] == 2){

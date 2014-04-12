@@ -224,7 +224,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
                 <div class="span2 subject"> <?php echo h($v['Lesson']['subject']) ?>  </div>
 				<div class="span2 mark lessonrating"> <?php
 				
-				$reviws = $this->User->checkReviews($v['Lesson']['id'],$v['Lesson']['created'],$v['Lesson']['tutor']);
+				$reviws = $this->User->checkReviews($v['Lesson']['id'],$v['Lesson']['student'],$v['Lesson']['tutor']);
 				if(empty($reviws)){
 				if($this->Session->read('Auth.User.role_id')==4){
 					echo $this->Html->link(
