@@ -1531,7 +1531,7 @@ debug($log);
             $user_id_to_message = (int)$data['Lesson']['tutor'];
 
             $data['Lesson']['tutor'] = $user_id_to_message;
-            $data['Lesson']['student'] = $this->Auth->user('id');
+            $data['Lesson']['student'] = (int)$this->Auth->user('id');
             $data['Lesson']['add_date'] = date('Y-m-d');
             $data['Lesson']['readlesson'] = '1';
             $data['Lesson']['readlessontutor'] = '0';
@@ -1552,15 +1552,14 @@ debug($log);
 
         } else {
             // this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
-            $user = ClassRegistry::init(array('class' => 'Users.User', 'alias' => 'User'));
-            $tutorid = $user->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
+            $tutorid = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
             $tutorid = $tutorid['User']['id'];
 
             // we'll want to message this person below
             $user_id_to_message = (int)$tutorid;
 
-            $data['Lesson']['tutor'] = $this->Auth->user('id');
-            $data['Lesson']['student'] = $tutorid;
+            $data['Lesson']['tutor'] = (int)$this->Auth->user('id');
+            $data['Lesson']['student'] = (int)$tutorid;
             $data['Lesson']['add_date'] = date('Y-m-d');
             $data['Lesson']['readlesson'] = '0';
             $data['Lesson']['readlessontutor'] = '1';
@@ -1569,20 +1568,20 @@ debug($log);
             $data['Lesson']['laststatus_student'] = 0;
         }
 
-        if ($this->User->save($data, false)) {
-            $id = $this->User->getLastInsertId();
+        if ($this->Lesson->save($data, false)) {
+            $id = $this->Lesson->getLastInsertId();
 
             // @TODO: check on these items, there may be bugs.  Looks like we're unsetting our lesson data before trying to save a lesson
             // that probably won't work.  Or rather, it may generate duplicate lessons with no data or an error?
             if (isset($data['Lesson']['parent_id']) && $data['Lesson']['parent_id'] != "") {
                 unset($data['Lesson']);
                 $data['Lesson']['parent_id'] = $id;
-                $this->User->save($data);
+                $this->Lesson->save($data);
             }
             if (!isset($data['Lesson']['parent_id'])) {
                 unset($data['Lesson']);
                 $data['Lesson']['parent_id'] = $id;
-                $this->User->save($data);
+                $this->Lesson->save($data);
             }
 
             return true;
