@@ -17,8 +17,8 @@ echo $this->Html->script(array(
         <p class="FontStyle20 color1"><?php echo __("Would you like to rate")?></p>
 		</div>
 		  <?php echo $this->Form->create('Review',array('class'=>'form-horizontal')); 
-		 echo $this->Form->input('rate_to',array('class'=>'rating','type'=>'hidden','label'=>false,'div'=>false,'value'=>$Lesson['Lesson']['created'])); 
-		   echo $this->Form->input('rate_by',array('class'=>'rating','type'=>'hidden','label'=>false,'div'=>false,'value'=>$Lesson['Lesson']['tutor']));
+		 echo $this->Form->input('rate_to',array('class'=>'rating','type'=>'hidden','label'=>false,'div'=>false,'value'=>$Lesson['Lesson']['tutor']));
+		   echo $this->Form->input('rate_by',array('class'=>'rating','type'=>'hidden','label'=>false,'div'=>false,'value'=>$Lesson['Lesson']['student']));
 		    echo $this->Form->input('lesson_id',array('class'=>'rating','type'=>'hidden','label'=>false,'div'=>false,'value'=>$Lesson['Lesson']['id']));
 		  ?>
 		<div class="control-group">  <label class="control-label" for="postalAddress"><?php echo __("Rate here")?></label><div class="controls"> 

@@ -81,7 +81,7 @@ if(roletype==4){
 	 jQuery.post(Croogo.basePath+"users/updateremaining/?time=1&lessonid=<?php echo $lesson_id?>&roletype="+roletype+"&completelesson=1",function(e,v){
 		clearInterval(timer);
 		jQuery("#exitlesson").attr('disabled','disabled');
-			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson_id?>');
+			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>');
 			return false;
 		})
  }
@@ -136,7 +136,7 @@ if( $("#realtime").text()== $("#max").text()){
 			var roltype = '<?php echo $role_id?>';
 			if(roltype==4){
 			alert("Tutor finish lesson. Now you redirect on the payment page to make payment")
-			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson_id?>');
+			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>');
 			 }
 			clearInterval(timer);
 			return false;
@@ -214,8 +214,8 @@ function secondsToTime($seconds)
 			  <div id="<?php echo $showtimerId?>"><?php echo $usetime?></div> <!--<img src="<?php //echo $this->webroot?>croogo/images/timer.jpg" />--></div>
 			  	<input type="hidden" name="roletype" id="roletype" value="<?php echo $role_id?>" />
 			 <?php if($timeduration <= 0 ){ ?>
-				<form method="get" action="<?php echo $this->webroot?>users/paymentmade/?tutor=<?php echo $lesson['Lesson']['created']?>&lessonid=<?php echo $lesson_id?>">
-					<input type="hidden" name="tutor" value="<?php echo $lesson['Lesson']['created']?>" />
+				<form method="get" action="<?php echo $this->webroot?>users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>">
+					<input type="hidden" name="tutor" value="<?php echo $lesson['Lesson']['tutor']?>" />
 				
 					<input type="hidden" name="lessonid" value="<?php echo $lesson_id?>" />
 					<button type="submit">Make Payment</button>

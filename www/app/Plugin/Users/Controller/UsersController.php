@@ -852,7 +852,7 @@ class UsersController extends UsersAppController
                 'fields' => array('*'),
                 'conditions' => array('Review.rate_to' => $user['User']['id'])
             ));
-        $lessonClasscount = $this->Lesson->find('all', array('conditions' => array('created' => $user['User']['id'], 'is_confirmed' => 1),
+        $lessonClasscount = $this->Lesson->find('all', array('conditions' => array('student' => $user['User']['id'], 'is_confirmed' => 1),
                 'fields' => array('count(id) as totalrecords,sum(duration) as totalduration'))
         );
 
@@ -916,11 +916,13 @@ debug($log);*/
             $this->billing_connect();
         }
 
+        // load up the user we need access to regardless of what info we'll show
+        $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
+
         // role_id == 4 is student. Finally figured that out.
         // If the student is the one currently trying to pay the tutor:
         if ($this->Session->read('Auth.User.role_id') == 4) {
             $roleid = 2;
-            $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
 
             $needs_payments_setup = true;
             if($User['User']['stripe_customer_id'] != '') {
@@ -937,8 +939,6 @@ debug($log);*/
 
             $this->render('billing_student');
         } else {
-
-            $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
 
             $stripe_setup = false;
             if($User['User']['stripe_user_id'] != "" &&
@@ -1249,11 +1249,11 @@ debug($log);*/
         $readconditons = "readlessontutor";
 
         // we want to leave lessons off if a student isn't setup to pay
-        $extraConditions = 'INNER JOIN users as student ON (student.id = Lesson.created AND student.stripe_customer_id IS NOT NULL)';
+        $extraConditions = 'INNER JOIN users as student ON (student.id = Lesson.student AND student.stripe_customer_id IS NOT NULL)';
 
         if ($this->Session->read('Auth.User.role_id') == 4) {
-            $userconditionsfield = "created";
-            $userlessonconditionsfield = "created";
+            $userconditionsfield = "student";
+            $userlessonconditionsfield = "student";
             $readconditons = "readlesson";
             $extraConditions = '';
         }
@@ -1366,7 +1366,7 @@ debug($log); */
             $lesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
 
             // copy out two key pieces of information that we're going to leave alone without room for change
-            $studentId = $lesson['Lesson']['created'];
+            $studentId = $lesson['Lesson']['student'];
             $tutorId = $lesson['Lesson']['tutor'];
 
             // @TODO: this could be a real security risk, potentially, we're allowing total overwrite from the UI
@@ -1376,7 +1376,7 @@ debug($log); */
             $data['Lesson']['add_date'] = date('Y-m-d');
 
             // put back our key pieces of data
-            $data['Lesson']['created'] = $studentId;
+            $data['Lesson']['student'] = $studentId;
             $data['Lesson']['tutor'] = $tutorId;
 
             if ($this->Auth->user('role_id') == 4) {
@@ -1436,10 +1436,10 @@ debug($log); */
         }
 
         $userconditionsfield = "tutor";
-        $userlessonconditionsfield = "created";
+        $userlessonconditionsfield = "student";
         $readconditons = "readlessontutor";
         if ($this->Session->read('Auth.User.role_id') == 4) {
-            $userconditionsfield = "created";
+            $userconditionsfield = "student";
             $userlessonconditionsfield = "tutor";
             $readconditons = "readlesson";
         }
@@ -1531,7 +1531,7 @@ debug($log);
             $user_id_to_message = (int)$data['Lesson']['tutor'];
 
             $data['Lesson']['tutor'] = $user_id_to_message;
-            $data['Lesson']['created'] = $this->Auth->user('id');
+            $data['Lesson']['student'] = (int)$this->Auth->user('id');
             $data['Lesson']['add_date'] = date('Y-m-d');
             $data['Lesson']['readlesson'] = '1';
             $data['Lesson']['readlessontutor'] = '0';
@@ -1552,15 +1552,14 @@ debug($log);
 
         } else {
             // this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
-            $user = ClassRegistry::init(array('class' => 'Users.User', 'alias' => 'User'));
-            $tutorid = $user->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
+            $tutorid = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
             $tutorid = $tutorid['User']['id'];
 
             // we'll want to message this person below
             $user_id_to_message = (int)$tutorid;
 
-            $data['Lesson']['tutor'] = $this->Auth->user('id');
-            $data['Lesson']['created'] = $tutorid;
+            $data['Lesson']['tutor'] = (int)$this->Auth->user('id');
+            $data['Lesson']['student'] = (int)$tutorid;
             $data['Lesson']['add_date'] = date('Y-m-d');
             $data['Lesson']['readlesson'] = '0';
             $data['Lesson']['readlessontutor'] = '1';
@@ -1569,20 +1568,20 @@ debug($log);
             $data['Lesson']['laststatus_student'] = 0;
         }
 
-        if ($this->User->save($data, false)) {
-            $id = $this->User->getLastInsertId();
+        if ($this->Lesson->save($data, false)) {
+            $id = $this->Lesson->getLastInsertId();
 
             // @TODO: check on these items, there may be bugs.  Looks like we're unsetting our lesson data before trying to save a lesson
             // that probably won't work.  Or rather, it may generate duplicate lessons with no data or an error?
             if (isset($data['Lesson']['parent_id']) && $data['Lesson']['parent_id'] != "") {
                 unset($data['Lesson']);
                 $data['Lesson']['parent_id'] = $id;
-                $this->User->save($data);
+                $this->Lesson->save($data);
             }
             if (!isset($data['Lesson']['parent_id'])) {
                 unset($data['Lesson']);
                 $data['Lesson']['parent_id'] = $id;
-                $this->User->save($data);
+                $this->Lesson->save($data);
             }
 
             return true;
@@ -1744,7 +1743,7 @@ debug($log);*/
         // if this is a student who had a lesson created for them that they need to confirm
         // then we want to set things up and confirm
         elseif($this->Session->read('Auth.User.role_id') == 4
-            && $data['Lesson']['created'] == $this->Session->read('Auth.User.id')
+            && $data['Lesson']['student'] == $this->Session->read('Auth.User.id')
         ) {
             $data['Lesson']['readlesson']         = 1;
             $data['Lesson']['is_confirmed']       = 0;
@@ -1780,7 +1779,7 @@ debug($log);*/
     public function calandareventsprofile()
     {
         $userconditionsfield = "tutor";
-        $userlessonconditionsfield = "created";
+        $userlessonconditionsfield = "student";
         $readconditons = "readlessontutor";
 
         $upcomminglesson = $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons
@@ -1813,10 +1812,10 @@ debug($log);*/
     public function calandarevents()
     {
         $userconditionsfield = "tutor";
-        $userlessonconditionsfield = "created";
+        $userlessonconditionsfield = "student";
         $readconditons = "readlessontutor";
         if ($this->Session->read('Auth.User.role_id') == 4) {
-            $userconditionsfield = "created";
+            $userconditionsfield = "student";
             $userlessonconditionsfield = "tutor";
             $readconditons = "readlesson";
         }
@@ -1914,7 +1913,7 @@ debug($log); */
             $totaltime = $checktwiddlaid['Lesson']['remainingduration'] + 60;
             $this->Lesson->saveField('remainingduration', $totaltime);
             if (isset($this->params->query['completelesson']) && ($this->params->query['completelesson'] == 1)) {
-                $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['created'], 'tutor_id' => $checktwiddlaid['Lesson']['tutor'], 'lesson_id' => $this->params->query['lessonid'])));
+                $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['student'], 'tutor_id' => $checktwiddlaid['Lesson']['tutor'], 'lesson_id' => $this->params->query['lessonid'])));
                 if (empty($lessonPayment)) {
                     $u = $this->UserRate->find('first', array('conditions' => array('userid' => $checktwiddlaid['Lesson']['tutor'])));
                     $pritype = $u['UserRate']['price_type'];
@@ -1928,7 +1927,7 @@ debug($log); */
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = $totaltimeuseinmin * $pricerate;
                     }
-                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['student'];
                     $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                     $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
 
@@ -1948,7 +1947,7 @@ debug($log); */
                         $totaltimeuseinmin = $totaltime / 60;
                         $totalamount = $totaltimeuseinmin * $pricerate;
                     }
-                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                    $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['student'];
                     $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                     $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                     $this->request->data['LessonPayment']['id'] = $lessonPayment['LessonPayment']['id'];
@@ -1963,7 +1962,7 @@ debug($log); */
         } else if ($roletype == 4) {
             $totaltime = $checktwiddlaid['Lesson']['student_lessontaekn_time'] + 60;
             $this->Lesson->saveField('student_lessontaekn_time', $totaltime);
-            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['created'], 'tutor_id' => $checktwiddlaid['Lesson']['tutor'], 'lesson_id' => $this->params->query['lessonid'])));
+            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array('student_id' => $checktwiddlaid['Lesson']['student'], 'tutor_id' => $checktwiddlaid['Lesson']['tutor'], 'lesson_id' => $this->params->query['lessonid'])));
             if (isset($this->params->query['completelesson']) && ($this->params->query['completelesson'] == 1)) {
 
                 $this->request->data['LessonPayment']['lesson_complete_tutor'] = 1;
@@ -1983,7 +1982,7 @@ debug($log); */
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = $totaltimeuseinmin * $pricerate;
                 }
-                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['student'];
                 $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                 $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                 $this->request->data['LessonPayment']['lesson_take'] = 1;
@@ -2002,7 +2001,7 @@ debug($log); */
                     $totaltimeuseinmin = $totaltime / 60;
                     $totalamount = $totaltimeuseinmin * $pricerate;
                 }
-                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['created'];
+                $this->request->data['LessonPayment']['student_id'] = $checktwiddlaid['Lesson']['student'];
                 $this->request->data['LessonPayment']['tutor_id'] = $checktwiddlaid['Lesson']['tutor'];
                 $this->request->data['LessonPayment']['payment_amount'] = $totalamount;
                 $this->request->data['LessonPayment']['id'] = $lessonPayment['LessonPayment']['id'];

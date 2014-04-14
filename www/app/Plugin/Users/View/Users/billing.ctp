@@ -94,10 +94,25 @@ $1000</p> </div> </div>
                   <?php if($stripe_setup) : ?>
                       <img src="/images/stripe-white.png" alt="Connect with Stripe"> <span class="ok-button"><i class="icon-large icon-ok icon-white"></i> &nbsp;Connected</span>
                   <?php else :
+
+                  // Now we send our tutor off to Stripe to register for a business account.  we work on pre-filling
+                  // as much info for them as possible to make things simpler as they fill things out
+                  // Details on this page: https://stripe.com/docs/connect/reference#get-authorize-request
                   $authorize_request_body = array(
-                      'response_type' => 'code',
-                      'scope'         => 'read_write',
-                      'client_id'     => $stripe_client_id,
+                      'response_type'                   => 'code',
+                      'scope'                           => 'read_write',
+                      'client_id'                       => $stripe_client_id,
+                      'stripe_user[email]'              => $User['User']['lname'], // (with the one we already have for them)
+                      'stripe_user[business_type]'      => 'sole_prop', // https://support.stripe.com/questions/sole-proprietor-without-federal-ein
+                      'stripe_user[first_name]'         => $User['User']['name'],
+                      'stripe_user[last_name]'          => $User['User']['lname'],
+                      'stripe_user[physical_product]'   => 'false',
+                      'stripe_user[product_description]'=> 'Tutoring service. I charge after my lesson is completed',
+                      'stripe_user[product_category]'   => 'education',
+                      'stripe_user[average_payment]'    => '50',
+                      'stripe_user[url]'                => (isset($User['User']['website']) && $User['User']['website'] != '')
+                                                                ? $User['User']['website']
+                                                                : 'http://app.botangle.com'.$this->webroot.'users/'.$User['User']['username'],
                   );
                   $url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
                   ?>
