@@ -68,15 +68,12 @@ echo $this->Layout->js();
 		?>
 		<script>
 var suburl = "/subject/search";
-if(document.URL.indexOf('127.0.0.1')>=0){
-var suburl = "/botangle/subject/search"
-} 	
+
 		var $j = jQuery.noConflict();
 datasubject = "";	 
 jQuery(function() {
 jQuery.getJSON( suburl,function(response){
 datasubject = response;
-console.log(datasubject)
 $j( "#searchvalue,#LessonSubject").autocomplete({
 minLength: 0,
 source: datasubject,

@@ -60,8 +60,7 @@ return $( "<li>" )
 			.autocomplete({
 				source: function( request, response ) {
 				 
-					///var url = "/demos/botangle/subject/search";
-					var url = "/demos/botangle/subject/search";
+					var url = "/subject/search";
 					 
 					$.getJSON( url, {
 						term: extractLast( request.term )
