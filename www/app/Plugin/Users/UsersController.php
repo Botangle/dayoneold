@@ -51,21 +51,25 @@ class UsersController extends UsersAppController {
 	public $helper = array('Categories.Category','Session');
 	 
 	function beforeFilter(){
+		echo "dfdf";
+		exit;
 	$fields =  ConnectionManager::getDataSource('default');
 	$dsc = $fields->config;
 	  $this->databaseName  = $dsc['database'];
-		parent::beforeFilter();
-		$this->Security->validatePost = false;
-		$this->Security->csrfCheck = false;
+	  $this->Security->unlockedActions = array('*');
+	  $this->Security->validatePost = false;
+	  $this->Security->csrfCheck = false;
+	  echo "dfdf";
+	  exit;
+		//parent::beforeFilter();
 		 
-		 $this->Security->unlockedActions = array('*');
 		 $this->Auth->allow('searchstudent','calandareventsprofile','joinuser','lessons_add','updateremaining','paymentmade','claimoffer','paymentsetting');
 		 if($this->Session->check('Auth.User')&&$this->Session->read('Auth.User.role_id')==4){
 		 $this->checkpayment();
 		 }
 		
   
-  
+  	
 	 
 	}
 	/**
@@ -973,7 +977,8 @@ debug($log); die;*/
 	}
 	
 	public function lessons(){
-	  
+ 
+		
 		$userconditionsfield = "tutor";
 		$userlessonconditionsfield = "created";
 		$readconditons = "readlessontutor";
@@ -1001,14 +1006,36 @@ debug($log); die;*/
 		$pastlesson =  $this->Lesson->query("Select * from lessons as Lesson INNER JOIN `$this->databaseName`.`users` AS `User` ON (`User`.`id` = `Lesson`.`$userconditionsfield`) JOIN (SELECT MAX(id) as ids FROM lessons 
         GROUP BY parent_id) as newest ON Lesson.id = newest.ids WHERE  `Lesson`.`$userlessonconditionsfield` = '".$this->Session->read('Auth.User.id')."'  AND Lesson.lesson_date < '".date('Y-m-d')."'  
 		"); 
-		 
-		
+		  
 		$this->set(compact('activelesson','upcomminglesson','pastlesson'));
 		  /* $log = $this->User->getDataSource()->getLog(false, false);
 debug($log); */
-		  if($this->Session->read('Auth.User.role_id')==4){
-			
-		 }
+	
+		  if($this->Session->read('Auth.User.role_id')==4)
+		  {
+		  		$reviewsData = $this->Review->find('all',array('Review.rate_by'=>$this->Auth->user('id')));
+		  		$reviews = array();
+		  		
+		  		foreach ($reviewsData as $rD)
+		  		{
+		  			$reviews[$rD['Lesson']['id']] = $rD;  
+		  		}
+		  		var_dump($reviews);
+		  		exit;
+		  		$this->set('reviews',$reviews);
+		  }
+		  else 
+		  {
+			  	$reviewsData = $this->Review->find('all',array('Review.rate_to'=>$this->Auth->user('id')));
+			  	$reviews = array();
+			  	
+			  	foreach ($reviewsData as $rD)
+			  	{
+			  		$reviews[$rD['Lesson']['id']] = $rD;
+			  	}
+			  	
+			  	$this->set('reviews',$reviews);
+		  }
 		 $this->render('lessons2');
 		
 	}
@@ -1244,13 +1271,28 @@ debug($log);*/
 		  
 	}
 	public function lessonreviews($lessonid = null){
-		 if (!empty($this->request->data)) {
+		$this->loadModel('Lesson');
+		
+		$lessonExist = $this->Lesson->find('first',array('conditions'=>array('Lesson.id'=>$lessonid,'Lesson.created'=>$this->Auth->user('id'))));
+		
+		if(!$lessonExist)
+		{
+			//its hack;
+			$this->redirect(array('action' => 'lessons'));
+		}
+		 
+		if (!empty($this->request->data)) {
 			$this->request->data['Review']['add_date'] = date('Y-m-d H:i:s');
+			
+			$this->request->data['Review']['rate_to'] = $lessonExist['Lesson']['tutor'];
+			$this->request->data['Review']['rate_by'] = $lessonExist['Lesson']['created'];
+			$this->request->data['Review']['lesson_id'] = $lessonExist['Lesson']['id'];
 			
 			if ($this->Review->save($this->request->data)) {
 				$this->redirect(array('action' => 'lessons'));
-			} 
-		 }
+			}
+		}
+		
 		$Lesson = $this->Lesson->find('first',array('conditions'=>array('id'=>$lessonid)));
 		$this->set(compact('Lesson'));
 		 
