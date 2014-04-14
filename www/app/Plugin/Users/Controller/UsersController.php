@@ -916,11 +916,13 @@ debug($log);*/
             $this->billing_connect();
         }
 
+        // load up the user we need access to regardless of what info we'll show
+        $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
+
         // role_id == 4 is student. Finally figured that out.
         // If the student is the one currently trying to pay the tutor:
         if ($this->Session->read('Auth.User.role_id') == 4) {
             $roleid = 2;
-            $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
 
             $needs_payments_setup = true;
             if($User['User']['stripe_customer_id'] != '') {
@@ -937,8 +939,6 @@ debug($log);*/
 
             $this->render('billing_student');
         } else {
-
-            $User = $this->User->find('first', array('conditions' => array('User.id' => $id)));
 
             $stripe_setup = false;
             if($User['User']['stripe_user_id'] != "" &&
