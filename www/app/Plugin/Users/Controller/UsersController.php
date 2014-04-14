@@ -57,15 +57,15 @@ class UsersController extends UsersAppController
     public $helper = array('Categories.Category', 'Session');
 
     function beforeFilter()
-    {
+    {  
+    	$this->Security->validatePost = false;
+    	$this->Security->csrfCheck = false;
+    	$this->Security->unlockedActions = array('*');
+    	parent::beforeFilter();
         $fields = ConnectionManager::getDataSource('default');
         $dsc = $fields->config;
         $this->databaseName = $dsc['database'];
-        parent::beforeFilter();
-        $this->Security->validatePost = false;
-        $this->Security->csrfCheck = false;
-
-        $this->Security->unlockedActions = array('*');
+        
         $this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
         if ($this->Session->check('Auth.User') && $this->Session->read('Auth.User.role_id') == 4) {
             $this->checkpayment();
@@ -838,19 +838,12 @@ class UsersController extends UsersAppController
                     'type' => 'INNER',
                     'conditions' => array(
                         "User.id = Review.rate_by"
-                    )),
-                    array(
-                        'table' => 'lessons',
-                        'alias' => 'Lesson',
-                        'type' => 'left',
-                        'conditions' => array(
-                            "Lesson.id = Review.lesson_id"
-                        ))
+                    )), 
                 ),
 
 
                 'fields' => array('*'),
-                'conditions' => array('Review.rate_to' => $user['User']['id'])
+                'conditions' => array('Review.rate_to' => $this->Auth->user('id'))
             ));
         $lessonClasscount = $this->Lesson->find('all', array('conditions' => array('student' => $user['User']['id'], 'is_confirmed' => 1),
                 'fields' => array('count(id) as totalrecords,sum(duration) as totalduration'))
@@ -1303,11 +1296,37 @@ debug($log);*/
         $this->set(compact('activelesson', 'upcomminglesson', 'pastlesson'));
         /* $log = $this->User->getDataSource()->getLog(false, false);
 debug($log); */
-
-        /* @todo find out why this if statement is empty... */
-        if ($this->Session->read('Auth.User.role_id') == 4) {
-
-        }
+     	if($this->Session->read('Auth.User.role_id')==4)
+		  {
+		  		$reviewsData = $this->Review->find('all',array('Review.rate_by'=>$this->Auth->user('id')));
+		  		$reviews = array();
+		  		
+		  		if($reviewsData)
+		  		{
+			  		foreach ($reviewsData as $rD)
+			  		{
+			  			$reviews[$rD['Lesson']['id']] = $rD;  
+			  		}
+		  		}
+		  		 
+		  		$this->set('reviews',$reviews);
+		  }
+		  else 
+		  {
+			  	$reviewsData = $this->Review->find('all',array('Review.rate_to'=>$this->Auth->user('id')));
+			  	$reviews = array();
+			  	
+			  	if($reviewsData)
+			  	{ 
+			  		foreach ($reviewsData as $rD)
+			  		{
+			  			$reviews[$rD['Lesson']['id']] = $rD;
+			  		}
+			  	}
+			  	
+			  	$this->set('reviews',$reviews);
+		  }
+		  
         $this->render('lessons');
 
     }
@@ -1706,18 +1725,40 @@ debug($log);*/
      *
      * Handles reviews of how the lesson went, ex-post-facto.
      */
-    public function lessonreviews($lessonid = null)
-    {
-        if (!empty($this->request->data)) {
-            $this->request->data['Review']['add_date'] = date('Y-m-d H:i:s');
-
-            if ($this->Review->save($this->request->data)) {
-                $this->redirect(array('action' => 'lessons'));
-            }
-        }
-        $Lesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
-        $this->set(compact('Lesson'));
-    }
+	public function lessonreviews($lessonid = null){
+		$this->loadModel('Lesson');
+		
+		$lessonExist = $this->Lesson->find('first',array('conditions'=>array('Lesson.id'=>$lessonid,'Lesson.student'=>$this->Auth->user('id'))));
+		
+		if(!$lessonExist)
+		{
+			//its hack;
+			$this->redirect(array('action' => 'lessons'));
+		}
+		 
+		if (!empty($this->request->data)) {
+			$this->request->data['Review']['add_date'] = date('Y-m-d H:i:s');
+			
+			$this->request->data['Review']['rate_to'] = $lessonExist['Lesson']['tutor'];
+			$this->request->data['Review']['rate_by'] = $lessonExist['Lesson']['student'];
+			$this->request->data['Review']['lesson_id'] = $lessonExist['Lesson']['id'];
+			
+			if ($this->Review->save($this->request->data)) 
+			{
+				 echo json_encode(array('status'=>1));
+			}
+			else 
+			{ 
+				echo json_encode(array('status'=>0,'message'=>__('Please rate document and enter review')));
+			}
+			exit;
+		}
+		
+		$Lesson = $this->Lesson->find('first',array('conditions'=>array('id'=>$lessonid)));
+		$this->set(compact('Lesson'));
+		$this->render('lessonreviews'); 
+		 
+	}	
 
     /**
      * Confirmed by tutor

@@ -222,23 +222,27 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 			  echo h($hr[0].":".$hr[1]) ?></div>
                <div class="span1 mins"> <?php echo h($v['Lesson']['duration']) ?> </div>
                 <div class="span2 subject"> <?php echo h($v['Lesson']['subject']) ?>  </div>
-				<div class="span2 mark lessonrating"> <?php
-				
-				$reviws = $this->User->checkReviews($v['Lesson']['id'],$v['Lesson']['student'],$v['Lesson']['tutor']);
-				if(empty($reviws)){
-				if($this->Session->read('Auth.User.role_id')==4){
-					echo $this->Html->link(
-					__('Reviews'),	'/users/lessonreviews/'.$v['Lesson']['id']
-					,
-					array('title'=>__('Reviews') ,'class'=>'btn btn-primary btn-primary3 reviews','style'=>'width:125px','data-toggle'=>"modal"  ) ); 
-				}
-			} else { 
-	   ?>
-          <p>Rating: <input type="number" name="your_awesome_parameter" id="<?php echo $v['Lesson']['id'] ?>" value="<?php echo $reviws['Review']['rating'] ?>" class="rating" /></p>
-		 <?php } ?> 
-		  </div> 
-				
-                <div class="span2 mark"> <button class="btn btn-primary btn-primary3" type="submit">Go To Lesson</button></div>         
+             <div class="span2 mark lessonrating"> <?php
+                 $review = null;
+                 if(isset($reviews)&&isset($reviews[$v['Lesson']['id']]))
+                 {
+                     $review = $reviews[$v['Lesson']['id']];
+                 }
+
+                 if(!isset($review)){
+                     if($this->Session->read('Auth.User.role_id')==4){
+                         echo $this->Html->link(
+                             __('Reviews'),	'javascript:void(0)'
+                             ,
+                             array('title'=>__('Reviews') ,'class'=>'btn btn-primary btn-primary3 reviews','data-url'=>'/users/lessonreviews/'.$v['Lesson']['id'],'style'=>'width:125px','data-toggle'=>"modal"   ) );
+                     }
+                 } else {
+                     ?>
+                     <p>Rating: <input type="number"  id="<?php echo $v['Lesson']['id'] ?>" value="<?php echo $review['Review']['rating'] ?>" class="rating" /></p>
+                 <?php } ?>
+             </div>
+
+             <div class="span2 mark"> <button class="btn btn-primary btn-primary3" type="submit">Go To Lesson</button></div>
             </div>
             </div>
         <?php }
@@ -286,10 +290,10 @@ function updateRating(){
  })
  }
 jQuery('[data-toggle="modal"]').click(function(e) {
-  e.preventDefault();
+ 
     
    var currentclass = jQuery(this).hasClass('reviews')
-  var url = jQuery(this).attr('href'); 
+  var url = jQuery(this).attr('data-url'); 
   jQuery.get(url, function(data) {   
    
 	 jQuery('body').append('<div class="modal-backdrop in"></div>')
@@ -297,10 +301,7 @@ jQuery('[data-toggle="modal"]').click(function(e) {
 	 console.log(jQuery('.StaticPageRight-Block').outerHeight())
 	  jQuery('#myModal').css('height',jQuery('.StaticPageRight-Block').outerHeight()+300)
 	 jQuery('.PageLeft-Block').css({'border-top':0,'box-shadow':'none'}).parent('div.span9').css({width:825+'px'})
-	 if(currentclass){
-	  callRate();
-	  updateRating();
-	  }
+	 
 	  jQuery('.btn-reset').click(function(e){
 		removebackground();
 	  })
