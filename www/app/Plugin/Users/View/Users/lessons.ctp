@@ -298,7 +298,6 @@ jQuery('[data-toggle="modal"]').click(function(e) {
    
 	 jQuery('body').append('<div class="modal-backdrop in"></div>')
 	 jQuery("#myModal").html(data).css({'display':'block','height':'auto','top':'25%','position':'absolute'});
-	 console.log(jQuery('.StaticPageRight-Block').outerHeight())
 	  jQuery('#myModal').css('height',jQuery('.StaticPageRight-Block').outerHeight()+300)
 	 jQuery('.PageLeft-Block').css({'border-top':0,'box-shadow':'none'}).parent('div.span9').css({width:825+'px'})
 	 
