@@ -32,7 +32,7 @@ www/app/Plugin/Stripe
 www/logs
 
 # Composer
-www/app/vendor/*
+www/app/Vendor/*
 
 # Development tool folders to ignore
 .idea
