@@ -43,7 +43,7 @@ body {
 	color:#333; padding:0px !important; margin:0px;
 }
 #Bannerblock {
-	background: url("../images/banner-bg.png") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
+	background: url("../images/banner-bg.jpg") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
 	height: auto; margin-top:80px;
@@ -102,7 +102,7 @@ body {
 }
 
 #HomeQuoteBlock {
-	background: url("../images/banner-bg2.png") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
+	background: url("../images/banner-bg2.jpg") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
 	/*height: 275px;*/
