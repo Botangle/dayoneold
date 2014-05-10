@@ -253,7 +253,7 @@ $subject = explode(",",$user['User']['subject']);
                                     if(file_exists(WWW_ROOT . DS . 'uploads' . DS . $review['User']['id']. DS . 'profile'. DS  .$review['User']['profilepic']) && $review['User']['profilepic']!=""){ ?>
                                         <img src="<?php echo $this->webroot. 'uploads/'.$review['User']['id'].'/profile/'.$review['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
                                     <?php }else{		 ?>
-                                        <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="tutor">
+                                        <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="expert">
                                     <?php } ?>
                                 </div>
                                 <div class="span3">
@@ -427,7 +427,7 @@ echo $this->Html->script(array(
 
         jQuery('#myModal').css('height',jQuery('.StaticPageRight-Block').outerHeight()+120)
         jQuery('.PageLeft-Block').css({'border-top':0,'box-shadow':'none'}).parent('div.span9').css({width:825+'px'})
-        jQuery('label[for="tutorname"]').html('Tutor');
+        jQuery('label[for="tutorname"]').html('Expert');
         jQuery('.ui-autocomplete').css({'z-index':'999999'})
 
         jQuery('button[type="reset"]').click(function(){

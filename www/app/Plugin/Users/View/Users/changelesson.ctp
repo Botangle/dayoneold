@@ -40,7 +40,7 @@ echo $this->Html->script(array(
               <div class="control-group">
                 <label class="control-label" for="lesson-time">Lesson Time:</label>
                 <div class="controls">
-				<?php echo $this->Form->input('lesson_date',array('class'=>'textbox','placeholder'=>"Tutor",'label' => false,'id'=>'dtp_input2','type'=>'hidden','value'=>$Lesson['Lesson']['lesson_date']));?>
+				<?php echo $this->Form->input('lesson_date',array('class'=>'textbox','placeholder'=>"Expert",'label' => false,'id'=>'dtp_input2','type'=>'hidden','value'=>$Lesson['Lesson']['lesson_date']));?>
 				   
 				<div class=" input-append date form_date" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd" style="width:47%;"  >
 					
@@ -49,7 +49,7 @@ echo $this->Html->script(array(
 					<span class="add-on" style="height:44px"><i class="icon-th"></i></span>
              
                 </div>
-				<?php echo $this->Form->input('lesson_time',array('class'=>'textbox','placeholder'=>"Tutor",'label' => false,'id'=>'dtp_input3','type'=>'hidden','value'=>$Lesson['Lesson']['lesson_time']));?>
+				<?php echo $this->Form->input('lesson_time',array('class'=>'textbox','placeholder'=>"Expert",'label' => false,'id'=>'dtp_input3','type'=>'hidden','value'=>$Lesson['Lesson']['lesson_time']));?>
 				   <div class=" input-append date form_time" data-date="" data-date-format="hh:ii" data-link-field="dtp_input3" data-link-format="hh:ii" style="width:33%;">
                     <input size="16" class="textbox2" type="text" value="<?php echo  $Lesson['Lesson']['lesson_time']?>" readonly>
                     <span class="add-on" style="height:44px"><i class="icon-remove"></i></span>

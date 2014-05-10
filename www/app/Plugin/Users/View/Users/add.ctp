@@ -88,7 +88,7 @@ select: function( event, ui ) {
 			}
 			 
  
-			$options = array('2' => 'Tutor','4' => 'Student');
+			$options = array('2' => 'Expert','4' => 'Student');
 			$attributes = array('legend' => false,'checked' => $default,'value'=>$default,
 			'onclick'=>'update(this.value)',
 			'label' => array(
@@ -231,7 +231,7 @@ select: function( event, ui ) {
 			}
 			 
  
-			$options = array('2' => 'Tutor','4' => ' Student');
+			$options = array('2' => 'Expert','4' => ' Student');
 			$attributes = array('legend' => false,'checked' => $default,'value'=>$default,
 			'onclick'=>'update(this.value)',
 			'label' => array(

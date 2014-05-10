@@ -22,7 +22,7 @@
                             <?php if(!$needs_payments_setup): ?>
                                 <div class="span12">
                                     <p class="FontStyle20 color1"><?php echo __("Payments Setup")?></p>
-                                    <p>Thanks, you're all setup in our system.  At this point, tutors will see your lesson requests
+                                    <p>Thanks, you're all setup in our system.  At this point, experts will see your lesson requests
                                         and you can start arranging the details on when you meet.  Please let us know if
                                         you have any questions or concerns!</p>
                                 </div>
@@ -31,7 +31,7 @@
                             <div class="span12">
                                 <p class="FontStyle20 color1"><?php echo __("Setup Payments")?></p>
                                 <p>Congratulations! You're getting close to having your first lesson!  We just need a few more
-                                    details from you and then we'll notify your tutor about your desired time.</p>
+                                    details from you and then we'll notify your expert about your desired time.</p>
 
                                 <p>Please take a moment to fill out your payment information below.  NOTE: we safely and securely
                                     store this information with our credit card processing company.  It never touches our servers.</p>

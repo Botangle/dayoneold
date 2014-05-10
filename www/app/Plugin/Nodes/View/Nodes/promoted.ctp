@@ -6,14 +6,14 @@
         <div class="service-img"><img src="<?php echo $this->webroot?>images/join-img.png" alt="Join"></div>
         <div class="service-text" onclick="window.location.href=('<?php echo $this->webroot?>register')">
           <h2>Join Botangle</h2>
-          <p>lets you connect with one of the<br/> best online tutors the moment you'd like a hand.</p>
+          <p>lets you connect with one of the<br/> best online experts the moment you'd like a hand.</p>
         </div>
       </div>
       <div class="span4 Servicebox"  onclick="window.location.href=('<?php echo $this->webroot?>user/search')">
         <div class="service-img"><img src="<?php echo $this->webroot?>images/search-tutor.png" alt="Join"></div>
         <div class="service-text">
-          <h2>Search Tutors</h2>
-          <p>Work with someone instantly or schedule<br/> a lesson with your preferred tutor at a convenient time. </p>
+          <h2>Search Experts</h2>
+          <p>Work with someone instantly or schedule<br/> a lesson with your preferred expert at a convenient time. </p>
         </div>
       </div>
       <div class="span4 Servicebox"  onclick="window.location.href=('<?php echo $this->webroot?>user/search')">
@@ -42,7 +42,7 @@
 <!--Wrapper HomeQuoteBlock Block End Here-->
 <div class="row-fluid Featured-tutors-block">
       <div class="offset1">
-        <h2>Featured Tutors</h2>
+        <h2>Featured Experts</h2>
 	<!--
 	commenting this temporarily
         <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est aborum.</p>

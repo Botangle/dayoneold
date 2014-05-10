@@ -22,7 +22,7 @@
 	array('class'=>'join-btn')
 );?></div>
         <div class="span6 joinus-button1"><?php  echo $this->Html->link(
-    __('Become a Tutor'),	
+    __('Become an Expert'),	
     array(
           'controller' => 'user',
         'action' => 'registration', 

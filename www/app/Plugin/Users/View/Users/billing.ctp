@@ -89,7 +89,7 @@ $1000</p> </div> </div>
                       take our percentage once things work out.  We'll need you to click the button below and either
                       sign up for a Stripe account or authorize us on an existing account you have.</p>
 
-                  <p>Once that's done, we'll list you as a tutor and start organizing lessons for you!</p>
+                  <p>Once that's done, we'll list you as an expert and start organizing lessons for you!</p>
 
                   <?php if($stripe_setup) : ?>
                       <img src="/images/stripe-white.png" alt="Connect with Stripe"> <span class="ok-button"><i class="icon-large icon-ok icon-white"></i> &nbsp;Connected</span>

@@ -135,7 +135,7 @@ if( $("#realtime").text()== $("#max").text()){
 		if(donetime.lessonResponse.LessonPayment.lesson_complete_student==1){
 			var roltype = '<?php echo $role_id?>';
 			if(roltype==4){
-			alert("Tutor finish lesson. Now you redirect on the payment page to make payment")
+			alert("Expert finish lesson. Now you redirect on the payment page to make payment")
 			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>');
 			 }
 			clearInterval(timer);

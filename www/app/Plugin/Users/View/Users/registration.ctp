@@ -42,7 +42,7 @@
               <div class="controls">
                 <label class="radio inline">
                   <input type="radio" name="genderRadios" value=" <?php echo __("Tutor")?> " selected="selected">
-                  <?php echo __("Tutor")?> </label>
+                  <?php echo __("Expert")?> </label>
                 <label class="radio inline">
                   <input type="radio" name="genderRadios" value=" <?php echo __("Student")?>" >
                   <?php echo __("Student")?> </label>

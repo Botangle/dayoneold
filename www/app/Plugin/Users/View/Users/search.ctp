@@ -11,7 +11,7 @@
       <div class="span3 pull-right" >
        <!-- <label class="checkbox online-checkbox">
               <input type="checkbox" id="isonline" <?php if(isset($online) && ($online!="")) { echo "checked='checked'"; } ?>>
-          &nbsp;<?php echo __("Online Tutors")?></label>-->
+          &nbsp;<?php echo __("Online Experts")?></label>-->
       </div>
     </div>
   </div>

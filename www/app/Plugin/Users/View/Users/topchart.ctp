@@ -16,7 +16,7 @@ if(isset($categoryname) && ($categoryname!="")){
       <div class="span3 pull-right" >
         <!--<label class="checkbox online-checkbox">
           <input type="checkbox" id="isonline" <?php if(isset($online) && ($online!="")) { echo "checked='checked'"; } ?>>
-          <?php echo __("&nbsp;Online Tutors")?></label>-->
+          <?php echo __("&nbsp;Online Experts")?></label>-->
       </div>
     </div>
   </div>
