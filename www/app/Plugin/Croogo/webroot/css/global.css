@@ -1088,3 +1088,10 @@ h3.timeline-title {
 .ok-button i {
     margin-top: 2px;
 }
+
+/* Get in touch */
+
+a.Social-Boxs-Links:hover {
+	color: #fff;
+	text-decoration: none;
+}
