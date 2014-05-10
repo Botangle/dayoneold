@@ -838,20 +838,14 @@ class UsersController extends UsersAppController
             'fields' => array('avg(rating) as avg'),
         ));
         $userReviews = $this->Review->find('all', array(
-            'joins' => array(array(
+            'joins' => array(
+				array(
                     'table' => 'users',
                     'alias' => 'User',
                     'type' => 'INNER',
                     'conditions' => array(
                         "User.id = Review.rate_by"
                     )),
-                array(
-                    'table' => 'lessons',
-                    'alias' => 'Lesson',
-                    'type' => 'left',
-                    'conditions' => array(
-                        "Lesson.id = Review.lesson_id"
-                    ))
             ),
             'fields' => array('*'),
             'conditions' => array('Review.rate_to' => $user['User']['id'])
