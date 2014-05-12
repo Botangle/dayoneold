@@ -127,9 +127,9 @@ return $( "<li>" )
         <div class="span6 joinus-button1"> 
 		<?php
 		echo $this->Html->link(
-    __('Become a Tutor'),	'/registration/tutor'
+    __('Become an Expert'),	'/registration/tutor'
      ,
-	array('class'=>'join-btn','title'=>__('Become a Tutor') )
+	array('class'=>'join-btn','title'=>__('Become an Expert') )
 );
 	   ?>
 	  

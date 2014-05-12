@@ -80,13 +80,13 @@ English with a Concentration in Theater</p>
                </div>
                <div class="Myclass-list row-fluid">
                	<div class="span2">
-                 <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="tutor"></div>
+                 <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="expert"></div>
                	<div class="span3">
                 <p class="FontStyle16">Class: <a href="#">Alzebra 1</a></p>
-<p class="FontStyle11">Tutor: <strong>Alexzendar D.</strong></p>
+<p class="FontStyle11">Expert: <strong>Alexzendar D.</strong></p>
                 </div>
                	<div class="span5">
-                "I tutored a student one-on-one as a member of the National Honor Society during my senior year of high..."
+                "I have taught a student one-on-one as a member of the National Honor Society during my senior year of high..."
                 </div>
                 <div class="span2">
                		<p><input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="remove"/></p>
@@ -97,13 +97,13 @@ English with a Concentration in Theater</p>
                </div>
                <div class="Myclass-list row-fluid">
                	<div class="span2">
-                 <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="tutor"></div>
+                 <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="expert"></div>
                	<div class="span3">
                 <p class="FontStyle16">Class: <a href="#">Alzebra 1</a></p>
-<p class="FontStyle11">Tutor: <strong>Alexzendar D.</strong></p>
+<p class="FontStyle11">Expert: <strong>Alexzendar D.</strong></p>
                 </div>
                	<div class="span5">
-                "I tutored a student one-on-one as a member of the National Honor Society during my senior year of high..."
+                "I have taught a student one-on-one as a member of the National Honor Society during my senior year of high..."
                 </div>
                 <div class="span2">
                		<p><input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="remove"/></p>
@@ -114,13 +114,13 @@ English with a Concentration in Theater</p>
                </div>
                <div class="Myclass-list row-fluid">
                	<div class="span2">
-                 <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="tutor"></div>
+                 <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="expert"></div>
                	<div class="span3">
                 <p class="FontStyle16">Class: <a href="#">Alzebra 1</a></p>
-<p class="FontStyle11">Tutor: <strong>Alexzendar D.</strong></p>
+<p class="FontStyle11">Expert: <strong>Alexzendar D.</strong></p>
                 </div>
                	<div class="span5">
-                "I tutored a student one-on-one as a member of the National Honor Society during my senior year of high..."
+                "I have taught a student one-on-one as a member of the National Honor Society during my senior year of high..."
                 </div>
                 <div class="span2">
                		<p><input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="remove"/></p>
@@ -131,13 +131,13 @@ English with a Concentration in Theater</p>
                </div>
                <div class="Myclass-list row-fluid">
                	<div class="span2">
-                 <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="tutor"></div>
+                 <img src="<?php echo $this->webroot?>images/people1.jpg" class="img-circle" alt="expert"></div>
                	<div class="span3">
                 <p class="FontStyle16">Class: <a href="#">Alzebra 1</a></p>
-<p class="FontStyle11">Tutor: <strong>Alexzendar D.</strong></p>
+<p class="FontStyle11">Expert: <strong>Alexzendar D.</strong></p>
                 </div>
                	<div class="span5">
-                "I tutored a student one-on-one as a member of the National Honor Society during my senior year of high..."
+                "I have taught a student one-on-one as a member of the National Honor Society during my senior year of high..."
                 </div>
                 <div class="span2">
                		<p><input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="remove"/></p>
@@ -180,32 +180,7 @@ English with a Concentration in Theater</p>
     </div>
     <!-- @end .row --> 
     
-    <div class="row-fluid ">
-      <div class="Get-in-Touch offset6">
-      <p class="FontStyle20"><strong>Get in touch with us:</strong></p>
-      </div>
-      
-      </div>
-    <div class="row-fluid ">
-      <div class="Social-Boxs Social-Email span3">     
-      <p class="FontStyle20"><a href="#"> Email Us</a></p>
-      </div>
-      
-     <div class="Social-Boxs Social-FB span3">      
-      <p class="FontStyle20"><a href="#"> Facebook Us</a></p>
-      </div>
-      
-       <div class="Social-Boxs Social-Tweet span3">      
-      <p class="FontStyle20"><a href="#"> Follow Us</a></p>
-      </div>
-      
-       <div class="Social-Boxs Social-Linkedin span3">   
-      <p class="FontStyle20"><a href="#"> LinkedIn</a></p>
-      </div>
-      
-      </div> 
-    
-    
+	<?php echo $this->element('Croogo.getintouch'); ?>
     
   </div>
   <!-- @end .container --> 

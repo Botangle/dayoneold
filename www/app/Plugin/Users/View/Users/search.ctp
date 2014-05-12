@@ -11,7 +11,7 @@
       <div class="span3 pull-right" >
        <!-- <label class="checkbox online-checkbox">
               <input type="checkbox" id="isonline" <?php if(isset($online) && ($online!="")) { echo "checked='checked'"; } ?>>
-          &nbsp;<?php echo __("Online Tutors")?></label>-->
+          &nbsp;<?php echo __("Online Experts")?></label>-->
       </div>
     </div>
   </div>
@@ -121,25 +121,8 @@
     </div>
     <!-- @end .row -->
     
-    <div class="row-fluid ">
-      <div class="Get-in-Touch offset6">
-        <p class="FontStyle20"><strong>Get in touch with us:</strong></p>
-      </div>
-    </div>
-    <div class="row-fluid ">
-      <div class="Social-Boxs Social-Email span3">
-        <p class="FontStyle20"><a href="#"> Email Us</a></p>
-      </div>
-      <div class="Social-Boxs Social-FB span3">
-        <p class="FontStyle20"><a href="#"> Facebook Us</a></p>
-      </div>
-      <div class="Social-Boxs Social-Tweet span3">
-        <p class="FontStyle20"><a href="#"> Follow Us</a></p>
-      </div>
-      <div class="Social-Boxs Social-Linkedin span3">
-        <p class="FontStyle20"><a href="#"> LinkedIn</a></p>
-      </div>
-    </div>
+	<?php echo $this->element('Croogo.getintouch'); ?>
+    
   </div>
   <!-- @end .container --> 
 </div>

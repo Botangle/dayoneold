@@ -42,7 +42,7 @@
               <div class="controls">
                 <label class="radio inline">
                   <input type="radio" name="genderRadios" value=" <?php echo __("Tutor")?> " selected="selected">
-                  <?php echo __("Tutor")?> </label>
+                  <?php echo __("Expert")?> </label>
                 <label class="radio inline">
                   <input type="radio" name="genderRadios" value=" <?php echo __("Student")?>" >
                   <?php echo __("Student")?> </label>
@@ -136,32 +136,7 @@
     </div>
     <!-- @end .row --> 
     
-    <div class="row-fluid ">
-      <div class="Get-in-Touch offset6">
-      <p class="FontStyle20"><strong><?php echo __("Get in touch with us")?>:</strong></p>
-      </div>
-      
-      </div>
-    <div class="row-fluid ">
-      <div class="Social-Boxs Social-Email span3">     
-      <p class="FontStyle20"><a href="#"><?php echo __("Email Us")?></a></p>
-      </div>
-      
-     <div class="Social-Boxs Social-FB span3">      
-      <p class="FontStyle20"><a href="#"> <?php echo __("Facebook Us")?> </a></p>
-      </div>
-      
-       <div class="Social-Boxs Social-Tweet span3">      
-      <p class="FontStyle20"><a href="#"><?php echo __(" Follow Us")?></a></p>
-      </div>
-      
-       <div class="Social-Boxs Social-Linkedin span3">   
-      <p class="FontStyle20"><a href="#"> <?php echo __("LinkedIn")?> </a></p>
-      </div>
-      
-      </div> 
-    
-    
+	<?php echo $this->element('Croogo.getintouch'); ?>
     
   </div>
   <!-- @end .container --> 

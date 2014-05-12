@@ -601,7 +601,7 @@ class UsersController extends UsersAppController
                     if ($type == 'tutor') {
                         $this->Session->setFlash(__d('croogo', 'You have successfully registered an account. Please enter in your billing info to show up in the search results.'), 'default', array('class' => 'success'));
                     } else {
-                        $this->Session->setFlash(__d('croogo', 'You have successfully registered an account. Please enter in your billing info to have a tutor.'), 'default', array('class' => 'success'));
+                        $this->Session->setFlash(__d('croogo', 'You have successfully registered an account. Please enter in your billing info to have an expert.'), 'default', array('class' => 'success'));
                     }
 
                     $this->redirect(array('action' => 'billing'));
