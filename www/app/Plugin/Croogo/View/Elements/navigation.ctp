@@ -41,7 +41,7 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
       <?php
 	  echo $this->Html->link(
 		   $this->Html->image(
-			'../croogo/img/logo.png'
+			'/croogo/img/logo.png'
 			),'/'
      ,  
 	array('class'=>'navbar-brand','title'=>__('Home'),'escape' => false )
