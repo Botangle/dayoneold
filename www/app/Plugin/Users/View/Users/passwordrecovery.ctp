@@ -38,7 +38,7 @@ echo $this->Html->link(__("Return Home"), array('action'=> 'login'), array( 'cla
       </div>
       <div class="span3 PageRight-Block">
        <p class="FontStyle20">Not a member? Sign Up here</p>
-        <p>Get a Free Account for 7 days. Sign Up here.</p><br>
+        <p>Get a Free Account. Sign Up here.</p><br>
 <br>
 <button type="submit" class="btn btn-primary">Sign Up</button>
       </div>
