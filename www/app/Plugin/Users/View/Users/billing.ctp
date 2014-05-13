@@ -110,9 +110,7 @@ $1000</p> </div> </div>
                       'stripe_user[product_description]'=> 'Tutoring service. I charge after my lesson is completed',
                       'stripe_user[product_category]'   => 'education',
                       'stripe_user[average_payment]'    => '50',
-                      'stripe_user[url]'                => (isset($User['User']['website']) && $User['User']['website'] != '')
-                                                                ? $User['User']['website']
-                                                                : 'http://app.botangle.com'.$this->webroot.'users/'.$User['User']['username'],
+                      'stripe_user[url]'                => 'http://botangle.com'.$this->webroot.'user/'.$User['User']['username'],
                   );
                   $url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
                   ?>
