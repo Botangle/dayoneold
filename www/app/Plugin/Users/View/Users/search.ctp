@@ -30,11 +30,11 @@
           <p class="FontStyle20">Search by Keywords</p>
           <input type="text" value="" id="keyword" class="textbox1" name="searchvalue">
           <br>
-          <p class="FontStyle20">Filter by Experience</p>
+<!--          <p class="FontStyle20">Filter by Experience</p>
           <input type="text" value="" name="Experience_start" id="keyword" class="textbox2" >
           &nbsp; to &nbsp;
           <input type="text" value=""name="Experience_end" id="keyword" class="textbox2" >
-          <br>
+          <br>-->
          <!-- <p class="FontStyle20">Gender</p>
           <label class="radio">
             <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1">
