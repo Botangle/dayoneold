@@ -1088,7 +1088,10 @@ h3.timeline-title {
 .ok-button i {
     margin-top: 2px;
 }
-
+#searchvalue
+{
+        line-height: 35px;
+}
 /* Get in touch */
 
 a.Social-Boxs-Links:hover {
