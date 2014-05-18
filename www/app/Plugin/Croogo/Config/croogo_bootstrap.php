@@ -57,7 +57,7 @@ if ($theme = Configure::read('Site.theme')) {
  */
 
 Configure::write('Core.corePlugins', array(
-	'Settings', 'Acl', 'Blocks', 'Comments', 'Menus', 'Meta',
+	'Settings', 'Acl', 'Blocks', 'Comments', 'Contacts', 'Menus', 'Meta',
 	'Nodes', 'Taxonomy', 'Users',
 ));
 
