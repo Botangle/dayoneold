@@ -38,10 +38,6 @@ CroogoRouter::connect('/faq', array(
 	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
 	'type' => 'page', 'slug' => 'faq'
 ));
-CroogoRouter::connect('/contact-us', array(
-	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
-	'type' => 'page', 'slug' => 'contact-us'
-));
 CroogoRouter::connect('/terms', array(
 	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
 	'type' => 'page', 'slug' => 'terms'
