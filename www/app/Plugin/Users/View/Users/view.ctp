@@ -18,8 +18,8 @@ $subject = explode(",", $user['User']['subject']);
 			<div class="span9 PageLeft-Block">
 				<div class="row-fluid">
 					<div class="span4">
-<?php if (file_exists(WWW_ROOT . DS . 'uploads' . DS . $user['User']['id'] . DS . 'profile' . DS . $user['User']['profilepic']) && $user['User']['profilepic'] != "") { ?>
-							<img src="<?php echo $this->webroot . 'uploads/' . $user['User']['id'] . '/profile/' . $user['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
+						<?php if (file_exists(WWW_ROOT . DS . 'uploads' . DS . 'users' . DS . $user['User']['id'] . DS . 'profile' . DS . $user['User']['profilepic']) && $user['User']['profilepic'] != "") { ?>
+							<img src="<?php echo $this->webroot . 'uploads/users/' . $user['User']['id'] . '/profile/' . $user['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 						<?php } else { ?>
 							<img src="<?php echo $this->webroot ?>images/botangle-default-pic.jpg" class="img-circle" alt="student">
 						<?php } ?>
@@ -27,19 +27,19 @@ $subject = explode(",", $user['User']['subject']);
 					<div class="span8">
 						<p class="pull-right">Rate : <span class="FontStyle16 color1"><strong>$
 
-<?php
-if (!empty($userRate)) {
-	if ($userRate['UserRate']['price_type'] == 'permin') {
-		$userRatePrice = 'min';
-	} else {
-		$userRatePrice = $userRate['UserRate']['price_type'];
-	}
+									<?php
+									if (!empty($userRate)) {
+										if ($userRate['UserRate']['price_type'] == 'permin') {
+											$userRatePrice = 'min';
+										} else {
+											$userRatePrice = $userRate['UserRate']['price_type'];
+										}
 
-	echo $userRate['UserRate']['rate'] . "/" . $userRatePrice;
-} else {
-	echo 0;
-}
-?></strong></span></p>
+										echo $userRate['UserRate']['rate'] . "/" . $userRatePrice;
+									} else {
+										echo 0;
+									}
+									?></strong></span></p>
 						<p class="FontStyle28 color1"><?php echo h(ucfirst($user['User']['name'] . " " . $user['User']['lname'])); ?>
 							<?php /* if($user['User']['is_online'] == 1){ ?>
 							  <img src="<?php echo $this->webroot?>images/online.png" alt="online">
@@ -50,7 +50,7 @@ if (!empty($userRate)) {
 							<br/>
 							<?php if (isset($userstatus[0]['Mystatus']['status_text'])) { ?>
 								<span style="font-size:13px"><b>Mood: </b><?php echo(h($userstatus[0]['Mystatus']['status_text'])); ?></span>
-<?php } ?>
+							<?php } ?>
 
 						</p>
 
@@ -140,7 +140,7 @@ if (!empty($userRate)) {
 															<label class="inline span11">
 																<?php echo $this->Form->textarea('status_text', array('placeholder' => "What's in your mind?", 'label' => false, 'value' => '', 'type' => 'text', 'class' => 'userstatus', 'maxlength' => '300')); ?>
 																<div id="textarea_feedback" class="chrremaing"></div>
-	<?php echo $this->Form->hidden('username', array('value' => $user['User']['username'], 'type' => 'text')); ?>
+																<?php echo $this->Form->hidden('username', array('value' => $user['User']['username'], 'type' => 'text')); ?>
 															</label>
 														</div>
 													</div>
@@ -151,9 +151,10 @@ if (!empty($userRate)) {
 														</div>
 													</div>
 												</div>
-	<?php echo $this->Form->end();
-}
-?>
+												<?php
+												echo $this->Form->end();
+											}
+											?>
 
 											<div class="timeline1">
 												<?php
@@ -161,17 +162,17 @@ if (!empty($userRate)) {
 												$j = 1;
 												if (!empty($userstatus)) {
 													?>
-	<?php
-	echo '<div class="left width50">';
-	foreach ($userstatus as $userstatues) {
-		if ($i % 2 != 0) {
-			?>
-			                                                <div class="timelinestatus">
-			                                                    <p class="status"><?php echo h($userstatues['Mystatus']['status_text']); ?></p>
-			                                                    <p class="time"><?php echo date('d M Y | l', strtotime($userstatues['Mystatus']['created'])); ?>
-															<?php echo date('h:i a', strtotime($userstatues['Mystatus']['created'])); ?></p>
-			                                                </div>
-														<?php
+													<?php
+													echo '<div class="left width50">';
+													foreach ($userstatus as $userstatues) {
+														if ($i % 2 != 0) {
+															?>
+															<div class="timelinestatus">
+																<p class="status"><?php echo h($userstatues['Mystatus']['status_text']); ?></p>
+																<p class="time"><?php echo date('d M Y | l', strtotime($userstatues['Mystatus']['created'])); ?>
+																	<?php echo date('h:i a', strtotime($userstatues['Mystatus']['created'])); ?></p>
+															</div>
+															<?php
 														}
 														$i++;
 													}
@@ -180,12 +181,12 @@ if (!empty($userRate)) {
 													foreach ($userstatus as $userstatues) {
 														if ($j % 2 == 0) {
 															?>
-			                                                <div class="timelinestatusright right">
-			                                                    <p class="status"><?php echo h($userstatues['Mystatus']['status_text']); ?></p>
-			                                                    <p class="time"><?php echo date('d M Y | l', strtotime($userstatues['Mystatus']['created'])); ?>
-															<?php echo date('h:i a', strtotime($userstatues['Mystatus']['created'])); ?></p>
-			                                                </div>
-														<?php
+															<div class="timelinestatusright right">
+																<p class="status"><?php echo h($userstatues['Mystatus']['status_text']); ?></p>
+																<p class="time"><?php echo date('d M Y | l', strtotime($userstatues['Mystatus']['created'])); ?>
+																	<?php echo date('h:i a', strtotime($userstatues['Mystatus']['created'])); ?></p>
+															</div>
+															<?php
 														}
 
 														$j++;
@@ -228,12 +229,12 @@ if (!empty($userRate)) {
 										<h4 class="media-heading"><?php echo __("Extracurricular Interests") ?></h4>
 										<p><?php echo h($user['User']['extracurricular_interests']) ?></p>
 									</div></div>
-										<?php if ($user['User']['expertise'] != "") { ?>
+								<?php if ($user['User']['expertise'] != "") { ?>
 									<div class="student-profile">
 										<a class="pull-left" href="#">
 											<img src="<?php echo $this->webroot ?>images/subjects.png" alt="subjects"> </a>
 										<div class="media-body">
-	<?php echo h($user['User']['expertise']) ?>
+											<?php echo h($user['User']['expertise']) ?>
 
 										</div></div> <?php } ?>
 							</div>
@@ -250,9 +251,9 @@ if (!empty($userRate)) {
 										<div class="Myclass-list row-fluid">
 											<div class="span2">
 												<?php if (file_exists(WWW_ROOT . DS . 'uploads' . DS . $review['User']['id'] . DS . 'profile' . DS . $review['User']['profilepic']) && $review['User']['profilepic'] != "") { ?>
-			                                        <img src="<?php echo $this->webroot . 'uploads/' . $review['User']['id'] . '/profile/' . $review['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
+													<img src="<?php echo $this->webroot . 'uploads/' . $review['User']['id'] . '/profile/' . $review['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 												<?php } else { ?>
-			                                        <img src="<?php echo $this->webroot ?>images/people1.jpg" class="img-circle" alt="expert">
+													<img src="<?php echo $this->webroot ?>images/people1.jpg" class="img-circle" alt="expert">
 												<?php } ?>
 											</div>
 											<div class="span3">
@@ -269,7 +270,8 @@ if (!empty($userRate)) {
 
 
 										</div>
-									<?php }
+										<?php
+									}
 								} else {
 									?>
 									<div class="Myclass-list row-fluid">
