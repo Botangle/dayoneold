@@ -1098,3 +1098,9 @@ a.Social-Boxs-Links:hover {
 	color: #fff;
 	text-decoration: none;
 }
+
+
+/* User profile */
+.img-profilepic {
+	width: 120px;
+}
