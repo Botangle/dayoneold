@@ -55,7 +55,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
       </div>
       <div class="span3 PageRight-Block">
        <p class="FontStyle20">Not a member? Sign Up here</p>
-        <p>Get a Free Account for 7 days. Sign Up here.</p><br>
+        <p>Get a Free Account. Sign Up here.</p><br>
 <br>
 <?php 
 echo $this->Html->link(__("Sign Up"), array('action'=> 'registration','tutor'), array( 'class' => 'btn btn-primary'))

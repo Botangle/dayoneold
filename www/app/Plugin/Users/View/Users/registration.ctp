@@ -10,7 +10,8 @@
           <input name="" type="text">
           <img src="images/search-img.jpg" class="submit" alt="search"> </div>
         <div class="Header-Free-info"><?php echo __("Find help immediatly?")?><br>
-          <span><?php echo __("Try for 7 days free!")?></span> </div>
+<!--          <span><?php echo __("Try for 7 days free!")?></span> -->
+		</div>
       </div>
     </div>
   </div>

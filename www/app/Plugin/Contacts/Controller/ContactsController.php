@@ -1,5 +1,4 @@
 <?php
-
 App::uses('CakeEmail', 'Network/Email');
 App::uses('ContactsAppController', 'Contacts.Controller');
 
@@ -164,15 +163,20 @@ class ContactsController extends ContactsAppController {
 			$continue = $this->_send_email($continue, $contact);
 
 			if ($continue === true) {
-				//$this->Session->setFlash(__d('croogo', 'Your message has been received.'));
-				//unset($this->request->data['Message']);
-
-				echo $this->flash(__d('croogo', 'Your message has been received...'), '/');
+//				$this->Session->setFlash(__d('croogo', 'Your message has been received.'), 'default', array('class' => 'success'));
+				$this->redirect(array('action' => 'thankyou'));
 			}
 		}
 
 		$this->set('title_for_layout', $contact['Contact']['title']);
 		$this->set(compact('continue'));
+	}
+
+/**
+ * Thank you page
+ */
+	public function thankyou() {
+		// just a thank you page
 	}
 
 /**
@@ -185,10 +189,10 @@ class ContactsController extends ContactsAppController {
  */
 	protected function _validation($continue, $contact) {
 		if ($this->Contact->Message->set($this->request->data) &&
-			$this->Contact->Message->validates() &&
-			$continue === true) {
+				$this->Contact->Message->validates() &&
+				$continue === true) {
 			if ($contact['Contact']['message_archive'] &&
-				!$this->Contact->Message->save($this->request->data['Message'])) {
+					!$this->Contact->Message->save($this->request->data['Message'])) {
 				$continue = false;
 			}
 		} else {
@@ -208,8 +212,8 @@ class ContactsController extends ContactsAppController {
  */
 	protected function _spam_protection($continue, $contact) {
 		if (!empty($this->request->data) &&
-			$contact['Contact']['message_spam_protection'] &&
-			$continue === true) {
+				$contact['Contact']['message_spam_protection'] &&
+				$continue === true) {
 			$this->Akismet->setCommentAuthor($this->request->data['Message']['name']);
 			$this->Akismet->setCommentAuthorEmail($this->request->data['Message']['email']);
 			$this->Akismet->setCommentContent($this->request->data['Message']['body']);
@@ -232,9 +236,9 @@ class ContactsController extends ContactsAppController {
  */
 	protected function _captcha($continue, $contact) {
 		if (!empty($this->request->data) &&
-			$contact['Contact']['message_captcha'] &&
-			$continue === true &&
-			!$this->Recaptcha->valid($this->request)) {
+				$contact['Contact']['message_captcha'] &&
+				$continue === true &&
+				!$this->Recaptcha->valid($this->request)) {
 			$continue = false;
 			$this->Session->setFlash(__d('croogo', 'Invalid captcha entry'), 'default', array('class' => 'error'));
 		}
@@ -259,13 +263,13 @@ class ContactsController extends ContactsAppController {
 		$siteTitle = Configure::read('Site.title');
 		try {
 			$email->from($this->request->data['Message']['email'])
-				->to($contact['Contact']['email'])
-				->subject(__d('croogo', '[%s] %s', $siteTitle, $contact['Contact']['title']))
-				->template('Contacts.contact')
-				->viewVars(array(
-					'contact' => $contact,
-					'message' => $this->request->data,
-				));
+					->to($contact['Contact']['email'])
+					->subject(__d('croogo', '[%s] %s', $siteTitle, $contact['Contact']['title']))
+					->template('Contacts.contact')
+					->viewVars(array(
+						'contact' => $contact,
+						'message' => $this->request->data,
+			));
 			if ($this->theme) {
 				$email->theme($this->theme);
 			}

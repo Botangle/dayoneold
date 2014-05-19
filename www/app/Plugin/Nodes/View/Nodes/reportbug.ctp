@@ -38,7 +38,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
            <div class="row-fluid marT10">
          <div class="span12 form-group">
           <label class="sr-only" for="category">Subject</label>
-            <input type="text" class="form-control textbox1" id="category" placeholder="Select Category" required="required"  name="data[page][subject]">
+            <input type="text" class="form-control textbox1" id="category" placeholder="Your Subject" required="required"  name="data[page][subject]">
        </div></div>
         <div class="row-fluid">
          <div class="span12 form-group marT10">

@@ -15,7 +15,7 @@
 				$cls1 = "active";
 			} else if (isset($this->params['named']['slug']) && $this->params['named']['slug'] == 'terms') {
 				$cls2 = "active";
-			} else if (isset($this->params['named']['slug']) && $this->params['named']['slug'] == 'contact-us') {
+			} else if (isset($this->params['named']['slug']) && $this->params['named']['slug'] == 'contact') {
 				$cls3 = "active";
 			} else if ($this->params->action == 'reportbug') {
 				$cls4 = "active";
@@ -50,7 +50,7 @@
 		<li>
 			<?php
 			echo $this->Html->link(
-					__('Contact Us'), '/contact-us'
+					__('Contact Us'), '/contact'
 					, array('class' => $cls3, 'title' => __('Contact Us'))
 			);
 			?>
