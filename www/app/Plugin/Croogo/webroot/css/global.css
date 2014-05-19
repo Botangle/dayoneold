@@ -336,6 +336,9 @@ label.checkbox input[type="checkbox"]{ padding-right:15px; }
 .Social-Linkedin{ background:#fff url(../images/social-linkedin-bg.jpg) no-repeat top center; }
 .Social-Linkedin:hover{ background:#f38918 url(../images/social-linkedin-bg2.jpg) no-repeat top center; }
 
+.Social-Googleplus{ background:#fff url(../images/social-google-bg.jpg) no-repeat top center; }
+.Social-Googleplus:hover{ background:#f38918 url(../images/social-google-bg2.jpg) no-repeat top center; }
+
 /* new Style Sheeet Added */
 
 input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-family:Arial, Helvetica, sans-serif; font-size:14px; border:1px solid #e8e7e7; border-left:3px solid #e27807; border-radius:0px; }

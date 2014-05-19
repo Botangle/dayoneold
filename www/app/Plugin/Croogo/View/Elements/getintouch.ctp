@@ -31,9 +31,9 @@
 	</div>
 
 	<div class="span3">
-		<a class="Social-Boxs-Links" href="https://www.linkedin.com/company/botangle">
-			<div class="Social-Boxs Social-Linkedin">   
-				<p class="FontStyle20"> LinkedIn</p>
+		<a class="Social-Boxs-Links" href="https://plus.google.com/113978206404891973839/posts">
+			<div class="Social-Boxs Social-Googleplus">   
+				<p class="FontStyle20"> Google+</p>
 			</div>
 		</a>
 	</div>
