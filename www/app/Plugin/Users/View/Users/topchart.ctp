@@ -75,10 +75,10 @@
 									<div class="search-result-img">
 										<a href="<?php echo $this->webroot ?>user/<?php echo $user['User']['username'] ?>">
 											<?php
-											if (file_exists(WWW_ROOT . DS . 'uploads' . DS . $user['User']['id'] . DS . 'profile' . DS . $user['User']['profilepic']) && $user['User']['profilepic'] != "") {
+											if (file_exists(WWW_ROOT . DS . 'uploads' . DS . 'users' . DS . $user['User']['id'] . DS . 'profile' . DS . $user['User']['profilepic']) && $user['User']['profilepic'] != "") {
 												?>
 
-												<img src="<?php echo $this->webroot . 'uploads/' . $user['User']['id'] . '/profile/' . $user['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
+												<img src="<?php echo $this->webroot . 'uploads/users/' . $user['User']['id'] . '/profile/' . $user['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 
 											<?php } else { ?>
 												<img src="<?php echo $this->webroot ?>images/default.png" class="img-circle" alt="people">
