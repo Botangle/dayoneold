@@ -1784,9 +1784,11 @@ class UsersController extends UsersAppController {
 
 	public function topchart($categoryname = null, $online = null) {
 		$otherconditions = array('status' => 1, 'role_id' => 2);
+		
 		if ($categoryname == 'all') {
 			$categoryname = "";
 		}
+		
 		if (isset($online) && $online != null) {
 			$otherconditions = array_merge($otherconditions, array('is_online' => 1));
 		}
@@ -1801,6 +1803,7 @@ class UsersController extends UsersAppController {
 
 			$otherconditions = array_merge($otherconditions, array('subject LIKE' => '%' . $categorysubjects['Category']['name'] . '%'));
 		}
+		
 		$this->paginate['User']['joins'] = array(array(
 				'table' => 'reviews',
 				'alias' => 'Review',
@@ -1809,11 +1812,14 @@ class UsersController extends UsersAppController {
 					"User.id = Review.rate_to"
 				))
 		);
+		
 		$this->paginate['User']['conditions'] = $otherconditions;
 		$this->paginate['User']['fields'] = array('*,avg(`Review`.`rating`) as `rating`');
 		$this->paginate['User']['group'] = array('User.id');
+		$this->paginate['User']['order'] = 'avg(`Review`.`rating`) DESC';
 		$this->set('userlist', $this->paginate());
 		$category = $this->Category->find('all', array('conditions' => array('status' => 1, 'parent_id' => null)));
+		
 		$this->set(compact('userlist', 'category', 'categoryname', 'online'));
 		/* $log = $this->User->getDataSource()->getLog(false, false);
 		  debug($log); */
