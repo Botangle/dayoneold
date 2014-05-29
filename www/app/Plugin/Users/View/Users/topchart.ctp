@@ -63,9 +63,27 @@
 
 			</div>
 			<div class="span9">
+				<?php $paging = $this->Paginator->params(); ?>
+				<?php if ($paging['page'] > 1) : ?>
+					<div class="row-fluid center">
+						<div class="pagination" style="display:block; text-align: center; margin-bottom: 90px;">
+							<ul>
+								<?php echo $this->Paginator->first('< ' . __d('croogo', 'first')); ?>
+								<?php echo $this->Paginator->prev('< ' . __d('croogo', 'prev')); ?>
+								<?php echo $this->Paginator->numbers(); ?>
+								<?php echo $this->Paginator->next(__d('croogo', 'next') . ' >'); ?>
+								<?php echo $this->Paginator->last(__d('croogo', 'last') . ' >'); ?>
+							</ul>
+						</div>
+					</div>
+				<?php else : ?>
 				<h2 class="page-title">&nbsp;</h2>
+				<?php endif; ?>
+
 				<div class="StaticPageRight-Block">
 					<div class="row-fluid">
+
+
 						<?php
 						$i = 1;
 						if (!empty($userlist)) {
