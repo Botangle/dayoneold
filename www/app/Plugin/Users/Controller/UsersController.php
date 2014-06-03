@@ -1817,7 +1817,7 @@ class UsersController extends UsersAppController {
 		$this->paginate['User']['fields'] = array('*,avg(`Review`.`rating`) as `rating`');
 		$this->paginate['User']['group'] = array('User.id');
 		$this->paginate['User']['order'] = 'avg(`Review`.`rating`) DESC';
-		$this->paginate['User']['limit'] = 15;
+		$this->paginate['User']['limit'] = 21;
 		
 		$this->set('userlist', $this->paginate());
 		
