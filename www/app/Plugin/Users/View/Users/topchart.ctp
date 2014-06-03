@@ -64,7 +64,7 @@
 			</div>
 			<div class="span9">
 				<?php $paging = $this->Paginator->params(); ?>
-				<?php if ($paging['page'] > 1) : ?>
+				<?php if ($paging['pageCount'] > 1) : ?>
 					<div class="row-fluid center">
 						<div class="pagination" style="display:block; text-align: center; margin-bottom: 90px;">
 							<ul>
