@@ -697,7 +697,7 @@ class UsersController extends UsersAppController {
 			);
 
 			if ($emailSent) {
-				$this->Session->setFlash(__d('croogo', 'If the address you provided is associated with an Botangle account, you will receive an email with a password reset link. If you do not receive this email within five minutes, please check your junk mail folder. If you still cannot locate the email, please reach out to support@botangle.com.'), 'default', array('class' => 'success'));
+				$this->Session->setFlash(__d('croogo', 'If the address you provided is associated with an Botangle account, you will receive an email with a password reset link. If you do not receive this email within five minutes, please check your junk mail folder. If you still cannot locate the email, please reach out to contactus@botangle.com.'), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'login'));
 			} else {
 				$this->Session->setFlash(__d('croogo', 'An error occurred. Please try again.'), 'default', array('class' => 'error'));
