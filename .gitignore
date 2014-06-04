@@ -39,3 +39,10 @@ www/app/Vendor/*
 *.~
 1
 *.swp
+
+# Bash scripts
+ scripts/*
+
+# Mobileapp
+www/app/webroot/mobileapp
+
