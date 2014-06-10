@@ -915,13 +915,12 @@ class UsersController extends UsersAppController {
 			$roleid = 2;
 
 			$needs_payments_setup = true;
-			if ($User['User']['stripe_customer_id'] != '') {
-				$needs_payments_setup = false;
-			}
+//			
+//			if ($User['User']['stripe_customer_id'] != '') {
+//				$needs_payments_setup = false;
+//			}
 
-			$this->set(compact(
-							'needs_payments_setup', 'roleid', 'User'
-			));
+			$this->set(compact('needs_payments_setup', 'roleid', 'User'));
 			$this->set('paymentamount', $this->Session->read("paymentamount"));
 			$this->set('publishable_key', Configure::read('Stripe.publishable_key'));
 
