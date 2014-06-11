@@ -222,7 +222,7 @@ function secondsToTime($seconds)
 				</form>
 			  <?php }else{
 
-                 $twiddlaUrl = 'https://www.twiddla.com/api/start.aspx?';
+                 $twiddlaUrl = 'http://www.twiddla.com/api/start.aspx?';
 
                  $items = array(
                      'sessionid'    => $twiddlaid,
