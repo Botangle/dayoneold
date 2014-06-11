@@ -602,11 +602,11 @@ class UsersController extends UsersAppController {
 
 					if ($type == 'tutor') {
 						$this->Session->setFlash(__d('croogo', 'You have successfully registered an account. Please enter in your billing info to show up in the search results.'), 'default', array('class' => 'success'));
+                        $this->redirect(array('action' => 'billing'));
 					} else {
 						$this->Session->setFlash(__d('croogo', 'You have successfully registered an account! On to find a good tutor! :-)'), 'default', array('class' => 'success'));
+                        $this->redirect(array('action' => 'index'));
 					}
-
-					$this->redirect(array('action' => 'billing'));
 				} else {
 					Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
 					$this->Session->setFlash('The password you entered is incorrect.', 'default', array('class' => 'error'), 'auth');
