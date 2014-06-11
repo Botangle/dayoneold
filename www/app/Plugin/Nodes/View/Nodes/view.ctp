@@ -1,7 +1,7 @@
 <?php 
 
 echo $this->element("breadcrame",array('breadcrumbs'=>
-	array($this->params['named']['slug']=>$this->params['named']['slug']))
+	array($node['Node']['title']=>$node['Node']['title']))
 	) 
 ?>
 <div id="main-content">
