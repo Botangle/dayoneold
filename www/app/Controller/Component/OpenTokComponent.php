@@ -37,12 +37,19 @@ class OpenTokComponent extends Component {
      * Returns an OpenTok session id to be used
      * Note: these don't expire, so we have plenty of time to use it
      *
-     * @return string
+     * @return string|boolean
      */
     public function generateSessionId()
     {
-        $session = $this->getApiObject()->createSession();
-        return $session->getSessionId();
+        try {
+            $session = $this->getApiObject()->createSession();
+            return $session->getSessionId();
+        } catch(OpenTokException $e) {
+            CakeLog::critical('Had OpenTok errors: ' . $e->getMessage() . ' Code: ' . $e->getCode());
+            return false;
+        }
+        // @TODO: add some further exception handling here in case other exceptions get thrown
+        // looks like we still need to handle AuthException and RequestException
     }
 
     /**

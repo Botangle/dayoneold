@@ -1303,9 +1303,20 @@ class UsersController extends UsersAppController {
 		// handle all our video stuff with Opentok
 		$opentok_session_id = $lesson['Lesson']['opentok_session_id'];
 
+        // if our session id is blank, then we're going to need to try to generate an opentok session id *right now*
+        // as we need it almost immediately
 		if ($opentok_session_id == "") {
-			// @TODO: consider changing this to generate a new session id and save it to the DB, instead of throwing an error
-			throw new InternalErrorException("Could not load our video system up for some reason. Please try again or contact us.");
+
+            // if we properly generate a session id, then let's save it to the DB
+            // and move on with our lives
+            if($returnVal = $this->generateOpenTokSessionId()) {
+                $opentok_session_id = $returnVal;
+                $lesson['Lesson']['opentok_session_id'] = $returnVal;
+                $this->Lesson->save($lesson);
+            } else {
+                // we've got lesson-stopping issues right now, let's throw an error and have them try again
+                throw new InternalErrorException("Could not load our video system up for some reason. Please try again or contact us for further assistance.");
+            }
 		}
 
 		$this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
@@ -1555,7 +1566,19 @@ class UsersController extends UsersAppController {
 		// Not sure why we need to only do this if we're a student, but we'll ignore that for now
 		// but we do need to generate lesson session ids so our lessons will work
 		if ($this->request->data['Lesson']['tutorname'] == "") {
-			$this->generateTwiddlaAndOpenTokSessionIds($lesson_id);
+            $data = array();
+            $data['Lesson']['id'] = (int)$lesson_id;
+
+            // generate our appropriate session ids
+            if($returnVal = $this->generateTwiddlaSessionId()) {
+                $data['Lesson']['twiddlameetingid'] = $returnVal;
+            }
+            if($returnVal = $this->generateOpenTokSessionId()) {
+                $data['Lesson']['opentok_session_id'] = $returnVal;
+            }
+
+            // @TODO: eventually, we should check to make sure saving actually doesn't have errors instead of just assuming :-/
+            $this->Lesson->save($data);
 		}
 
 		$this->Session->setFlash(__d('croogo', 'Your lesson has been added successfully.'), 'default', array('class' => 'success'));
@@ -1593,21 +1616,25 @@ class UsersController extends UsersAppController {
  * Long-term, let's do that
  * @param $lessonId
  */
-	private function generateTwiddlaAndOpenTokSessionIds($lessonId) {
-		$data = array();
-		$data['Lesson']['id'] = $lessonId;
+	private function generateTwiddlaSessionId() {
 
 		// generate our twiddla id ahead of time
 		$this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
-		$data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
 
-		// and our opentok session id
-		$this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
-		$data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
-
-		// @TODO: eventually, we should check to make sure this actually doesn't have errors instead of just assuming :-/
-		$this->Lesson->save($data);
+        // @TODO: we should add some Twiddla error handling stuff here too
+		return $this->Twiddla->getMeetingId();
 	}
+
+    /**
+     * Generates an OpenTok session id that we can save to the DB or returns false
+     *
+     * @return boolean|string
+     */
+    private function generateOpenTokSessionId()
+    {
+        $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+        return $this->OpenTok->generateSessionId();
+    }
 
 /**
  * Search student
@@ -1701,16 +1728,15 @@ class UsersController extends UsersAppController {
 			$data['Lesson']['is_confirmed'] = 1;
 		}
 
-		if ($data['Lesson']['twiddlameetingid'] == 0) {
-			$this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
-			$data['Lesson']['twiddlameetingid'] = $this->Twiddla->getMeetingId();
-		}
-
-		// retrieve our opentok session id for the upcoming lesson
-		if ($data['Lesson']['opentok_session_id'] == 0) {
-			$this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
-			$data['Lesson']['opentok_session_id'] = $this->OpenTok->generateSessionId();
-		}
+        // generate our appropriate session ids
+        // it's possible that these values will end up being blank instead of what we need
+        // so we're going to need to check these values before the lesson actually starts as well
+        if($returnVal = $this->generateTwiddlaSessionId()) {
+            $data['Lesson']['twiddlameetingid'] = $returnVal;
+        }
+        if($returnVal = $this->generateOpenTokSessionId()) {
+            $data['Lesson']['opentok_session_id'] = $returnVal;
+        }
 
 		$this->Lesson->save($data);
 
