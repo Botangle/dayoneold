@@ -1218,6 +1218,7 @@ class UsersController extends UsersAppController {
  */
 	public function lessons() {
 		$userconditionsfield = "tutor";
+        $otherconditionsfield = "student";
 		$userlessonconditionsfield = "tutor";
 		$readconditons = "readlessontutor";
 
@@ -1226,6 +1227,7 @@ class UsersController extends UsersAppController {
 
 		if ($this->Session->read('Auth.User.role_id') == 4) {
 			$userconditionsfield = "student";
+            $otherconditionsfield = "tutor";
 			$userlessonconditionsfield = "student";
 			$readconditons = "readlesson";
 			$extraConditions = '';
@@ -1240,6 +1242,8 @@ class UsersController extends UsersAppController {
                 GROUP BY parent_id
             ) as newest
             ON Lesson.id = newest.ids
+            INNER JOIN `$this->databaseName`.`users` AS `Other`
+            ON (`Other`.`id` = `Lesson`.`$otherconditionsfield`)
             WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
                 AND Lesson.is_confirmed = 0
                 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
@@ -1256,12 +1260,14 @@ class UsersController extends UsersAppController {
                 GROUP BY parent_id
             ) as newest
             ON Lesson.id = newest.ids
+            INNER JOIN `$this->databaseName`.`users` AS `Other`
+            ON (`Other`.`id` = `Lesson`.`$otherconditionsfield`)
             WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
                 AND Lesson.is_confirmed = 1
                 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
-		$upcomminglesson = $this->Lesson->query($upcomingLessonSQL);
+		$upcominglesson = $this->Lesson->query($upcomingLessonSQL);
 
-		$pastLessonSQL = "Select * from lessons as Lesson
+        $pastLessonSQL = "Select * from lessons as Lesson
             INNER JOIN `$this->databaseName`.`users` AS `User`
             ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
             JOIN (
@@ -1269,11 +1275,13 @@ class UsersController extends UsersAppController {
                 GROUP BY parent_id
             ) as newest
             ON Lesson.id = newest.ids
+            INNER JOIN `$this->databaseName`.`users` AS `Other`
+            ON (`Other`.`id` = `Lesson`.`$otherconditionsfield`)
             WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
                 AND Lesson.lesson_date < '" . date('Y-m-d') . "'";
 		$pastlesson = $this->Lesson->query($pastLessonSQL);
 
-		$this->set(compact('activelesson', 'upcomminglesson', 'pastlesson'));
+		$this->set(compact('activelesson', 'upcominglesson', 'pastlesson'));
 		/* $log = $this->User->getDataSource()->getLog(false, false);
 		  debug($log); */
 
