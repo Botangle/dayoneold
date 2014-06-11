@@ -34,6 +34,10 @@
 
 }
 
+.text-center {
+    text-align: center;
+}
+
 body {
 	background:#fff;
 	font-family: 'Roboto', sans-serif;  font-weight:300;
@@ -298,9 +302,15 @@ h2.page-title{font-family:'robotomedium', Arial, Helvetica, sans-serif; font-siz
 					  box-shadow:#ccc 0px 0 5px ; margin-bottom:30px; }
 
 .FontStyle11{ font-size:11px; font-family: 'Roboto', sans-serif;  font-weight:200; }
-.FontStyle20{ font-size:18px; font-family:'robotomedium', Arial, Helvetica, sans-serif; }  
-
+.FontStyle20{ font-size:18px; font-family:'robotomedium', Arial, Helvetica, sans-serif; }
+.FontStyle22{ font-size:20px; font-family:'Roboto', Arial, Helvetica, sans-serif; font-weight: 400 }
 .FontStyle28{ font-size:28px; font-family: 'Roboto', sans-serif;  font-weight:200; }
+.FontStyle36, .header {
+    font-size: 36px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    margin: .25em 0 .75em;
+}
 
 .control-group{ margin:20px 0px; padding:0px; height:auto; }
 
@@ -317,7 +327,7 @@ label.checkbox input[type="checkbox"]{ padding-right:15px; }
 
 .Get-in-Touch{ clear:both; height:auto; padding:0px; margin:20px 0;}
 
-.Social-Boxs{ padding:115px 0 0 0; text-align:center; cursor:pointer; display:block; width:auto; height:155px; box-shadow:#ccc 0px 0 5px ; margin-bottom:30px;  }
+.Social-Boxs, .box { padding:115px 0 0 0; text-align:center; cursor:pointer; display:block; width:auto; height:155px; box-shadow:#ccc 0px 0 5px ; margin-bottom:30px;  }
 .Social-Boxs:hover{  }
 .Social-Boxs p a{ font-size:20px; color:#e27807; font-family:'robotomedium', Arial, Helvetica, sans-serif; padding:0px 0 0 0; text-decoration:none; }
 .Social-Boxs p a:hover{ text-decoration:none; color:#fff;}
@@ -1105,4 +1115,28 @@ a.Social-Boxs-Links:hover {
 /* User profile */
 .img-profilepic {
 	width: 120px;
+}
+
+/* How it works */
+.how-it-works .PageLeft-Block {
+    border-top: 0;
+}
+.how-it-works .box {
+    padding: 20px 20px;
+    height: 280px;
+}
+.how-it-works a .box p {
+    color: black;
+    margin: 1em 0;
+    text-align: left;
+}
+.how-it-works a:hover {
+    text-decoration: none;
+}
+.how-it-works .box p:first-child {
+    margin-top: 0;
+    text-align: center;
+}
+.how-it-works a:hover .box p:first-child {
+    text-decoration: underline;
 }
