@@ -1736,14 +1736,18 @@ class UsersController extends UsersAppController {
 			$data['Lesson']['is_confirmed'] = 1;
 		}
 
-        // generate our appropriate session ids
+        // generate our appropriate session ids if we don't already have from when the student suggested the lesson
         // it's possible that these values will end up being blank instead of what we need
         // so we're going to need to check these values before the lesson actually starts as well
-        if($returnVal = $this->generateTwiddlaSessionId()) {
-            $data['Lesson']['twiddlameetingid'] = $returnVal;
+        if($data['Lesson']['twiddlameetingid'] == '' || $data['Lesson']['twiddlameetingid'] == 0) {
+            if($returnVal = $this->generateTwiddlaSessionId()) {
+                $data['Lesson']['twiddlameetingid'] = $returnVal;
+            }
         }
-        if($returnVal = $this->generateOpenTokSessionId()) {
-            $data['Lesson']['opentok_session_id'] = $returnVal;
+        if($data['Lesson']['opentok_session_id'] == '') {
+            if($returnVal = $this->generateOpenTokSessionId()) {
+                $data['Lesson']['opentok_session_id'] = $returnVal;
+            }
         }
 
 		$this->Lesson->save($data);
