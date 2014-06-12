@@ -5,8 +5,8 @@ class UserController extends AppController {
 
 	function beforeFilter() {
 		parent::beforeFilter();
-		 $this->Security->validatePost = false;
-		$this->Security->csrfCheck = false;
+//		 $this->Security->validatePost = false;
+//		$this->Security->csrfCheck = false;
 		$this->Security->unlockedActions = array('registration');
 		$this->Auth->allow('registration');
 	}

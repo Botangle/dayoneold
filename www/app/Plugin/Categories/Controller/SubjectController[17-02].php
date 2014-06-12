@@ -49,8 +49,8 @@ class SubjectController extends CategoriesAppController {
 	function beforeFilter(){
 	 
 		parent::beforeFilter();
-		 $this->Security->validatePost = false;
-		 $this->Security->csrfCheck = false;
+//		 $this->Security->validatePost = false;
+//		 $this->Security->csrfCheck = false;
 		 $this->Security->unlockedActions = array('index','search');
 		 
 		 $this->Auth->allow('index','search'); 

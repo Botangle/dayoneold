@@ -101,26 +101,26 @@ echo $this->element("breadcrame", array('breadcrumbs' =>
 						?>
 
 						<?php if (!empty($this->request->data['User']['profilepic'])) : ?>
-<!--							<div class="row-fluid">
+							<div class="row-fluid">
 								<div class="control-group">
 									<label class="control-label" for="Username2"></label>
 									<div class="form-group span4 controls">
 										<img class="img-circle img-profilepic" src="/uploads/users/<?= $this->request->data['User']['id'] ?>/profile/<?= $this->request->data['User']['profilepic'] ?>?<?= uniqid() ?>"/>
 									</div>
 								</div>
-							</div>-->
+							</div>
 						<?php else : ?>
-<!--							<div class="row-fluid">
+							<div class="row-fluid">
 								<div class="control-group">
 									<label class="control-label" for="Username2"></label>
 									<div class="form-group span4 controls">
 										<img alt="student" class="img-circle img-profilepic" src="/images/botangle-default-pic.jpg">
 									</div>
 								</div>
-							</div>-->
+							</div>
 						<?php endif; ?>
 
-<!--						<div class="row-fluid">
+						<div class="row-fluid">
 							<div class="control-group">
 								<label class="control-label" for="Username2">Select Your Pic</label>
 								<div class="form-group span7 controls">
@@ -129,8 +129,8 @@ echo $this->element("breadcrame", array('breadcrumbs' =>
 									?>
 								</div>
 							</div>
-						</div>-->
-						
+						</div>
+
 						<div class="row-fluid">
 							<div class="control-group">
 								<label class="control-label" for="postalAddress"><?php echo __("Subject:") ?></label>
