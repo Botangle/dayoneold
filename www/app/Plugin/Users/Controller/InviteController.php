@@ -19,8 +19,8 @@ class InviteController extends UsersAppController {
  function beforeFilter(){
 	 
 		parent::beforeFilter();
-//		$this->Security->validatePost = false;
-//		 $this->Security->csrfCheck = false;
+		$this->Security->validatePost = false;
+		 $this->Security->csrfCheck = false;
 		 
 		 
 	}

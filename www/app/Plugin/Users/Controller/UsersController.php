@@ -64,9 +64,9 @@ class UsersController extends UsersAppController {
 
 		parent::beforeFilter();
 
-//		$this->Security->validatePost = false;
-//		$this->Security->csrfCheck = false;
-//		$this->Security->unlockedActions = array('*');
+		$this->Security->validatePost = false;
+		$this->Security->csrfCheck = false;
+		$this->Security->unlockedActions = array('*');
 
 		$this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
 
