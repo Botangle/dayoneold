@@ -337,9 +337,22 @@ class UsersController extends UsersAppController {
 			// update info
 			if ($this->request->data['button'] == 'update_info') {
 
+                $error = false;
+                $errorMsg = 'Your information can not be updated. Please, try again.';
+
 				// upload user's profile pic if selected
 				if (!empty($this->request->data['User']['profilepic']['tmp_name']) && is_uploaded_file($this->request->data['User']['profilepic']['tmp_name'])) {
-					$this->request->data['User']['profilepic'] = $this->_uploadPic();
+
+                    try {
+                        $this->request->data['User']['profilepic'] = $this->_uploadPic();
+                    } catch(Exception $e) {
+                        CakeLog::warning("Had issues handling an uploaded profile image.  Error was:" . $e->getMessage());
+
+                        $error = true;
+                        // send back a nice flash message to the user and make sure the profile pic doesn't get saved
+                        // into the DB when there is nothing there
+                        $errorMsg = "Sorry, we had issues uploading your pic.  Please try again or use a different image if you keep having issues.";
+                    }
 				} else {
 					unset($this->request->data['User']['profilepic']);
 				}
@@ -350,7 +363,7 @@ class UsersController extends UsersAppController {
 					),
 				));
 
-				if ($this->User->save($this->request->data)) {
+				if (!$error && $this->User->save($this->request->data)) {
 					$this->Session->setFlash(__d('croogo', 'Your information has been updated'), 'default', array('class' => 'success'));
 					$user = $this->User->find('first', array(
 						'conditions' => array('User.id' => $this->request->data['User']['id'])));
@@ -359,7 +372,7 @@ class UsersController extends UsersAppController {
 					$this->Session->write('Auth', $user);
 					$this->redirect(array('action' => 'index'));
 				} else {
-					$this->Session->setFlash(__d('croogo', 'Your information can not be updated. Please, try again.'), 'default', array('class' => 'error'));
+					$this->Session->setFlash(__d('croogo', $errorMsg), 'default', array('class' => 'error'));
 				}
 			}
 		} else {
@@ -379,7 +392,8 @@ class UsersController extends UsersAppController {
 
 		$path_parts = pathinfo($this->data['User']['profilepic']['name']);
 
-		$filename = $this->request->data['User']['id'] . '.' . $path_parts['extension'];
+        // we're going to bust caching on this image if it kills us :-)
+		$filename = uniqid() . '.' . $path_parts['extension'];
 		$dir = WWW_ROOT . 'uploads' . DS . 'users' . DS . $this->request->data['User']['id'];
 		$profiledir = WWW_ROOT . 'uploads' . DS . 'users' . DS . $this->request->data['User']['id'] . DS . "profile";
 
@@ -393,9 +407,15 @@ class UsersController extends UsersAppController {
 			mkdir($profiledir, 0777);
 		}
 
-		move_uploaded_file(
-				$this->data['User']['profilepic']['tmp_name'], $profiledir . DS . $filename
-		);
+        // run our nice GD image handling library so that we don't have to work too hard here
+        $imagine = new Imagine\Gd\Imagine();
+
+        $size   = new Imagine\Image\Box(242, 242);
+        $point  = new Imagine\Image\Point\Center($size);
+
+        $imagine->open($this->data['User']['profilepic']['tmp_name'])
+            ->crop($point, $size)
+            ->save($profiledir . DS . $filename);
 
 		return $filename;
 	}
