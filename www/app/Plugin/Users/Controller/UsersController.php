@@ -64,16 +64,23 @@ class UsersController extends UsersAppController {
 
 		parent::beforeFilter();
 
-		$this->Security->validatePost = false;
-		$this->Security->csrfCheck = false;
-		$this->Security->unlockedActions = array('*');
+//		$this->Security->validatePost = false;
+//		$this->Security->csrfCheck = false;
+//		$this->Security->unlockedActions = array('*');
 
 		$this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
 
 		if ($this->Session->check('Auth.User') && $this->Session->read('Auth.User.role_id') == 4) {
 			$this->checkpayment();
 		}
+
+//		$this->Security->blackHoleCallback = 'blackhole';
 	}
+
+//	public function blackhole($type) {
+//		// handle errors.
+//		debug($type);
+//	}
 
 /**
  * Check the student read lesson and payment not made
@@ -315,7 +322,7 @@ class UsersController extends UsersAppController {
 			// change password
 			if ($this->request->data['button'] == 'change_password') {
 				$oldpassw = AuthComponent::password($this->data['User']['oldpassword']);
-				
+
 				$user = $this->User->find('first', array(
 					'conditions' => array(
 						'User.id' => $this->request->data['User']['id'],
@@ -337,25 +344,25 @@ class UsersController extends UsersAppController {
 			// update info
 			if ($this->request->data['button'] == 'update_info') {
 
-                $error = false;
-                $errorMsg = 'Your information can not be updated. Please, try again.';
+				$error = false;
+				$errorMsg = 'Your information can not be updated. Please, try again.';
 
 				// upload user's profile pic if selected
-				if (!empty($this->request->data['User']['profilepic']['tmp_name']) && is_uploaded_file($this->request->data['User']['profilepic']['tmp_name'])) {
-
-                    try {
-                        $this->request->data['User']['profilepic'] = $this->_uploadPic();
-                    } catch(Exception $e) {
-                        CakeLog::warning("Had issues handling an uploaded profile image.  Error was:" . $e->getMessage());
-
-                        $error = true;
-                        // send back a nice flash message to the user and make sure the profile pic doesn't get saved
-                        // into the DB when there is nothing there
-                        $errorMsg = "Sorry, we had issues uploading your pic.  Please try again or use a different image if you keep having issues.";
-                    }
-				} else {
-					unset($this->request->data['User']['profilepic']);
-				}
+//				if (!empty($this->request->data['User']['profilepic']['tmp_name']) && is_uploaded_file($this->request->data['User']['profilepic']['tmp_name'])) {
+//
+//					try {
+//						$this->request->data['User']['profilepic'] = $this->_uploadPic();
+//					} catch (Exception $e) {
+//						CakeLog::warning("Had issues handling an uploaded profile image.  Error was:" . $e->getMessage());
+//
+//						$error = true;
+//						// send back a nice flash message to the user and make sure the profile pic doesn't get saved
+//						// into the DB when there is nothing there
+//						$errorMsg = "Sorry, we had issues uploading your pic.  Please try again or use a different image if you keep having issues.";
+//					}
+//				} else {
+//					unset($this->request->data['User']['profilepic']);
+//				}
 
 				$user = $this->User->find('first', array(
 					'conditions' => array(
@@ -392,7 +399,7 @@ class UsersController extends UsersAppController {
 
 		$path_parts = pathinfo($this->data['User']['profilepic']['name']);
 
-        // we're going to bust caching on this image if it kills us :-)
+		// we're going to bust caching on this image if it kills us :-)
 		$filename = uniqid() . '.' . $path_parts['extension'];
 		$dir = WWW_ROOT . 'uploads' . DS . 'users' . DS . $this->request->data['User']['id'];
 		$profiledir = WWW_ROOT . 'uploads' . DS . 'users' . DS . $this->request->data['User']['id'] . DS . "profile";
@@ -407,15 +414,15 @@ class UsersController extends UsersAppController {
 			mkdir($profiledir, 0777);
 		}
 
-        // run our nice GD image handling library so that we don't have to work too hard here
-        $imagine = new Imagine\Gd\Imagine();
+		// run our nice GD image handling library so that we don't have to work too hard here
+		$imagine = new Imagine\Gd\Imagine();
 
-        $size   = new Imagine\Image\Box(242, 242);
-        $point  = new Imagine\Image\Point\Center($size);
+		$size = new Imagine\Image\Box(242, 242);
+		$point = new Imagine\Image\Point\Center($size);
 
-        $imagine->open($this->data['User']['profilepic']['tmp_name'])
-            ->crop($point, $size)
-            ->save($profiledir . DS . $filename);
+		$imagine->open($this->data['User']['profilepic']['tmp_name'])
+				->crop($point, $size)
+				->save($profiledir . DS . $filename);
 
 		return $filename;
 	}
@@ -622,10 +629,10 @@ class UsersController extends UsersAppController {
 
 					if ($type == 'tutor') {
 						$this->Session->setFlash(__d('croogo', 'You have successfully registered an account. Please enter in your billing info to show up in the search results.'), 'default', array('class' => 'success'));
-                        $this->redirect(array('action' => 'billing'));
+						$this->redirect(array('action' => 'billing'));
 					} else {
 						$this->Session->setFlash(__d('croogo', 'You have successfully registered an account! On to find a good tutor! :-)'), 'default', array('class' => 'success'));
-                        $this->redirect(array('action' => 'index'));
+						$this->redirect(array('action' => 'index'));
 					}
 				} else {
 					Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
@@ -935,7 +942,7 @@ class UsersController extends UsersAppController {
 			$roleid = 2;
 
 			$needs_payments_setup = true;
-			
+
 			if ($User['User']['stripe_customer_id'] != '') {
 				$needs_payments_setup = false;
 			}
@@ -1238,7 +1245,7 @@ class UsersController extends UsersAppController {
  */
 	public function lessons() {
 		$userconditionsfield = "tutor";
-        $otherconditionsfield = "student";
+		$otherconditionsfield = "student";
 		$userlessonconditionsfield = "tutor";
 		$readconditons = "readlessontutor";
 
@@ -1247,7 +1254,7 @@ class UsersController extends UsersAppController {
 
 		if ($this->Session->read('Auth.User.role_id') == 4) {
 			$userconditionsfield = "student";
-            $otherconditionsfield = "tutor";
+			$otherconditionsfield = "tutor";
 			$userlessonconditionsfield = "student";
 			$readconditons = "readlesson";
 			$extraConditions = '';
@@ -1287,7 +1294,7 @@ class UsersController extends UsersAppController {
                 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
 		$upcominglesson = $this->Lesson->query($upcomingLessonSQL);
 
-        $pastLessonSQL = "Select * from lessons as Lesson
+		$pastLessonSQL = "Select * from lessons as Lesson
             INNER JOIN `$this->databaseName`.`users` AS `User`
             ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
             JOIN (
@@ -1331,20 +1338,20 @@ class UsersController extends UsersAppController {
 		// handle all our video stuff with Opentok
 		$opentok_session_id = $lesson['Lesson']['opentok_session_id'];
 
-        // if our session id is blank, then we're going to need to try to generate an opentok session id *right now*
-        // as we need it almost immediately
+		// if our session id is blank, then we're going to need to try to generate an opentok session id *right now*
+		// as we need it almost immediately
 		if ($opentok_session_id == "") {
 
-            // if we properly generate a session id, then let's save it to the DB
-            // and move on with our lives
-            if($returnVal = $this->generateOpenTokSessionId()) {
-                $opentok_session_id = $returnVal;
-                $lesson['Lesson']['opentok_session_id'] = $returnVal;
-                $this->Lesson->save($lesson);
-            } else {
-                // we've got lesson-stopping issues right now, let's throw an error and have them try again
-                throw new InternalErrorException("Could not load our video system up for some reason. Please try again or contact us for further assistance.");
-            }
+			// if we properly generate a session id, then let's save it to the DB
+			// and move on with our lives
+			if ($returnVal = $this->generateOpenTokSessionId()) {
+				$opentok_session_id = $returnVal;
+				$lesson['Lesson']['opentok_session_id'] = $returnVal;
+				$this->Lesson->save($lesson);
+			} else {
+				// we've got lesson-stopping issues right now, let's throw an error and have them try again
+				throw new InternalErrorException("Could not load our video system up for some reason. Please try again or contact us for further assistance.");
+			}
 		}
 
 		$this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
@@ -1594,19 +1601,19 @@ class UsersController extends UsersAppController {
 		// Not sure why we need to only do this if we're a student, but we'll ignore that for now
 		// but we do need to generate lesson session ids so our lessons will work
 		if ($this->request->data['Lesson']['tutorname'] == "") {
-            $data = array();
-            $data['Lesson']['id'] = (int)$lesson_id;
+			$data = array();
+			$data['Lesson']['id'] = (int) $lesson_id;
 
-            // generate our appropriate session ids
-            if($returnVal = $this->generateTwiddlaSessionId()) {
-                $data['Lesson']['twiddlameetingid'] = $returnVal;
-            }
-            if($returnVal = $this->generateOpenTokSessionId()) {
-                $data['Lesson']['opentok_session_id'] = $returnVal;
-            }
+			// generate our appropriate session ids
+			if ($returnVal = $this->generateTwiddlaSessionId()) {
+				$data['Lesson']['twiddlameetingid'] = $returnVal;
+			}
+			if ($returnVal = $this->generateOpenTokSessionId()) {
+				$data['Lesson']['opentok_session_id'] = $returnVal;
+			}
 
-            // @TODO: eventually, we should check to make sure saving actually doesn't have errors instead of just assuming :-/
-            $this->Lesson->save($data);
+			// @TODO: eventually, we should check to make sure saving actually doesn't have errors instead of just assuming :-/
+			$this->Lesson->save($data);
 		}
 
 		$this->Session->setFlash(__d('croogo', 'Your lesson has been added successfully.'), 'default', array('class' => 'success'));
@@ -1649,20 +1656,19 @@ class UsersController extends UsersAppController {
 		// generate our twiddla id ahead of time
 		$this->Twiddla = $this->Components->load('Twiddla', Configure::read('TwiddlaComponent'));
 
-        // @TODO: we should add some Twiddla error handling stuff here too
+		// @TODO: we should add some Twiddla error handling stuff here too
 		return $this->Twiddla->getMeetingId();
 	}
 
-    /**
-     * Generates an OpenTok session id that we can save to the DB or returns false
-     *
-     * @return boolean|string
-     */
-    private function generateOpenTokSessionId()
-    {
-        $this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
-        return $this->OpenTok->generateSessionId();
-    }
+/**
+ * Generates an OpenTok session id that we can save to the DB or returns false
+ *
+ * @return boolean|string
+ */
+	private function generateOpenTokSessionId() {
+		$this->OpenTok = $this->Components->load('OpenTok', Configure::read('OpenTokComponent'));
+		return $this->OpenTok->generateSessionId();
+	}
 
 /**
  * Search student
@@ -1756,19 +1762,19 @@ class UsersController extends UsersAppController {
 			$data['Lesson']['is_confirmed'] = 1;
 		}
 
-        // generate our appropriate session ids if we don't already have from when the student suggested the lesson
-        // it's possible that these values will end up being blank instead of what we need
-        // so we're going to need to check these values before the lesson actually starts as well
-        if($data['Lesson']['twiddlameetingid'] == '' || $data['Lesson']['twiddlameetingid'] == 0) {
-            if($returnVal = $this->generateTwiddlaSessionId()) {
-                $data['Lesson']['twiddlameetingid'] = $returnVal;
-            }
-        }
-        if($data['Lesson']['opentok_session_id'] == '') {
-            if($returnVal = $this->generateOpenTokSessionId()) {
-                $data['Lesson']['opentok_session_id'] = $returnVal;
-            }
-        }
+		// generate our appropriate session ids if we don't already have from when the student suggested the lesson
+		// it's possible that these values will end up being blank instead of what we need
+		// so we're going to need to check these values before the lesson actually starts as well
+		if ($data['Lesson']['twiddlameetingid'] == '' || $data['Lesson']['twiddlameetingid'] == 0) {
+			if ($returnVal = $this->generateTwiddlaSessionId()) {
+				$data['Lesson']['twiddlameetingid'] = $returnVal;
+			}
+		}
+		if ($data['Lesson']['opentok_session_id'] == '') {
+			if ($returnVal = $this->generateOpenTokSessionId()) {
+				$data['Lesson']['opentok_session_id'] = $returnVal;
+			}
+		}
 
 		$this->Lesson->save($data);
 
@@ -1841,11 +1847,11 @@ class UsersController extends UsersAppController {
 
 	public function topchart($categoryname = null, $online = null) {
 		$otherconditions = array('status' => 1, 'role_id' => 2);
-		
+
 		if ($categoryname == 'all') {
 			$categoryname = "";
 		}
-		
+
 		if (isset($online) && $online != null) {
 			$otherconditions = array_merge($otherconditions, array('is_online' => 1));
 		}
@@ -1860,7 +1866,7 @@ class UsersController extends UsersAppController {
 
 			$otherconditions = array_merge($otherconditions, array('subject LIKE' => '%' . $categorysubjects['Category']['name'] . '%'));
 		}
-		
+
 		$this->paginate['User']['joins'] = array(array(
 				'table' => 'reviews',
 				'alias' => 'Review',
@@ -1869,17 +1875,17 @@ class UsersController extends UsersAppController {
 					"User.id = Review.rate_to"
 				))
 		);
-		
+
 		$this->paginate['User']['conditions'] = $otherconditions;
 		$this->paginate['User']['fields'] = array('*,avg(`Review`.`rating`) as `rating`');
 		$this->paginate['User']['group'] = array('User.id');
 		$this->paginate['User']['order'] = 'avg(`Review`.`rating`) DESC';
 		$this->paginate['User']['limit'] = 21;
-		
+
 		$this->set('userlist', $this->paginate());
-		
+
 		$category = $this->Category->find('all', array('conditions' => array('status' => 1, 'parent_id' => null)));
-		
+
 		$this->set(compact('userlist', 'category', 'categoryname', 'online'));
 		/* $log = $this->User->getDataSource()->getLog(false, false);
 		  debug($log); */

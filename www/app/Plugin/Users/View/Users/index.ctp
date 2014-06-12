@@ -120,16 +120,17 @@ echo $this->element("breadcrame", array('breadcrumbs' =>
 							</div>
 						<?php endif; ?>
 
-						<div class="row-fluid">
+<!--						<div class="row-fluid">
 							<div class="control-group">
 								<label class="control-label" for="Username2">Select Your Pic</label>
 								<div class="form-group span7 controls">
 									<?php
-									echo $this->Form->input('profilepic', array('type' => 'file', 'label' => false));
+									//echo $this->Form->input('profilepic', array('type' => 'file', 'label' => false));
 									?>
 								</div>
 							</div>
-						</div>
+						</div>-->
+						
 						<div class="row-fluid">
 							<div class="control-group">
 								<label class="control-label" for="postalAddress"><?php echo __("Subject:") ?></label>
