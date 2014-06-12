@@ -1,4 +1,4 @@
-<?php 
+<?php
 App::uses('CategoriesAppController', 'Categories.Controller');
 App::uses('Croogo', 'Lib');
 
@@ -47,14 +47,15 @@ class CategoriesController extends CategoriesAppController {
  * @access public
  */
 	public $uses = array('Categories.Category');
-	function beforeFilter(){
-	 
+
+	function beforeFilter() {
+
 		parent::beforeFilter();
-		 $this->Security->validatePost = false;
-		 $this->Security->csrfCheck = false;
-		 
-		 $this->Security->unlockedActions = array('index');
-		 $this->Auth->allow('index'); 
+//		 $this->Security->validatePost = false;
+//		 $this->Security->csrfCheck = false;
+//		$this->Security->unlockedActions = array('index');
+
+		$this->Auth->allow('index');
 	}
 
 /**
@@ -64,15 +65,14 @@ class CategoriesController extends CategoriesAppController {
  * @access public
  * $searchField : Identify fields for search
  */
-	public function admin_index() {  
-			$this->set('title_for_layout', __d('croogo', 'Categories'));
-			$this->Category->recursive = 0;		 
-			$this->paginate['Category']['conditions'] = ' `Category`.`parent_id` IS NULL';
-			$this->paginate['Category']['order'] = 'Category.name ASC'; 
-			$this->set('categories', $this->paginate());  
-	
-			$this->set('displayFields', $this->Category->displayFields());
-		  
+	public function admin_index() {
+		$this->set('title_for_layout', __d('croogo', 'Categories'));
+		$this->Category->recursive = 0;
+		$this->paginate['Category']['conditions'] = ' `Category`.`parent_id` IS NULL';
+		$this->paginate['Category']['order'] = 'Category.name ASC';
+		$this->set('categories', $this->paginate());
+
+		$this->set('displayFields', $this->Category->displayFields());
 	}
 
 /**
@@ -91,7 +91,6 @@ class CategoriesController extends CategoriesAppController {
 				$this->Session->setFlash(__d('croogo', 'The Category could not be saved. Please, try again.'), 'default', array('class' => 'error'));
 			}
 		}
-		 
 	}
 
 /**
@@ -112,10 +111,9 @@ class CategoriesController extends CategoriesAppController {
 		} else {
 			$this->request->data = $this->Category->read(null, $id);
 		}
-		 
+
 		$this->set('editFields', $this->Category->editFields());
 	}
- 
 
 /**
  * Admin delete
@@ -134,31 +132,30 @@ class CategoriesController extends CategoriesAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 	}
-	public function index(){
-			$this->Category->recursive = 0;	
-			 $name = "";
-			 $cond= array('status'=>"1",'parent_id'=>null);
-			if(!empty($this->request->data)){
-			 
-				 $name = $this->request->data['search'];
-				$cond= array('status'=>"1",'name LIKE '=>"%$name%",'parent_id'=>null);
-			}
-			
-			$c = $this->Category->find('all',array('conditions'=> $cond));
- 
-			$results = "";
-			$arrayAlphabets = "";
-			for($i=65;$i<=90;$i++){
-				$arrayAlphabets[] = chr($i);
-			} 
-			foreach($c as $k=>$v){
-				 $char = substr($v['Category']['name'],0,1);
-				$results['Category'][strtoupper($char)][] = array($v['Category']['id']=>$v['Category']['name']); 
-			}			
-			  
-			$this->set('categories',$results);
-			
+
+	public function index() {
+		$this->Category->recursive = 0;
+		$name = "";
+		$cond = array('status' => "1", 'parent_id' => null);
+		if (!empty($this->request->data)) {
+
+			$name = $this->request->data['search'];
+			$cond = array('status' => "1", 'name LIKE ' => "%$name%", 'parent_id' => null);
+		}
+
+		$c = $this->Category->find('all', array('conditions' => $cond));
+
+		$results = "";
+		$arrayAlphabets = "";
+		for ($i = 65; $i <= 90; $i++) {
+			$arrayAlphabets[] = chr($i);
+		}
+		foreach ($c as $k => $v) {
+			$char = substr($v['Category']['name'], 0, 1);
+			$results['Category'][strtoupper($char)][] = array($v['Category']['id'] => $v['Category']['name']);
+		}
+
+		$this->set('categories', $results);
 	}
-   
 
 }
