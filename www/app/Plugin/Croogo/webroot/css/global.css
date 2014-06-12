@@ -406,7 +406,7 @@ input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-fa
 .Category-block .title01{ background:#f38918; width:40px; height:40px; text-align:center; font-family: 'Roboto', sans-serif;  font-weight:200; font-size:24px; color:#fff; margin-bottom:15px; padding:10px 0 0 0; }
 .Category-block ul{ clear:both; padding:0px; margin:0px auto 15px auto; width:100%; }
 .Category-block ul li{ list-style:none; line-height:30px; font-family: 'Roboto', sans-serif;  font-weight:200; color:#f38918;}
-.Category-block ul li a{ font-family: 'Roboto', sans-serif;  font-weight:200; color:#f38918; text-decoration:none; font-size:15px; cursor:pointer; }
+.Category-block ul li a{ font-family: 'Roboto', sans-serif;  font-weight:200; color:#A06122; text-decoration:none; font-size:15px; cursor:pointer; }
 .Category-block ul li a:hover{ color:#2b2b2b; text-decoration:none; cursor:pointer; }
 
 .how-it-works-Boxs{ padding:15px 0 0 0; text-align:center; display:block; width:auto; height:281px; box-shadow:#ccc 0px 0 5px ; margin-bottom:30px; background:#fff;  }
