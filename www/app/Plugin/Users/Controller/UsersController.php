@@ -1786,6 +1786,8 @@ class UsersController extends UsersAppController {
 	}
 
 	public function calandareventsprofile() {
+		$this->request->onlyAllow('ajax');
+		
 		$userconditionsfield = "tutor";
 		$userlessonconditionsfield = "student";
 		$readconditons = "readlessontutor";
