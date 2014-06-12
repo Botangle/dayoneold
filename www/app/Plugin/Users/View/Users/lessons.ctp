@@ -63,12 +63,16 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 			$newMsg[] = $v['Lesson']['id'];
 			$conditionstype = 'laststatus_student';
 		  }
-		 if(file_exists(WWW_ROOT . DS . 'uploads' . DS . $v['User']['id']. DS . 'profile'. DS  .$v['User']['profilepic']) && $v['User']['profilepic']!=""){ ?>
-		  <img src="<?php echo $this->webroot. 'uploads/'.$v['User']['id'].'/profile/'.$v['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
+		 if(file_exists(WWW_ROOT . DS . 'uploads' . DS . $v['Other']['id']. DS . 'profile'. DS  .$v['Other']['profilepic']) && $v['Other']['profilepic']!=""){ ?>
+		  <img src="<?php echo $this->webroot. 'uploads/'.$v['Other']['id'].'/profile/'.$v['Other']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 		<?php }else{		 ?>
 		 <img src="<?php echo $this->webroot?>images/thumb-typ1.png" class="img-circle" alt="student">
 		 <?php } ?> </div>
-            <div class="span2 tutor-name"> <a href="#"><?php echo h($v['User']['username']) ?></a></div>
+            <div class="span2 tutor-name">
+                <a href="<?php echo $this->webroot ?>user/<?php echo h($v['User']['username']) ?>">
+                    <?php echo h($v['Other']['username']) ?>
+                </a>
+            </div>
              <div class="span1 date"> <?php echo date('M d',strtotime($v['Lesson']['lesson_date'])) ?></div>
               <div class="span1 time"> <?php 
 			 
@@ -124,20 +128,24 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
        </div>
 	    <div class="PageLeft-Block">
         <p class="FontStyle20 color1"><?php echo __("Upcoming Lessons")?></p>
-	  <?php  if(!empty($upcomminglesson)){ ?>
+	  <?php  if(!empty($upcominglesson)){ ?>
       
 		<?php
-		foreach($upcomminglesson as $k=>$v){ ?>
+		foreach($upcominglesson as $k=>$v){ ?>
         <div class="Lesson-row">
          <div class="row-fluid">
         	<div class="span1 tutorimg"><?php 
 		 
-		 if(file_exists(WWW_ROOT . DS . 'uploads' . DS . $v['User']['id']. DS . 'profile'. DS  .$v['User']['profilepic']) && $v['User']['profilepic']!=""){ ?>
-		  <img src="<?php echo $this->webroot. 'uploads/'.$v['User']['id'].'/profile/'.$v['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
+		 if(file_exists(WWW_ROOT . DS . 'uploads' . DS . $v['Other']['id']. DS . 'profile'. DS  .$v['Other']['profilepic']) && $v['Other']['profilepic']!=""){ ?>
+		  <img src="<?php echo $this->webroot. 'uploads/'.$v['Other']['id'].'/profile/'.$v['Other']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 		<?php }else{		 ?>
 		 <img src="<?php echo $this->webroot?>images/thumb-typ1.png" class="img-circle" alt="student">
 		 <?php } ?> </div>
-            <div class="span2 tutor-name"> <a href="#"><?php echo h($v['User']['username'])?></a></div>
+            <div class="span2 tutor-name">
+                <a href="<?php echo $this->webroot ?>user/<?php echo h($v['User']['username']) ?>">
+                    <?php echo h($v['Other']['username']) ?>
+                </a>
+            </div>
              <div class="span1 date"><?php echo date('M d',strtotime($v['Lesson']['lesson_date'])) ?></div>
               <div class="span1 time"><?php   $hr = explode(":",$v['Lesson']['lesson_time']);
 			  echo h($hr[0].":".$hr[1]) ?></div>
@@ -211,12 +219,16 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
          <div class="row-fluid">
         	<div class="span1 tutorimg"><?php 
 		 
-		 if(file_exists(WWW_ROOT . DS . 'uploads' . DS . $v['User']['id']. DS . 'profile'. DS  .$v['User']['profilepic']) && $v['User']['profilepic']!=""){ ?>
-		  <img src="<?php echo $this->webroot. 'uploads/'.$v['User']['id'].'/profile/'.$v['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
+		 if(file_exists(WWW_ROOT . DS . 'uploads' . DS . $v['Other']['id']. DS . 'profile'. DS  .$v['Other']['profilepic']) && $v['Other']['profilepic']!=""){ ?>
+		  <img src="<?php echo $this->webroot. 'uploads/'.$v['Other']['id'].'/profile/'.$v['Other']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 		<?php }else{		 ?>
 		 <img src="<?php echo $this->webroot?>images/thumb-typ1.png" class="img-circle" alt="student">
 		 <?php } ?> </div>
-            <div class="span2 tutor-name"> <a href="#"><?php echo h($v['User']['username']) ?></a></div>
+            <div class="span2 tutor-name">
+                <a href="<?php echo $this->webroot ?>user/<?php echo h($v['Other']['username']) ?>">
+                    <?php echo h($v['Other']['username']) ?>
+                </a>
+            </div>
              <div class="span1 date"><?php echo date('M d',strtotime($v['Lesson']['lesson_date'])); ?></div>
               <div class="span1 time"><?php   $hr = explode(":",$v['Lesson']['lesson_time']);
 			  echo h($hr[0].":".$hr[1]) ?></div>

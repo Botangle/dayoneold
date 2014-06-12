@@ -222,13 +222,13 @@ function secondsToTime($seconds)
 				</form>
 			  <?php }else{
 
-                 $twiddlaUrl = 'http://www.twiddla.com/api/start.aspx?';
+                 $twiddlaUrl = 'https://www.twiddla.com/api/start.aspx?';
 
                  $items = array(
                      'sessionid'    => $twiddlaid,
                      'guestname'    => $username,
                      'autostart'    => 1,
-                     'exiturl'      => 'http://www.botangle.com',
+                     'exiturl'      => 'https://www.botangle.com',
                  );
 
                  $twiddlaUrl .= http_build_query($items);
