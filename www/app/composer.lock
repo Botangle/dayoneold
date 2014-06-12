@@ -1,10 +1,56 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "0f7e32e3bc14039703001acb07bef29b",
+    "hash": "9595f91fee3c7906c34de94b5a26afd5",
     "packages": [
+        {
+            "name": "burzum/cakephp-imagine-plugin",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/burzum/cakephp-imagine-plugin.git",
+                "reference": "b933ecc0b0676c6b3178fd6eeede6dad1a9176cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/burzum/cakephp-imagine-plugin/zipball/b933ecc0b0676c6b3178fd6eeede6dad1a9176cd",
+                "reference": "b933ecc0b0676c6b3178fd6eeede6dad1a9176cd",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "*",
+                "imagine/imagine": "*",
+                "php": ">=5.3.2"
+            },
+            "type": "cakephp-plugin",
+            "extra": {
+                "installer-name": "Imagine"
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florian Krämer",
+                    "email": "florian.kraemer@kreative-design.net",
+                    "homepage": "http://florian-kraemer.net",
+                    "role": "Author"
+                }
+            ],
+            "description": "Imagine Plugin for CakePHP",
+            "homepage": "https://github.com/burzum/cakephp-imagine-plugin",
+            "keywords": [
+                "cakephp",
+                "image",
+                "image-processing",
+                "media"
+            ],
+            "time": "2014-04-07 08:39:21"
+        },
         {
             "name": "chronon/stripe",
             "version": "dev-master",
@@ -134,17 +180,69 @@
             "time": "2014-02-24 04:21:34"
         },
         {
+            "name": "imagine/imagine",
+            "version": "v0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/avalanche123/Imagine.git",
+                "reference": "f64ec666baaa800edcbf237db41121a569230709"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/f64ec666baaa800edcbf237db41121a569230709",
+                "reference": "f64ec666baaa800edcbf237db41121a569230709",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "sami/sami": "dev-master"
+            },
+            "suggest": {
+                "ext-gd": "to use the GD implementation",
+                "ext-gmagick": "to use the Gmagick implementation",
+                "ext-imagick": "to use the Imagick implementation"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Imagine": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bulat Shakirzyanov",
+                    "email": "mallluhuct@gmail.com",
+                    "homepage": "http://avalanche123.com"
+                }
+            ],
+            "description": "Image processing for PHP 5.3",
+            "homepage": "http://imagine.readthedocs.org/",
+            "keywords": [
+                "drawing",
+                "graphics",
+                "image manipulation",
+                "image processing"
+            ],
+            "time": "2013-07-10 17:25:36"
+        },
+        {
             "name": "opentok/opentok",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentok/Opentok-PHP-SDK.git",
-                "reference": "e991b877b44431b8dea7bd90287bb4030433e6c5"
+                "reference": "666562c8603124733c2e51c77567803ffdc67c6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentok/Opentok-PHP-SDK/zipball/e991b877b44431b8dea7bd90287bb4030433e6c5",
-                "reference": "e991b877b44431b8dea7bd90287bb4030433e6c5",
+                "url": "https://api.github.com/repos/opentok/Opentok-PHP-SDK/zipball/666562c8603124733c2e51c77567803ffdc67c6d",
+                "reference": "666562c8603124733c2e51c77567803ffdc67c6d",
                 "shasum": ""
             },
             "require": {
@@ -174,7 +272,7 @@
                 "TokBox",
                 "php"
             ],
-            "time": "2013-09-27 17:39:06"
+            "time": "2014-04-08 00:32:34"
         },
         {
             "name": "stripe/stripe-php",
