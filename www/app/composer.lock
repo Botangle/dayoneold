@@ -237,12 +237,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentok/Opentok-PHP-SDK.git",
-                "reference": "666562c8603124733c2e51c77567803ffdc67c6d"
+                "reference": "e991b877b44431b8dea7bd90287bb4030433e6c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentok/Opentok-PHP-SDK/zipball/666562c8603124733c2e51c77567803ffdc67c6d",
-                "reference": "666562c8603124733c2e51c77567803ffdc67c6d",
+                "url": "https://api.github.com/repos/opentok/Opentok-PHP-SDK/zipball/e991b877b44431b8dea7bd90287bb4030433e6c5",
+                "reference": "e991b877b44431b8dea7bd90287bb4030433e6c5",
                 "shasum": ""
             },
             "require": {
