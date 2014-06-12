@@ -66,7 +66,7 @@ class UsersController extends UsersAppController {
 
 //		$this->Security->validatePost = false;
 //		$this->Security->csrfCheck = false;
-//		$this->Security->unlockedActions = array('*');
+		$this->Security->unlockedActions = array('search');
 
 		$this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
 
@@ -1218,7 +1218,6 @@ class UsersController extends UsersAppController {
 
 		/* $this->paginate['User']['conditions']  = array("User.status"=>1,"User.role_id"=>2,array('OR'=>array("User.username LIKE '%$searchValue%'","User.extracurricular_interests LIKE '%$searchValue%'","User.subject LIKE '%$searchValue%'","User.qualification LIKE '%$searchValue%'"))); */
 
-
 		$this->paginate['User']['joins'] = array(array(
 				'table' => 'reviews',
 				'alias' => 'Review',
@@ -1231,10 +1230,6 @@ class UsersController extends UsersAppController {
 		$this->paginate['User']['fields'] = array('*,avg(`Review`.`rating`) as `rating`');
 		$this->paginate['User']['group'] = array('User.id');
 		$this->set('users', $this->paginate());
-
-		/*
-		  $log = $this->User->getDataSource()->getLog(false, false);
-		  debug($log); die; */
 	}
 
 /**
@@ -1787,7 +1782,7 @@ class UsersController extends UsersAppController {
 
 	public function calandareventsprofile() {
 		$this->request->onlyAllow('ajax');
-		
+
 		$userconditionsfield = "tutor";
 		$userlessonconditionsfield = "student";
 		$readconditons = "readlessontutor";
