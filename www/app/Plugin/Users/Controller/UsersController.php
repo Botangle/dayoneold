@@ -1123,7 +1123,9 @@ class UsersController extends UsersAppController {
 			);
 			$this->User->save($data);
 
-			$this->Session->setFlash(__d('croogo', "We've connected your account with Stripe successfully."), 'default', array('class' => 'success'));
+            Croogo::dispatchEvent('Controller.Users.tutorStripeAccountSetup', $this);
+
+            $this->Session->setFlash(__d('croogo', "We've connected your account with Stripe successfully."), 'default', array('class' => 'success'));
 
 			$this->redirect(array('action' => 'billing'));
 		}
@@ -1585,6 +1587,8 @@ class UsersController extends UsersAppController {
 				$data['Lesson']['parent_id'] = $id;
 				$this->Lesson->save($data);
 			}
+
+            Croogo::dispatchEvent('Controller.Users.lessonAdded', $this);
 
 			return true;
 		} else {
