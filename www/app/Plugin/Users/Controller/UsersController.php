@@ -803,7 +803,6 @@ class UsersController extends UsersAppController {
 
 			if ($this->Auth->login()) {
 				Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
-				;
 
 				$this->request->data['User']['is_online'] = 1;
 				$this->request->data['User']['id'] = $this->Session->read('Auth.User.id');
@@ -834,7 +833,7 @@ class UsersController extends UsersAppController {
 		if ($this->User->save($this->request->data)) {
 			
 		}
-		$this->redirect($this->Auth->logout());
+		$this->redirect($this->Auth->logout(), null, false); // we don't want to die as soon as the redirect is over
 		Croogo::dispatchEvent('Controller.Users.afterLogout', $this);
 	}
 
