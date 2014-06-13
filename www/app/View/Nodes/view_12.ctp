@@ -30,49 +30,49 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 
                <div class="row-fluid ">
                    <div class="span3">
-                       <a class="" href="#">
+                       <a class="" href="/register">
                            <div class="box box-register">
-                               <p class="FontStyle22"> Register with Botangle</p>
+                               <p class="FontStyle22">Register with Botangle</p>
                                <img src="/images/joing-botangle.jpg" width="110" height="110">
-                               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat imperdiet nibh quis sodales. </p>
+                               <p>Create your Botangle profile and connect with top online experts today.  Sign up is quick and easy.  We never share any of your information with third parties.  Get started with just your email!</p>
                            </div>
                        </a>
                    </div>
 
                    <div class="span3">
-                       <a class="" href="#">
+                       <a class="" href="/categories">
                            <div class="box box-find-tutor">
-                               <p class="FontStyle22"> Easily Find Tutors</p>
+                               <p class="FontStyle22">Find Experts Easily</p>
                                <img src="/images/find-tutor-img.jpg" width="110" height="110">
-                               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat imperdiet nibh quis sodales. </p>
+                               <p>No matter what subject you’re interested in Botangle has an expert that fits your needs and availability. Click here to search our community of experts and start learning on your terms today!</p>
                            </div>
                        </a>
                    </div>
 
                    <div class="span3">
-                       <a class="" href="#">
+                       <a class="" href="/register">
                            <div class="box box-tools">
-                               <p class="FontStyle22"> Get Lessons with tools</p>
+                               <p class="FontStyle22">Learning Tools</p>
                                <img src="/images/tools-img.jpg" width="110" height="110">
-                               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat imperdiet nibh quis sodales. </p>
+                               <p>Botangle features an extensive collection of intuitive online learning tools including a virtual white board, video chat and text editor so you can become fully immersed in your subject and learn they way you choose.  Click here to get started!</p>
                            </div>
                        </a>
                    </div>
 
                    <div class="span3">
-                       <a class="" href="#">
+                       <a class="" href="/categories">
                            <div class="box box-rate-tutor">
-                               <p class="FontStyle22">Rate your tutor!</p>
+                               <p class="FontStyle22">Rate your Expert!</p>
                                <img src="/images/rate-tutorimg.jpg" width="110" height="110">
-                               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat imperdiet nibh quis sodales. </p>
+                               <p>Tell us about your experiences.  Botangle&rsquo;s community gets bigger and better with great feedback.  Let instructors and the community know what was awesome and how to improve.  Click here to rate your instructor now!</p>
                            </div>
                        </a>
                    </div>
                </div>
 
                <div class="PageLeft-Block">
-                   <p class="FontStyle20">A header here ...</p>
-                   <p>And more details on how things work.</p>
+                   <p class="FontStyle20">What&rsquo;s important to know?</p>
+                   <p>Botangle is an online learning community connecting experts with online learners across the globe.  Now you can take back control of your education and follow your passions on your schedule.  Our experts are here to help you transform your learning experience into real world results.  <a href="/register">Get started on Botangle today!</a></p>
                </div>
            </div>
        </div>
