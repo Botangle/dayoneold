@@ -57,6 +57,11 @@ class UsersController extends UsersAppController {
 
 	public $helper = array('Categories.Category', 'Session');
 
+    public function __construct($request = null, $response = null) {
+        parent::__construct($request, $response);
+        $this->getEventManager()->attach(new UserListener());
+    }
+
 	function beforeFilter() {
 		$fields = ConnectionManager::getDataSource('default');
 		$dsc = $fields->config;
@@ -798,7 +803,6 @@ class UsersController extends UsersAppController {
 
 			if ($this->Auth->login()) {
 				Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
-				;
 
 				$this->request->data['User']['is_online'] = 1;
 				$this->request->data['User']['id'] = $this->Session->read('Auth.User.id');
@@ -829,7 +833,7 @@ class UsersController extends UsersAppController {
 		if ($this->User->save($this->request->data)) {
 			
 		}
-		$this->redirect($this->Auth->logout());
+		$this->redirect($this->Auth->logout(), null, false); // we don't want to die as soon as the redirect is over
 		Croogo::dispatchEvent('Controller.Users.afterLogout', $this);
 	}
 
@@ -1015,7 +1019,9 @@ class UsersController extends UsersAppController {
 			// @TODO: we should really make sure this saves in the future ...
 			$this->User->save($user);
 
-			// Now let's see if we're in the middle of an initial lesson setup (instead of someone proactively dealing with setting up their account)
+            Croogo::dispatchEvent('Controller.Users.studentStripeAccountSetup', $this);
+
+            // Now let's see if we're in the middle of an initial lesson setup (instead of someone proactively dealing with setting up their account)
 			// if we are, we'll need to finish up our lesson setup
 			if ($this->Session->read('initial_lesson_setup')) {
 				$user_id_to_message = $this->Session->read('new_lesson_user_id_to_message');
@@ -1117,7 +1123,9 @@ class UsersController extends UsersAppController {
 			);
 			$this->User->save($data);
 
-			$this->Session->setFlash(__d('croogo', "We've connected your account with Stripe successfully."), 'default', array('class' => 'success'));
+            Croogo::dispatchEvent('Controller.Users.tutorStripeAccountSetup', $this);
+
+            $this->Session->setFlash(__d('croogo', "We've connected your account with Stripe successfully."), 'default', array('class' => 'success'));
 
 			$this->redirect(array('action' => 'billing'));
 		}
@@ -1579,6 +1587,8 @@ class UsersController extends UsersAppController {
 				$data['Lesson']['parent_id'] = $id;
 				$this->Lesson->save($data);
 			}
+
+            Croogo::dispatchEvent('Controller.Users.lessonAdded', $this);
 
 			return true;
 		} else {

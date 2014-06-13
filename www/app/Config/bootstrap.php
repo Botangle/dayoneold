@@ -102,3 +102,7 @@ CakeLog::config('stripe', array(
     'scopes' => array('stripe'),
     'file' => 'stripe',
 ));
+
+// we've got a user listener event setup to handle user retention logging
+// article here: http://martinbean.co.uk/blog/2013/11/22/getting-to-grips-with-cakephps-events-system/
+App::uses('UserListener', 'Event');
