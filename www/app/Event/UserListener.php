@@ -17,6 +17,7 @@ class UserListener implements CakeEventListener {
         return array(
             'Controller.Users.loginSuccessful' => 'login',
             'Controller.Users.afterLogout' => 'logout',
+            'Controller.Users.studentStripeAccountSetup' => 'stripeAccountSetup',
         );
     }
 
@@ -41,6 +42,19 @@ class UserListener implements CakeEventListener {
 
         $this->handleSaving($values);
     }
+
+    public function stripeAccountSetup($event)
+    {
+        $userController = $event->subject();
+
+        $values = array(
+            'type' => 'stripe-setup',
+            'user_id' => (int)$userController->request->data['User']['id'],
+        );
+
+        $this->handleSaving($values);
+    }
+
 
     private function handleSaving($values)
     {

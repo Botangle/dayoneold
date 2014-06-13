@@ -1019,7 +1019,9 @@ class UsersController extends UsersAppController {
 			// @TODO: we should really make sure this saves in the future ...
 			$this->User->save($user);
 
-			// Now let's see if we're in the middle of an initial lesson setup (instead of someone proactively dealing with setting up their account)
+            Croogo::dispatchEvent('Controller.Users.studentStripeAccountSetup', $this);
+
+            // Now let's see if we're in the middle of an initial lesson setup (instead of someone proactively dealing with setting up their account)
 			// if we are, we'll need to finish up our lesson setup
 			if ($this->Session->read('initial_lesson_setup')) {
 				$user_id_to_message = $this->Session->read('new_lesson_user_id_to_message');
