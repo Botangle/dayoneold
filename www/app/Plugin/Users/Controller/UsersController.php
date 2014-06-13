@@ -57,6 +57,11 @@ class UsersController extends UsersAppController {
 
 	public $helper = array('Categories.Category', 'Session');
 
+    public function __construct($request = null, $response = null) {
+        parent::__construct($request, $response);
+        $this->getEventManager()->attach(new UserListener());
+    }
+
 	function beforeFilter() {
 		$fields = ConnectionManager::getDataSource('default');
 		$dsc = $fields->config;
