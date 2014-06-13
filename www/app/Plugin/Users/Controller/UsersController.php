@@ -2049,7 +2049,9 @@ class UsersController extends UsersAppController {
 					$this->request->data['LessonPayment']['fee'] = $fee; // @TODO: convert this DB column to a decimal instead?
 					$this->request->data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
 					$this->LessonPayment->save($this->request->data);
-				}
+
+                    Croogo::dispatchEvent('Controller.Users.lessonCharged', $this);
+                }
 
 				// otherwise we'll leave this for the system to bill again somehow
 				// @TODO: should we have an auto-retry system setup here?

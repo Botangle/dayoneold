@@ -20,6 +20,7 @@ class UserListener implements CakeEventListener {
             'Controller.Users.studentStripeAccountSetup' => 'stripeAccountSetup',
             'Controller.Users.tutorStripeAccountSetup' => 'stripeAccountSetup',
             'Controller.Users.lessonAdded' => 'lessonAdded',
+            'Controller.Users.lessonCharged' => 'lessonCharged',
         );
     }
 
@@ -45,6 +46,11 @@ class UserListener implements CakeEventListener {
     public function lessonAdded($event)
     {
         $this->handleSaving($event, 'lesson-added');
+    }
+
+    public function lessonCharged($event)
+    {
+        $this->handleSaving($event, 'lesson-charged');
     }
 
     private function handleSaving($event, $code, $userId = null)
