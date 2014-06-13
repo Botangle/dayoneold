@@ -18,52 +18,56 @@ class UserListener implements CakeEventListener {
             'Controller.Users.loginSuccessful' => 'login',
             'Controller.Users.afterLogout' => 'logout',
             'Controller.Users.studentStripeAccountSetup' => 'stripeAccountSetup',
+            'Controller.Users.tutorStripeAccountSetup' => 'stripeAccountSetup',
+            'Controller.Users.lessonAdded' => 'lessonAdded',
         );
     }
 
-    public function login($event) {
-        $userController = $event->subject();
+    // 			Croogo::dispatchEvent('Controller.Users.beforeAdminLogin', $this);
 
-        $values = array(
-            'type' => 'login',
-            'user_id' => (int)$userController->Session->read('Auth.User.id'),
-        );
 
-        $this->handleSaving($values);
+    public function login($event)
+    {
+        $this->handleSaving($event, 'login');
     }
 
-    public function logout($event) {
+    public function logout($event)
+    {
         $userController = $event->subject();
-
-        $values = array(
-            'type' => 'logout',
-            'user_id' => (int)$userController->request->data['User']['id'],
-        );
-
-        $this->handleSaving($values);
+        $this->handleSaving($event, 'logout', $userController->request->data['User']['id']);
     }
 
     public function stripeAccountSetup($event)
     {
-        $userController = $event->subject();
-
-        $values = array(
-            'type' => 'stripe-setup',
-            'user_id' => (int)$userController->request->data['User']['id'],
-        );
-
-        $this->handleSaving($values);
+        $this->handleSaving($event, 'stripe-setup');
     }
 
-
-    private function handleSaving($values)
+    public function lessonAdded($event)
     {
-        $this->UserLog = ClassRegistry::init('UserLog');
+        $this->handleSaving($event, 'lesson-added');
+    }
 
+    private function handleSaving($event, $code, $userId = null)
+    {
         try {
+            $userController = $event->subject();
+            $userId = ($userId) ? $userId : $userController->Session->read('Auth.User.id');
+
+            $values = array(
+                'type' => $code,
+                'user_id' => (int)$userId,
+            );
+
+            $this->UserLog = ClassRegistry::init('UserLog');
+
             $this->UserLog->save($values, false); // we don't care about validation, let's just do this fast
         } catch(Exception $e) {
-            // fail silently, we don't care
+            try {
+                // write down info about our user retention issues
+                CakeLog::alert("Had trouble while saving user retention information: " . $e->getMessage());
+            } catch(Exception $e) {
+                // fail silently, we won't try to handle an error here
+            }
         }
     }
 }
