@@ -30,12 +30,12 @@ $subject = explode(",", $user['User']['subject']);
 									<?php
 									if (!empty($userRate)) {
 										if ($userRate['UserRate']['price_type'] == 'permin') {
-											$userRatePrice = 'min';
+											$userRatePrice = 'per min';
 										} else {
-											$userRatePrice = $userRate['UserRate']['price_type'];
+											$userRatePrice = "per hr";
 										}
 
-										echo $userRate['UserRate']['rate'] . "/" . $userRatePrice;
+										echo $userRate['UserRate']['rate'] . ' ' . $userRatePrice;
 									} else {
 										echo 0;
 									}
