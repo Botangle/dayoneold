@@ -1,5 +1,0 @@
-
-# DotDeb
-deb http://packages.dotdeb.org wheezy all
-deb-src http://packages.dotdeb.org wheezy all
-
