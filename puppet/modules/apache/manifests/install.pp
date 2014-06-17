@@ -13,7 +13,7 @@ class apache::install ( $server_name, $document_root, $logs_dir ) {
 
     # Install the package
     package { "apache2":
-        name    => "apache2-mpm-itk",
+        name    => "apache2",
         ensure  => latest,
         require => Class['server'],
     }
@@ -41,11 +41,12 @@ class apache::install ( $server_name, $document_root, $logs_dir ) {
         notify  => Class['apache::service'],
     }
 
-    # The virtualhost file
-    -> file { "site-yii2":
-        path    => "/etc/apache2/sites-available/yii2",
+    # The virtualhost file (needs a .conf ending as of Ubuntu 13.04:
+    # http://stackoverflow.com/questions/20591889/site-does-not-exist-error-for-a2ensite
+    -> file { "site-botangle":
+        path    => "/etc/apache2/sites-available/botangle.conf",
         ensure  => present,
-        content => template("apache/yii2.vhost"),
+        content => template("apache/botangle.vhost"),
         notify  => Class['apache::service'],
     }
 
@@ -59,14 +60,14 @@ class apache::install ( $server_name, $document_root, $logs_dir ) {
 
     # Enable the virtualhost
     exec { "Enable the virtualhost":
-        command => "a2ensite yii2",
-        creates => "/etc/apache2/sites-enabled/yii2",
-        require => [ Package['apache2'], File['site-yii2'] ],
+        command => "a2ensite botangle",
+        creates => "/etc/apache2/sites-enabled/botangle.conf",
+        require => [ Package['apache2'], File['site-botangle'] ],
         notify  => Class['apache::service'],
     }
 
     # Set the host in local loop
-    host { "yii2":
+    host { "botangle":
         ensure  => present,
         name    => $server_name,
     }
