@@ -74,6 +74,11 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
                    <p class="FontStyle20">What&rsquo;s important to know?</p>
                    <p>Botangle is an online learning community connecting experts with online learners across the globe.  Now you can take back control of your education and follow your passions on your schedule.  Our experts are here to help you transform your learning experience into real world results.  <a href="/register">Get started on Botangle today!</a></p>
                </div>
+
+               <div class="PageLeft-Block">
+                   <p class="FontStyle20">How pricing works</p>
+                   <p>Botangle connects online learners with leading experts who set their own per minute and/or per hour rates of which Botangle takes a 30% fee.  Botangle's community is always free to join and is committed to promoting educational access worldwide.</p>
+               </div>
            </div>
        </div>
 
