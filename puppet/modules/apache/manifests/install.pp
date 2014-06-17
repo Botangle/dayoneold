@@ -11,8 +11,8 @@ class apache::install ( $server_name, $document_root, $logs_dir ) {
         ],
     }
 
-    # Install the package
-    package { "apache2":
+    # Install the apache2 package (designed to run each vhost as a user http://mpm-itk.sesse.net)
+    package { "apache2-mpm-itk":
         name    => "apache2",
         ensure  => latest,
         require => Class['server'],
