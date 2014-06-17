@@ -1,6 +1,6 @@
 class mailcatcher () {
 
-    package { ["ruby1.9.1-dev", "libsqlite3-dev"]:
+    package { ["ruby1.9.1-dev", "libsqlite3-dev", "build-essential"]:
         ensure  => latest,
         require => Exec["update"],
     }

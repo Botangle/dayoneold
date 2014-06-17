@@ -23,6 +23,12 @@ class server ( $hostname ) {
         path    => '/home/vagrant/.screenrc',
         source  => 'puppet:///modules/server/.screenrc',
     }
+    # Leaves out rdoc / ri files for Gems: http://stackoverflow.com/questions/1381725/how-to-make-no-ri-no-rdoc-the-default-for-gem-install
+    file { ".gemrc":
+        ensure  => file,
+        path    => '/home/vagrant/.gemrc',
+        source  => 'puppet:///modules/server/.gemrc',
+    }
 
     include server::cakeenv
 }
