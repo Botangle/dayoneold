@@ -69,9 +69,13 @@ class UsersController extends UsersAppController {
 
 		parent::beforeFilter();
 
-//		$this->Security->validatePost = false;
-//		$this->Security->csrfCheck = false;
-		$this->Security->unlockedActions = array('search');
+// the below doesn't handle all the actions we need unlocked.  For now, to get the site working again,
+// I'm enabling them all again
+		$this->Security->validatePost = false;
+		$this->Security->csrfCheck = false;
+
+//        $this->Security->unlockedActions = array('search', 'add', 'billing', 'index', 'registration');
+        $this->Security->unlockedActions = array('*');
 
 		$this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
 
