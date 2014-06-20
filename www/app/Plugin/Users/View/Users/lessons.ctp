@@ -69,7 +69,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		 <img src="<?php echo $this->webroot?>images/thumb-typ1.png" class="img-circle" alt="student">
 		 <?php } ?> </div>
             <div class="span2 tutor-name">
-                <a href="<?php echo $this->webroot ?>user/<?php echo h($v['User']['username']) ?>">
+                <a href="<?php echo $this->webroot ?>user/<?php echo h($v['Other']['username']) ?>">
                     <?php echo h($v['Other']['username']) ?>
                 </a>
             </div>
@@ -142,7 +142,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		 <img src="<?php echo $this->webroot?>images/thumb-typ1.png" class="img-circle" alt="student">
 		 <?php } ?> </div>
             <div class="span2 tutor-name">
-                <a href="<?php echo $this->webroot ?>user/<?php echo h($v['User']['username']) ?>">
+                <a href="<?php echo $this->webroot ?>user/<?php echo h($v['Other']['username']) ?>">
                     <?php echo h($v['Other']['username']) ?>
                 </a>
             </div>
