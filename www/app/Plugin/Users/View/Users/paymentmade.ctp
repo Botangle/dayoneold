@@ -21,7 +21,12 @@ echo $this->element("breadcrame", array('breadcrumbs'=>
           <div class="PageLeft-Block">
             <div class="control-group">
                 <?php if(isset($lessonPayment) && count($lessonPayment) > 0): ?>
-                <p>Thanks!  Your payment for the lesson you just finished has successfully gone through.</p>
+
+                    <?php if($role == 'student'): ?>
+                        <p>Thanks!  Your payment for the lesson you just finished has successfully gone through.</p>
+                    <?php else: ?>
+                        <p>Payment for that lesson has gone through successfully and should show up in your account soon!.</p>
+                    <?php endif; ?>
 
                 <p>Payment details:</p>
                 <p>
@@ -29,7 +34,7 @@ echo $this->element("breadcrame", array('breadcrumbs'=>
                     Stripe Charge ID: <?php echo h($lessonPayment['LessonPayment']['stripe_charge_id']) ?><br>
                 </p>
 
-                <p>Please do let us know if you have any questions!</p>
+                <p>Please do let us know if you have any questions.</p>
                 <?php else: ?>
                     Whoops, looks like we had a problem, please get in touch with us to resolve your issues.
                 <?php endif; ?>

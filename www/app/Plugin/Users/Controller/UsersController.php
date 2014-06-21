@@ -1925,38 +1925,6 @@ class UsersController extends UsersAppController {
 		exit();
 	}
 
-    protected function findOrCreateLessonPayment($studentId, $tutorId, $lessonId)
-    {
-        $data = array();
-
-        $lessonPayment = $this->LessonPayment->find(
-            'first',
-            array(
-                'conditions' => array(
-                    'student_id' => $studentId,
-                    'tutor_id' => $tutorId,
-                    'lesson_id' => $lessonId
-                )
-            )
-        );
-
-        // if a lesson payment record doesn't exist for this lesson
-        // with this information, then we'd like to generate it with the information above and below
-        // and save it
-        if (empty($lessonPayment)) {
-            $data['LessonPayment']['lesson_id']         = $lessonId;
-            $data['LessonPayment']['student_id']        = $studentId;
-            $data['LessonPayment']['tutor_id']          = $tutorId;
-            $data['LessonPayment']['payment_complete']  = 0;
-            $this->LessonPayment->save($data);
-        } else {
-            // if it does exist, we'd like to send back our lessonPayment info
-            $data = $lessonPayment;
-        }
-
-        return $data;
-    }
-
     /**
      * @param $userRate
      * @param $totalTime
@@ -1982,6 +1950,51 @@ class UsersController extends UsersAppController {
         return sprintf('%0.2f', $totalamount);
     }
 
+    /**
+     * Called if no lesson payment exists and we need one made
+     *
+     * @param $lessonId
+     * @param $role
+     * @param $userId
+     * @return mixed
+     * @throws InternalErrorException
+     */
+    protected function findLessonAndCreatePaymentForIt($lessonId, $role, $userId)
+    {
+        $conditions = array(
+            'id' => (int)$lessonId,
+        );
+        if($role == 2) {
+            $conditions['tutor'] = (int)$this->Auth->user('id');
+        } else {
+            // we're dealing with a student because we've checked to make sure role is only 2 or 4 earlier
+            $conditions['student'] = (int)$this->Auth->user('id');
+        }
+
+        // @TODO: this is going to need to be re-thought through
+        $lesson = $this->Lesson->find(
+            'first', array(
+                'conditions' => $conditions,
+            )
+        );
+
+        if(count($lesson) == 0) {
+            throw new InternalErrorException("Hmm, things aren't working.");
+        }
+
+        // now we build our new lesson payment information
+        $data['LessonPayment']['lesson_id']         = (int)$lesson['Lesson']['id'];
+        $data['LessonPayment']['student_id']        = (int)$lesson['Lesson']['student'];
+        $data['LessonPayment']['tutor_id']          = (int)$lesson['Lesson']['tutor'];
+        $data['LessonPayment']['payment_complete']  = 0;
+        $this->LessonPayment->save($data);
+
+        $data['LessonPayment']['id'] = (int)$this->LessonPayment->id;
+
+        // and send it on back to be used further
+        return $data;
+    }
+
      /**
  * Update remaining
  *
@@ -2003,6 +2016,7 @@ class UsersController extends UsersAppController {
     {
         $totalTime = 0;
         $lessonComplete = false;
+        $userRate = null;
 
         /**
          * parameters sent in
@@ -2011,79 +2025,94 @@ class UsersController extends UsersAppController {
          * - completelesson (only sent if we're trying to bill this lesson, will be one in that case)
          */
 
-        $completeLesson = false;
+        $pleaseCompleteLesson = false;
         if (isset($this->params->data['completelesson']) && $this->params->data['completelesson'] == 1) {
-            $completeLesson = true;
+            $pleaseCompleteLesson = true;
         }
 
-        $role = $this->params->data['roletype'];
+        $role = (int)$this->params->data['roletype'];
 
-        // we retrieving this lesson either with a tutor id or a student id in addition to the lesson id
+        // we retrieving this lesson payment either with a tutor id or a student id in addition to the lesson id
         // otherwise, anyone can try and contact this page ..
         $conditions = array(
-            'id' => (int)$this->params->data['lessonid'],
+            'lesson_id' => (int)$this->params->data['lessonid'],
         );
         if($role == 2) {
-            $conditions['tutor'] = (int)$this->Auth->user('id');
+            $conditions['tutor_id'] = (int)$this->Auth->user('id');
         } elseif($role == 4) {
             // we're dealing with a student
-            $conditions['student'] = (int)$this->Auth->user('id');
+            $conditions['student_id'] = (int)$this->Auth->user('id');
         } else {
             throw new NotFoundException("Sorry, things aren't working.");
         }
 
-        // then find the lesson for this person that matches those criteria (id and lesson id)
-        $lesson = $this->Lesson->find(
-            'first', array(
+        // then find the lesson payment for this person that matches those criteria (id and lesson id)
+        $lessonPayment = $this->LessonPayment->find(
+            'first',
+            array(
                 'conditions' => $conditions,
             )
         );
 
-        // if we don't end up with a lesson, then we want to error out
-        if(count($lesson) == 0) {
-            throw new NotFoundException("Sorry, things aren't working.");
+        // if a lesson payment record doesn't exist for the lesson we were given
+        // with this information, then we'd like to generate it (assuming that lesson / user combo exists) from
+        // the lesson table
+        if (empty($lessonPayment)) {
+            $lessonPayment = $this->findLessonAndCreatePaymentForIt(
+                (int)$this->params->data['lessonid'],
+                $role,
+                (int)$this->Auth->user('id')
+            );
         }
 
-        $lessonId = $lesson['Lesson']['id'];
-        $studentId = $lesson['Lesson']['student'];
-        $tutorId = $lesson['Lesson']['tutor'];
+        $lessonId   = $lessonPayment['LessonPayment']['lesson_id'];
+        $studentId  = $lessonPayment['LessonPayment']['student_id'];
+        $tutorId    = $lessonPayment['LessonPayment']['tutor_id'];
 
-        // update our lesson timer depending on our role
-        // we do this for both parties on a regular basis to keep folks honest
-        $totalTime = $this->updateLessonTimer($role, $lesson);
-
-        // now let's build our lesson payment if needed
-        $data = $this->findOrCreateLessonPayment($studentId, $tutorId, $lessonId);
-
-        // retrieve our user rate and hang on to it so we can re-use it in a bit
-        // @TODO: long-term, we want to be pulling this user rate from the Lesson
-        // where we keep it to prevent tutors from raising rates after the lesson gets scheduled
-        $userRate = $this->UserRate->find(
-            'first',
-            array('conditions' => array('userid' => $tutorId))
-        );
-
-        // figure out the payment amount
-        $data['LessonPayment']['payment_amount'] = $this->calculateTutorTotalAmount($userRate, $totalTime);
-
-        // if the lesson has been ended then we want to record that
-        if ($completeLesson) {
-            $data['LessonPayment']['lesson_complete_tutor'] = 1;
-            $data['LessonPayment']['lesson_complete_student'] = 1;
-
+        if($lessonPayment['LessonPayment']['lesson_complete_tutor'] == 1 && $lessonPayment['LessonPayment']['lesson_complete_student'] == 1) {
             $lessonComplete = true;
         }
-        $this->LessonPayment->save($data);
 
+        // if our lesson payment is not complete, then we've got a bunch of things we want to do
+        if(!$lessonComplete) {
 
-        // then, if our payment isn't complete yet, then let's bill for it
-        if ($lessonComplete && $data['LessonPayment']['payment_complete'] == 0) {
-            $this->chargeForLesson(
-                $data['LessonPayment']['id'],
-                $tutorId,
-                $studentId,
-                $data['LessonPayment']['payment_amount']
+            // update our lesson timer depending on our role
+            // we do this for both parties on a regular basis to keep folks honest
+            $totalTime = $this->updateLessonTimer($role, $lessonId);
+
+            // retrieve our user rate and hang on to it so we can re-use it in a bit
+            // @TODO: long-term, we want to be pulling this user rate from the Lesson
+            // where we keep it to prevent tutors from raising rates after the lesson gets scheduled
+            $userRate = $this->UserRate->find(
+                'first',
+                array('conditions' => array('userid' => $tutorId))
             );
+
+            // figure out the payment amount
+            $lessonPayment['LessonPayment']['payment_amount'] = $this->calculateTutorTotalAmount($userRate, $totalTime);
+
+            // if someone wants to end the lesson, then we want to record that
+            if ($pleaseCompleteLesson) {
+                $lessonPayment['LessonPayment']['lesson_complete_tutor'] = 1;
+                $lessonPayment['LessonPayment']['lesson_complete_student'] = 1;
+            }
+            $this->LessonPayment->save($lessonPayment);
+
+            // then, if our payment isn't complete yet, then let's bill for it
+            // we don't leave this outside for fear of having race conditions between the student and the tutor
+            // we'd really like the first person to ask for this to be completed to be the one who calculates totals
+
+            // theoretically, if the second person makes it past the lesson payment query above before the first person
+            // charges things here, we could end up with a double-billing ... :-/
+            if ($pleaseCompleteLesson && $lessonPayment['LessonPayment']['payment_complete'] == 0) {
+                $this->chargeForLesson(
+                    $lessonPayment['LessonPayment']['id'],
+                    $tutorId,
+                    $studentId,
+                    $lessonPayment['LessonPayment']['payment_amount']
+                );
+            }
+
         }
 
         /**
@@ -2099,23 +2128,22 @@ class UsersController extends UsersAppController {
             )
         );
 
-        // @TODO: we're sending back far too much information about what is going on with the lesson in this setup currently
-        // let's adjust things so we don't send back the entire LessonPayment model but just the relevant info
-        // @TODO: figure out what the relevant information to send back is
-
         $this->autoRender = false;
         $this->layouts = false;
 
-        // if the person pays in the next minute, we'll round the clock up to the next minute
-        // as a result, let's calculate what that amount would be and show that right on the page for them
-        // this makes it far cleaner for everyone
-        $newPrice = $this->calculateTutorTotalAmount($userRate, $totalTime);
-
-        echo json_encode(array(
-                'newPrice'          => $newPrice,
-                'lessonComplete'    => $updatedLessonPayment['LessonPayment']['lesson_complete_student'],
-                'totaltime'         => $totalTime,
-            ));
+        if($lessonComplete) {
+            // @TODO: we want to send back different information requesting that this person get sent to the receipt page
+            echo json_encode(array(
+                    'lessonComplete'    => 1,
+                ));
+        } else {
+            // we want to show them the updated information
+            echo json_encode(array(
+                    'newPrice'          => $this->calculateTutorTotalAmount($userRate, $totalTime),
+                    'lessonComplete'    => $updatedLessonPayment['LessonPayment']['lesson_complete_student'],
+                    'totaltime'         => $totalTime,
+                ));
+        }
     }
 
     /**
@@ -2124,12 +2152,18 @@ class UsersController extends UsersAppController {
      * @TODO: would love to move this to our Lesson model long-term, would make this far cleaner
      *
      * @param $role
-     * @param $lesson
+     * @param $lessonId
      */
-    private function updateLessonTimer($role, $lesson)
+    private function updateLessonTimer($role, $lessonId)
     {
-        // @TODO: do we want to use the $this->Auth->user('id') a little more heavily in here?
-        // @TODO: what prevents someone from
+        $lesson = $this->Lesson->find(
+            'first', array(
+                'conditions' => array(
+                    'id' => (int)$lessonId,
+                ),
+            )
+        );
+
         if ($role == 2) {
             $totalTime = $lesson['Lesson']['remainingduration'] + 60;
 
@@ -2337,11 +2371,26 @@ class UsersController extends UsersAppController {
  * @package billing
  */
 	public function paymentmade() {
-		$lessonPayment = $this->LessonPayment->find('first', array('conditions' => array(
-				'lesson_id' => (int) $this->params->query['lessonid'],
-				'student_id' => $this->Auth->user('id'),
-		)));
-		$this->set(compact('lessonPayment'));
+
+        $role = $this->params->query['role'];
+
+        if($role != 'tutor' && $role != 'student') {
+            throw new NotFoundException("Sorry, things aren't working");
+        }
+
+        if($role == 'student') {
+            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array(
+                    'lesson_id' => (int) $this->params->query['lessonid'],
+                    'student_id' => $this->Auth->user('id'),
+                )));
+        } else {
+            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array(
+                    'lesson_id' => (int) $this->params->query['lessonid'],
+                    'tutor_id' => $this->Auth->user('id'),
+                )));
+        }
+
+		$this->set(compact('lessonPayment', 'role'));
 	}
 
 /**

@@ -7,8 +7,6 @@
 
     <?php if($role_id == 4): ?>
     <div class="price-area" style="display: none">You will pay $<span></span> when you finish.</div>
-    <?php else: ?>
-    <div class="price-area" style="display: none">You will be paid $<span></span> when you finish.</div>
     <?php endif; ?>
 
 </div>
