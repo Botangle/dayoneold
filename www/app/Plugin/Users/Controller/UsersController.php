@@ -1966,7 +1966,10 @@ class UsersController extends UsersAppController {
             $totaltimeuseinmin = $totalTime / 60;
             $totalamount = $totaltimeuseinmin * $pricerate;
         }
-        return $totalamount;
+
+        // return a formatted decimal to two decimal places with no commas
+        // this will work much better in our DB and with Stripe
+        return sprintf('%0.2f', $totalamount);
     }
 
      /**
@@ -2105,24 +2108,31 @@ class UsersController extends UsersAppController {
      */
     private function chargeForLesson($lessonPaymentId, $tutorId, $studentId, $amount)
     {
-        // @TODO: convert the amount DB column to a decimal instead?
-        $fee = $amount * .30; // take a 30% commission
+        try {
+            $fee = $amount * .30; // take a 30% commission
 
-        $results = $this->charge((int)$tutorId, (int)$studentId, $amount, $fee);
+            // format our fee to work well with Stripe and when we save it to the DB
+            $fee = sprintf('%0.2f', $fee);
 
-        // if we have success billing, we'll note the fact and save things
-        if (is_array($results)) {
-            $data = array();
+            $results = $this->charge((int)$tutorId, (int)$studentId, $amount, $fee);
 
-            // @TODO: do we need to set tutor_id, or payment amount as we pass this info in to the DB?
+            // if we have success billing, we'll note the fact and save things
+            if (is_array($results)) {
+                $data = array();
 
-            $data['LessonPayment']['id'] = $lessonPaymentId;
-            $data['LessonPayment']['payment_complete'] = 1;
-            $data['LessonPayment']['fee'] = $fee; // @TODO: convert this DB column to a decimal instead?
-            $data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
-            $this->LessonPayment->save($data);
+                // @TODO: do we need to set tutor_id, or payment amount as we pass this info in to the DB?
 
-            Croogo::dispatchEvent('Controller.Users.lessonCharged', $this);
+                $data['LessonPayment']['id'] = $lessonPaymentId;
+                $data['LessonPayment']['payment_complete'] = 1;
+                $data['LessonPayment']['fee'] = $fee;
+                $data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
+                $this->LessonPayment->save($data);
+
+                Croogo::dispatchEvent('Controller.Users.lessonCharged', $this);
+            }
+        } catch(Exception $e) {
+            // otherwise
+            $this->log(sprintf('Error charging for lesson payment %s : %s', $lessonPaymentId, $e->getMessage()), LOG_ALERT);
         }
 
         // otherwise we'll leave this for the system to bill again somehow
