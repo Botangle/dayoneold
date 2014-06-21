@@ -1342,6 +1342,21 @@ class UsersController extends UsersAppController {
 		$lesson_id = (int) $lesson['Lesson']['id'];
 		$role_id = (int) $this->Session->read('Auth.User.role_id');
 
+        // if our user doesn't have a role id, it's going to break all sorts of things
+        // let's check and redirect to the login page if needed
+        if($role_id == 0) {
+            $this->redirect(
+                Router::url(
+                    array(
+                        'plugin' => 'users',
+                        'controller' => 'users',
+                        'action' => 'login'
+                    )
+                )
+            );
+            throw new UnauthorizedException("Sorry, you need to login first");
+        }
+
 		// handle all our video stuff with Opentok
 		$opentok_session_id = $lesson['Lesson']['opentok_session_id'];
 
