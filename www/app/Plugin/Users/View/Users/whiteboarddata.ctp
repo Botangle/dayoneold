@@ -161,10 +161,10 @@ if( $("#realtime").text()== $("#max").text()){
             if(response.lessonComplete == 1){
                 var roleType = '<?php echo h($role_id) ?>';
                 if(roleType == 4){
-                    alert("Your expert just finished the lesson. Redirecting you to the payment page now ...");
+                    alert("Your expert has finished the lesson. Redirecting you to the payment page now ...");
                     location.href= (Croogo.basePath+'users/paymentmade/?role=student&lessonid=<?php echo $lesson_id?>');
                 } else {
-                    alert("Your student just finished the lesson. Redirecting you to the payment page now ...");
+                    alert("Your student has finished the lesson. Redirecting you to the payment page now ...");
                     location.href= (Croogo.basePath+'users/paymentmade/?role=tutor&lessonid=<?php echo $lesson_id?>');
                 }
                 clearInterval(timer);
