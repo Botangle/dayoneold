@@ -2023,7 +2023,7 @@ class UsersController extends UsersAppController {
         $data = $this->findOrCreateLessonPayment($studentId, $tutorId, $lessonId);
 
         // figure out the payment amount
-        $data['LessonPayment']['payment_amount'] = $this->calculateTutorTotalAmount($tutorId, $totalTime);;
+        $data['LessonPayment']['payment_amount'] = $this->calculateTutorTotalAmount($tutorId, $totalTime);
 
         // if the lesson has been ended then we want to record that
         if (isset($this->params->query['completelesson']) && ($this->params->query['completelesson'] == 1)) {
