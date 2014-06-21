@@ -5,4 +5,8 @@
 
     <input type="button" value="Exit / Complete Lesson" class="btn btn-primary" id="exitlesson" onclick="exitLesson('<?php echo $this->Session->read('Auth.User.role_id')?>')" <?php echo $disabled?>/>
 
+    <?php if($role_id == 4): ?>
+    <div class="price-area" style="display: none">You will pay $<span></span> when you finish.</div>
+    <?php endif; ?>
+
 </div>
