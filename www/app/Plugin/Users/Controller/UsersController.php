@@ -2002,14 +2002,30 @@ class UsersController extends UsersAppController {
          */
 
         $role = $this->params->query['roletype'];
+
+        // we retrieving this lesson either with a tutor id or a student id in addition to the lesson id
+        // otherwise, anyone can try and contact this page ..
+        $conditions = array(
+            'id' => (int)$this->params->query['lessonid'],
+        );
+        if($role == 2) {
+            $conditions['tutor'] = (int)$this->Auth->user('id');
+        } else {
+            // we're dealing with a student
+            $conditions['student'] = (int)$this->Auth->user('id');
+        }
+
+        // then find the lesson for this person that matches those criteria (id and lesson id)
         $lesson = $this->Lesson->find(
             'first', array(
-                'conditions' => array(
-                    'id' => (int)$this->params->query['lessonid'],
-                )
+                'conditions' => $conditions,
             )
         );
-        // @TODO: error out if we can't find this lesson
+
+        // if we don't end up with a lesson, then we want to error out
+        if(count($lesson) == 0) {
+            throw new NotFoundException("Sorry, things aren't working.");
+        }
 
         $lessonId = $lesson['Lesson']['id'];
         $studentId = $lesson['Lesson']['student'];
