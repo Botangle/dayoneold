@@ -78,20 +78,41 @@ function exitLesson(roletype){
 if(roletype==4){	 
  var r = window.confirm("Thanks, we're charging your credit card on file now.  Your receipt will be on the next page.");
  if(r){
-	 jQuery.post(Croogo.basePath+"users/updateremaining/?time=1&lessonid=<?php echo $lesson_id?>&roletype="+roletype+"&completelesson=1",function(e,v){
-		clearInterval(timer);
-		jQuery("#exitlesson").attr('disabled','disabled');
-			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>');
-			return false;
-		})
+	 jQuery.post(
+         Croogo.basePath+"users/updateremaining/",
+         {
+             time: 1,
+             lessonid: <?php echo h($lesson_id) ?>,
+             roletype: roletype,
+             completelesson: 1
+         },
+         function(data,v){
+             clearInterval(timer);
+             jQuery("#exitlesson").attr('disabled','disabled');
+             location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>');
+             return false;
+         }
+     );
  }
  
- }if(roletype==2){	
-	jQuery.post(Croogo.basePath+"users/updateremaining/?time=1&lessonid=<?php echo $lesson_id?>&roletype="+roletype+"&completelesson=1",function(e,v){
-		var donetime = eval('('+e+')') 
-		clearInterval(timer);
-		jQuery("#exitlesson").attr('disabled','disabled');
-		return false;
+ }if(roletype==2){
+        jQuery.post(
+            Croogo.basePath+"users/updateremaining/",
+            {
+                time: 1,
+                lessonid: <?php echo h($lesson_id) ?>,
+                roletype: roletype,
+                completelesson: 1
+            },
+            function(data,v){
+                clearInterval(timer);
+                jQuery("#exitlesson").attr('disabled','disabled');
+
+                // @TODO: we need to send this tutor somewhere
+
+                return false;
+            }
+        );
 	})
 	
  }
@@ -136,19 +157,22 @@ if( $("#realtime").text()== $("#max").text()){
             lessonid: <?php echo h($lesson_id) ?>,
             roletype: <?php echo h($role_id) ?>
         },
-        function(e,v){
-		var donetime = eval('('+e+')')  
-		if(donetime.lessonComplete==1){
-			var roltype = '<?php echo h($role_id) ?>';
-			if(roltype==4){
-    			alert("Expert finish lesson. Now you redirect on the payment page to make payment")
-			location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>');
-			 }
-			clearInterval(timer);
-			return false;
-		}
-		
-	})
+        function(data,v){
+            var response = JSON.parse(data);
+            if(response.lessonComplete==1){
+                var roltype = '<?php echo h($role_id) ?>';
+                if(roltype==4){
+                    alert("Expert finish lesson. Now you redirect on the payment page to make payment")
+                    location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>');
+                }
+                clearInterval(timer);
+                return false;
+            } else {
+                $('.price-area').show();
+                $('.price-area span').html(response.newPrice);
+            }
+        }
+    );
  }
  
         $("#realtime").text(plz(hour) +":" + plz(mins) + ":" + plz(secs));

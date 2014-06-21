@@ -1958,17 +1958,12 @@ class UsersController extends UsersAppController {
     }
 
     /**
-     * @param $tutorId
+     * @param $userRate
      * @param $totalTime
      * @return double
      */
-    protected function calculateTutorTotalAmount($tutorId, $totalTime)
+    protected function calculateTutorTotalAmount($userRate, $totalTime)
     {
-        $userRate = $this->UserRate->find(
-            'first',
-            array('conditions' => array('userid' => $tutorId))
-        );
-
         $pritype = $userRate['UserRate']['price_type'];
         $pricerate = $userRate['UserRate']['rate'];
         $totalamount = 0;
@@ -2060,8 +2055,16 @@ class UsersController extends UsersAppController {
         // now let's build our lesson payment if needed
         $data = $this->findOrCreateLessonPayment($studentId, $tutorId, $lessonId);
 
+        // retrieve our user rate and hang on to it so we can re-use it in a bit
+        // @TODO: long-term, we want to be pulling this user rate from the Lesson
+        // where we keep it to prevent tutors from raising rates after the lesson gets scheduled
+        $userRate = $this->UserRate->find(
+            'first',
+            array('conditions' => array('userid' => $tutorId))
+        );
+
         // figure out the payment amount
-        $data['LessonPayment']['payment_amount'] = $this->calculateTutorTotalAmount($tutorId, $totalTime);
+        $data['LessonPayment']['payment_amount'] = $this->calculateTutorTotalAmount($userRate, $totalTime);
 
         // if the lesson has been ended then we want to record that
         if ($completeLesson) {
@@ -2103,9 +2106,15 @@ class UsersController extends UsersAppController {
         $this->autoRender = false;
         $this->layouts = false;
 
+        // if the person pays in the next minute, we'll round the clock up to the next minute
+        // as a result, let's calculate what that amount would be and show that right on the page for them
+        // this makes it far cleaner for everyone
+        $newPrice = $this->calculateTutorTotalAmount($userRate, $totalTime);
+
         echo json_encode(array(
-                'totaltime'         => $totalTime,
+                'newPrice'          => $newPrice,
                 'lessonComplete'    => $updatedLessonPayment['LessonPayment']['lesson_complete_student'],
+                'totaltime'         => $totalTime,
             ));
     }
 

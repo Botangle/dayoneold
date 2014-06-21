@@ -25,7 +25,7 @@ echo $this->element("breadcrame", array('breadcrumbs'=>
 
                 <p>Payment details:</p>
                 <p>
-                    <b>Amount: $<?php echo h(number_format($lessonPayment['LessonPayment']['payment_amount'])) ?></b><br>
+                    <b>Amount: $<?php echo h(number_format($lessonPayment['LessonPayment']['payment_amount'], 2)) ?></b><br>
                     Stripe Charge ID: <?php echo h($lessonPayment['LessonPayment']['stripe_charge_id']) ?><br>
                 </p>
 

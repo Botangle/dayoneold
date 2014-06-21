@@ -1140,3 +1140,12 @@ a.Social-Boxs-Links:hover {
 .how-it-works a:hover .box p:first-child {
     text-decoration: underline;
 }
+
+/* taking a lesson */
+.price-area {
+    padding-top: 1em;
+}
+
+.price-area span {
+    font-weight: bold;
+}
