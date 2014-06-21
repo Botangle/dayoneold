@@ -2139,7 +2139,7 @@ class UsersController extends UsersAppController {
         } else {
             // we want to show them the updated information
             echo json_encode(array(
-                    'newPrice'          => $this->calculateTutorTotalAmount($userRate, $totalTime),
+                    'newPrice'          => $this->calculateTutorTotalAmount($userRate, $totalTime + 60),
                     'lessonComplete'    => $updatedLessonPayment['LessonPayment']['lesson_complete_student'],
                     'totaltime'         => $totalTime,
                 ));
