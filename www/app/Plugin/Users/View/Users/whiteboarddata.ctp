@@ -75,27 +75,27 @@ function exitLesson(roletype){
 	 
 	updatetime = 0;
 
-if(roletype==4){	 
- var r = window.confirm("Thanks, we're charging your credit card on file now.  Your receipt will be on the next page.");
- if(r){
-	 jQuery.post(
-         Croogo.basePath+"users/updateremaining/",
-         {
-             time: 1,
-             lessonid: <?php echo h($lesson_id) ?>,
-             roletype: roletype,
-             completelesson: 1
-         },
-         function(data,v){
-             clearInterval(timer);
-             jQuery("#exitlesson").attr('disabled','disabled');
-             location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>');
-             return false;
-         }
-     );
- }
- 
- }if(roletype==2){
+    if(roletype==4){
+        var r = window.confirm("Thanks, we're charging your credit card on file now.  Your receipt will be on the next page.");
+        if(r){
+            jQuery.post(
+                Croogo.basePath+"users/updateremaining/",
+                {
+                    time: 1,
+                    lessonid: <?php echo h($lesson_id) ?>,
+                    roletype: roletype,
+                    completelesson: 1
+                },
+                function(data,v){
+                    clearInterval(timer);
+                    jQuery("#exitlesson").attr('disabled','disabled');
+                    location.href= (Croogo.basePath+'users/paymentmade/?tutor=<?php echo $lesson['Lesson']['tutor']?>&lessonid=<?php echo $lesson_id?>');
+                    return false;
+                }
+            );
+        }
+    }
+    if(roletype==2){
         jQuery.post(
             Croogo.basePath+"users/updateremaining/",
             {
@@ -113,12 +113,9 @@ if(roletype==4){
                 return false;
             }
         );
-	})
-	
- }
-		
-	 
+    }
 }
+
 function count()
 {
 
