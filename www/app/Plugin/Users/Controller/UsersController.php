@@ -2016,18 +2016,25 @@ class UsersController extends UsersAppController {
          * - completelesson (only sent if we're trying to bill this lesson, will be one in that case)
          */
 
-        $role = $this->params->query['roletype'];
+        $completeLesson = false;
+        if (isset($this->params->data['completelesson']) && $this->params->data['completelesson'] == 1) {
+            $completeLesson = true;
+        }
+
+        $role = $this->params->data['roletype'];
 
         // we retrieving this lesson either with a tutor id or a student id in addition to the lesson id
         // otherwise, anyone can try and contact this page ..
         $conditions = array(
-            'id' => (int)$this->params->query['lessonid'],
+            'id' => (int)$this->params->data['lessonid'],
         );
         if($role == 2) {
             $conditions['tutor'] = (int)$this->Auth->user('id');
-        } else {
+        } elseif($role == 4) {
             // we're dealing with a student
             $conditions['student'] = (int)$this->Auth->user('id');
+        } else {
+            throw new NotFoundException("Sorry, things aren't working.");
         }
 
         // then find the lesson for this person that matches those criteria (id and lesson id)
@@ -2057,9 +2064,7 @@ class UsersController extends UsersAppController {
         $data['LessonPayment']['payment_amount'] = $this->calculateTutorTotalAmount($tutorId, $totalTime);
 
         // if the lesson has been ended then we want to record that
-        if (isset($this->params->query['completelesson']) && ($this->params->query['completelesson'] == 1)) {
-            // @TODO: we'd also like to **optionally**
-            // specify that this lesson is complete
+        if ($completeLesson) {
             $data['LessonPayment']['lesson_complete_tutor'] = 1;
             $data['LessonPayment']['lesson_complete_student'] = 1;
 
