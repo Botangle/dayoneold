@@ -2017,7 +2017,7 @@ class UsersController extends UsersAppController {
 
         // update our lesson timer depending on our role
         // we do this for both parties on a regular basis to keep folks honest
-        $this->updateLessonTimer($role, $lesson);
+        $totalTime = $this->updateLessonTimer($role, $lesson);
 
         // now let's build our lesson payment if needed
         $data = $this->findOrCreateLessonPayment($studentId, $tutorId, $lessonId);
@@ -2096,6 +2096,8 @@ class UsersController extends UsersAppController {
             $this->Lesson->id = $lesson['Lesson']['id'];
             $this->Lesson->saveField('student_lessontaekn_time', $totalTime);
         }
+
+        return $totalTime;
     }
 
     /**
