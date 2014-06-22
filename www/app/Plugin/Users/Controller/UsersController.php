@@ -961,7 +961,8 @@ class UsersController extends UsersAppController {
 		} else {
 
 			$stripe_setup = false;
-			if ($User['User']['stripe_user_id'] != "" &&
+			if (isset($User['User']['stripe_user_id']) &&
+					$User['User']['stripe_user_id'] != "" &&
 					$User['User']['access_token'] != "" &&
 					$User['User']['stripe_publishable_key'] != "" &&
 					$User['User']['refresh_token'] != ""
