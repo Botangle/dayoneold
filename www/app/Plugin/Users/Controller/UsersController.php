@@ -627,12 +627,10 @@ class UsersController extends UsersAppController {
 				if ($this->Auth->login()) {
 					Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
 
-					$this->request->data['User']['is_online'] = 1;
-					$this->request->data['User']['id'] = $this->Session->read('Auth.User.id');
+					$this->User->id = $this->Session->read('Auth.User.id');
+					$this->User->saveField('is_online', 1);
 
 					$_SESSION['userid'] = $this->Session->read('Auth.User.id');
-
-					$this->User->save($this->request->data);
 
 					$type = $this->Session->read('type');
 
