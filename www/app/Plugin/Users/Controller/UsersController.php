@@ -402,6 +402,9 @@ class UsersController extends UsersAppController {
 		}
 
 		$this->set('title_for_layout', __d('croogo', 'Users'));
+		
+		$user = $this->User->find('first', array('conditions' => array('User.id' => $this->request->data['User']['id'])));
+		$this->set('user', $user);
 	}
 
 	public function _uploadPic() {
