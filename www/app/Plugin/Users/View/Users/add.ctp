@@ -174,7 +174,7 @@ if ($this->Session->check("type")) {
 								<div class="control-group">
 									<label class="control-label" for="inputEmail"><?php echo __("University:") ?></label>
 									<div class="controls">
-										<?php echo $this->Form->input('university', array('class' => 'textareap', 'rows' => 2,'placeholder' => "Barnard/University, Class of 2013", 'label' => false)); ?>
+										<?php echo $this->Form->input('university', array('class' => 'textarea', 'rows' => 2,'placeholder' => "Barnard/University, Class of 2013", 'label' => false)); ?>
 									</div>
 								</div>
 								<div class="control-group">
