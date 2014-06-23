@@ -1771,6 +1771,17 @@ class UsersController extends UsersAppController {
 		// then we want to set things up and confirm
 		if ($this->Session->read('Auth.User.role_id') == 2 && $data['Lesson']['tutor'] == $this->Session->read('Auth.User.id')
 		) {
+
+            $tutor = $this->User->find('first', array('conditions' => array('User.id' => (int)$this->Session->read('Auth.User.id'))));
+
+            // check to see if the tutor is allowed to confirm this lesson yet or not
+            // if they don't have a Stripe account, then we want to enforce that, as we can't handle payments at the end of the lesson
+            // without it
+            if(count($tutor) > 0 && isset($tutor['User']) && $tutor['User']['stripe_user_id'] == '') {
+                $this->Session->setFlash(__d('botangle', "Sorry, we need you to setup an account with Stripe before you can confirm a lesson."), 'default', array('class' => 'error'));
+                $this->redirect(array('action' => 'billing'));
+            }
+
 			$data['Lesson']['readlessontutor'] = 1;
 			$data['Lesson']['is_confirmed'] = 0;
 		}
