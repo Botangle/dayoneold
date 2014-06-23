@@ -1577,6 +1577,8 @@ class UsersController extends UsersAppController {
 			$need_stripe_account_setup = (!isset($student['User']['stripe_customer_id']) || $student['User']['stripe_customer_id'] == "") ? true : false;
 		} else {
 			// this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
+
+            // @TODO: confirm this works, I think the form info is mislabeled below, but that we're actually sending in a student's name
 			$tutorid = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
 			$tutorid = $tutorid['User']['id'];
 
