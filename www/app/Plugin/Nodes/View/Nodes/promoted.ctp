@@ -56,11 +56,11 @@
 			?>
 			<div class="span4 Tutor-list1">
 				<div class="tutor-img"><a href="<?php echo $this->webroot ?>user/<?php echo $user['User']['username'] ?>">
-						<?php if (file_exists(WWW_ROOT . 'uploads' . DS . $user['User']['id'] . DS . 'profile' . DS . $user['User']['profilepic']) && $user['User']['profilepic'] != "") { ?>
-							<img src="<?php echo $this->webroot . 'uploads/' . $user['User']['id'] . '/profile/' . $user['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px" style="width:196; height:191px;">
-						<?php } else { ?>
+						<?php if (!empty($user['User']['profilepic'])) : ?>
+							<?php echo $this->Html->image($user['User']['profilepic'], array('class' => 'img-circle', 'alt' => 'student', 'style' => 'width: 195px; height: 195px')); ?>
+						<?php else : ?>
 							<img src="<?php echo $this->webroot ?>images/tutor1.jpg" class="img-circle" alt="student">
-						<?php } ?>
+						<?php endif; ?>
 					</a>
 
 				</div>
