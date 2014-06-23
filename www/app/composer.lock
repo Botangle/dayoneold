@@ -4,8 +4,76 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "24c662aaee2b70a4c8ed7af8096c55b3",
+    "hash": "fba4637dca6d9030c0f4f225116e341e",
     "packages": [
+        {
+            "name": "aws/aws-sdk-php",
+            "version": "2.6.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aws/aws-sdk-php.git",
+                "reference": "96886d56c54c1052f6c0c5f067278ad2e4d33314"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/96886d56c54c1052f6c0c5f067278ad2e4d33314",
+                "reference": "96886d56c54c1052f6c0c5f067278ad2e4d33314",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/guzzle": ">=3.7.0,<=3.9.9",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "doctrine/cache": "~1.0",
+                "ext-openssl": "*",
+                "monolog/monolog": "1.4.*",
+                "phpunit/phpunit": "4.*",
+                "symfony/class-loader": "2.*",
+                "symfony/yaml": "2.*"
+            },
+            "suggest": {
+                "doctrine/cache": "Adds support for caching of credentials and responses",
+                "ext-apc": "Allows service description opcode caching, request and response caching, and credentials caching",
+                "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages",
+                "monolog/monolog": "Adds support for logging HTTP requests and responses",
+                "symfony/yaml": "Eases the ability to write manifests for creating jobs in AWS Import/Export"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Aws": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Amazon Web Services",
+                    "homepage": "http://aws.amazon.com"
+                }
+            ],
+            "description": "AWS SDK for PHP - Use Amazon Web Services in your PHP project",
+            "homepage": "http://aws.amazon.com/sdkforphp",
+            "keywords": [
+                "amazon",
+                "aws",
+                "cloud",
+                "dynamodb",
+                "ec2",
+                "glacier",
+                "s3",
+                "sdk"
+            ],
+            "time": "2014-06-20 17:52:24"
+        },
         {
             "name": "burzum/cakephp-imagine-plugin",
             "version": "1.0.5",
@@ -390,6 +458,129 @@
                 "schema"
             ],
             "time": "2014-03-05 15:03:52"
+        },
+        {
+            "name": "mjohnson/transit",
+            "version": "1.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/milesj/transit.git",
+                "reference": "01fb3d8300fb4be58370979083404e37eee75afc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/milesj/transit/zipball/01fb3d8300fb4be58370979083404e37eee75afc",
+                "reference": "01fb3d8300fb4be58370979083404e37eee75afc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-fileinfo": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "*",
+                "ext-exif": "*",
+                "rackspace/php-opencloud": "*"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Upload files to Amazon S3 and Glacier",
+                "ext-exif": "Extract exif data from images",
+                "ext-gd": "Enable the GD library for image transforming",
+                "rackspace/php-opencloud": "Upload files to RackSpace OpenCloud"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Transit": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Miles Johnson",
+                    "homepage": "http://milesj.me"
+                }
+            ],
+            "description": "A file uploader with support for validation, image transformation and remote transportation.",
+            "homepage": "http://milesj.me/code/php/transit",
+            "keywords": [
+                "application",
+                "archive",
+                "audio",
+                "cloud",
+                "cloudfiles",
+                "exif",
+                "file",
+                "glacier",
+                "image",
+                "importer",
+                "opencloud",
+                "rackspace",
+                "s3",
+                "text",
+                "transformer",
+                "transit",
+                "transporter",
+                "uploader",
+                "validator",
+                "video"
+            ],
+            "time": "2014-03-31 01:15:36"
+        },
+        {
+            "name": "mjohnson/uploader",
+            "version": "4.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/milesj/uploader.git",
+                "reference": "8c11938216fef70696bbc9d2a6c1f6b79e8b25a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/milesj/uploader/zipball/8c11938216fef70696bbc9d2a6c1f6b79e8b25a0",
+                "reference": "8c11938216fef70696bbc9d2a6c1f6b79e8b25a0",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "*",
+                "ext-curl": "*",
+                "ext-fileinfo": "*",
+                "ext-mbstring": "*",
+                "mjohnson/transit": "~1.5",
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "~2.2",
+                "ext-exif": "Extract exif data from images",
+                "ext-gd": "Enable the GD library for image transforming"
+            },
+            "type": "cakephp-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Miles Johnson",
+                    "homepage": "http://milesj.me"
+                }
+            ],
+            "description": "File uploader and validation plugin for CakePHP.",
+            "homepage": "http://milesj.me/code/cakephp/uploader",
+            "keywords": [
+                "attachment",
+                "cakephp",
+                "file",
+                "plugin",
+                "uploader",
+                "validation"
+            ],
+            "time": "2014-05-24 18:54:12"
         },
         {
             "name": "opentok/opentok",
