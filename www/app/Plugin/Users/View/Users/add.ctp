@@ -103,7 +103,7 @@ if ($this->Session->check("type")) {
 									<span class="FontStyle11"><em><?php echo __("Separate Subjects with commas") ?></em></span> </div>
 							</div>
 							
-<!--							<div class="row-fluid">
+							<div class="row-fluid">
 								<div class="control-group">
 									<label class="control-label" for="UserProfilepic">Upload Your Pic</label>
 									<div class="form-group span7 controls">
@@ -112,7 +112,7 @@ if ($this->Session->check("type")) {
 										?>
 									</div>
 								</div>
-							</div>-->
+							</div>
 							
 							<div class="control-group">
 								<label class="control-label" for="firstName"><?php echo __("Username:") ?></label>
