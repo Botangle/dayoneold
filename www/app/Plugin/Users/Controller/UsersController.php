@@ -1577,6 +1577,8 @@ class UsersController extends UsersAppController {
 			$need_stripe_account_setup = (!isset($student['User']['stripe_customer_id']) || $student['User']['stripe_customer_id'] == "") ? true : false;
 		} else {
 			// this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
+
+            // @TODO: confirm this works, I think the form info is mislabeled below, but that we're actually sending in a student's name
 			$tutorid = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
 			$tutorid = $tutorid['User']['id'];
 
@@ -1624,6 +1626,9 @@ class UsersController extends UsersAppController {
 		// @TODO: do we want to do any type of checking to see if there were problems along the way?
 		$this->addLessonMessage($user_id_to_message);
 
+        // and then we want to email the appropriate person as well
+        $this->sendLessonMessage($lesson_id, $user_id_to_message);
+
 		// Not sure why we need to only do this if we're a student, but we'll ignore that for now
 		// but we do need to generate lesson session ids so our lessons will work
 		if ($this->request->data['Lesson']['tutorname'] == "") {
@@ -1669,6 +1674,63 @@ class UsersController extends UsersAppController {
 		$this->Usermessage->query(" UPDATE `usermessages` SET parent_id = '" . $lastId . "' WHERE id = '" . $lastId . "'");
 //        }
 	}
+
+    /**
+     * Sends a proposed lesson email to the receipient in addition to a message through the system
+     *
+     * @param $lesson_id
+     * @param $user_id
+     * @return bool
+     */
+    private function sendLessonMessage($lesson_id, $user_id) {
+
+        $lesson = $this->Lesson->find('first', array('conditions' => array('Lesson.id' => $lesson_id)));
+
+        if(count($lesson) == 0) {
+            $this->log("Couldn't properly retrieve lesson information prior to sending an email notification about a new lesson.", LOG_EMERG);
+            return;
+        }
+
+        if($lesson['Lesson']['student'] == $user_id) {
+            $contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
+            $lessonRequestor = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
+        } else {
+            $contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
+            $lessonRequestor = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
+        }
+
+        if(count($contact) == 0 || count($lessonRequestor) == 0) {
+            $this->log("Couldn't retrieve tutor / student info prior to sending an email notification about a new lesson.", LOG_EMERG);
+            return;
+        }
+
+        // @TODO: make sure these variables are vetted for security, people could attack each other this way too
+        $emailLessonData = array(
+            'contactName'   => $contact['User']['name'],
+            'date'          => $lesson['Lesson']['lesson_date'], // @TODO: make sure these are stored in UTC on the server ...
+            'time'          => $lesson['Lesson']['lesson_time'],
+            'subject'       => $lesson['Lesson']['subject'],
+            'notes'         => $lesson['Lesson']['notes'],
+            'requestor' => array(
+                'fullName'  => $lessonRequestor['User']['name'] . ' ' . $lessonRequestor['User']['lname'],
+                'id'        => $lessonRequestor['User']['id'],
+                'name'      => $lessonRequestor['User']['name'],
+                'username'  => $lessonRequestor['User']['username'],
+            ),
+        );
+
+        // send out an email saying that we've got a new lesson request that they should take a look at
+        // and give them some details on it so they know what is being requested
+        return $this->_sendEmail(
+            array(Configure::read('Site.title'), $this->_getSenderEmail()),
+            $contact['User']['email'],
+            __d('croogo', '[%s]: New Lesson Proposed', 'Botangle'),
+            'Users.new_lesson', // @TODO: this and the next option down need work
+            'new lesson proposal',
+            $this->theme,
+            compact('emailLessonData')
+        );
+    }
 
 /**
  * Generates some session ids we need to actually run a lesson
