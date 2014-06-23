@@ -47,8 +47,8 @@ class User extends UsersAppModel {
 			'profilepic' => array(
 				'tempDir' => TMP,
 				'nameCallback' => 'formatFileName',
-//				'uploadDir' => 'uploads/profilepic',
-//				'finalPath' => '/uploads/profilepic/',
+				'uploadDir' => 'uploads/profilepic',
+				'finalPath' => '/uploads/profilepic/',
 				'overwrite' => true,
 				'stopSave' => false,
 				'allowEmpty' => true,
@@ -67,15 +67,7 @@ class User extends UsersAppModel {
 						'self' => true,
 						'aspect' => true,
 					)
-				),
-				'transport' => array(
-					'class' => AttachmentBehavior::S3,
-					'accessKey' => 'AKIAJWF54OAT34LFKR3Q',
-					'secretKey' => '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',
-					'bucket' => 'botangleassets',
-					'region' => Aws\Common\Enum\Region::US_EAST_1,
-					'folder' => 'profilepic/'
-				),
+				)
 			)
 		),
 		'Uploader.FileValidation' => array(
