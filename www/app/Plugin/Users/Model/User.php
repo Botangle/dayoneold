@@ -198,6 +198,21 @@ class User extends UsersAppModel {
 		'is_featured',
 		'status',
 	);
+	
+/**
+ * Format the filename a specific way before uploading and attaching.
+ * 
+ * @access public
+ * @param string $name	- The current filename without extension
+ * @param array $file	- The $_FILES data
+ * @return string
+ */
+	function formatFileName($name, $file) {
+//		$file = pathinfo($name);
+//		$name = String::truncate($file['filename'], 20);
+//		return uniqid();
+		return uniqid();
+	}
 
 /**
  * beforeDelete
