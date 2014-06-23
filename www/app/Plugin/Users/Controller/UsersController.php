@@ -1627,7 +1627,7 @@ class UsersController extends UsersAppController {
 		$this->addLessonMessage($user_id_to_message);
 
         // and then we want to email the appropriate person as well
-        $this->sendLessonMessage($lesson_id, $user_id_to_message);
+        $this->sendLessonProposal($lesson_id, $user_id_to_message);
 
 		// Not sure why we need to only do this if we're a student, but we'll ignore that for now
 		// but we do need to generate lesson session ids so our lessons will work
@@ -1678,11 +1678,13 @@ class UsersController extends UsersAppController {
     /**
      * Sends a proposed lesson email to the receipient in addition to a message through the system
      *
+     * @TODO: move this to an event listener library instead of having it in our controller
+     *
      * @param $lesson_id
      * @param $user_id
      * @return bool
      */
-    private function sendLessonMessage($lesson_id, $user_id) {
+    private function sendLessonProposal($lesson_id, $user_id) {
 
         $lesson = $this->Lesson->find('first', array('conditions' => array('Lesson.id' => $lesson_id)));
 
@@ -1724,7 +1726,7 @@ class UsersController extends UsersAppController {
         return $this->_sendEmail(
             array(Configure::read('Site.title'), $this->_getSenderEmail()),
             $contact['User']['email'],
-            __d('croogo', '[%s]: New Lesson Proposed', 'Botangle'),
+            __d('croogo', '[%s] New Lesson Proposed', 'Botangle'),
             'Users.new_lesson', // @TODO: this and the next option down need work
             'new lesson proposal',
             $this->theme,
@@ -1846,6 +1848,7 @@ class UsersController extends UsersAppController {
 
 			$data['Lesson']['readlessontutor'] = 1;
 			$data['Lesson']['is_confirmed'] = 0;
+            $send_confirmation_to_user_id = $data['Lesson']['student'];
 		}
 		// if this is a student who had a lesson created for them that they need to confirm
 		// then we want to set things up and confirm
@@ -1853,6 +1856,7 @@ class UsersController extends UsersAppController {
 		) {
 			$data['Lesson']['readlesson'] = 1;
 			$data['Lesson']['is_confirmed'] = 0;
+            $send_confirmation_to_user_id = $data['Lesson']['tutor'];
 		} else {
 			throw new CakeException('Sorry, something went badly wrong, please try again.');
 		}
@@ -1875,12 +1879,72 @@ class UsersController extends UsersAppController {
 			}
 		}
 
+        $this->Lesson->id = (int)$data['Lesson']['id'];
 		$this->Lesson->save($data);
 
-		$this->redirect(array('action' => 'lessons'));
+		$this->redirect(array('action' => 'lessons'), null, false);
+
+        // send an email confirmation after we've sent the user on to the next page
+        $this->sendLessonConfirmation((int)$data['Lesson']['id'], $send_confirmation_to_user_id);
 	}
 
-	public function mycalander() {
+    /**
+     * Sends a proposed lesson email to the receipient in addition to a message through the system
+     *
+     * @param $lesson_id
+     * @param $user_id
+     * @return bool
+     */
+    private function sendLessonConfirmation($lesson_id, $user_id) {
+
+        $lesson = $this->Lesson->find('first', array('conditions' => array('Lesson.id' => $lesson_id)));
+
+        if(count($lesson) == 0) {
+            $this->log("Couldn't properly retrieve lesson information prior to sending an email notification about a confirmed lesson.", LOG_EMERG);
+            return;
+        }
+
+        if($lesson['Lesson']['student'] == $user_id) {
+            $contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
+            $lessonConfirmer = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
+        } else {
+            $contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
+            $lessonConfirmer = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
+        }
+
+        if(count($contact) == 0 || count($lessonConfirmer) == 0) {
+            $this->log("Couldn't retrieve tutor / student info prior to sending an email notification about a confirmed lesson.", LOG_EMERG);
+            return;
+        }
+
+        // @TODO: make sure these variables are vetted for security, people could attack each other this way too
+        $emailLessonData = array(
+            'contactName'   => $contact['User']['name'],
+            'subject'       => $lesson['Lesson']['subject'],
+            'notes'         => $lesson['Lesson']['notes'],
+            'confirmedBy' => array(
+                'fullName'  => $lessonConfirmer['User']['name'] . ' ' . $lessonConfirmer['User']['lname'],
+                'id'        => $lessonConfirmer['User']['id'],
+                'name'      => $lessonConfirmer['User']['name'],
+                'username'  => $lessonConfirmer['User']['username'],
+            ),
+        );
+
+        // send out an email saying that we've got a new lesson request that they should take a look at
+        // and give them some details on it so they know what is being requested
+        return $this->_sendEmail(
+            array(Configure::read('Site.title'), $this->_getSenderEmail()),
+            $contact['User']['email'],
+            __d('croogo', '[%s] Lesson Confirmed', 'Botangle'),
+            'Users.lesson_confirmed', // @TODO: this and the next option down need work
+            'lesson confirmed',
+            $this->theme,
+            compact('emailLessonData')
+        );
+    }
+
+
+    public function mycalander() {
 		
 	}
 
