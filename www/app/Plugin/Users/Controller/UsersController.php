@@ -402,6 +402,9 @@ class UsersController extends UsersAppController {
 		}
 
 		$this->set('title_for_layout', __d('croogo', 'Users'));
+		
+		$user = $this->User->find('first', array('conditions' => array('User.id' => $this->request->data['User']['id'])));
+		$this->set('user', $user);
 	}
 
 	public function _uploadPic() {
@@ -627,12 +630,10 @@ class UsersController extends UsersAppController {
 				if ($this->Auth->login()) {
 					Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
 
-					$this->request->data['User']['is_online'] = 1;
-					$this->request->data['User']['id'] = $this->Session->read('Auth.User.id');
+					$this->User->id = $this->Session->read('Auth.User.id');
+					$this->User->saveField('is_online', 1);
 
 					$_SESSION['userid'] = $this->Session->read('Auth.User.id');
-
-					$this->User->save($this->request->data);
 
 					$type = $this->Session->read('type');
 
@@ -963,7 +964,8 @@ class UsersController extends UsersAppController {
 		} else {
 
 			$stripe_setup = false;
-			if ($User['User']['stripe_user_id'] != "" &&
+			if (isset($User['User']['stripe_user_id']) &&
+					$User['User']['stripe_user_id'] != "" &&
 					$User['User']['access_token'] != "" &&
 					$User['User']['stripe_publishable_key'] != "" &&
 					$User['User']['refresh_token'] != ""
