@@ -36,7 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.include_offline    = true
 
   # Synced folders
-  config.vm.synced_folder "www", "/var/www"
+  config.vm.synced_folder "www", "/var/www", mount_options: ['dmode=777', 'fmode=777']
   # config.vm.synced_folder "htdocs", "/var/www/magento", nfs: true,
   #                                   mount_options: ["nolock", "async"],
   #                                   bsd__nfs_options: ["alldirs","async","nolock"]

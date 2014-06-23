@@ -32,7 +32,7 @@ spend a bit of time learning how they work.
 Please see the Contributing.md file
 
 ## Other things to know
-There is a backend to the system ([http://app.botangle.dev/admin](http://app.botangle.dev/snapez)).  You can get in with
+There is a backend to the system ([http://app.botangle.dev/snapez](http://app.botangle.dev/snapez)).  You can get in with
 the following credentials:
 
 User: admin

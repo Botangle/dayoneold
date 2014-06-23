@@ -69,7 +69,7 @@ if ($this->Session->check("type")) {
 
 				<?php if ($default == 2) { ?>
 					<div class="Signup"> 
-						<?php echo $this->Form->create('User', array('class' => 'form-horizontal')); ?>
+						<?php echo $this->Form->create('User', array('class' => 'form-horizontal', 'type' => 'file')); ?>
 						<div class="control-group">
 							<label class="control-label">I am a...:</label>
 							<div class="controls">
@@ -102,6 +102,18 @@ if ($this->Session->check("type")) {
 									<br>
 									<span class="FontStyle11"><em><?php echo __("Separate Subjects with commas") ?></em></span> </div>
 							</div>
+							
+<!--							<div class="row-fluid">
+								<div class="control-group">
+									<label class="control-label" for="UserProfilepic">Upload Your Pic</label>
+									<div class="form-group span7 controls">
+										<?php
+										echo $this->Form->file('profilepic', array('label' => false));
+										?>
+									</div>
+								</div>
+							</div>-->
+							
 							<div class="control-group">
 								<label class="control-label" for="firstName"><?php echo __("Username:") ?></label>
 								<div class="controls">
@@ -162,7 +174,7 @@ if ($this->Session->check("type")) {
 								<div class="control-group">
 									<label class="control-label" for="inputEmail"><?php echo __("University:") ?></label>
 									<div class="controls">
-										<?php echo $this->Form->input('university', array('class' => 'textareap', 'rows' => 2,'placeholder' => "Barnard/University, Class of 2013", 'label' => false)); ?>
+										<?php echo $this->Form->input('university', array('class' => 'textarea', 'rows' => 2,'placeholder' => "Barnard/University, Class of 2013", 'label' => false)); ?>
 									</div>
 								</div>
 								<div class="control-group">

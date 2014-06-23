@@ -16,6 +16,10 @@ www/app/Config/*-production.php
 # But we want to include our database dev so we can autoconfigure things to use our Vagrant DB
 !www/app/Config/database-dev.php
 
+# Leave out Plugin files loaded in by Composer
+www/app/Plugin/Stripe
+www/app/Plugin/Uploader/
+
 # Others
 .DS_Store
 ./Plugin/*
@@ -24,7 +28,6 @@ www/app/Config/*-production.php
 !./Plugin/Example
 !./Plugin/Install
 !./Plugin/Translate
-www/app/Plugin/Stripe
 
 # Vagrant cache and logs
 .vagrant/

@@ -158,7 +158,7 @@ define('LOG_ERROR', LOG_ERR);
  *
  */
 Configure::write('Session', array(
-	'defaults' => 'php',
+	'defaults' => 'database',
 	'ini' => array(
 		'session.cookie_httponly' => 1
 	)

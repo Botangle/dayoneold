@@ -10,6 +10,8 @@
         "opentok/opentok": "dev-master#e991b877b44431b8dea7bd90287bb4030433e6c5",
         "stripe/stripe-php": "1.11.*",
         "chronon/stripe": "dev-master",
-        "burzum/cakephp-imagine-plugin": "1.0.5"
+        "burzum/cakephp-imagine-plugin": "1.0.5",
+        "mjohnson/uploader": "4.5.4",
+        "aws/aws-sdk-php": "~2.2"
     }
 }
