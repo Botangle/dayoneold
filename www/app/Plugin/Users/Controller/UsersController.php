@@ -836,8 +836,12 @@ class UsersController extends UsersAppController {
 				}
 			} else {
 				Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
-				$this->Session->setFlash('The password you entered is incorrect.', 'default', array('class' => 'error'), 'auth');
-				$this->redirect($this->Auth->loginAction);
+                if($this->RequestHandler->isXml()) {
+                    return $this->sendXmlError(1, "The password you entered is incorrect");
+                } else {
+                    $this->Session->setFlash('The password you entered is incorrect.', 'default', array('class' => 'error'), 'auth');
+                    $this->redirect($this->Auth->loginAction);
+                }
 			}
 		}
 	}
