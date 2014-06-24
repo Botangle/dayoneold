@@ -329,49 +329,44 @@ if ($this->Session->check("type")) {
 		<!-- @end .container --> 
 	</div>
 
-	<?php
-	echo $this->Html->scriptBlock(
-			'var $j = jQuery.noConflict();
+<script>
+	var $j = jQuery.noConflict();
 	function update(value){
-	var type= "tutor";
-		if(value==2){
+	var type = "tutor";
+		if(value == 2){
 			type="tutor";
-		}else if(value==4){
-			type="student"
+		}else if(value == 4){
+			type="student";
 		}
 		location.href= "' . $this->webroot . 'registration/"+type;
 	};
 	jQuery(document).ready(function(){  
 	jQuery(".btn-reset").click(function(){
 			jQuery(".security").removeClass().addClass("security");
-		})
+		});
 		 jQuery("#UserPassword").keyup(function(){
 		 
-			jQuery(".security").addClass(checkStrength(jQuery("#UserPassword").val()))
-		})
+			jQuery(".security").addClass(checkStrength(jQuery("#UserPassword").val()));
+		});
 		function checkStrength(password){
-			var strength = 0
+			var strength = 0;
 			if (password.length < 6) {
 				return "weak";			
 			}
-			if (password.length > 7) strength += 1
-			if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/))  strength += 1
-			if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/))  strength += 1
-			if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/))  strength += 1
-			if (password.match(/(.*[!,%,&,@,#,$,^,*,?,_,~].*[!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1
+			if (password.length > 7) strength += 1;
+			if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/))  strength += 1;
+			if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/))  strength += 1;
+			if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/))  strength += 1;
+			if (password.match(/(.*[!,%,&,@,#,$,^,*,?,_,~].*[!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1;
 			if (strength < 2 ){
-				return "weak1"
+				return "weak1";
 			}
-			else if (strength == 2 ){
-				return "Good"
+			else if (strength == 2){
+				return "Good";
 			}
 			else{
 				return "Strong";
 			}
 		}
-	})
-	', array('inline' => false)
-	);
-
-
-	
+	});
+</script>
