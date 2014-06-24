@@ -801,7 +801,11 @@ class UsersController extends UsersAppController {
  * @return boolean
  * @access public
  */
-	public function login() {
+
+    /**
+     * NOTE: if making changes here, please make sure to make them to the same controller actions in our API system
+     */
+    public function login() {
 		$this->set('title_for_layout', __d('croogo', 'Log in'));
 		if ($this->request->is('post')) {
 			Croogo::dispatchEvent('Controller.Users.beforeLogin', $this);
@@ -809,13 +813,13 @@ class UsersController extends UsersAppController {
 			if ($this->Auth->login()) {
 				Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
 
-				$this->request->data['User']['is_online'] = 1;
-				$this->request->data['User']['id'] = $this->Session->read('Auth.User.id');
+                $data['User']['id'] = (int)$this->Session->read('Auth.User.id');
+				$data['User']['is_online'] = 1;
+
 				$_SESSION['userid'] = $this->Session->read('Auth.User.id');
-				if ($this->User->save($this->request->data)) {
-					
+				if ($this->User->save($data)) {
+                    $this->redirect($this->Auth->redirectUrl());
 				}
-				$this->redirect($this->Auth->redirect());
 			} else {
 				Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
 				$this->Session->setFlash('The password you entered is incorrect.', 'default', array('class' => 'error'), 'auth');
