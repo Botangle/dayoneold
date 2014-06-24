@@ -86,8 +86,11 @@ CroogoRouter::connect('/users/paymentsetting', array(
  * It's what forced us to go this route instead of having our own nice, clean plugin for the API
  *
  * API v1 routing
+ *
+ * We use manual .xml extensions on our routes, along with a 'ext' => 'xml' addition to the route parameter
+ * so that we don't have to worry about people trying to sniff through our app and potentially hacking in somewhere
+ * where they shouldn't be ...
  */
-Router::connect('/api/v1/login', array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
-Router::connect('/api/v1/test', array('controller' => 'api', 'action' => 'test'));
+Router::connect('/api/v1/login.xml', array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'ext' => 'xml'));
 //Router::connect('/api/v1/registration/:type', array('plugin' => 'users', 'controller' => 'users', 'action' => 'registration'), array('pass' => array('type')));
 //Router::connect('/register', array('plugin' => 'users', 'controller' => 'users', 'action' => 'add'));
