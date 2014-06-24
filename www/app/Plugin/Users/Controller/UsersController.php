@@ -818,7 +818,21 @@ class UsersController extends UsersAppController {
 
 				$_SESSION['userid'] = $this->Session->read('Auth.User.id');
 				if ($this->User->save($data)) {
-                    $this->redirect($this->Auth->redirectUrl());
+
+                    // API: handle our API info and send back info
+                    if($this->RequestHandler->isXml()) {
+                        $user = $this->Session->read('Auth.User');
+
+                        // we'll translate a bit between what we've got and our system
+                        $this->set('id', $user['id']);
+                        $this->set('role', $user['Role']['alias']);
+                        $this->set('firstname', $user['name']);
+                        $this->set('lastname', $user['lname']);
+                        $this->set('profilepic', $user['profilepic']);
+                        $this->set('_serialize', array('id', 'role', 'firstname', 'lastname', 'profilepic'));
+                    } else {
+                        $this->redirect($this->Auth->redirectUrl());
+                    }
 				}
 			} else {
 				Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
