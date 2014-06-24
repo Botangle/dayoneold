@@ -67,7 +67,7 @@
 				<?php if ($paging['pageCount'] > 1) : ?>
 					<div class="row-fluid center">
 						<div class="pagination" style="display:block; text-align: center; margin-bottom: 90px;">
-							<ul>
+							<ul style="box-shadow: none;">
 								<?php echo $this->Paginator->first('< ' . __d('croogo', 'first')); ?>
 								<?php echo $this->Paginator->prev('< ' . __d('croogo', 'prev')); ?>
 								<?php echo $this->Paginator->numbers(); ?>
