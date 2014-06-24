@@ -1124,6 +1124,7 @@ a.Social-Boxs-Links:hover {
 .how-it-works .box {
     padding: 20px 20px;
     height: 340px;
+	background-color: #fff;
 }
 .how-it-works a .box p {
     color: black;
