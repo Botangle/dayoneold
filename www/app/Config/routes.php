@@ -29,8 +29,9 @@ Router::connect(
     '/tests/lbTest',
     array('controller' => 'tests', 'action' => 'lbTest')
 );
+
 App::uses('CroogoRouter', 'Croogo.Lib');
 CakePlugin::routes();
-Router::parseExtensions('json', 'rss');
+Router::parseExtensions('json', 'rss', 'xml');
 CroogoRouter::localize();
 require CAKE . 'Config' . DS . 'routes.php';

@@ -80,3 +80,14 @@ CroogoRouter::connect('/users/paymentsetting', array(
 	'controller' => 'users',
 	'action' => 'paymentsetting')
 );
+
+/**
+ * @TODO: work out how to get out of Croogo's ACL system being so tightly bound in to everything :-/
+ * It's what forced us to go this route instead of having our own nice, clean plugin for the API
+ *
+ * API v1 routing
+ */
+Router::connect('/api/v1/login', array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+Router::connect('/api/v1/test', array('controller' => 'api', 'action' => 'test'));
+//Router::connect('/api/v1/registration/:type', array('plugin' => 'users', 'controller' => 'users', 'action' => 'registration'), array('pass' => array('type')));
+//Router::connect('/register', array('plugin' => 'users', 'controller' => 'users', 'action' => 'add'));
