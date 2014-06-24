@@ -338,7 +338,7 @@ if ($this->Session->check("type")) {
 		}else if(value == 4){
 			type="student";
 		}
-		location.href= "' . $this->webroot . 'registration/"+type;
+		location.href= "<?php echo $this->webroot; ?>registration/"+type;
 	};
 	jQuery(document).ready(function(){  
 	jQuery(".btn-reset").click(function(){
