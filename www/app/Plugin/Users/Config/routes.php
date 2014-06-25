@@ -118,14 +118,20 @@ Router::connect(
         'ext'           => 'xml',
     )
 );
-//CroogoRouter::connect('/users/topchart/:categoryname',
-//    array(
-//        'plugin' => 'users',
-//        'controller' => 'users',
-//        'action' => 'topchart'
-//    ),
-//    array('pass' => array('categoryname'))
-//);
+Router::connect(
+    '/api/v1/users/topchart.xml/:categoryname',
+    array(
+        'plugin'        => 'users',
+        'controller'    => 'users',
+        'action'        => 'topchart',
+        'ext'           => 'xml',
+    ),
+    array(
+        'pass' => array(
+            'categoryname',
+        )
+    )
+);
 //CroogoRouter::connect('/users/topchart/:categoryname/:online',
 //    array(
 //        'plugin' => 'users',
