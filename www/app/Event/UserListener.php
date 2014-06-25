@@ -34,8 +34,8 @@ class UserListener implements CakeEventListener {
 
     public function logout($event)
     {
-        $userController = $event->subject();
-        $this->handleSaving($event, 'logout', $userController->request->data['User']['id']);
+        $data = $event->data;
+        $this->handleSaving($event, 'logout', $data['User']['id']);
     }
 
     public function stripeAccountSetup($event)

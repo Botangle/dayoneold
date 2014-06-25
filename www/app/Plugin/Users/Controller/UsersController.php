@@ -866,13 +866,15 @@ class UsersController extends UsersAppController {
 	public function logout() {
 		Croogo::dispatchEvent('Controller.Users.beforeLogout', $this);
 		$this->Session->setFlash(__d('croogo', 'Log out successful.'), 'default', array('class' => 'success'));
-		$this->request->data['User']['is_online'] = 0;
-		$this->request->data['User']['id'] = $this->Session->read('Auth.User.id');
-		if ($this->User->save($this->request->data)) {
+
+        $data = array();
+        $data['User']['is_online'] = 0;
+		$data['User']['id'] = $this->Session->read('Auth.User.id');
+		if ($this->User->save($data)) {
 			
 		}
 		$this->redirect($this->Auth->logout(), null, false); // we don't want to die as soon as the redirect is over
-		Croogo::dispatchEvent('Controller.Users.afterLogout', $this);
+		Croogo::dispatchEvent('Controller.Users.afterLogout', $this, $data);
 	}
 
 /**
