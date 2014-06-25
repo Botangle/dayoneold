@@ -795,15 +795,12 @@ class UsersController extends UsersAppController {
 		$this->set(compact('user', 'username', 'key'));
 	}
 
-/**
- * Login
- *
- * @return boolean
- * @access public
- */
-
     /**
-     * NOTE: if making changes here, please make sure to make them to the same controller actions in our API system
+     * Login
+     *
+     * @api
+     * @return boolean
+     * @access public
      */
     public function login() {
 		$this->set('title_for_layout', __d('croogo', 'Log in'));
