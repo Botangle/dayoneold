@@ -63,42 +63,21 @@ $reviews = array(
     ),
 );
 
-$user = array(
-    'id'                            => $user['id'],
-    'username'                      => $user['username'],
-    'firstname'                     => $user['name'],
-    'lastname'                      => $user['lname'],
-    'email'                         => $user['email'],
-    'website'                       => $user['website'],
-    'bio'                           => $user['bio'],
-    'timezone'                      => 'UTC',
-    'qualification'                 => $user['qualification'],
-    'teaching_experience'           => $user['teaching_experience'],
-    'extracurricular_interests'     => $user['extracurricular_interests'],
-    'university'                    => $user['university'],
-    'other_experience'              => $user['other_experience'],
-    'expertise'                     => $user['expertise'],
-    'aboutme'                       => $user['aboutme'],
-    'is_online'                     => $user['is_online'],
-    'is_featured'                   => $user['is_featured'],
-    'created'                       => $user['created'],
-    'updated'                       => $user['updated'],
+$user = $this->UserXmlTransformer->transformFullProfile($user);
 
-    // @TODO: get this working so it's not hard-coded
-    'profilepic'                    => 'https://www.botangle.com/images/botangle-default-pic.jpg',
 
-    // all these are relations or fields that needed adjustments
-    'rate'                          => $rate,
-    'rating'                        => $userRating[0]['avg'],
-    'reviews'  => $reviews,
-    'statuses' => $statuses,
+// all these are relations or fields that needed adjustments
+$user['rate']       = $rate;
+$user['rating']     = $userRating[0]['avg'];
+$user['reviews']    = $reviews;
+$user['statuses']   = $statuses;
 
-    'subjects' => array(
-        'subject' => $subjects,
-    ),
-    'roles' => array(
-        $roles,
-    ),
+$user['subjects'] = array(
+    'subject' => $subjects,
+);
+
+$user['roles'] = array(
+    $roles,
 );
 
 $response = array(

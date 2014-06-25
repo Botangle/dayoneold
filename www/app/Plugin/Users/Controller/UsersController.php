@@ -2081,6 +2081,8 @@ class UsersController extends UsersAppController {
             $this->paginate['User']['limit']        = 100;
             $this->paginate['User']['maxLimit']     = 1000;
 
+            $this->helpers[] = 'Users.UserXmlTransformer';
+
             $this->set('userlist', $this->paginate());
         } else {
             $this->paginate['User']['limit'] = 21;

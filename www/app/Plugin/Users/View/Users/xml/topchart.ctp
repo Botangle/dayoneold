@@ -3,12 +3,12 @@
 $newUsers = array();
 foreach($userlist as $user) {
     $user = $user['User'];
+
     $newUsers[] = array(
         'id'                            => $user['id'],
         'firstname'                     => $user['name'],
         'lastname'                      => $user['lname'],
-//        @TODO: get this working so it's not hard-coded
-        'profilepic'                    => 'https://www.botangle.com/images/botangle-default-pic.jpg',
+        'profilepic'                    => $this->UserXmlTransformer->transformProfilePic($user['profilepic']),
         'qualification'                 => $user['qualification'],
         'extracurricular_interests'     => $user['extracurricular_interests'],
     );
