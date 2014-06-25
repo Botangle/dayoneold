@@ -27,6 +27,9 @@ CroogoRouter::connect('/passwordrecovery', array('plugin' => 'users', 'controlle
 CroogoRouter::connect('/user/:username', array(
 	'plugin' => 'users', 'controller' => 'users', 'action' => 'view'), array('pass' => array('username')
 ));
+CroogoRouter::connect('/user/id/:id', array(
+        'plugin' => 'users', 'controller' => 'users', 'action' => 'viewId'), array('pass' => array('id')
+    ));
 CroogoRouter::connect('/users/topchart', array(
 	'plugin' => 'users',
 	'controller' => 'users',
@@ -92,5 +95,19 @@ CroogoRouter::connect('/users/paymentsetting', array(
  * where they shouldn't be ...
  */
 Router::connect('/api/v1/login.xml', array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'ext' => 'xml'));
+Router::connect(
+    '/api/v1/user/:username.xml',
+    array(
+        'plugin' => 'users',
+        'controller' => 'users',
+        'action' => 'view',
+        'ext' => 'xml'
+    ),
+    array(
+        'pass' => array(
+            'username',
+        ),
+    )
+);
 //Router::connect('/api/v1/registration/:type', array('plugin' => 'users', 'controller' => 'users', 'action' => 'registration'), array('pass' => array('type')));
 //Router::connect('/register', array('plugin' => 'users', 'controller' => 'users', 'action' => 'add'));
