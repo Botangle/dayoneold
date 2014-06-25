@@ -149,6 +149,9 @@ class CategoriesController extends CategoriesAppController {
 		$c = $this->Category->find('all', array('conditions' => $cond));
 
         if($this->RequestHandler->isXml()) {
+
+            $this->helpers[] = 'Categories.UserCount';
+
             $this->set('categories', $c);
         } else {
             $results = "";
