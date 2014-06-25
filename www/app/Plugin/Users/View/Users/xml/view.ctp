@@ -28,7 +28,9 @@ sort($trimmed_subjects);
 $subjects = array();
 foreach($trimmed_subjects as $subject) {
     if($subject != '') {
-        $subjects[] = $subject;
+        $subjects[] = array(
+            'name' => $subject,
+        );
     }
 }
 
