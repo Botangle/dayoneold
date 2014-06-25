@@ -18,11 +18,11 @@ $subject = explode(",", $user['User']['subject']);
 			<div class="span9 PageLeft-Block">
 				<div class="row-fluid">
 					<div class="span4">
-						<?php if (file_exists(WWW_ROOT . DS . 'uploads' . DS . 'users' . DS . $user['User']['id'] . DS . 'profile' . DS . $user['User']['profilepic']) && $user['User']['profilepic'] != "") { ?>
-							<img src="<?php echo $this->webroot . 'uploads/users/' . $user['User']['id'] . '/profile/' . $user['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
-						<?php } else { ?>
+						<?php if (!empty($user['User']['profilepic'])) : ?>
+							<?php echo $this->Html->image($user['User']['profilepic'], array('class' => 'img-circle', 'alt' => 'student', 'style' => 'width: 242px; height: 242px')); ?>
+						<?php else : ?>
 							<img src="<?php echo $this->webroot ?>images/botangle-default-pic.jpg" class="img-circle" alt="student">
-						<?php } ?>
+						<?php endif; ?>
 					</div>
 					<div class="span8">
 						<p class="pull-right">Rate : <span class="FontStyle16 color1"><strong>$
