@@ -584,6 +584,9 @@ class UsersController extends UsersAppController {
 			$this->request->data['User']['name'] = htmlspecialchars($this->request->data['User']['name']);
 			//$this->User->save($this->request->data)
 
+            // protected against a malicious user overwriting any other user's info while registering
+            unset($this->request->data['User']['id']);
+
             // prevent a trivial ability to change a user's role to an admin (just change the role_id in the form submitted!)
             if(isset($this->request->data['User']['role_id'])) {
                 $role_id = $this->request->data['User']['role_id'];
