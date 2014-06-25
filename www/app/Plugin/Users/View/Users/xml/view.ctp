@@ -101,8 +101,6 @@ $response = array(
 
 $response = array_change_key_case($response);
 
-$xml = Xml::fromArray(array(
-        'response' => $response,
-    ));
+$xml = Xml::fromArray($response);
 
 echo $xml->asXML();

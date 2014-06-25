@@ -826,6 +826,7 @@ class UsersController extends UsersAppController {
                         $this->set('firstname', $user['name']);
                         $this->set('lastname', $user['lname']);
                         $this->set('profilepic', $user['profilepic']);
+                        $this->set('_rootNode', 'user');
                         $this->set('_serialize', array('id', 'role', 'firstname', 'lastname', 'profilepic'));
                     } else {
                         $this->redirect($this->Auth->redirectUrl());

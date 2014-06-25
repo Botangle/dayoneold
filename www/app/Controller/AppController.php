@@ -20,7 +20,8 @@ class AppController extends CroogoAppController {
     {
         $this->set('error', $message);
         $this->set('errorCode', $code);
-        $this->set('_serialize', array('error'));
+        $this->set('_rootNode', 'error');
+        $this->set('_serialize', array('error', 'errorCode'));
         return $this->render();
     }
 }
