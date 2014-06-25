@@ -91,7 +91,7 @@
 								?>
 								<div class="span4 search-result-box">
 									<div class="search-result-img">
-										<a href="<?php echo $this->webroot ?>user/<?php echo $user['User']['username'] ?>">
+										<a href="<?php echo $this->webroot ?>user/<?php echo h($user['User']['username']) ?>">
 											<?php if (!empty($user['User']['profilepic'])) : ?>
 												<?php echo $this->Html->image($user['User']['profilepic'], array('class' => 'img-circle', 'alt' => 'student', 'style' => 'width: 117px; height: 117px')); ?>
 											<?php else : ?>
@@ -128,8 +128,8 @@
 											);
 											?>
 										</p>
-										<span><?php echo $user['User']['qualification'] ?> </span></div>
-									<div class="search-result-details"><?php echo $user['User']['extracurricular_interests'] ?></div>
+										<span><?php echo h($user['User']['qualification']) ?> </span></div>
+									<div class="search-result-details"><?php echo h($user['User']['extracurricular_interests']) ?></div>
 								</div>
 
 								<?php
