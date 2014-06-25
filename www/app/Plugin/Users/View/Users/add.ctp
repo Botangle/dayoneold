@@ -330,7 +330,7 @@ if ($this->Session->check("type")) {
 	</div>
 
 <script>
-	var $j = jQuery.noConflict();
+//	var $j = jQuery.noConflict();
 	function update(value){
 	var type = "tutor";
 		if(value == 2){
