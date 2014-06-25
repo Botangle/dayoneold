@@ -133,7 +133,10 @@ class CategoriesController extends CategoriesAppController {
 		}
 	}
 
-	public function index() {
+    /**
+     * @api
+     */
+    public function index() {
 		$this->Category->recursive = 0;
 		$name = "";
 		$cond = array('status' => "1", 'parent_id' => null);
@@ -145,17 +148,21 @@ class CategoriesController extends CategoriesAppController {
 
 		$c = $this->Category->find('all', array('conditions' => $cond));
 
-		$results = "";
-		$arrayAlphabets = "";
-		for ($i = 65; $i <= 90; $i++) {
-			$arrayAlphabets[] = chr($i);
-		}
-		foreach ($c as $k => $v) {
-			$char = substr($v['Category']['name'], 0, 1);
-			$results['Category'][strtoupper($char)][] = array($v['Category']['id'] => $v['Category']['name']);
-		}
+        if($this->RequestHandler->isXml()) {
+            $this->set('categories', $c);
+        } else {
+            $results = "";
+            $arrayAlphabets = "";
+            for ($i = 65; $i <= 90; $i++) {
+                $arrayAlphabets[] = chr($i);
+            }
+            foreach ($c as $k => $v) {
+                $char = substr($v['Category']['name'], 0, 1);
+                $results['Category'][strtoupper($char)][] = array($v['Category']['id'] => $v['Category']['name']);
+            }
 
-		$this->set('categories', $results);
+            $this->set('categories', $results);
+        }
 	}
 
 }
