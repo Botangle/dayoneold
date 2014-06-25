@@ -6,7 +6,6 @@
  * Date: 6/24/14
  * Time: 5:10 PM
  */
-$this->set('_serialize', array('user', 'userRate', 'userRating', 'userReviews', 'userstatus'));
 
 $role = $user['Role'];
 $roles = array(
