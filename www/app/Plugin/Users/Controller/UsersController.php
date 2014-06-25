@@ -866,7 +866,7 @@ class UsersController extends UsersAppController {
 
 /**
  * View
- *
+ * @api
  * @param string $username
  * @return void
  * @access public
@@ -878,8 +878,14 @@ class UsersController extends UsersAppController {
 		$user = $this->User->findByUsername($username);
 
 		if (!isset($user['User']['id'])) {
-			$this->Session->setFlash(__d('croogo', 'Invalid User.'), 'default', array('class' => 'error'));
-			$this->redirect('/');
+
+            // API: handle our API info and send back info
+            if($this->RequestHandler->isXml()) {
+                return $this->sendXmlError(2, "User not found");
+            } else {
+                $this->Session->setFlash(__d('croogo', 'Invalid User.'), 'default', array('class' => 'error'));
+                $this->redirect('/');
+            }
 		}
 
 		$this->set('title_for_layout', $user['User']['name']);
