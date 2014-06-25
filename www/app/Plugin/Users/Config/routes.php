@@ -109,5 +109,28 @@ Router::connect(
         ),
     )
 );
-//Router::connect('/api/v1/registration/:type', array('plugin' => 'users', 'controller' => 'users', 'action' => 'registration'), array('pass' => array('type')));
-//Router::connect('/register', array('plugin' => 'users', 'controller' => 'users', 'action' => 'add'));
+Router::connect(
+    '/api/v1/users/topchart.xml',
+    array(
+        'plugin'        => 'users',
+        'controller'    => 'users',
+        'action'        => 'topchart',
+        'ext'           => 'xml',
+    )
+);
+//CroogoRouter::connect('/users/topchart/:categoryname',
+//    array(
+//        'plugin' => 'users',
+//        'controller' => 'users',
+//        'action' => 'topchart'
+//    ),
+//    array('pass' => array('categoryname'))
+//);
+//CroogoRouter::connect('/users/topchart/:categoryname/:online',
+//    array(
+//        'plugin' => 'users',
+//        'controller' => 'users',
+//        'action' => 'topchart'
+//    ),
+//    array('pass' => array('categoryname','online'))
+//);

@@ -2036,7 +2036,12 @@ class UsersController extends UsersAppController {
 		$this->layouts = false;
 	}
 
-	public function topchart($categoryname = null, $online = null) {
+    /**
+     * @api
+     * @param null $categoryname
+     * @param null $online
+     */
+    public function topchart($categoryname = null, $online = null) {
 		$otherconditions = array('status' => 1, 'role_id' => 2);
 
 		if ($categoryname == 'all') {
@@ -2067,19 +2072,25 @@ class UsersController extends UsersAppController {
 				))
 		);
 
-		$this->paginate['User']['conditions'] = $otherconditions;
-		$this->paginate['User']['fields'] = array('*,avg(`Review`.`rating`) as `rating`');
-		$this->paginate['User']['group'] = array('User.id');
-		$this->paginate['User']['order'] = 'avg(`Review`.`rating`) DESC';
-		$this->paginate['User']['limit'] = 21;
+        $this->paginate['User']['conditions'] = $otherconditions;
+        $this->paginate['User']['fields'] = array('*,avg(`Review`.`rating`) as `rating`');
+        $this->paginate['User']['group'] = array('User.id');
+        $this->paginate['User']['order'] = 'avg(`Review`.`rating`) DESC';
 
-		$this->set('userlist', $this->paginate());
+        if($this->RequestHandler->isXml()) {
+            $this->paginate['User']['limit']        = 100;
+            $this->paginate['User']['maxLimit']     = 1000;
 
-		$category = $this->Category->find('all', array('conditions' => array('status' => 1, 'parent_id' => null)));
+            $this->set('userlist', $this->paginate());
+        } else {
+            $this->paginate['User']['limit'] = 21;
 
-		$this->set(compact('userlist', 'category', 'categoryname', 'online'));
-		/* $log = $this->User->getDataSource()->getLog(false, false);
-		  debug($log); */
+            $this->set('userlist', $this->paginate());
+
+            $category = $this->Category->find('all', array('conditions' => array('status' => 1, 'parent_id' => null)));
+
+            $this->set(compact('userlist', 'category', 'categoryname', 'online'));
+        }
 	}
 
 	public function joinuser($id) {
