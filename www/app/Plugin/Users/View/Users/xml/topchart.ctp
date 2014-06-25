@@ -15,7 +15,7 @@ foreach($userlist as $user) {
 }
 
 $newUsers = array(
-    'users' => $newUsers,
+    'user' => $newUsers,
 );
 
 $response = array(
