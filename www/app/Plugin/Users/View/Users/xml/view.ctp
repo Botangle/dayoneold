@@ -34,14 +34,18 @@ foreach($trimmed_subjects as $subject) {
     }
 }
 
-// handle prettying up our rates
-if ($userRate['UserRate']['price_type'] == 'permin') {
-    $userRatePrice = 'per min';
-} else {
-    $userRatePrice = "per hr";
-}
+$rate = '';
+if(isset($userRate['UserRate'])) {
 
-$rate = '$' . $userRate['UserRate']['rate'] . ' ' . $userRatePrice;
+// handle prettying up our rates
+    if ($userRate['UserRate']['price_type'] == 'permin') {
+        $userRatePrice = 'per min';
+    } else {
+        $userRatePrice = "per hr";
+    }
+
+    $rate = '$' . $userRate['UserRate']['rate'] . ' ' . $userRatePrice;
+}
 
 // @TODO: get statuses working
 $statuses = $userstatus;
