@@ -397,14 +397,14 @@ class UsersController extends UsersAppController {
 			unset($this->request->data['User']['password']);
 		}
 
-		if ($this->Session->read('Auth.User.role_id') == 4) {
-			$this->render('index2');
-		}
-
 		$this->set('title_for_layout', __d('croogo', 'Users'));
 		
 		$user = $this->User->find('first', array('conditions' => array('User.id' => $this->request->data['User']['id'])));
 		$this->set('user', $user);
+		
+		if ($this->Session->read('Auth.User.role_id') == 4) {
+			$this->render('index2');
+		}
 	}
 
 	public function _uploadPic() {
