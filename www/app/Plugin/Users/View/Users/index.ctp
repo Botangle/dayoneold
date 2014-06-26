@@ -209,7 +209,7 @@ echo $this->element("breadcrame", array('breadcrumbs' =>
 							<div class="control-group">
 								<label class="control-label" for="inputEmail"><?php echo __("University:") ?></label>
 								<div class="controls">
-									<?php echo $this->Form->input('university', array('class' => 'textbox', 'placeholder' => "Barnard/University, Class of 2013", 'label' => false)); ?>
+									<?php echo $this->Form->input('university', array('class' => 'textarea', 'placeholder' => "Barnard/University, Class of 2013", 'label' => false)); ?>
 
 
 								</div>
