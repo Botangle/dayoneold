@@ -891,9 +891,18 @@ class UsersController extends UsersAppController {
 		if ($username == null) {
 			$username = $this->Auth->user('username');
 		}
-		$user = $this->User->findByUsername($username);
+		$user = $this->User->find('first', array(
+            'conditions' => array(
+                'username' => $username,
 
-		if (!isset($user['User']['id'])) {
+                // we want to make sure to leave out our admin user(s) from this list
+                'NOT' => array(
+                    'role_id' => 1,
+                )
+            )
+        ));
+
+        if (!isset($user['User']['id'])) {
 
             // API: handle our API info and send back info
             if($this->RequestHandler->isXml()) {
