@@ -44,12 +44,12 @@ echo $this->element("breadcrame", array('breadcrumbs' =>
 						echo $this->Form->input('id');
 						?>
 
-						<?php if (!empty($this->request->data['User']['profilepic'])) : ?>
+						<?php if (!empty($user['User']['profilepic'])) : ?>
 							<div class="row-fluid">
 								<div class="control-group">
 									<label class="control-label" for="Username2"></label>
 									<div class="form-group span4 controls">
-										<img class="img-circle img-profilepic" src="/uploads/users/<?= $this->request->data['User']['id'] ?>/profile/<?= $this->request->data['User']['profilepic'] ?>?<?= uniqid() ?>"/>
+										<?php echo $this->Html->image($user['User']['profilepic'], array('class' => 'img-circle img-profilepic')); ?>
 									</div>
 								</div>
 							</div>
@@ -66,7 +66,7 @@ echo $this->element("breadcrame", array('breadcrumbs' =>
 
 						<div class="row-fluid">
 							<div class="control-group">
-								<label class="control-label" for="Username2">Select Your Pic</label>
+								<label class="control-label" for="Username2">Upload Your Pic</label>
 								<div class="form-group span7 controls">
 									<?php
 									echo $this->Form->input('profilepic', array('type' => 'file', 'label' => false));
@@ -74,6 +74,7 @@ echo $this->element("breadcrame", array('breadcrumbs' =>
 								</div>
 							</div>
 						</div>
+						
 						<div class="row-fluid">
 							<div class="control-group">
 								<label class="control-label" for="firstName">Username:</label>
