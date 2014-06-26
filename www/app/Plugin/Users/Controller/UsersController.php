@@ -53,7 +53,7 @@ class UsersController extends UsersAppController {
  * @var array
  * @access public
  */
-	public $uses = array('Users.User', 'Users.UserRate', 'Users.Lesson', 'Users.Usermessage', 'Users.Review', 'Categories.Category', 'Users.Userpoint', 'Users.LessonPayment', 'Users.Mystatus');
+	public $uses = array('Users.User', 'Users.UserRate', 'Users.Lesson', 'Users.Usermessage', 'Users.Review', 'Categories.Category', 'Users.Userpoint', 'Users.LessonPayment', 'Users.Mystatus', 'Users.StudentAccountCreationForm');
 
 	public $helper = array('Categories.Category', 'Session');
 
@@ -576,6 +576,12 @@ class UsersController extends UsersAppController {
 		if (!empty($this->request->data)) {
 			$this->User->create();
 
+            $this->StudentAccountCreationForm->set($this->request->data);
+            if($this->StudentAccountCreationForm->validates()) {
+
+            }
+            die;
+
 			//$this->request->data['User']['role_id'] = 2; // Registered
 			$this->request->data['User']['activation_key'] = md5(uniqid());
 			$this->request->data['User']['status'] = 1;
@@ -675,6 +681,11 @@ class UsersController extends UsersAppController {
 
 		$this->set('type', $this->Session->read('type'));
 		$this->set(compact('roles'));
+
+        if($_GET['debug']) {
+            return $this->render('add-new');
+        }
+
 	}
 
 /**
