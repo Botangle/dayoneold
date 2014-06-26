@@ -36,7 +36,7 @@ echo $this->Html->css(array(
 	'/croogo/css/prettyCheckable.css',
 ));
 ?>
-<script>
+<script type='text/javascript'>
 	$().ready(function() {
 
 		$('input:checkbox').prettyCheckable({
@@ -45,4 +45,12 @@ echo $this->Html->css(array(
 		});
 
 	});
+
+    <?php /* Lucky Orange JS tracking script */ ?>
+    window.__wtw_lucky_site_id = 23539;
+    (function() {
+        var wa = document.createElement('script'); wa.type = 'text/javascript'; wa.async = true;
+        wa.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://cdn') + '.luckyorange.com/w.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
+    })();
 </script>		
