@@ -91,6 +91,7 @@ if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] == '/favicon.ico') {
 }
 
 App::uses('Dispatcher', 'Routing');
+App::uses('BotangleResponse', 'Network');
 
 $Dispatcher = new Dispatcher();
-$Dispatcher->dispatch(new CakeRequest(), new CakeResponse(array('charset' => Configure::read('App.encoding'))));
+$Dispatcher->dispatch(new CakeRequest(), new BotangleResponse(array('charset' => Configure::read('App.encoding'))));
