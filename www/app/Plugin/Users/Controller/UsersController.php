@@ -568,6 +568,12 @@ class UsersController extends UsersAppController {
     /**
      * Add a user to the database
      *
+     * @api
+     * - expecting things about as normal.  Our form was adjusted to reflect what the mobile app is sending
+     *      - firstname / lastname (instead of name/lname)
+     *      - password_confirmation (instead of verify_password)
+     *      - timezone (as seconds offset (normal or negative) from UTC)
+     *
      * @return void
      * @access public
      */
