@@ -1163,7 +1163,11 @@ class UsersController extends UsersAppController {
  *
  * @package billing
  */
-	public function billing() {
+	public function billing($layout = null) {
+//        if($layout != null) {
+//            $this->layout = $layout;
+//        }
+
 		$id = $this->Session->read('Auth.User.id');
 
 		if (!empty($this->request->data)) {
@@ -1726,7 +1730,15 @@ class UsersController extends UsersAppController {
                         // send back lesson information
                         // and also info on the redirect we're about to make
                         $redirect = array(
-                            'url' => Router::url(array('action' => 'billing'), true),
+                            'url' => Router::url(
+                                    array(
+                                        'plugin'        => 'users',
+                                        'controller'    => 'users',
+                                        'action'        => 'billing',
+                                        'layout'        => 'mobile',
+                                    ),
+                                    true
+                                ),
                         );
 
                         $this->set('lesson', $lesson);

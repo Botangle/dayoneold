@@ -115,6 +115,20 @@ Router::connect(
         'ext'           => 'xml',
     )
 );
+Router::connect(
+    '/api/v1/user/setup-payment',
+    array(
+        'plugin'        => 'users',
+        'controller'    => 'users',
+        'action'        => 'billing',
+        'layout'        => 'mobile',
+    ),
+    array(
+        'pass' => array(
+            'layout',
+        ),
+    )
+);
 
 Router::connect(
     '/api/v1/user/:username.xml',
