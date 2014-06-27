@@ -381,18 +381,18 @@ echo $this->Html->script(array(
 ));
 ?>
 <script type="text/javascript">
-	$(document).ready(function() {
-		var text_max = 300;
-		var charre = text_max - $('#UsersStatusText').val().length;
-		$('#textarea_feedback').html(charre + ' characters remaining');
-
-		$('#UsersStatusText').keyup(function() {
-			var text_length = $('#UsersStatusText').val().length;
-			var text_remaining = text_max - text_length;
-
-			$('#textarea_feedback').html(text_remaining + ' characters remaining');
-		});
-	});
+//	$(document).ready(function() {
+//		var text_max = 300;
+//		var charre = text_max - jQuery('#UsersStatusText').val().length;
+//		$('#textarea_feedback').html(charre + ' characters remaining');
+//
+//		$('#UsersStatusText').keyup(function() {
+//			var text_length = $('#UsersStatusText').val().length;
+//			var text_remaining = text_max - text_length;
+//
+//			$('#textarea_feedback').html(text_remaining + ' characters remaining');
+//		});
+//	});
 	function callPopup() {
 
 		var currentclass = jQuery(this).hasClass('reviews')

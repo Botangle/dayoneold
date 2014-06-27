@@ -39,10 +39,12 @@ echo $this->Html->css(array(
 <script type='text/javascript'>
 	$().ready(function() {
 
+	if( $('input:checkbox').length )  {
 		$('input:checkbox').prettyCheckable({
 			color: 'red'
 
 		});
+	}
 
 	});
 
