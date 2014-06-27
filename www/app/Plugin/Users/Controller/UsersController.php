@@ -565,117 +565,290 @@ class UsersController extends UsersAppController {
 		}
 	}
 
-/**
- * Add a user to the database
- *
- * @return void
- * @access public
- */
+    /**
+     * Add a user to the database
+     *
+     * @return void
+     * @access public
+     */
 	public function add() {
-		$this->set('title_for_layout', __d('croogo', 'Register'));
-		if (!empty($this->request->data)) {
-			$this->User->create();
+		if (empty($this->request->data)) {
+            return $this->loadAddPage();
+        }
 
-			//$this->request->data['User']['role_id'] = 2; // Registered
-			$this->request->data['User']['activation_key'] = md5(uniqid());
-			$this->request->data['User']['status'] = 1;
-			$this->request->data['User']['username'] = htmlspecialchars($this->request->data['User']['username']);
-			//$this->request->data['User']['website'] = htmlspecialchars($this->request->data['User']['website']);
-			$this->request->data['User']['name'] = htmlspecialchars($this->request->data['User']['name']);
-			//$this->User->save($this->request->data)
+        // if we haven't been sent one of these options, then someone is trying to mess with us
+        if(!isset($this->request->data['RegisterExpertForm']) && !isset($this->request->data['RegisterStudentForm'])) {
+            // let's error out and end this now
+            throw new MethodNotAllowedException();
+        }
 
-            // protected against a malicious user overwriting any other user's info while registering
-            unset($this->request->data['User']['id']);
+        $type = 'student';
+        $key = 'RegisterStudentForm';
+        if(isset($this->request->data['RegisterExpertForm'])) {
+            $type = 'expert';
+            $key = 'RegisterExpertForm';
+        }
 
-            // prevent a trivial ability to change a user's role to an admin (just change the role_id in the form submitted!)
-            if(isset($this->request->data['User']['role_id'])) {
-                $role_id = $this->request->data['User']['role_id'];
+        // scrub our post data to try and protect ourselves a bit against what we might get sent
+        // and we only send in the core form values we are interested in
+        $semiSafeData = $this->scrubRegistrationData($type, $this->request->data[$key]);
 
-                if($role_id == 4) {
-                    $this->request->data['User']['role_id'] = 4;
-                } else {
-                    $this->request->data['User']['role_id'] = 2;
+        // now we initialize our user with various values we need
+        $semiSafeData = $this->setInitialValues($type, $semiSafeData);
+
+        // translate values from something our XML API has been told to send into something that CakePHP is expecting
+        // we adjust fieldnames and try to make things more like Laravel 4 will like down the road
+        $semiSafeData = $this->handleTranslationlayer($semiSafeData);
+
+        // now put things back in a form that Cake models understand
+        $semiSafeData = array($key => $semiSafeData);
+
+        // and then proceed to handle registration
+        $this->handleRegistration($type, $semiSafeData);
+	}
+
+    private function loadAddPage()
+    {
+        $this->set('title_for_layout', __d('croogo', 'Register'));
+        $this->set('type', $this->Session->read('type'));
+        return $this->render('add');
+    }
+
+    /**
+     * We try and protect ourselves here a little.  Oh for a nicer framework that would guard us without this being necessary
+     *
+     * @param $type
+     * @param $unsafeData
+     */
+    private function scrubRegistrationData($type, $unsafeData)
+    {
+        // protected against a malicious user overwriting any other user's info while registering
+        unset($unsafeData['id']);
+
+        // do a basic conversion of data.  It still isn't that safe, but it's better than nothing at the moment
+        // Let's improve this down the road
+        $unsafeData['username'] = htmlspecialchars($unsafeData['username']);
+        $unsafeData['firstname'] = htmlspecialchars($unsafeData['firstname']);
+        $unsafeData['lastname'] = htmlspecialchars($unsafeData['lastname']);
+
+        // @TODO: any other security improvements we want to make?  Still a bunch of fields that are going to go through here
+        //$this->request->data['User']['website'] = htmlspecialchars($this->request->data['User']['website']);
+
+        return $unsafeData;
+    }
+
+    /**
+     * @param $semiSafeData
+     */
+    private function setInitialValues($type, $semiSafeData)
+    {
+        // prevent a trivial ability to change a user's role to an admin
+        // (previously you could just change the role_id in the form submitted!)
+        // instead, we're now hard-coding this and not giving people the option to mess with us
+
+        if($type == 'expert') {
+            $semiSafeData['role_id'] = 2;
+        } else {
+            $semiSafeData['role_id'] = 4;
+        }
+
+        // setup an activation key if needed down the road
+        $semiSafeData['activation_key'] = md5(uniqid());
+
+        // activate this account in our system
+        $semiSafeData['status'] = 1;
+
+        return $semiSafeData;
+    }
+
+    /**
+     * Translates from what our API and forms are sending us into what Cake and our DB still want
+     *
+     * @param $semiSafeData
+     * @return mixed
+     */
+    private function handleTranslationLayer($semiSafeData)
+    {
+        // Translation layer because our original DB column names were badly chosen
+        $semiSafeData['name'] = $semiSafeData['firstname'];
+        $semiSafeData['lname'] = $semiSafeData['lastname'];
+
+        // we adjusted the fieldname for verifying passwords to more closely match Laravel 4
+        $semiSafeData['verify_password'] = $semiSafeData['password_confirmation'];
+
+        // unset the old values
+        unset($semiSafeData['firstname']);
+        unset($semiSafeData['lastname']);
+        unset($semiSafeData['password_confirmation']);
+
+        return $semiSafeData;
+    }
+
+    /**
+     * Handles the registration process
+     *
+     * @param $semiSafeData
+     */
+    private function handleRegistration($type, $semiSafeData)
+    {
+        // check to see if we're adding a student or a tutor
+        if($type == 'expert') {
+            // we're registering a tutor
+            $result = $this->registerExpert($semiSafeData);
+
+            $redirectUrl = array('action' => 'billing');
+            $successMessage = __d(
+                'croogo',
+                'You have successfully registered an account. Please enter in your billing info to show up in the search results.'
+            );
+        }
+        // we're registering a student
+        else {
+            $result = $this->registerStudent($semiSafeData);
+
+            $redirectUrl = array('action' => 'index');
+            $successMessage = __d(
+                'croogo',
+                'You have successfully registered an account! On to find a good tutor! :-)'
+            );
+        }
+
+        if (!$result) {
+            Croogo::dispatchEvent('Controller.Users.registrationFailure', $this);
+            $this->Session->setFlash(
+                __d('croogo', 'The User could not be saved. Please, try again.'),
+                'default',
+                array('class' => 'error')
+            );
+            return $this->loadAddPage();
+        }
+
+        Croogo::dispatchEvent('Controller.Users.registrationSuccessful', $this);
+
+        // this was never turned on, I think we can throw it away
+        // $this->giveOutTrophiesToFirstOneHundredUsers()
+
+        Croogo::dispatchEvent('Controller.Users.beforeLogin', $this);
+
+        if (!$this->Auth->login($result['User'])) {
+            Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
+            $this->Session->setFlash('The password you entered is incorrect.', 'default', array('class' => 'error'), 'auth');
+            $this->redirect($this->Auth->loginAction);
+        }
+
+        Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
+
+        $userId = $this->Session->read('Auth.User.id');
+        $this->setOnlineStatus($userId, true);
+
+        // Not sure what this is used for, I think we should get rid of it eventually
+        $_SESSION['userid'] = $userId;
+
+        $this->Session->setFlash($successMessage, 'default', array('class' => 'success'));
+        $this->redirect($redirectUrl);
+    }
+
+    /**
+     * Registers our student or fails out
+     *
+     * @param $unsafeData
+     * @return bool
+     */
+    private function registerStudent($unsafeData) {
+        // $this->RegisterStudentForm->set($unsafeData);
+
+        // @TODO: we'd love to enable validations here eventually
+        // for now, we're leaving this off though ...
+        // if($this->StudentAccountCreationForm->validates()) {
+        // }
+
+//        App::import("Model", "Users.RegisterStudentForm");
+//        $student = new RegisterStudentForm();
+
+//        App::import("Model", "Users.User");
+
+        // now convert out of our setup to a user model array
+        $unsafeData = $unsafeData['RegisterStudentForm'];
+        $data['User'] = $unsafeData;
+
+        // have the user account handle some of the filtering for us
+        $this->User->create($data, true);
+
+        return $this->User->save();
+    }
+
+    /**
+     * Registers our tutor or fails out
+     *
+     * @param $unsafeData
+     * @return mixed
+     */
+    private function registerExpert($unsafeData) {
+        // now convert out of our setup to a user model array
+        $unsafeData = $unsafeData['RegisterExpertForm'];
+        $data['User'] = $unsafeData;
+
+        $this->User->create($unsafeData, true);
+
+        return $this->User->save();
+    }
+
+    /**
+     * Whether the specified user is online or not
+     * @param $isOnline
+     */
+    private function setOnlineStatus($userId, $isOnline)
+    {
+        $this->User->id = $userId;
+        $this->User->saveField('is_online', $isOnline);
+    }
+
+    /**
+     * @TODO: decide whether we even need this or whether we can just throw it away completely
+     *
+     * Be forewarned, it's really messy in here, India guy code coming up
+     */
+    private function giveOutTrophiesToFirstOneHundredUsers()
+    {
+        $newUser = $this->User->getLastInsertId();
+        // $newUser = 4;
+        $trophyamountlesson = "trophy";
+
+        if ($this->Session->check('requestedbyuser')) {
+            if ($newUser < 100) {
+                $requesteduser = $this->User->find('first', array(
+                        'conditions' => array(
+                            'User.id' => $this->Session->read('requestedbyuser'),
+                        ),
+                    ));
+
+                if ($this->Session->check('requestedbyuser')) {
+                    if ($requesteduser['User']['role_id'] == 2) {
+                        $trophyamountlesson = '5';
+                    } else if ($requesteduser['User']['role_id'] == 4) {
+                        $trophyamountlesson = 'lesson';
+                    }
                 }
-            } else {
-                $this->request->data['User']['role_id'] = 2; // our student role
             }
 
-			if ($this->User->save($this->request->data)) {
-				$newUser = $this->User->getLastInsertId();
-				// $newUser = 4;
-				$trophyamountlesson = "trophy";
+            $this->request->data['Userpoint']['user_id'] = $newUser;
+            $this->request->data['Userpoint']['point'] = 5;
+            $this->request->data['Userpoint']['date'] = date('Y-m-d H:i:s');
+            $this->request->data['Userpoint']['trophyamountlesson'] = "";
+            $this->request->data['Userpoint']['paid_or_not'] = 0;
 
-				if ($this->Session->check('requestedbyuser')) {
-					if ($newUser < 100) {
-						$requesteduser = $this->User->find('first', array(
-							'conditions' => array(
-								'User.id' => $this->Session->read('requestedbyuser'),
-							),
-						));
-
-						if ($this->Session->check('requestedbyuser')) {
-							if ($requesteduser['User']['role_id'] == 2) {
-								$trophyamountlesson = '5';
-							} else if ($requesteduser['User']['role_id'] == 4) {
-								$trophyamountlesson = 'lesson';
-							}
-						}
-					}
-
-					$this->request->data['Userpoint']['user_id'] = $newUser;
-					$this->request->data['Userpoint']['point'] = 5;
-					$this->request->data['Userpoint']['date'] = date('Y-m-d H:i:s');
-					$this->request->data['Userpoint']['trophyamountlesson'] = "";
-					$this->request->data['Userpoint']['paid_or_not'] = 0;
-
-					$this->Userpoint->save($this->request->data);
-					unset($this->request->data['Userpoint']);
-					$this->Userpoint->create();
-					$this->request->data['Userpoint']['user_id'] = $this->Session->read('requestedbyuser');
-					$this->request->data['Userpoint']['point'] = 1;
-					$this->request->data['Userpoint']['date'] = date('Y-m-d H:i:s');
-					$this->request->data['Userpoint']['trophyamountlesson'] = $trophyamountlesson;
-					$this->request->data['Userpoint']['paid_or_not'] = 0;
-					$this->Userpoint->save($this->request->data);
-					$this->Session->delete('requestedbyuser');
-				}
-				Croogo::dispatchEvent('Controller.Users.registrationSuccessful', $this);
-
-				Croogo::dispatchEvent('Controller.Users.beforeLogin', $this);
-
-				if ($this->Auth->login()) {
-					Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
-
-					$this->User->id = $this->Session->read('Auth.User.id');
-					$this->User->saveField('is_online', 1);
-
-					$_SESSION['userid'] = $this->Session->read('Auth.User.id');
-
-					$type = $this->Session->read('type');
-
-					if ($type == 'tutor') {
-						$this->Session->setFlash(__d('croogo', 'You have successfully registered an account. Please enter in your billing info to show up in the search results.'), 'default', array('class' => 'success'));
-						$this->redirect(array('action' => 'billing'));
-					} else {
-						$this->Session->setFlash(__d('croogo', 'You have successfully registered an account! On to find a good tutor! :-)'), 'default', array('class' => 'success'));
-						$this->redirect(array('action' => 'index'));
-					}
-				} else {
-					Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
-					$this->Session->setFlash('The password you entered is incorrect.', 'default', array('class' => 'error'), 'auth');
-					$this->redirect($this->Auth->loginAction);
-				}
-			} else {
-				Croogo::dispatchEvent('Controller.Users.registrationFailure', $this);
-				$this->Session->setFlash(__d('croogo', 'The User could not be saved. Please, try again.'), 'default', array('class' => 'error'));
-			}
-		}
-
-		$roles = $this->User->Role->find('list');
-
-		$this->set('type', $this->Session->read('type'));
-		$this->set(compact('roles'));
-	}
+            $this->Userpoint->save($this->request->data);
+            unset($this->request->data['Userpoint']);
+            $this->Userpoint->create();
+            $this->request->data['Userpoint']['user_id'] = $this->Session->read('requestedbyuser');
+            $this->request->data['Userpoint']['point'] = 1;
+            $this->request->data['Userpoint']['date'] = date('Y-m-d H:i:s');
+            $this->request->data['Userpoint']['trophyamountlesson'] = $trophyamountlesson;
+            $this->request->data['Userpoint']['paid_or_not'] = 0;
+            $this->Userpoint->save($this->request->data);
+            $this->Session->delete('requestedbyuser');
+        }
+    }
 
 /**
  * Activate the user (via email confirmation)
@@ -826,28 +999,27 @@ class UsersController extends UsersAppController {
 			if ($this->Auth->login()) {
 				Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
 
-                $data['User']['id'] = (int)$this->Session->read('Auth.User.id');
-				$data['User']['is_online'] = 1;
+                $userId = (int)$this->Session->read('Auth.User.id');
+                $this->setOnlineStatus($userId, true);
 
-				$_SESSION['userid'] = $this->Session->read('Auth.User.id');
-				if ($this->User->save($data)) {
+                // not sure what this is used for, it'd be nice to get rid of it
+				$_SESSION['userid'] = $userId;
 
-                    // API: handle our API info and send back info
-                    if($this->RequestHandler->isXml()) {
-                        $user = $this->Session->read('Auth.User');
+                // API: handle our API info and send back info
+                if($this->RequestHandler->isXml()) {
+                    $user = $this->Session->read('Auth.User');
 
-                        // we'll translate a bit between what we've got and our system
-                        $this->set('id', $user['id']);
-                        $this->set('role', $user['Role']['alias']);
-                        $this->set('firstname', $user['name']);
-                        $this->set('lastname', $user['lname']);
-                        $this->set('profilepic', $user['profilepic']);
-                        $this->set('_rootNode', 'user');
-                        $this->set('_serialize', array('id', 'role', 'firstname', 'lastname', 'profilepic'));
-                    } else {
-                        $this->redirect($this->Auth->redirectUrl());
-                    }
-				}
+                    // we'll translate a bit between what we've got and our system
+                    $this->set('id', $user['id']);
+                    $this->set('role', $user['Role']['alias']);
+                    $this->set('firstname', $user['name']);
+                    $this->set('lastname', $user['lname']);
+                    $this->set('profilepic', $user['profilepic']);
+                    $this->set('_rootNode', 'user');
+                    $this->set('_serialize', array('id', 'role', 'firstname', 'lastname', 'profilepic'));
+                } else {
+                    $this->redirect($this->Auth->redirectUrl());
+                }
 			} else {
 				Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
                 if($this->RequestHandler->isXml()) {
@@ -870,12 +1042,12 @@ class UsersController extends UsersAppController {
 		Croogo::dispatchEvent('Controller.Users.beforeLogout', $this);
 		$this->Session->setFlash(__d('croogo', 'Log out successful.'), 'default', array('class' => 'success'));
 
+        $userId = (int)$this->Session->read('Auth.User.id');
+        $this->setOnlineStatus($this->Session->read('Auth.User.id'), false);
+
         $data = array();
-        $data['User']['is_online'] = 0;
-		$data['User']['id'] = $this->Session->read('Auth.User.id');
-		if ($this->User->save($data)) {
-			
-		}
+		$data['User']['id'] = $userId;
+
 		$this->redirect($this->Auth->logout(), null, false); // we don't want to die as soon as the redirect is over
 		Croogo::dispatchEvent('Controller.Users.afterLogout', $this, $data);
 	}
