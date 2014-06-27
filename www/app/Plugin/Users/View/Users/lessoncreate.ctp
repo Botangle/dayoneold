@@ -15,7 +15,11 @@ if(isset($user)){
 
 ?>
 
-
+<style>
+	.modal-open {
+		overflow: visible;
+	}
+</style>
 
    <div class="span9">
       <h2 class="page-title"><?php echo __("Add New Lesson")?></h2>
@@ -149,7 +153,7 @@ jQuery('.form_date').datetimepicker({
 		startView: 2,
 		minView: 2,
 		forceParse: 0,
-		startDate: dd,
+		startDate: dd
     });
 	jQuery('.form_time').datetimepicker({
         language:  'en',
