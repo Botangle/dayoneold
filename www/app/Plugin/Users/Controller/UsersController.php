@@ -611,7 +611,7 @@ class UsersController extends UsersAppController {
     {
         $this->set('title_for_layout', __d('croogo', 'Register'));
         $this->set('type', $this->Session->read('type'));
-        return $this->render('add-new');
+        return $this->render('add');
     }
 
     /**

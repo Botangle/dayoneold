@@ -118,7 +118,7 @@
         <div class="control-group">
             <label class="control-label" for="inputPassword"><?php echo __("Password:") ?></label>
             <div class="controls">
-                <?php echo $this->Form->input('password', array('class' => 'textbox', 'placeholder' => "Password", 'label' => false)); ?></div>
+                <?php echo $this->Form->input('password', array('class' => 'textbox', 'placeholder' => "Password", 'label' => false, 'id' => 'UserPassword')); ?></div>
             <div class="controls">
                 <div class="password-security" id="result" style="width:269px; height:10px;">
                     <div class="security"></div>
