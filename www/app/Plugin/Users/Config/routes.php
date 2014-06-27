@@ -94,6 +94,7 @@ CroogoRouter::connect('/users/paymentsetting', array(
  * so that we don't have to worry about people trying to sniff through our app and potentially hacking in somewhere
  * where they shouldn't be ...
  */
+Router::connect('/api/v1/register.xml', array('plugin' => 'users', 'controller' => 'users', 'action' => 'register', 'ext' => 'xml'));
 Router::connect('/api/v1/login.xml', array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'ext' => 'xml'));
 Router::connect(
     '/api/v1/user/:username.xml',

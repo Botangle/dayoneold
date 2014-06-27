@@ -732,8 +732,13 @@ class UsersController extends UsersAppController {
 
         if (!$this->Auth->login($result['User'])) {
             Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
-            $this->Session->setFlash('The password you entered is incorrect.', 'default', array('class' => 'error'), 'auth');
-            $this->redirect($this->Auth->loginAction);
+            $message = 'The password you entered is incorrect.';
+            if($this->RequestHandler->isXml()) {
+                return $this->sendXmlError(3, $message);
+            } else {
+                $this->Session->setFlash($message, 'default', array('class' => 'error'), 'auth');
+                $this->redirect($this->Auth->loginAction);
+            }
         }
 
         Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
@@ -744,8 +749,23 @@ class UsersController extends UsersAppController {
         // Not sure what this is used for, I think we should get rid of it eventually
         $_SESSION['userid'] = $userId;
 
-        $this->Session->setFlash($successMessage, 'default', array('class' => 'success'));
-        $this->redirect($redirectUrl);
+        // now, we work on sending back API information if requested
+        if($this->RequestHandler->isXml()) {
+            $user = $this->Session->read('Auth.User');
+
+            // we'll translate a bit between what we've got in the system and what we send out
+            $this->set('id', $user['id']);
+            $this->set('role', $user['Role']['alias']);
+            $this->set('firstname', $user['name']);
+            $this->set('lastname', $user['lname']);
+            $this->set('profilepic', $user['profilepic']);
+            $this->set('_rootNode', 'user');
+            $this->set('message', $message);
+            $this->set('_serialize', array('id', 'message', 'role', 'firstname', 'lastname', 'profilepic'));
+        } else {
+            $this->Session->setFlash($successMessage, 'default', array('class' => 'success'));
+            $this->redirect($redirectUrl);
+        }
     }
 
     /**
