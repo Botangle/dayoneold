@@ -577,16 +577,16 @@ class UsersController extends UsersAppController {
         }
 
         // if we haven't been sent one of these options, then someone is trying to mess with us
-        if(!isset($this->request->data['RegisterTutorForm']) && !isset($this->request->data['RegisterStudentForm'])) {
+        if(!isset($this->request->data['RegisterExpertForm']) && !isset($this->request->data['RegisterStudentForm'])) {
             // let's error out and end this now
             throw new MethodNotAllowedException();
         }
 
         $type = 'student';
         $key = 'RegisterStudentForm';
-        if(isset($this->request->data['RegisterTutorForm'])) {
-            $type = 'tutor';
-            $key = 'RegisterTutorForm';
+        if(isset($this->request->data['RegisterExpertForm'])) {
+            $type = 'expert';
+            $key = 'RegisterExpertForm';
         }
 
         // scrub our post data to try and protect ourselves a bit against what we might get sent
@@ -646,7 +646,7 @@ class UsersController extends UsersAppController {
         // (previously you could just change the role_id in the form submitted!)
         // instead, we're now hard-coding this and not giving people the option to mess with us
 
-        if($type == 'tutor') {
+        if($type == 'expert') {
             $semiSafeData['role_id'] = 2;
         } else {
             $semiSafeData['role_id'] = 4;
@@ -692,9 +692,9 @@ class UsersController extends UsersAppController {
     private function handleRegistration($type, $semiSafeData)
     {
         // check to see if we're adding a student or a tutor
-        if($type == 'tutor') {
+        if($type == 'expert') {
             // we're registering a tutor
-            $result = $this->registerTutor($semiSafeData);
+            $result = $this->registerExpert($semiSafeData);
 
             $redirectUrl = array('action' => 'billing');
             $successMessage = __d(
@@ -783,10 +783,14 @@ class UsersController extends UsersAppController {
      * @param $unsafeData
      * @return mixed
      */
-    private function registerTutor($unsafeData) {
-        $this->User->create();
+    private function registerExpert($unsafeData) {
+        // now convert out of our setup to a user model array
+        $unsafeData = $unsafeData['RegisterExpertForm'];
+        $data['User'] = $unsafeData;
 
-        return $this->User->save($this->request->data);
+        $this->User->create($unsafeData, true);
+
+        return $this->User->save();
     }
 
     /**
