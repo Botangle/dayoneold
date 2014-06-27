@@ -1514,11 +1514,11 @@ class UsersController extends UsersAppController {
 		$activeLessons = $this->Lesson->activeLessons($userId, $roleId);
         $pastLessons = $this->Lesson->pastLessons($userId, $roleId);
 
-		$this->set('activelesson', $activeLessons);
-        $this->set('upcominglesson', $upcomingLessons);
-        $this->set('pastlesson', $pastLessons);
+        $this->set('activeLessons', $activeLessons);
+        $this->set('upcomingLessons', $upcomingLessons);
+        $this->set('pastLessons', $pastLessons);
 
-		$this->render('lessons');
+        $this->render('lessons');
 	}
 
 /**
