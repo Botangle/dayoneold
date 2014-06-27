@@ -17,8 +17,6 @@
 
     SetEnv CAKE_ENV dev
 
-    AssignUserId vagrant vagrant
-
 </VirtualHost>
 
 <VirtualHost *:443>
@@ -42,8 +40,6 @@
         AllowOverride All
         Options all
     </Directory>
-
-    AssignUserId vagrant vagrant
 
     SetEnv CAKE_ENV dev
 

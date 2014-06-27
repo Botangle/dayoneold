@@ -22,6 +22,7 @@ Once the first two items are installed, then install `vagrant-hostmanager` as fo
 - Run `composer.phar install`, which will load up all our various libraries
 - Run `Console/cake Migrations.migration run`
 - Run `Console/cake Migrations.migration run -p Users`
+- Run `Console/cake schema create sessions` to build a sessions table to be used in the DB.  Answer yes both times.
 
 You should be able to access your Botangle setup now in a web browser: [http://app.botangle.dev](http://app.botangle.dev)
 
