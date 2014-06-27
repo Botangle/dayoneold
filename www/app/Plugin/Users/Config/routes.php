@@ -96,6 +96,17 @@ CroogoRouter::connect('/users/paymentsetting', array(
  */
 Router::connect('/api/v1/register.xml', array('plugin' => 'users', 'controller' => 'users', 'action' => 'register', 'ext' => 'xml'));
 Router::connect('/api/v1/login.xml', array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'ext' => 'xml'));
+
+Router::connect(
+    '/api/v1/user/lessons.xml',
+    array(
+        'plugin'        => 'users',
+        'controller'    => 'users',
+        'action'        => 'lessons',
+        'ext'           => 'xml',
+    )
+);
+
 Router::connect(
     '/api/v1/user/:username.xml',
     array(

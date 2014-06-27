@@ -1514,6 +1514,10 @@ class UsersController extends UsersAppController {
 		$activeLessons = $this->Lesson->activeLessons($userId, $roleId);
         $pastLessons = $this->Lesson->pastLessons($userId, $roleId);
 
+        if($this->RequestHandler->isXml()) {
+            $this->helpers[] = 'Users.LessonXmlTransformer';
+        }
+
         $this->set('activeLessons', $activeLessons);
         $this->set('upcomingLessons', $upcomingLessons);
         $this->set('pastLessons', $pastLessons);
