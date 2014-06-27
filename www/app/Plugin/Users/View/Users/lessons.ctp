@@ -49,8 +49,8 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 		 <?php 
 		 $newMsg = array();
 		 $conditionstype = "";
-		 if(!empty($activelesson)){  
-		foreach($activelesson as $k=>$v){ ?>
+		 if(!empty($activeLessons)){
+		foreach($activeLessons as $k=>$v){ ?>
         <div class="Lesson-row active">
          <div class="row-fluid">
         	<div class="span1 tutorimg">
@@ -128,10 +128,10 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
        </div>
 	    <div class="PageLeft-Block">
         <p class="FontStyle20 color1"><?php echo __("Upcoming Lessons")?></p>
-	  <?php  if(!empty($upcominglesson)){ ?>
+	  <?php  if(!empty($upcomingLessons)){ ?>
       
 		<?php
-		foreach($upcominglesson as $k=>$v){ ?>
+		foreach($upcomingLessons as $k=>$v){ ?>
         <div class="Lesson-row">
          <div class="row-fluid">
         	<div class="span1 tutorimg"><?php 
@@ -211,10 +211,10 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
        </div>
 	   <div class="PageLeft-Block">
         <p class="FontStyle20 color1"><?php echo __("Past Lessons")?></p>
-       <?php  if(!empty($pastlesson)){ ?>
+       <?php  if(!empty($pastLessons)){ ?>
        
 		<?php
-		foreach($pastlesson as $k=>$v){ ?>
+		foreach($pastLessons as $k=>$v){ ?>
         <div class="Lesson-row">
          <div class="row-fluid">
         	<div class="span1 tutorimg"><?php 

@@ -80,6 +80,72 @@ class Lesson extends UsersAppModel {
 //			),
 //		),
 	);
-    
 
+    public function activeLessons($userId, $roleId)
+    {
+        // we want to leave lessons off if a student isn't setup to pay
+        $extraConditions = $this->lessonsExtraConditions();
+
+        $activeLessonSQL = $this->basicLessonSQL((int)$userId, (int)$roleId, $extraConditions);
+        $activeLessonSQL .= " AND Lesson.is_confirmed = 0 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
+
+        return $this->query($activeLessonSQL);
+    }
+
+    public function pastLessons($userId, $roleId)
+    {
+        $pastLessonSQL = $this->basicLessonSQL((int)$userId, (int)$roleId);
+        $pastLessonSQL .= " AND Lesson.lesson_date < '" . date('Y-m-d') . "'";
+
+        return $this->query($pastLessonSQL);
+    }
+
+    public function upcomingLessons($userId, $roleId)
+    {
+        // we want to leave lessons off if a student isn't setup to pay
+        $extraConditions = $this->lessonsExtraConditions();
+
+        $upcomingLessonSQL = $this->basicLessonSQL((int)$userId, (int)$roleId, $extraConditions);
+        $upcomingLessonSQL .= " AND Lesson.is_confirmed = 1 AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
+
+        return $this->query($upcomingLessonSQL);
+    }
+
+    private function basicLessonSQL($userId, $roleId, $extraConditions = '')
+    {
+        $userConditionsField        = "tutor";
+        $otherConditionsField       = "student";
+        $userLessonConditionsField  = "tutor";
+
+        if ($roleId == 4) {
+            $userConditionsField = "student";
+            $otherConditionsField = "tutor";
+            $userLessonConditionsField = "student";
+            $extraConditions = '';
+        }
+
+        return "Select * from lessons as Lesson
+            {$extraConditions}
+            INNER JOIN users AS User
+                ON (User.id = Lesson.{$userConditionsField})
+                JOIN (
+                    SELECT MAX(id) as ids
+                        FROM lessons
+                        GROUP BY parent_id
+                ) as newest
+                ON Lesson.id = newest.ids
+                INNER JOIN users AS Other
+                    ON (Other.id = Lesson.{$otherConditionsField})
+            WHERE Lesson.{$userLessonConditionsField} = '{$userId}'";
+    }
+
+    /**
+     * We want to leave lessons off if a student isn't setup to pay
+     *
+     * @return string
+     */
+    private function lessonsExtraConditions()
+    {
+        return 'INNER JOIN users as student ON (student.id = Lesson.student AND student.stripe_customer_id IS NOT NULL)';
+    }
 }
