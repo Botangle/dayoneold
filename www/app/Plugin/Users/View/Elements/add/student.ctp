@@ -7,7 +7,7 @@
  * Time: 8:00 AM
  */
 ?>
-<?php echo $this->Form->create('StudentAccountCreationForm', array('class' => 'form-horizontal')); ?>
+<?php echo $this->Form->create('RegisterStudentForm', array('class' => 'form-horizontal')); ?>
 <div class="control-group">
     <label class="control-label"><?php echo __("I am a...:") ?></label>
     <div class="controls">
@@ -45,13 +45,13 @@
         <div class="control-group">
             <label class="control-label" for="firstName"><?php echo __("First Name:") ?></label>
             <div class="controls">
-                <?php echo $this->Form->input('name', array('class' => 'textbox', 'placeholder' => "First Name", 'label' => false)); ?>
+                <?php echo $this->Form->input('firstname', array('class' => 'textbox', 'placeholder' => "First Name", 'label' => false)); ?>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="lastName"><?php echo __("Last Name:") ?></label>
             <div class="controls">
-                <?php echo $this->Form->input('lname', array('class' => 'textbox', 'placeholder' => "Last Name", 'label' => false)); ?>
+                <?php echo $this->Form->input('lastname', array('class' => 'textbox', 'placeholder' => "Last Name", 'label' => false)); ?>
             </div>
         </div>
 
@@ -71,7 +71,7 @@
         <div class="control-group">
             <label class="control-label" for="confirmPassword"><?php echo __("Confirm Password:") ?></label>
             <div class="controls">
-                <?php echo $this->Form->input('verify_password', array('type' => 'password', 'class' => 'textbox', 'placeholder' => "Confirm Password", 'label' => false)); ?>
+                <?php echo $this->Form->input('password_confirmation', array('type' => 'password', 'class' => 'textbox', 'placeholder' => "Confirm Password", 'label' => false)); ?>
             </div>
         </div>
     </div>
