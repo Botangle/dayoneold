@@ -67,6 +67,22 @@ class LessonXmlTransformerHelper extends AppHelper {
         return $transformedLessons;
     }
 
+    public function transformCreatedLesson($lesson)
+    {
+        return array(
+            'id'                            => $lesson['id'],
+            'tutor_id'                      => $lesson['tutor'],
+            'student_id'                    => $lesson['student'],
+            'lesson_date'                   => $lesson['lesson_date'],
+            'lesson_time'                   => $lesson['lesson_time'],
+            'duration'                      => $lesson['duration'],
+            'subject'                       => $lesson['subject'],
+            'repetition'                    => '',                  // @TODO: work this into our API eventually
+            'notes'                         => $lesson['notes'],
+            'is_confirmed'                  => $lesson['is_confirmed'],
+        );
+    }
+
     public function transformProfilePic($profilePic)
     {
         if($profilePic == '') {
