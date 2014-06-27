@@ -21,7 +21,7 @@
 			'/croogo/css/bootstrap.min',
 			'/croogo/css/bootstrap-responsive.min',
 			'/croogo/css/global',
-			'/croogo/css/navbar-fixed-top',
+//			'/croogo/css/navbar-fixed-top',
 			'/croogo/css/dev',
 		));
 		echo $this->Layout->js();

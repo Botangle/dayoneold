@@ -26,6 +26,10 @@ if (Configure::read('Croogo.installed')) {
 }
 
 // Page
+CroogoRouter::connect('/how-it-works', array(
+        'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
+        'type' => 'page', 'slug' => 'how-it-works'
+    ));
 CroogoRouter::connect('/about', array(
 	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
 	'type' => 'page', 'slug' => 'about'
@@ -37,10 +41,6 @@ CroogoRouter::connect('/privacy', array(
 CroogoRouter::connect('/faq', array(
 	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
 	'type' => 'page', 'slug' => 'faq'
-));
-CroogoRouter::connect('/contact-us', array(
-	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
-	'type' => 'page', 'slug' => 'contact-us'
 ));
 CroogoRouter::connect('/terms', array(
 	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',

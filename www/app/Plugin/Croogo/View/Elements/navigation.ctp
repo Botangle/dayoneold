@@ -1,5 +1,5 @@
 <?php 
-$homecls = $categoriescls = $topchart = $aboutclas=$reportbug =$logincls= $myaccountcls = $topheadclass="";
+$homecls = $howitworksClass = $categoriescls = $topchart = $aboutclas=$reportbug =$logincls= $myaccountcls = $topheadclass="";
 /*
 if($this->Session->read('Auth.User.id')){ 
 	if(($this->Session->read('Auth.User.role_id')==2) && ($this->Session->read('Auth.User.claim_status')==0))
@@ -21,9 +21,11 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
 	$homecls = "active";
 }else if($this->params['controller']=='categories' && $this->params['action']=='index'){
 	$categoriescls = "active";
+}else if($this->params['controller']=='nodes' && $this->params->url=='how-it-works'){
+    $howitworksClass = "active";
 }else if($this->params['controller']=='users' && $this->params['action']=='topchart'){
 	$topchart = "active";
-}else if($this->params['controller']=='nodes' && $this->params['action']=='view'){
+}else if($this->params['controller']=='nodes' && $this->params->url=='about'){
 	$aboutclas = "active";
 }else if($this->params['controller']=='users' && $this->params['action']=='login'){
 	$logincls = "active";
@@ -41,7 +43,7 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
       <?php
 	  echo $this->Html->link(
 		   $this->Html->image(
-			'../croogo/img/logo.png'
+			'/croogo/img/logo.png'
 			),'/'
      ,  
 	array('class'=>'navbar-brand','title'=>__('Home'),'escape' => false )
@@ -57,7 +59,16 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
 		array('class' => 'home '.$homecls.'', 'title' => __('Home')));
 		?>
 		 </li>
-        <li>
+          <li>
+              <?php echo $this->Html->link(
+                  __('How it Works'),
+                  '/how-it-works',
+                  array('class' => 'category '.$howitworksClass.'', 'title' =>  __('How it Works'))
+              );?>
+
+
+          </li>
+          <li>
 		<?php echo $this->Html->link(
     __('Categories'),
     '/categories',

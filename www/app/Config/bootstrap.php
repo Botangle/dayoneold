@@ -65,8 +65,13 @@ CakeLog::config('error', array(
 	'file' => 'error',
 ));
 
+/**
+ * Plugin section where we load all our various plugins
+ */
+
 CakePlugin::load('Croogo', array('bootstrap' => true));
 CakePlugin::load('Migrations');
+CakePlugin::load('Uploader');
 
 /**
  * Stripe Configuration
@@ -102,3 +107,7 @@ CakeLog::config('stripe', array(
     'scopes' => array('stripe'),
     'file' => 'stripe',
 ));
+
+// we've got a user listener event setup to handle user retention logging
+// article here: http://martinbean.co.uk/blog/2013/11/22/getting-to-grips-with-cakephps-events-system/
+App::uses('UserListener', 'Event');

@@ -13,3 +13,15 @@ CroogoRouter::connect('/add', array(
 	'plugin' => 'categories', 'controller' => 'categories', 'action' => 'add'
 )); 
 */
+
+/**
+ * API v1
+ */
+CroogoRouter::connect(
+    '/api/v1/categories/index.xml',
+    array(
+        'plugin'        => 'categories',
+        'controller'    => 'categories',
+        'action'        => 'index',
+        'ext'           => 'xml'
+    ));

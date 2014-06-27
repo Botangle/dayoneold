@@ -1,5 +1,4 @@
 <?php
-
 App::uses('CroogoAppController', 'Croogo.Controller');
 
 /**
@@ -10,4 +9,19 @@ App::uses('CroogoAppController', 'Croogo.Controller');
  */
 class AppController extends CroogoAppController {
 
+    /**
+     * Used to send back consistent API error messages for our XML API
+     *
+     * @param $code int
+     * @param $message
+     * @return CakeResponse
+     */
+    public function sendXmlError($code, $message)
+    {
+        $this->set('error', $message);
+        $this->set('errorCode', $code);
+        $this->set('_rootNode', 'error');
+        $this->set('_serialize', array('error', 'errorCode'));
+        return $this->render();
+    }
 }

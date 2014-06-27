@@ -57,6 +57,9 @@ if ($this->request->params['action'] == 'admin_add') {
 					'label' => __d('croogo', 'Email'),
 				));
 				 
+//				echo $this->Form->input('profilepic', array(
+//					'label' => __d('croogo', 'Profilepic'),
+//				));
 			?>
 			</div>
 

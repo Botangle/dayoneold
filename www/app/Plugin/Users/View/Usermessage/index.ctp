@@ -62,7 +62,8 @@ echo $this->element(
                                                     <?php } ?>
                                                 </div>
                                                 <div class="span8 sender-name">
-                                                    <?php echo ucfirst(h($v['User']['username'])); ?>
+                                                    <?php // echo ucfirst(h($v['User']['username'])); ?>
+													<?php echo ucfirst($user['User']['name']) . ' ' . ucfirst($user['User']['lname']); ?>
                                                     <br><span class="FontStyle11">
                                                         <?php
                                                         // we check to see if we have a message, as if we're

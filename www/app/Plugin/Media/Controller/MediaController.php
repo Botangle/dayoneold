@@ -50,10 +50,10 @@ class MediaController extends MediaAppController {
 	function beforeFilter(){
 	 
 		parent::beforeFilter();
-		 $this->Security->validatePost = false;
-		 $this->Security->csrfCheck = false;
-		 
+//		 $this->Security->validatePost = false;
+//		 $this->Security->csrfCheck = false;
 		 $this->Security->unlockedActions = array('index');
+		 
 		 $this->Auth->allow('index','detail'); 
 	}
 

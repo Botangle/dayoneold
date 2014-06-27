@@ -28,6 +28,7 @@ class TwiddlaComponent extends Component {
     public function getMeetingId()
     {
         // @TODO: shift to using SSL for this long-term?
+        // @TODO: do we want to do any type of error checking in here?  currently, this is pretty bare bones ... :-/
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "http://www.twiddla.com/API/CreateMeeting.aspx");
         curl_setopt($ch, CURLOPT_POST, 1);

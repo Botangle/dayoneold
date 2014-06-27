@@ -11,8 +11,8 @@ echo $openTokHelper->videoInformation($opentok_api_key, $opentok_session_id, $op
         <div id="videoChatBox">Your tutor</div>
         <div id="small-stream">You</div>
     <?php else: ?>
-        <div id="videoChatBox">You</div>
-        <div id="small-stream">Your tutor</div>
+        <div id="videoChatBox">Your student</div>
+        <div id="small-stream">You</div>
     <?php endif;?>
 </div>
 

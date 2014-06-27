@@ -2,6 +2,7 @@
 
 App::uses('UsersAppModel', 'Users.Model');
 App::uses('AuthComponent', 'Controller/Component');
+App::uses('AttachmentBehavior', 'Uploader.Model/Behavior');
 
 /**
  * User
@@ -43,6 +44,55 @@ class User extends UsersAppModel {
 			'type' => 'requester',
 		),
 		'Search.Searchable',
+		'Uploader.Attachment' => array(
+			'profilepic' => array(
+				'tempDir' => TMP,
+				'nameCallback' => 'formatFileName',
+//				'uploadDir' => 'uploads/profilepic',
+//				'finalPath' => '/uploads/profilepic/',
+				'overwrite' => true,
+				'stopSave' => false,
+				'allowEmpty' => true,
+				'transforms' => array(
+					'resize' => array(
+						'class' => 'resize',
+						'width' => 250,
+						'height' => 250,
+						'self' => true,
+						'aspect' => true,
+					),
+					'crop' => array(
+						'class' => 'crop',
+						'width' => 250,
+						'height' => 250,
+						'self' => true,
+						'aspect' => true,
+					)
+				),
+				'transport' => array(
+					'class' => AttachmentBehavior::S3,
+					'accessKey' => 'AKIAJWF54OAT34LFKR3Q',
+					'secretKey' => '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',
+					'bucket' => 'botangleassets',
+					'region' => Aws\Common\Enum\Region::US_EAST_1,
+					'folder' => 'profilepic/',
+				),
+			)
+		),
+		'Uploader.FileValidation' => array(
+			'profilepic' => array(
+				'type' => 'image',
+				'extension' => array(
+					'value' => array('gif', 'jpg', 'png', 'jpeg'),
+					'error' => 'Incorrect file type. Only image is allowed.',
+				),
+				'filesize' => array(
+					'value' => 5242880,
+					'error' => 'Filesize is to high, please reduce it.',
+				),
+				'required' => false,
+			)
+		)
 	);
 
 /**
@@ -157,6 +207,21 @@ class User extends UsersAppModel {
 		'is_featured',
 		'status',
 	);
+	
+/**
+ * Format the filename a specific way before uploading and attaching.
+ * 
+ * @access public
+ * @param string $name	- The current filename without extension
+ * @param array $file	- The $_FILES data
+ * @return string
+ */
+	function formatFileName($name, $file) {
+//		$file = pathinfo($name);
+//		$name = String::truncate($file['filename'], 20);
+//		return uniqid();
+		return uniqid();
+	}
 
 /**
  * beforeDelete

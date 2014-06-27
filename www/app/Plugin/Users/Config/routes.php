@@ -27,6 +27,9 @@ CroogoRouter::connect('/passwordrecovery', array('plugin' => 'users', 'controlle
 CroogoRouter::connect('/user/:username', array(
 	'plugin' => 'users', 'controller' => 'users', 'action' => 'view'), array('pass' => array('username')
 ));
+CroogoRouter::connect('/user/id/:id', array(
+        'plugin' => 'users', 'controller' => 'users', 'action' => 'viewId'), array('pass' => array('id')
+    ));
 CroogoRouter::connect('/users/topchart', array(
 	'plugin' => 'users',
 	'controller' => 'users',
@@ -80,3 +83,72 @@ CroogoRouter::connect('/users/paymentsetting', array(
 	'controller' => 'users',
 	'action' => 'paymentsetting')
 );
+
+/**
+ * @TODO: work out how to get out of Croogo's ACL system being so tightly bound in to everything :-/
+ * It's what forced us to go this route instead of having our own nice, clean plugin for the API
+ *
+ * API v1 routing
+ *
+ * We use manual .xml extensions on our routes, along with a 'ext' => 'xml' addition to the route parameter
+ * so that we don't have to worry about people trying to sniff through our app and potentially hacking in somewhere
+ * where they shouldn't be ...
+ */
+Router::connect('/api/v1/register.xml', array('plugin' => 'users', 'controller' => 'users', 'action' => 'register', 'ext' => 'xml'));
+Router::connect('/api/v1/login.xml', array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'ext' => 'xml'));
+
+Router::connect(
+    '/api/v1/user/lessons.xml',
+    array(
+        'plugin'        => 'users',
+        'controller'    => 'users',
+        'action'        => 'lessons',
+        'ext'           => 'xml',
+    )
+);
+
+Router::connect(
+    '/api/v1/user/:username.xml',
+    array(
+        'plugin' => 'users',
+        'controller' => 'users',
+        'action' => 'view',
+        'ext' => 'xml'
+    ),
+    array(
+        'pass' => array(
+            'username',
+        ),
+    )
+);
+Router::connect(
+    '/api/v1/users/topchart.xml',
+    array(
+        'plugin'        => 'users',
+        'controller'    => 'users',
+        'action'        => 'topchart',
+        'ext'           => 'xml',
+    )
+);
+Router::connect(
+    '/api/v1/users/topchart.xml/:categoryname',
+    array(
+        'plugin'        => 'users',
+        'controller'    => 'users',
+        'action'        => 'topchart',
+        'ext'           => 'xml',
+    ),
+    array(
+        'pass' => array(
+            'categoryname',
+        )
+    )
+);
+//CroogoRouter::connect('/users/topchart/:categoryname/:online',
+//    array(
+//        'plugin' => 'users',
+//        'controller' => 'users',
+//        'action' => 'topchart'
+//    ),
+//    array('pass' => array('categoryname','online'))
+//);

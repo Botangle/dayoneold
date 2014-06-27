@@ -91,14 +91,14 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'payme
 				); */
 			?>
 		</li>
-		<li>
+<!--		<li>
 			<?php
 				echo $this->Html->link(
 					__('My Calendar'),	'/users/mycalander',
 					array('title'=>__('My Calendar'),'class'=>$accountcalander )
 				);
  			?>
-		</li>
+		</li>-->
 <?php /*  	<li>
 			<a href="<?php echo $this->webroot ?>users/invite" title="Lessons" class="<?php echo $accountinvite ?>">
 				Invite Users

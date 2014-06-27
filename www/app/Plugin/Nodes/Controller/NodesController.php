@@ -849,7 +849,7 @@ class NodesController extends NodesAppController {
 				compact('error')
 			);
 			if ($emailSent) {
-				$this->Session->setFlash(__d('croogo', 'Your email has been sent to admin please wait for response.'), 'default', array('class' => 'success'));
+				$this->Session->setFlash(__d('croogo', 'Thanks for submitting your bug report!'), 'default', array('class' => 'success'));
 				$this->redirect(array('action' => 'reportbug'));
 			} else {
 				$this->Session->setFlash(__d('croogo', 'An error occurred. Please try again.'), 'default', array('class' => 'error'));

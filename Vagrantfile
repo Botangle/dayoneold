@@ -7,12 +7,10 @@ hostname = "app.botangle.dev"
 VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
+  config.vm.box = "ubuntu/trusty64"
+
   # VMWare Fusion customization
   config.vm.provider :vmware_fusion do |vmware, override|
-
-    # Which box?
-    override.vm.box = "opscode-ubuntu-13.04-x64-vmware"
-    override.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/vmware/opscode_ubuntu-13.04_chef-provisionerless.box"
 
     # Customize VM
     vmware.vmx["memsize"] = "1024"
@@ -22,10 +20,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Virtualbox customization
   config.vm.provider :virtualbox do |virtualbox, override|
-
-    # Which box? http://opscode.github.io/bento/
-    override.vm.box = "opscode-ubuntu-13.04-x64"
-    override.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.04_chef-provisionerless.box"
 
     # Customize VM
     virtualbox.customize ["modifyvm", :id, "--memory", "1024", "--cpus", "1", "--pae", "on", "--hwvirtex", "on", "--ioapic", "on"]
@@ -42,16 +36,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.include_offline    = true
 
   # Synced folders
-  config.vm.synced_folder "www", "/var/www"
+  config.vm.synced_folder "www", "/var/www", mount_options: ['dmode=777', 'fmode=777']
   # config.vm.synced_folder "htdocs", "/var/www/magento", nfs: true,
   #                                   mount_options: ["nolock", "async"],
   #                                   bsd__nfs_options: ["alldirs","async","nolock"]
 
   # "Provision" with hostmanager
   config.vm.provision :hostmanager
-
-  # Next, we have to get puppet onto our machine
-  config.vm.provision :shell, :path => "ubuntu.sh"
 
   # Puppet!
   config.vm.provision :puppet do |puppet|
