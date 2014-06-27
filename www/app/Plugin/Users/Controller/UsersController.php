@@ -1163,7 +1163,13 @@ class UsersController extends UsersAppController {
  *
  * @package billing
  */
-	public function billing() {
+	public function billing($layout = null) {
+        $isMobile = false;
+        if($layout != null) {
+            $this->layout = $layout;
+            $isMobile = true;
+        }
+
 		$id = $this->Session->read('Auth.User.id');
 
 		if (!empty($this->request->data)) {
@@ -1211,7 +1217,12 @@ class UsersController extends UsersAppController {
 			$this->set('paymentamount', $this->Session->read("paymentamount"));
 			$this->set('publishable_key', Configure::read('Stripe.publishable_key'));
 
-			$this->render('billing_student');
+
+            if($isMobile) {
+                return $this->render('Users/billing/student_mobile');
+            } else {
+                $this->render('Users/billing/student');
+            }
 		} else {
 
 			$stripe_setup = false;
@@ -1698,35 +1709,67 @@ class UsersController extends UsersAppController {
 /**
  * Lessons add
  *
+ * @api
+ *
  * Binds a student's proposed lesson to a tutor's account. Also notifies a student and tutor with messages about their new lesson
  */
 	public function lessons_add() {
 		if (!empty($this->request->data)) {
 
-			$this->Lesson->create();
-
 			// @TODO: ideally we'd validate things before we start trying to mess with stuff here ...
 
 			$user_id_to_message = null;
 			$id = null;
-			$need_stripe_account_setup = false;
-			if ($this->addLesson($this->request->data, $user_id_to_message, $id, $need_stripe_account_setup)) {
+			$student_needs_stripe_account_setup = false;
+            $lesson = $this->request->data;
+			if ($this->addLesson($lesson, $user_id_to_message, $id, $student_needs_stripe_account_setup)) {
 
 				// if we need billing info, then we'll need to put our lesson message and session id generation
 				// on hold and work on the billing stuff instead
-				if ($need_stripe_account_setup) {
+				if ($student_needs_stripe_account_setup) {
 					$this->Session->write('initial_lesson_setup', true);
 					$this->Session->write('new_lesson_user_id_to_message', $user_id_to_message);
 					$this->Session->write('new_lesson_lesson_id', $id);
 
-					// redirect to our billing page to get setup with Stripe
-					$this->redirect(array('action' => 'billing'));
+                    // redirect to our billing page to get setup with Stripe
+                    if($this->RequestHandler->isXml()) {
+
+                        // send back lesson information
+                        // and also info on the redirect we're about to make
+                        $redirect = array(
+                            'url' => Router::url(
+                                    array(
+                                        'plugin'        => 'users',
+                                        'controller'    => 'users',
+                                        'action'        => 'billing',
+                                        'layout'        => 'mobile-billing',
+                                    ),
+                                    true
+                                ),
+                        );
+
+                        $this->set('lesson', $lesson);
+                        $this->set('redirect', $redirect);
+                        return $this->render('lesson_created');
+                    } else {
+                        $this->redirect(array('action' => 'billing'));
+                    }
 				} else {
 					// otherwise, let's handle the post lesson add setup
 					$this->postLessonAddSetup($id, $user_id_to_message);
 				}
 			} else {
-				$this->Session->setFlash(__d('croogo', 'The Lesson could not be saved. Please, try again.'), 'default', array('class' => 'error'));
+                $message = __d('croogo', 'The Lesson could not be saved. Please try again.');
+
+                if($this->RequestHandler->isXml()) {
+                    return $this->sendXmlError(4, $message);
+                } else {
+                    $this->Session->setFlash(
+                        $message,
+                        'default',
+                        array('class' => 'error')
+                    );
+                }
 			}
 		}
 
@@ -1747,66 +1790,74 @@ class UsersController extends UsersAppController {
  * @param $data
  * @param $user_id_to_message
  * @param $id
- * @param $need_stripe_account_setup
+ * @param $student_needs_stripe_account_setup
  * @return bool
  */
-	private function addLesson($data, &$user_id_to_message, &$id, &$need_stripe_account_setup) {
-		// this gets run when a student proposes a lesson to a tutor
+	private function addLesson(&$data, &$user_id_to_message, &$id, &$student_needs_stripe_account_setup)
+    {
+        $this->Lesson->create($data);
+        $currentUserId = (int) $this->Auth->user('id');
+
+        // these values are common to both setups
+        $data['Lesson']['add_date'] = date('Y-m-d');
+        $data['Lesson']['is_confirmed'] = '0';
+
+        // this gets run when a student proposes a lesson to a tutor
 		if (isset($data['Lesson']['tutor']) && $data['Lesson']['tutor'] != "") {
 
 			$user_id_to_message = (int) $data['Lesson']['tutor'];
 
-			$data['Lesson']['tutor'] = $user_id_to_message;
-			$data['Lesson']['student'] = (int) $this->Auth->user('id');
-			$data['Lesson']['add_date'] = date('Y-m-d');
-			$data['Lesson']['readlesson'] = '1';
-			$data['Lesson']['readlessontutor'] = '0';
-			$data['Lesson']['is_confirmed'] = '0';
-			$data['Lesson']['laststatus_tutor'] = 0;
-			$data['Lesson']['laststatus_student'] = 1;
-
-			// @TODO: decide whether we want to track whether this lesson's user has been vetted as a billable Customer here or not
-			// seems like it might be better to check that right against the Users table with a join ...
+			$data['Lesson']['tutor']                = $user_id_to_message;
+			$data['Lesson']['student']              = $currentUserId;
+			$data['Lesson']['readlesson']           = '1';
+			$data['Lesson']['readlessontutor']      = '0';
+			$data['Lesson']['laststatus_tutor']     = 0;
+			$data['Lesson']['laststatus_student']   = 1;
 
 			$student = $this->User->find('first', array('conditions' => array('User.id' => $this->Auth->user('id'))));
 
-			// if we don't have a stripe customer id for this student, then we need billing info
-			$need_stripe_account_setup = (!isset($student['User']['stripe_customer_id']) || $student['User']['stripe_customer_id'] == "") ? true : false;
+			// if we don't have a stripe customer id for this student, then we need to request billing information
+            if(!isset($student['User']['stripe_customer_id']) || $student['User']['stripe_customer_id'] == "") {
+                $student_needs_stripe_account_setup = true;
+            }
 		} else {
 			// this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
 
             // @TODO: confirm this works, I think the form info is mislabeled below, but that we're actually sending in a student's name
-			$tutorid = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
-			$tutorid = $tutorid['User']['id'];
+			$tutorId = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
+			$tutorId = $tutorId['User']['id'];
 
 			// we'll want to message this person below
-			$user_id_to_message = (int) $tutorid;
+			$user_id_to_message = (int) $tutorId;
 
-			$data['Lesson']['tutor'] = (int) $this->Auth->user('id');
-			$data['Lesson']['student'] = (int) $tutorid;
-			$data['Lesson']['add_date'] = date('Y-m-d');
-			$data['Lesson']['readlesson'] = '0';
-			$data['Lesson']['readlessontutor'] = '1';
-			$data['Lesson']['is_confirmed'] = '0';
-			$data['Lesson']['laststatus_tutor'] = 1;
-			$data['Lesson']['laststatus_student'] = 0;
+			$data['Lesson']['tutor']                    = $currentUserId;
+			$data['Lesson']['student']                  = (int) $tutorId;
+			$data['Lesson']['readlesson']               = '0';
+			$data['Lesson']['readlessontutor']          = '1';
+			$data['Lesson']['laststatus_tutor']         = 1;
+			$data['Lesson']['laststatus_student']       = 0;
 		}
 
 		if ($this->Lesson->save($data, false)) {
 			$id = $this->Lesson->getLastInsertId();
+            $data['Lesson']['id'] = $id;
 
-			// @TODO: check on these items, there may be bugs.  Looks like we're unsetting our lesson data before trying to save a lesson
-			// that probably won't work.  Or rather, it may generate duplicate lessons with no data or an error?
-			if (isset($data['Lesson']['parent_id']) && $data['Lesson']['parent_id'] != "") {
-				unset($data['Lesson']);
-				$data['Lesson']['parent_id'] = $id;
-				$this->Lesson->save($data);
-			}
-			if (!isset($data['Lesson']['parent_id'])) {
-				unset($data['Lesson']);
-				$data['Lesson']['parent_id'] = $id;
-				$this->Lesson->save($data);
-			}
+// @TODO: work out what the below was supposed to do
+// Best guess is that it was supposed to allow duplicating lessons or editing a lesson and then creating a new
+// record.  But we're going to need to re-work that, either I (David) broke it when refactoring earlier (possible)
+// or it never worked in the first place (also possible)
+
+//			if (isset($data['Lesson']['parent_id']) && $data['Lesson']['parent_id'] != "") {
+//
+//				unset($data['Lesson']);
+//				$data['Lesson']['parent_id'] = $data['Lesson']['parent_id'];
+//				$this->Lesson->save($data);
+//			}
+//			if (!isset($data['Lesson']['parent_id'])) {
+//				unset($data['Lesson']);
+//				$data['Lesson']['parent_id'] = $id;
+//				$this->Lesson->save($data);
+//			}
 
             Croogo::dispatchEvent('Controller.Users.lessonAdded', $this);
 
