@@ -1164,9 +1164,11 @@ class UsersController extends UsersAppController {
  * @package billing
  */
 	public function billing($layout = null) {
-//        if($layout != null) {
-//            $this->layout = $layout;
-//        }
+        $isMobile = false;
+        if($layout != null) {
+            $this->layout = $layout;
+            $isMobile = true;
+        }
 
 		$id = $this->Session->read('Auth.User.id');
 
@@ -1215,7 +1217,12 @@ class UsersController extends UsersAppController {
 			$this->set('paymentamount', $this->Session->read("paymentamount"));
 			$this->set('publishable_key', Configure::read('Stripe.publishable_key'));
 
-			$this->render('billing_student');
+
+            if($isMobile) {
+                return $this->render('Users/billing/student_mobile');
+            } else {
+                $this->render('Users/billing/student');
+            }
 		} else {
 
 			$stripe_setup = false;
@@ -1735,7 +1742,7 @@ class UsersController extends UsersAppController {
                                         'plugin'        => 'users',
                                         'controller'    => 'users',
                                         'action'        => 'billing',
-                                        'layout'        => 'mobile',
+                                        'layout'        => 'mobile-billing',
                                     ),
                                     true
                                 ),

@@ -121,7 +121,7 @@ Router::connect(
         'plugin'        => 'users',
         'controller'    => 'users',
         'action'        => 'billing',
-        'layout'        => 'mobile',
+        'layout'        => 'mobile-billing',
     ),
     array(
         'pass' => array(
