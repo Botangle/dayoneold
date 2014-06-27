@@ -51,7 +51,6 @@ class LessonXmlTransformerHelper extends AppHelper {
                 'id'                            => $lesson['id'],
                 'created'                       => $lesson['created'],
                 'tutor'                         => $transformedTutor,
-                'tutor_id'                      => $lesson['tutor'],    // @TODO: change this in the DB to tutor_id
                 'student'                       => $transformedStudent,
                 'lesson_date'                   => $lesson['lesson_date'],
                 'lesson_time'                   => $lesson['lesson_time'],
