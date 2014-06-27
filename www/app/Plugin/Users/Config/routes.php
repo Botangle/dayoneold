@@ -106,6 +106,15 @@ Router::connect(
         'ext'           => 'xml',
     )
 );
+Router::connect(
+    '/api/v1/lesson/create.xml',
+    array(
+        'plugin'        => 'users',
+        'controller'    => 'users',
+        'action'        => 'lessons_add',
+        'ext'           => 'xml',
+    )
+);
 
 Router::connect(
     '/api/v1/user/:username.xml',

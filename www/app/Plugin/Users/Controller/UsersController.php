@@ -1698,19 +1698,20 @@ class UsersController extends UsersAppController {
 /**
  * Lessons add
  *
+ * @api
+ *
  * Binds a student's proposed lesson to a tutor's account. Also notifies a student and tutor with messages about their new lesson
  */
 	public function lessons_add() {
 		if (!empty($this->request->data)) {
-
-			$this->Lesson->create();
 
 			// @TODO: ideally we'd validate things before we start trying to mess with stuff here ...
 
 			$user_id_to_message = null;
 			$id = null;
 			$student_needs_stripe_account_setup = false;
-			if ($this->addLesson($this->request->data, $user_id_to_message, $id, $student_needs_stripe_account_setup)) {
+            $lesson = $this->request->data;
+			if ($this->addLesson($lesson, $user_id_to_message, $id, $student_needs_stripe_account_setup)) {
 
 				// if we need billing info, then we'll need to put our lesson message and session id generation
 				// on hold and work on the billing stuff instead
@@ -1719,14 +1720,37 @@ class UsersController extends UsersAppController {
 					$this->Session->write('new_lesson_user_id_to_message', $user_id_to_message);
 					$this->Session->write('new_lesson_lesson_id', $id);
 
-					// redirect to our billing page to get setup with Stripe
-					$this->redirect(array('action' => 'billing'));
+                    // redirect to our billing page to get setup with Stripe
+                    if($this->RequestHandler->isXml()) {
+
+                        // send back lesson information
+                        // and also info on the redirect we're about to make
+                        $redirect = array(
+                            'url' => Router::url(array('action' => 'billing'), true),
+                        );
+
+                        $this->set('lesson', $lesson);
+                        $this->set('redirect', $redirect);
+                        return $this->render('lesson_created');
+                    } else {
+                        $this->redirect(array('action' => 'billing'));
+                    }
 				} else {
 					// otherwise, let's handle the post lesson add setup
 					$this->postLessonAddSetup($id, $user_id_to_message);
 				}
 			} else {
-				$this->Session->setFlash(__d('croogo', 'The Lesson could not be saved. Please, try again.'), 'default', array('class' => 'error'));
+                $message = __d('croogo', 'The Lesson could not be saved. Please try again.');
+
+                if($this->RequestHandler->isXml()) {
+                    return $this->sendXmlError(4, $message);
+                } else {
+                    $this->Session->setFlash(
+                        $message,
+                        'default',
+                        array('class' => 'error')
+                    );
+                }
 			}
 		}
 
@@ -1750,8 +1774,9 @@ class UsersController extends UsersAppController {
  * @param $student_needs_stripe_account_setup
  * @return bool
  */
-	private function addLesson($data, &$user_id_to_message, &$id, &$student_needs_stripe_account_setup)
+	private function addLesson(&$data, &$user_id_to_message, &$id, &$student_needs_stripe_account_setup)
     {
+        $this->Lesson->create($data);
         $currentUserId = (int) $this->Auth->user('id');
 
         // these values are common to both setups
@@ -1796,19 +1821,24 @@ class UsersController extends UsersAppController {
 
 		if ($this->Lesson->save($data, false)) {
 			$id = $this->Lesson->getLastInsertId();
+            $data['Lesson']['id'] = $id;
 
-			// @TODO: check on these items, there may be bugs.  Looks like we're unsetting our lesson data before trying to save a lesson
-			// that probably won't work.  Or rather, it may generate duplicate lessons with no data or an error?
-			if (isset($data['Lesson']['parent_id']) && $data['Lesson']['parent_id'] != "") {
-				unset($data['Lesson']);
-				$data['Lesson']['parent_id'] = $id;
-				$this->Lesson->save($data);
-			}
-			if (!isset($data['Lesson']['parent_id'])) {
-				unset($data['Lesson']);
-				$data['Lesson']['parent_id'] = $id;
-				$this->Lesson->save($data);
-			}
+// @TODO: work out what the below was supposed to do
+// Best guess is that it was supposed to allow duplicating lessons or editing a lesson and then creating a new
+// record.  But we're going to need to re-work that, either I (David) broke it when refactoring earlier (possible)
+// or it never worked in the first place (also possible)
+
+//			if (isset($data['Lesson']['parent_id']) && $data['Lesson']['parent_id'] != "") {
+//
+//				unset($data['Lesson']);
+//				$data['Lesson']['parent_id'] = $data['Lesson']['parent_id'];
+//				$this->Lesson->save($data);
+//			}
+//			if (!isset($data['Lesson']['parent_id'])) {
+//				unset($data['Lesson']);
+//				$data['Lesson']['parent_id'] = $id;
+//				$this->Lesson->save($data);
+//			}
 
             Croogo::dispatchEvent('Controller.Users.lessonAdded', $this);
 
