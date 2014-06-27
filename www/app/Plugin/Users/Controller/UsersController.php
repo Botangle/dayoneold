@@ -1497,85 +1497,27 @@ class UsersController extends UsersAppController {
 		$this->set('users', $this->paginate());
 	}
 
-/**
- * lessons function
- *
- * Lists the active, upcoming, and past lessons according to logged-in user,
- * insofar as the user is a tutor.
- */
+    /**
+     * lessons function
+     *
+     * @api
+     *
+     * Lists the active, upcoming, and past lessons according to logged-in user,
+     * insofar as the user is a tutor.
+     */
 	public function lessons() {
-		$userconditionsfield = "tutor";
-		$otherconditionsfield = "student";
-		$userlessonconditionsfield = "tutor";
-		$readconditons = "readlessontutor";
 
-		// we want to leave lessons off if a student isn't setup to pay
-		$extraConditions = 'INNER JOIN users as student ON (student.id = Lesson.student AND student.stripe_customer_id IS NOT NULL)';
+        $userId = (int)$this->Session->read('Auth.User.id');
+        $roleId = (int)$this->Session->read('Auth.User.role_id');
 
-		if ($this->Session->read('Auth.User.role_id') == 4) {
-			$userconditionsfield = "student";
-			$otherconditionsfield = "tutor";
-			$userlessonconditionsfield = "student";
-			$readconditons = "readlesson";
-			$extraConditions = '';
-		}
+        $upcomingLessons = $this->Lesson->upcomingLessons($userId, $roleId);
+		$activeLessons = $this->Lesson->activeLessons($userId, $roleId);
+        $pastLessons = $this->Lesson->pastLessons($userId, $roleId);
 
-		$activeLessonSQL = "Select * from lessons as Lesson
-            {$extraConditions}
-            INNER JOIN `$this->databaseName`.`users` AS `User`
-		    ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
-		    JOIN (
-		        SELECT MAX(id) as ids FROM lessons
-                GROUP BY parent_id
-            ) as newest
-            ON Lesson.id = newest.ids
-            INNER JOIN `$this->databaseName`.`users` AS `Other`
-            ON (`Other`.`id` = `Lesson`.`$otherconditionsfield`)
-            WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
-                AND Lesson.is_confirmed = 0
-                AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
+		$this->set('activelesson', $activeLessons);
+        $this->set('upcominglesson', $upcomingLessons);
+        $this->set('pastlesson', $pastLessons);
 
-
-		$activelesson = $this->Lesson->query($activeLessonSQL);
-
-		$upcomingLessonSQL = "Select * from lessons as Lesson
-            {$extraConditions}
-            INNER JOIN `$this->databaseName`.`users` AS `User`
-            ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
-            JOIN (
-                SELECT MAX(id) as ids FROM lessons
-                GROUP BY parent_id
-            ) as newest
-            ON Lesson.id = newest.ids
-            INNER JOIN `$this->databaseName`.`users` AS `Other`
-            ON (`Other`.`id` = `Lesson`.`$otherconditionsfield`)
-            WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
-                AND Lesson.is_confirmed = 1
-                AND Lesson.lesson_date >= '" . date('Y-m-d') . "'";
-		$upcominglesson = $this->Lesson->query($upcomingLessonSQL);
-
-		$pastLessonSQL = "Select * from lessons as Lesson
-            INNER JOIN `$this->databaseName`.`users` AS `User`
-            ON (`User`.`id` = `Lesson`.`$userconditionsfield`)
-            JOIN (
-                SELECT MAX(id) as ids FROM lessons
-                GROUP BY parent_id
-            ) as newest
-            ON Lesson.id = newest.ids
-            INNER JOIN `$this->databaseName`.`users` AS `Other`
-            ON (`Other`.`id` = `Lesson`.`$otherconditionsfield`)
-            WHERE `Lesson`.`$userlessonconditionsfield` = '" . $this->Session->read('Auth.User.id') . "'
-                AND Lesson.lesson_date < '" . date('Y-m-d') . "'";
-		$pastlesson = $this->Lesson->query($pastLessonSQL);
-
-		$this->set(compact('activelesson', 'upcominglesson', 'pastlesson'));
-		/* $log = $this->User->getDataSource()->getLog(false, false);
-		  debug($log); */
-
-		/* @todo find out why this if statement is empty... */
-		if ($this->Session->read('Auth.User.role_id') == 4) {
-			
-		}
 		$this->render('lessons');
 	}
 
