@@ -1272,14 +1272,20 @@ class UsersController extends UsersAppController {
 
 		// now check the results we get back from Stripe. if this isn't an array, then we've got errors
 		if (!is_array($result)) {
-			// @TODO: confirm whether these errors are generic enough to show to the general public, I think they are
-			$this->Session->setFlash(__d('croogo', $result), 'default', array('class' => 'error'));
 
-			// redirect back to the page again and ask for their data again
-			// @TODO: it'd be nice if we'd auto-populate their info with what we know
-			// but we threw a bunch of it away :-)
-			// In reality, we shouldn't have too many errors here as long as the server is setup ok
-			$this->redirect(array('action' => 'billing'));
+            // @TODO: confirm whether these errors are generic enough to show to the general public, I think they are
+            $message = $result;
+            if($this->request->is('ajax')) {
+                $this->sendJsonError($message);
+            } else {
+                $this->Session->setFlash(__d('croogo', $result), 'default', array('class' => 'error'));
+
+                // redirect back to the page again and ask for their data again
+                // @TODO: it'd be nice if we'd auto-populate their info with what we know
+                // but we threw a bunch of it away :-)
+                // In reality, we shouldn't have too many errors here as long as the server is setup ok
+                $this->redirect(array('action' => 'billing'));
+            }
 		} else {
 
 			// then let's save the user account to the DB so we can refer to it again in the future
@@ -1933,9 +1939,9 @@ class UsersController extends UsersAppController {
         // and then we want to email the appropriate person as well
         $this->sendLessonProposal($lesson_id, $user_id_to_message);
 
-		// Not sure why we need to only do this if we're a student, but we'll ignore that for now
-		// but we do need to generate lesson session ids so our lessons will work
-		if ($this->request->data['Lesson']['tutorname'] == "") {
+		// if a student is proposing a lesson and the student hasn't just needed to setup billing
+        // we'll go ahead and generate lesson session ids so our lessons work (and so the expert doesn't have to wait as long)
+		if (isset($this->request->data['Lesson']) && $this->request->data['Lesson']['student_view'] == 1) {
 			$data = array();
 			$data['Lesson']['id'] = (int) $lesson_id;
 
@@ -1951,8 +1957,17 @@ class UsersController extends UsersAppController {
 			$this->Lesson->save($data);
 		}
 
-		$this->Session->setFlash(__d('croogo', 'Your lesson has been added successfully.'), 'default', array('class' => 'success'));
-		$this->redirect(array('action' => 'lessons'));
+        $message = __d('croogo', 'Your lesson has been added successfully.');
+
+        // if we're being called via Ajax, then it's related to our mobile billing system page
+        // and we need to send back a JSON message
+        if($this->request->is('ajax')) {
+            $this->sendJsonSuccess($message);
+        } else {
+            // otherwise send a flash message so they can see it on page reload
+            $this->Session->setFlash($message, 'default', array('class' => 'success'));
+    		$this->redirect(array('action' => 'lessons'));
+        }
 	}
 
 /**

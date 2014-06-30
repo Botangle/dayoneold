@@ -24,4 +24,39 @@ class AppController extends CroogoAppController {
         $this->set('_serialize', array('error', 'errorCode'));
         return $this->render();
     }
+
+    /**
+     * Sends back a JSON error in a format our jQuery system is expecting
+     *
+     * Pulled from: http://stackoverflow.com/questions/14945861/sending-correct-json-content-type-for-cakephp
+     *
+     * @param $message
+     */
+    protected function sendJsonError($message)
+    {
+        $this->sendJsonMessage('error', $message);
+    }
+
+    protected function sendJsonSuccess($message)
+    {
+        $this->sendJsonMessage('success', $message);
+    }
+
+    private function sendJsonMessage($type, $message)
+    {
+        $this->autoRender = false; // no view to render
+        $this->response->type('json');
+
+        $this->response->body(
+            json_encode(
+                array(
+                    'status'    => $type,
+                    'message' => $message,
+                )
+            )
+        );
+
+        $this->response->send();
+        $this->_stop();
+    }
 }
