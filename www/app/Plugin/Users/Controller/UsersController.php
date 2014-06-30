@@ -721,12 +721,20 @@ class UsersController extends UsersAppController {
 
         if (!$result) {
             Croogo::dispatchEvent('Controller.Users.registrationFailure', $this);
-            $this->Session->setFlash(
-                __d('croogo', 'The User could not be saved. Please, try again.'),
-                'default',
-                array('class' => 'error')
-            );
-            return $this->loadAddPage();
+
+            $message = __d('croogo', 'The User could not be saved. Please, try again.');
+
+            if($this->RequestHandler->isXml()) {
+                $errors = $this->User->invalidFields();
+                return $this->sendXmlError(5, current($errors)[0]); // only send back the first validation error
+            } else {
+                $this->Session->setFlash(
+                    $message,
+                    'default',
+                    array('class' => 'error')
+                );
+                return $this->loadAddPage();
+            }
         }
 
         Croogo::dispatchEvent('Controller.Users.registrationSuccessful', $this);
@@ -761,13 +769,12 @@ class UsersController extends UsersAppController {
 
             // we'll translate a bit between what we've got in the system and what we send out
             $this->set('id', $user['id']);
-            $this->set('role', $user['Role']['alias']);
             $this->set('firstname', $user['name']);
             $this->set('lastname', $user['lname']);
             $this->set('profilepic', $user['profilepic']);
             $this->set('_rootNode', 'user');
             $this->set('message', $message);
-            $this->set('_serialize', array('id', 'message', 'role', 'firstname', 'lastname', 'profilepic'));
+            $this->set('_serialize', array('id', 'message', 'firstname', 'lastname', 'profilepic'));
         } else {
             $this->Session->setFlash($successMessage, 'default', array('class' => 'success'));
             $this->redirect($redirectUrl);
