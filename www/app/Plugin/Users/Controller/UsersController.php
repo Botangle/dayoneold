@@ -768,13 +768,10 @@ class UsersController extends UsersAppController {
             $user = $this->Session->read('Auth.User');
 
             // we'll translate a bit between what we've got in the system and what we send out
-            $this->set('id', $user['id']);
-            $this->set('firstname', $user['name']);
-            $this->set('lastname', $user['lname']);
-            $this->set('profilepic', $user['profilepic']);
-            $this->set('_rootNode', 'user');
-            $this->set('message', $message);
-            $this->set('_serialize', array('id', 'message', 'firstname', 'lastname', 'profilepic'));
+            $this->set('user', $user);
+            $this->set('message', $successMessage);
+
+            $this->helpers[] = 'Users.UserXmlTransformer';
         } else {
             $this->Session->setFlash($successMessage, 'default', array('class' => 'success'));
             $this->redirect($redirectUrl);
