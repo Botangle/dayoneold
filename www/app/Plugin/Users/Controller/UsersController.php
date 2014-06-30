@@ -1710,6 +1710,15 @@ class UsersController extends UsersAppController {
  * Lessons add
  *
  * @api
+ * - data[Lesson][student_view] (1 = a student proposal, 0 = tutor proposal)
+ * - data[Lesson][username] (if a tutor proposal)
+ * - data[Lesson][user_id] (if a student proposal)
+ * - data[Lesson][duration] (integer, in minutes)
+ * - data[Lesson][repetition] (0 = Single Lesson, 1 = Daily, 2 = Weekly)
+ * - data[Lesson][lesson_date]
+ * - data[Lesson][lesson_time]
+ * - data[Lesson][subject]
+ * - data[Lesson][notes]
  *
  * Binds a student's proposed lesson to a tutor's account. Also notifies a student and tutor with messages about their new lesson
  */
@@ -1722,6 +1731,46 @@ class UsersController extends UsersAppController {
 			$id = null;
 			$student_needs_stripe_account_setup = false;
             $lesson = $this->request->data;
+
+            if(!isset($lesson) || !isset($lesson['Lesson']) || !isset($lesson['Lesson']['student_view'])) {
+                // @TODO: throw an exception, we're expecting it and need it
+            }
+
+            if($lesson['Lesson']['student_view'] != 0 && $lesson['Lesson']['student_view'] != 1) {
+                // @TODO: throw an exception, someone is doing something weird here
+            }
+
+            // we adjust our public API values into what we expect internally
+            // @TODO: let's change this out long-term so the fields that our DB field names match what our view / API send in
+            // the view / API names are much, **much** clearer
+
+            // we'll shift from a nice clean integer value for our repetition setup to an ugly string we'd like to get rid of
+            if(isset($lesson['Lesson']['repetition'])) {
+
+                $selectedRepetition = $lesson['Lesson']['repetition'];
+
+                $repetitionValues = array(
+                    0 => 'Single lesson',
+                    1 => 'Daily',
+                    2 => 'Weekly',
+                );
+
+                if(isset($repetitionValues[$selectedRepetition])) {
+                    $lesson['Lesson']['repet'] = $repetitionValues[$selectedRepetition];
+                } else {
+                    $lesson['Lesson']['repet'] = 'Single lesson';
+                }
+                unset($lesson['Lesson']['repetition']);
+            }
+
+            // shift from a nice clean integer (minute-based duration) to a nasty string (.5, 1.0, etc)
+            if(isset($lesson['Lesson']['duration'])) {
+
+                // converts to half-hour increments which our DB will convert to strings
+                $lesson['Lesson']['duration'] = ($lesson['Lesson']['duration'] / 60);
+            }
+
+
 			if ($this->addLesson($lesson, $user_id_to_message, $id, $student_needs_stripe_account_setup)) {
 
 				// if we need billing info, then we'll need to put our lesson message and session id generation
@@ -1787,6 +1836,9 @@ class UsersController extends UsersAppController {
  * Add a lesson for us
  * Oh, it's ugly.  Is there anyway we can improve this over time and move it to a model that handles this stuff?
  *
+ * Lesson[user_id] is used for a student proposal (we already know the tutor id)
+ * Lesson[username] is used for a tutor proposal (the tutor enters the student's username)
+ *
  * @param $data
  * @param $user_id_to_message
  * @param $id
@@ -1795,7 +1847,6 @@ class UsersController extends UsersAppController {
  */
 	private function addLesson(&$data, &$user_id_to_message, &$id, &$student_needs_stripe_account_setup)
     {
-        $this->Lesson->create($data);
         $currentUserId = (int) $this->Auth->user('id');
 
         // these values are common to both setups
@@ -1803,9 +1854,9 @@ class UsersController extends UsersAppController {
         $data['Lesson']['is_confirmed'] = '0';
 
         // this gets run when a student proposes a lesson to a tutor
-		if (isset($data['Lesson']['tutor']) && $data['Lesson']['tutor'] != "") {
+		if ($data['Lesson']['student_view'] == 1) {
 
-			$user_id_to_message = (int) $data['Lesson']['tutor'];
+			$user_id_to_message = (int) $data['Lesson']['user_id'];
 
 			$data['Lesson']['tutor']                = $user_id_to_message;
 			$data['Lesson']['student']              = $currentUserId;
@@ -1823,21 +1874,26 @@ class UsersController extends UsersAppController {
 		} else {
 			// this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
 
-            // @TODO: confirm this works, I think the form info is mislabeled below, but that we're actually sending in a student's name
-			$tutorId = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
-			$tutorId = $tutorId['User']['id'];
+            // we need to look up the username the tutor types in, and then grab the appropriate user id
+            // @TODO: work on handling errors here, we're going to have them and they need to be handled
+			$student = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['username'])));
+			$studentId = $student['User']['id'];
 
 			// we'll want to message this person below
-			$user_id_to_message = (int) $tutorId;
+			$user_id_to_message = (int) $studentId;
 
 			$data['Lesson']['tutor']                    = $currentUserId;
-			$data['Lesson']['student']                  = (int) $tutorId;
+			$data['Lesson']['student']                  = (int) $studentId;
 			$data['Lesson']['readlesson']               = '0';
 			$data['Lesson']['readlessontutor']          = '1';
 			$data['Lesson']['laststatus_tutor']         = 1;
 			$data['Lesson']['laststatus_student']       = 0;
 		}
 
+        // clean out our view specific variable, we don't want to attempt to save to the DB
+        unset($data['Lesson']['student_view']);
+
+        $this->Lesson->create($data);
 		if ($this->Lesson->save($data, false)) {
 			$id = $this->Lesson->getLastInsertId();
             $data['Lesson']['id'] = $id;
