@@ -130,11 +130,7 @@ if(isset($user)){
                 <?php 
                 echo $this->Form->radio(
                     'repetition',
-                    array(
-                        0 => 'Single lesson',
-                        1 => 'Daily',
-                        2 => 'Weekly',
-                    ),
+                    $lessonRepetitions,
                     array(
                         'legend' => false,
                         'checked' => 0,

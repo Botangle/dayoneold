@@ -1141,7 +1141,10 @@ class UsersController extends UsersAppController {
 		  $log = $this->User->getDataSource()->getLog(false, false);
 		  debug($log); */
 
-		$this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'userstatus'));
+        App::import("Model", "Users.Lesson");
+        $lessonRepetitions = Lesson::$repetitionValues;
+
+		$this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'lessonRepetitions', 'userstatus'));
 
 		// if this person we're viewing is a student, then show the student view
 		// @TODO: get this working, right now the view is all hard-coded and wouldn't be good to show
@@ -1755,14 +1758,9 @@ class UsersController extends UsersAppController {
 
                 $selectedRepetition = $lesson['Lesson']['repetition'];
 
-                $repetitionValues = array(
-                    0 => 'Single lesson',
-                    1 => 'Daily',
-                    2 => 'Weekly',
-                );
-
-                if(isset($repetitionValues[$selectedRepetition])) {
-                    $lesson['Lesson']['repet'] = $repetitionValues[$selectedRepetition];
+                App::import("Model", "Users.Lesson");
+                if(isset(Lesson::$repetitionValues[$selectedRepetition])) {
+                    $lesson['Lesson']['repet'] = Lesson::$repetitionValues[$selectedRepetition];
                 } else {
                     $lesson['Lesson']['repet'] = 'Single lesson';
                 }
@@ -1772,8 +1770,19 @@ class UsersController extends UsersAppController {
             // shift from a nice clean integer (minute-based duration) to a nasty string (.5, 1.0, etc)
             if(isset($lesson['Lesson']['duration'])) {
 
+                // if we're dealing with a half hour setup, our old data displayed it as .5 instead of 0.5
+                // so we should mimic that for now
+                $removeLeadingZero = false;
+                if($lesson['Lesson']['duration'] == 30) {
+                    $removeLeadingZero = true;
+                }
+
                 // converts to half-hour increments which our DB will convert to strings
                 $lesson['Lesson']['duration'] = ($lesson['Lesson']['duration'] / 60);
+
+                if($removeLeadingZero) {
+                    $lesson['Lesson']['duration'] = substr($lesson['Lesson']['duration'], 1);
+                }
             }
 
 
@@ -1828,6 +1837,11 @@ class UsersController extends UsersAppController {
 			}
 		}
 
+        // send this information in to our base tutor create view
+        App::import("Model", "Users.Lesson");
+        $this->set('lessonRepetitions', Lesson::$repetitionValues);
+
+        // @TODO: confirm, but I think this is dead code at this point
 		if (isset($this->request->params['pass'][0]) && $this->request->params['pass'][0] == 'ajax') {
 			$this->request->params['pass'][1];
 			$Tutorinfo = $this->User->find('first', array('conditions' => array('User.id' => $this->request->params['pass'][1])));
