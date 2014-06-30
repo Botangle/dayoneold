@@ -138,7 +138,7 @@ $subject = explode(",", $user['User']['subject']);
 													<div class="control-group"><br/>
 														<div>
 															<label class="inline span11">
-																<?php echo $this->Form->textarea('status_text', array('placeholder' => "What's in your mind?", 'label' => false, 'value' => '', 'type' => 'text', 'class' => 'userstatus', 'maxlength' => '300')); ?>
+																<?php echo $this->Form->textarea('status_text', array('placeholder' => "What's in your mind?", 'label' => false, 'value' => '', 'type' => 'text', 'class' => 'textarea', 'maxlength' => '300')); ?>
 																<div id="textarea_feedback" class="chrremaing"></div>
 																<?php echo $this->Form->hidden('username', array('value' => $user['User']['username'], 'type' => 'text')); ?>
 															</label>
