@@ -47,24 +47,43 @@
                                 var $form = $('#BillingBillingForm');
 
                                 if (response.error) {
-                                    // Show the errors on the form
-                                    $form.find('.payment-errors').text(response.error.message);
-                                    $form.find('button').prop('disabled', false);
+                                    handleErrors($form, response.error.message)
                                 } else {
                                     // token contains id, last4, and card type
                                     var token = response.id;
                                     // Insert the token into the form so it gets submitted to the server
                                     $form.append($('<input type="hidden" name="stripeToken" />').val(token));
-                                    // and submit
-                                    $form.get(0).submit();
+
+                                    // and submit using Ajax so that everything iOS-wise stays loaded
+                                    $.post(
+                                        $form.attr('action'),
+                                        $form.serialize(),
+                                        function(results) {
+                                            if(results.status == 'error') {
+                                                handleErrors($form, response.message)
+                                            } else {
+                                                WebViewJavascriptBridge.callHandler('getPaymentInfo', "success");
+                                            }
+                                        }
+                                    );
                                 }
                             };
+
+                            function handleErrors(form, message)
+                            {
+                                // Show the errors on the form
+                                form.find('.payment-errors').text(message);
+                                form.find('button').prop('disabled', false);
+
+                                // let our iOS system know we're staying on the page
+                                WebViewJavascriptBridge.callHandler('getPaymentInfo', "failure");
+                            }
                         </script>
 
                         <div class="row-fluid Add-Payment-blocks">
                             <div class="span5">
                                 <?php
-                                echo $this->Form->create('Billing', array('class' => 'form-horizontal', 'role' => 'form'));
+                                echo $this->Form->create('Billing', array('class' => '', 'role' => 'form'));
                                 echo $this->Form->input('pagetype', array('value' => "student_setup", 'type' => 'hidden'));
                                 ?>
                                 <div class="form-group">
@@ -115,11 +134,11 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12" style="padding-top: 1em">
-                                    <div class="col-xs-3">
-                                        <button type="cancel" class="btn btn-default btn-cancel">Cancel</button>
+                                <div class="col-xs-12" style="padding: 1em 0">
+                                    <div class="col-xs-3 btn-cancel">
+                                        <button type="cancel" class="btn btn-default">Cancel</button>
                                     </div>
-                                    <div class="col-xs-9">
+                                    <div class="col-xs-9 btn-add">
                                         <button type="submit" class="btn btn-warning btn-block">Add My Card to My Account</button>
                                     </div>
                                 </div>
@@ -139,3 +158,29 @@
     <!-- @end .container -->
 </div>
 <!--Wrapper main-content Block End Here-->
+
+<script>
+    function connectWebViewJavascriptBridge(callback) {
+        if (window.WebViewJavascriptBridge) {
+            callback(WebViewJavascriptBridge)
+        } else {
+            document.addEventListener('WebViewJavascriptBridgeReady', function() {
+                callback(WebViewJavascriptBridge)
+            }, false)
+        }
+    }
+
+    connectWebViewJavascriptBridge(function(bridge) {
+
+        /* Init your app here */
+    })
+
+    $('.btn-cancel button').click(function(e) {
+        var response = confirm("Cancelling means your lesson will not be scheduled.");
+        if(response == true) {
+            WebViewJavascriptBridge.callHandler('cancel');
+        }
+        return false;
+    });
+
+</script>

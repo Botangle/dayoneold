@@ -373,7 +373,10 @@ echo $this->Html->script(array(
 
 
 <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="left:40%; width:auto; right:20%; height:320px; overflow:hidden; top:25%">
-	<?php include('lessoncreate.ctp') ?>
+	<?php
+        $studentView = true;
+        include('lessoncreate.ctp');
+    ?>
 </div>
 <?php
 echo $this->Html->script(array(
@@ -402,7 +405,6 @@ echo $this->Html->script(array(
 
 		jQuery('#myModal').css('height', jQuery('.StaticPageRight-Block').outerHeight() + 120)
 		jQuery('.PageLeft-Block').css({'border-top': 0, 'box-shadow': 'none'}).parent('div.span9').css({width: 825 + 'px'})
-		jQuery('label[for="tutorname"]').html('Expert');
 		jQuery('.ui-autocomplete').css({'z-index': '999999'})
 
 		jQuery('button[type="reset"]').click(function() {

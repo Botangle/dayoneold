@@ -37,6 +37,21 @@ class UserXmlTransformerHelper extends AppHelper {
         return $transformedUser;
     }
 
+    public function transformAuthUser($user)
+    {
+        $transformedUser = array(
+            'id'                            => $user['id'],
+            'username'                      => $user['username'],
+            'firstname'                     => $user['name'],
+            'lastname'                      => $user['lname'],
+            'profilepic'                    => isset($user['profilepic'])
+                                                    ? $this->transformProfilePic($user['profilepic'])
+                                                    : $this->transformProfilePic(''),
+        );
+
+        return $transformedUser;
+    }
+
     public function transformProfilePic($profilePic)
     {
         if($profilePic == '') {

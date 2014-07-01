@@ -721,12 +721,20 @@ class UsersController extends UsersAppController {
 
         if (!$result) {
             Croogo::dispatchEvent('Controller.Users.registrationFailure', $this);
-            $this->Session->setFlash(
-                __d('croogo', 'The User could not be saved. Please, try again.'),
-                'default',
-                array('class' => 'error')
-            );
-            return $this->loadAddPage();
+
+            $message = __d('croogo', 'The User could not be saved. Please, try again.');
+
+            if($this->RequestHandler->isXml()) {
+                $errors = $this->User->invalidFields();
+                return $this->sendXmlError(5, current($errors)[0]); // only send back the first validation error
+            } else {
+                $this->Session->setFlash(
+                    $message,
+                    'default',
+                    array('class' => 'error')
+                );
+                return $this->loadAddPage();
+            }
         }
 
         Croogo::dispatchEvent('Controller.Users.registrationSuccessful', $this);
@@ -760,14 +768,10 @@ class UsersController extends UsersAppController {
             $user = $this->Session->read('Auth.User');
 
             // we'll translate a bit between what we've got in the system and what we send out
-            $this->set('id', $user['id']);
-            $this->set('role', $user['Role']['alias']);
-            $this->set('firstname', $user['name']);
-            $this->set('lastname', $user['lname']);
-            $this->set('profilepic', $user['profilepic']);
-            $this->set('_rootNode', 'user');
-            $this->set('message', $message);
-            $this->set('_serialize', array('id', 'message', 'role', 'firstname', 'lastname', 'profilepic'));
+            $this->set('user', $user);
+            $this->set('message', $successMessage);
+
+            $this->helpers[] = 'Users.UserXmlTransformer';
         } else {
             $this->Session->setFlash($successMessage, 'default', array('class' => 'success'));
             $this->redirect($redirectUrl);
@@ -1141,7 +1145,10 @@ class UsersController extends UsersAppController {
 		  $log = $this->User->getDataSource()->getLog(false, false);
 		  debug($log); */
 
-		$this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'userstatus'));
+        App::import("Model", "Users.Lesson");
+        $lessonRepetitions = Lesson::$repetitionValues;
+
+		$this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'lessonRepetitions', 'userstatus'));
 
 		// if this person we're viewing is a student, then show the student view
 		// @TODO: get this working, right now the view is all hard-coded and wouldn't be good to show
@@ -1272,14 +1279,20 @@ class UsersController extends UsersAppController {
 
 		// now check the results we get back from Stripe. if this isn't an array, then we've got errors
 		if (!is_array($result)) {
-			// @TODO: confirm whether these errors are generic enough to show to the general public, I think they are
-			$this->Session->setFlash(__d('croogo', $result), 'default', array('class' => 'error'));
 
-			// redirect back to the page again and ask for their data again
-			// @TODO: it'd be nice if we'd auto-populate their info with what we know
-			// but we threw a bunch of it away :-)
-			// In reality, we shouldn't have too many errors here as long as the server is setup ok
-			$this->redirect(array('action' => 'billing'));
+            // @TODO: confirm whether these errors are generic enough to show to the general public, I think they are
+            $message = $result;
+            if($this->request->is('ajax')) {
+                $this->sendJsonError($message);
+            } else {
+                $this->Session->setFlash(__d('croogo', $result), 'default', array('class' => 'error'));
+
+                // redirect back to the page again and ask for their data again
+                // @TODO: it'd be nice if we'd auto-populate their info with what we know
+                // but we threw a bunch of it away :-)
+                // In reality, we shouldn't have too many errors here as long as the server is setup ok
+                $this->redirect(array('action' => 'billing'));
+            }
 		} else {
 
 			// then let's save the user account to the DB so we can refer to it again in the future
@@ -1710,6 +1723,15 @@ class UsersController extends UsersAppController {
  * Lessons add
  *
  * @api
+ * - data[Lesson][student_view] (1 = a student proposal, 0 = tutor proposal)
+ * - data[Lesson][username] (if a tutor proposal)
+ * - data[Lesson][user_id] (if a student proposal)
+ * - data[Lesson][duration] (integer, in minutes)
+ * - data[Lesson][repetition] (0 = Single Lesson, 1 = Daily, 2 = Weekly)
+ * - data[Lesson][lesson_date]
+ * - data[Lesson][lesson_time]
+ * - data[Lesson][subject]
+ * - data[Lesson][notes]
  *
  * Binds a student's proposed lesson to a tutor's account. Also notifies a student and tutor with messages about their new lesson
  */
@@ -1722,6 +1744,52 @@ class UsersController extends UsersAppController {
 			$id = null;
 			$student_needs_stripe_account_setup = false;
             $lesson = $this->request->data;
+
+            if(!isset($lesson) || !isset($lesson['Lesson']) || !isset($lesson['Lesson']['student_view'])) {
+                // @TODO: throw an exception, we're expecting it and need it
+            }
+
+            if($lesson['Lesson']['student_view'] != 0 && $lesson['Lesson']['student_view'] != 1) {
+                // @TODO: throw an exception, someone is doing something weird here
+            }
+
+            // we adjust our public API values into what we expect internally
+            // @TODO: let's change this out long-term so the fields that our DB field names match what our view / API send in
+            // the view / API names are much, **much** clearer
+
+            // we'll shift from a nice clean integer value for our repetition setup to an ugly string we'd like to get rid of
+            if(isset($lesson['Lesson']['repetition'])) {
+
+                $selectedRepetition = $lesson['Lesson']['repetition'];
+
+                App::import("Model", "Users.Lesson");
+                if(isset(Lesson::$repetitionValues[$selectedRepetition])) {
+                    $lesson['Lesson']['repet'] = Lesson::$repetitionValues[$selectedRepetition];
+                } else {
+                    $lesson['Lesson']['repet'] = 'Single lesson';
+                }
+                unset($lesson['Lesson']['repetition']);
+            }
+
+            // shift from a nice clean integer (minute-based duration) to a nasty string (.5, 1.0, etc)
+            if(isset($lesson['Lesson']['duration'])) {
+
+                // if we're dealing with a half hour setup, our old data displayed it as .5 instead of 0.5
+                // so we should mimic that for now
+                $removeLeadingZero = false;
+                if($lesson['Lesson']['duration'] == 30) {
+                    $removeLeadingZero = true;
+                }
+
+                // converts to half-hour increments which our DB will convert to strings
+                $lesson['Lesson']['duration'] = ($lesson['Lesson']['duration'] / 60);
+
+                if($removeLeadingZero) {
+                    $lesson['Lesson']['duration'] = substr($lesson['Lesson']['duration'], 1);
+                }
+            }
+
+
 			if ($this->addLesson($lesson, $user_id_to_message, $id, $student_needs_stripe_account_setup)) {
 
 				// if we need billing info, then we'll need to put our lesson message and session id generation
@@ -1773,6 +1841,11 @@ class UsersController extends UsersAppController {
 			}
 		}
 
+        // send this information in to our base tutor create view
+        App::import("Model", "Users.Lesson");
+        $this->set('lessonRepetitions', Lesson::$repetitionValues);
+
+        // @TODO: confirm, but I think this is dead code at this point
 		if (isset($this->request->params['pass'][0]) && $this->request->params['pass'][0] == 'ajax') {
 			$this->request->params['pass'][1];
 			$Tutorinfo = $this->User->find('first', array('conditions' => array('User.id' => $this->request->params['pass'][1])));
@@ -1787,6 +1860,9 @@ class UsersController extends UsersAppController {
  * Add a lesson for us
  * Oh, it's ugly.  Is there anyway we can improve this over time and move it to a model that handles this stuff?
  *
+ * Lesson[user_id] is used for a student proposal (we already know the tutor id)
+ * Lesson[username] is used for a tutor proposal (the tutor enters the student's username)
+ *
  * @param $data
  * @param $user_id_to_message
  * @param $id
@@ -1795,7 +1871,6 @@ class UsersController extends UsersAppController {
  */
 	private function addLesson(&$data, &$user_id_to_message, &$id, &$student_needs_stripe_account_setup)
     {
-        $this->Lesson->create($data);
         $currentUserId = (int) $this->Auth->user('id');
 
         // these values are common to both setups
@@ -1803,9 +1878,9 @@ class UsersController extends UsersAppController {
         $data['Lesson']['is_confirmed'] = '0';
 
         // this gets run when a student proposes a lesson to a tutor
-		if (isset($data['Lesson']['tutor']) && $data['Lesson']['tutor'] != "") {
+		if ($data['Lesson']['student_view'] == 1) {
 
-			$user_id_to_message = (int) $data['Lesson']['tutor'];
+			$user_id_to_message = (int) $data['Lesson']['user_id'];
 
 			$data['Lesson']['tutor']                = $user_id_to_message;
 			$data['Lesson']['student']              = $currentUserId;
@@ -1823,21 +1898,26 @@ class UsersController extends UsersAppController {
 		} else {
 			// this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
 
-            // @TODO: confirm this works, I think the form info is mislabeled below, but that we're actually sending in a student's name
-			$tutorId = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['tutorname'])));
-			$tutorId = $tutorId['User']['id'];
+            // we need to look up the username the tutor types in, and then grab the appropriate user id
+            // @TODO: work on handling errors here, we're going to have them and they need to be handled
+			$student = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['username'])));
+			$studentId = $student['User']['id'];
 
 			// we'll want to message this person below
-			$user_id_to_message = (int) $tutorId;
+			$user_id_to_message = (int) $studentId;
 
 			$data['Lesson']['tutor']                    = $currentUserId;
-			$data['Lesson']['student']                  = (int) $tutorId;
+			$data['Lesson']['student']                  = (int) $studentId;
 			$data['Lesson']['readlesson']               = '0';
 			$data['Lesson']['readlessontutor']          = '1';
 			$data['Lesson']['laststatus_tutor']         = 1;
 			$data['Lesson']['laststatus_student']       = 0;
 		}
 
+        // clean out our view specific variable, we don't want to attempt to save to the DB
+        unset($data['Lesson']['student_view']);
+
+        $this->Lesson->create($data);
 		if ($this->Lesson->save($data, false)) {
 			$id = $this->Lesson->getLastInsertId();
             $data['Lesson']['id'] = $id;
@@ -1877,9 +1957,9 @@ class UsersController extends UsersAppController {
         // and then we want to email the appropriate person as well
         $this->sendLessonProposal($lesson_id, $user_id_to_message);
 
-		// Not sure why we need to only do this if we're a student, but we'll ignore that for now
-		// but we do need to generate lesson session ids so our lessons will work
-		if ($this->request->data['Lesson']['tutorname'] == "") {
+		// if a student is proposing a lesson and the student hasn't just needed to setup billing
+        // we'll go ahead and generate lesson session ids so our lessons work (and so the expert doesn't have to wait as long)
+		if (isset($this->request->data['Lesson']) && $this->request->data['Lesson']['student_view'] == 1) {
 			$data = array();
 			$data['Lesson']['id'] = (int) $lesson_id;
 
@@ -1895,8 +1975,17 @@ class UsersController extends UsersAppController {
 			$this->Lesson->save($data);
 		}
 
-		$this->Session->setFlash(__d('croogo', 'Your lesson has been added successfully.'), 'default', array('class' => 'success'));
-		$this->redirect(array('action' => 'lessons'));
+        $message = __d('croogo', 'Your lesson has been added successfully.');
+
+        // if we're being called via Ajax, then it's related to our mobile billing system page
+        // and we need to send back a JSON message
+        if($this->request->is('ajax')) {
+            $this->sendJsonSuccess($message);
+        } else {
+            // otherwise send a flash message so they can see it on page reload
+            $this->Session->setFlash($message, 'default', array('class' => 'success'));
+    		$this->redirect(array('action' => 'lessons'));
+        }
 	}
 
 /**
