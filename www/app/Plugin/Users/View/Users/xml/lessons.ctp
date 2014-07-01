@@ -1,9 +1,15 @@
 <?php
 $response = array(
     'lessons'   => array(
-        'active_lessons'    => $this->LessonXmlTransformer->transformLessons($activeLessons),
-        'upcoming_lessons'  => $this->LessonXmlTransformer->transformLessons($upcomingLessons),
-        'past_lessons'      => $this->LessonXmlTransformer->transformLessons($pastLessons),
+        'active_lessons'    => array(
+            'lesson' => $this->LessonXmlTransformer->transformLessons($activeLessons),
+        ),
+        'upcoming_lessons'  => array(
+            'lesson' => $this->LessonXmlTransformer->transformLessons($upcomingLessons),
+        ),
+        'past_lessons'      => array(
+            'lesson' => $this->LessonXmlTransformer->transformLessons($pastLessons),
+        ),
     ),
 );
 
