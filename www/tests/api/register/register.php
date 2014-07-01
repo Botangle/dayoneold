@@ -3,7 +3,8 @@
 
 $data = array(
     'RegisterStudentForm' => array(
-        'username'      => 'jdoe',
+        'email'         => 'john@acorncomputersolutions.com',
+        'username'      => 'jdoe3',
         'firstname'     => 'John',
         'lastname'      => 'Doe',
         'password'      => 'testing',
