@@ -7,8 +7,14 @@
  * Time: 5:10 PM
  */
 
-$user = $this->UserXmlTransformer->transformAuthUser($user);
-$user['message'] = $message;
+if(isset($user)) {
+    $user = $this->UserXmlTransformer->transformAuthUser($user);
+    $user['message'] = $message;
+} else {
+    $user = array(
+        'message' => "Please send things using POST",
+    );
+}
 $response = array(
     'user'   => $user,
 );
