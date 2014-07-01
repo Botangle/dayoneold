@@ -71,10 +71,10 @@
 				<div class="tutor-bio">
 					<p><?php echo $user['User']['extracurricular_interests'] ?></p>
 					<div class="social">
-						<a href="#"><?php echo $this->Html->image('/croogo/img/facebook.png', array('class' => 'img-circle-left')); ?></a>
-						<a href="#"><?php echo $this->Html->image('/croogo/img/twitter.png', array('')); ?></a>
-						<a href="#"><?php echo $this->Html->image('/croogo/img/google.png', array('')); ?></a>
-						<a href="#"><?php echo $this->Html->image('/croogo/img/trumbler.png', array('class' => 'img-circle-right')); ?></a>
+						<a href="<?php echo !empty($user['User']['link_fb']) ? $user['User']['link_fb'] : '#'; ?>"><?php echo $this->Html->image('/croogo/img/facebook.png', array('class' => 'img-circle-left')); ?></a>
+						<a href="<?php echo !empty($user['User']['link_twitter']) ? $user['User']['link_twitter'] : '#'; ?>"><?php echo $this->Html->image('/croogo/img/twitter.png', array('')); ?></a>
+						<a href="<?php echo !empty($user['User']['link_googleplus']) ? $user['User']['link_googleplus'] : '#'; ?>"><?php echo $this->Html->image('/croogo/img/google.png', array('')); ?></a>
+						<a href="<?php echo !empty($user['User']['link_thumblr']) ? $user['User']['link_thumblr'] : '#'; ?>"><?php echo $this->Html->image('/croogo/img/trumbler.png', array('class' => 'img-circle-right')); ?></a>
 					</div>
 				</div>
 			</div>
