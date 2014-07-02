@@ -21,7 +21,7 @@ if ($this->Session->check("type")) {
 		function extractLast(term) {
 			return split(term).pop();
 		}
-		jQuery("#UserSubject").autocomplete({
+		jQuery("#RegisterExpertFormSubject").autocomplete({
 			minLength: 0,
 			source: function(request, response) {
 // delegate back to autocomplete, but extract the last term
