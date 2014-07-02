@@ -2634,8 +2634,8 @@ input[type="button"].btn-block {
 
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('../fonts/glyphicons-halflings-regular.eot');
-  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url('../../../www/app/Plugin/Croogo/webroot/fonts/glyphicons-halflings-regular.eot');
+  src: url('../../../www/app/Plugin/Croogo/webroot/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../../../www/app/Plugin/Croogo/webroot/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../../../www/app/Plugin/Croogo/webroot/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../../../www/app/Plugin/Croogo/webroot/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 
 .glyphicon {
@@ -4318,7 +4318,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 
 .navbar {
   position: relative;
-  min-height: 87px; background:url(../images/body-bg.jpg) repeat-x top rgba(245, 245, 245, 0.9); 
+  min-height: 87px; background:url(../../../www/app/Plugin/Croogo/webroot/images/body-bg.jpg) repeat-x top rgba(245, 245, 245, 0.9);
   margin-bottom: 20px;
   border: 1px solid transparent;
 }
@@ -4493,7 +4493,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   line-height: 20px;  
 }
 
-.Beta-tag{ width:140px; height:81px; background:url(../images/beta.png) no-repeat left !important; position:  absolute; top:8px; left:-76px; z-index:1000; }
+.Beta-tag{ width:140px; height:81px; background:url(../../../www/app/Plugin/Croogo/webroot/images/beta.png) no-repeat left !important; position:  absolute; top:8px; left:-76px; z-index:1000; }
 
 .navbar-brand:hover,
 .navbar-brand:focus {
@@ -4714,39 +4714,39 @@ transition: color 400ms ease-out;
 }
 
 /* Menu Icons */
-.navbar-default .navbar-nav > li > a.home { color:#000;  font-family: 'Roboto', sans-serif;  font-weight:200;   background: url(../images/menu-icons.png) no-repeat  28px 12px;}
-.navbar-default .navbar-nav > li > a.home:hover, .navbar-default .navbar-nav > li > a.home.active  { font-family: 'Roboto', sans-serif;  font-weight:300; color:#000;  background: url(../images/menu-icons.png) no-repeat 28px -108px; color: #f38918 !important; 
+.navbar-default .navbar-nav > li > a.home { color:#000;  font-family: 'Roboto', sans-serif;  font-weight:200;   background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat  28px 12px;}
+.navbar-default .navbar-nav > li > a.home:hover, .navbar-default .navbar-nav > li > a.home.active  { font-family: 'Roboto', sans-serif;  font-weight:300; color:#000;  background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 28px -108px; color: #f38918 !important;
   }
   
   
 
-.navbar-default .navbar-nav > li > a.category { background: url(../images/menu-icons.png) no-repeat 43px -227px; 
+.navbar-default .navbar-nav > li > a.category { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 43px -227px;
 font-family: 'Roboto', sans-serif;  font-weight:300;
 
  }
-.navbar-default .navbar-nav > li > a.category:hover { background: url(../images/menu-icons.png) no-repeat 43px -348px; font-family: 'Roboto', sans-serif;  font-weight:300;  }
-.navbar-default .navbar-nav > li > a.category.active { background: url(../images/menu-icons.png) no-repeat 43px -348px; font-family: 'Roboto', sans-serif;  font-weight:300; color: #f38918 !important;  }
+.navbar-default .navbar-nav > li > a.category:hover { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 43px -348px; font-family: 'Roboto', sans-serif;  font-weight:300;  }
+.navbar-default .navbar-nav > li > a.category.active { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 43px -348px; font-family: 'Roboto', sans-serif;  font-weight:300; color: #f38918 !important;  }
 
-.navbar-default .navbar-nav > li > a.myaccount { background: url(../images/menu-icons.png) no-repeat 43px -1180px;  font-family: 'Roboto', sans-serif;  font-weight:300;
+.navbar-default .navbar-nav > li > a.myaccount { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 43px -1180px;  font-family: 'Roboto', sans-serif;  font-weight:300;
  }
-.navbar-default .navbar-nav > li > a.myaccount:hover, .navbar-default .navbar-nav > li > a.myaccount.active { background: url(../images/menu-icons.png) no-repeat 43px -1294px; font-family: 'Roboto', sans-serif;  font-weight:300;   color: #f38918 !important; }
+.navbar-default .navbar-nav > li > a.myaccount:hover, .navbar-default .navbar-nav > li > a.myaccount.active { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 43px -1294px; font-family: 'Roboto', sans-serif;  font-weight:300;   color: #f38918 !important; }
 
 
-.navbar-default .navbar-nav > li > a.chart { background: url(../images/menu-icons.png) no-repeat 46px -468px;  }
-.navbar-default .navbar-nav > li > a.chart:hover, .navbar-default .navbar-nav > li > a.chart.active { background: url(../images/menu-icons.png) no-repeat 46px -587px; font-family: 'Roboto', sans-serif;  font-weight:300;
+.navbar-default .navbar-nav > li > a.chart { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 46px -468px;  }
+.navbar-default .navbar-nav > li > a.chart:hover, .navbar-default .navbar-nav > li > a.chart.active { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 46px -587px; font-family: 'Roboto', sans-serif;  font-weight:300;
   color: #f38918 !important; }
 
-.navbar-default .navbar-nav > li > a.about { background: url(../images/menu-icons.png) no-repeat 43px -703px;  font-family: 'Roboto', sans-serif;  font-weight:300;}
-.navbar-default .navbar-nav > li > a.about:hover, .navbar-default .navbar-nav > li > a.about.active { background: url(../images/menu-icons.png) no-repeat 43px -823px; font-family: 'Roboto', sans-serif;  font-weight:300;
+.navbar-default .navbar-nav > li > a.about { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 43px -703px;  font-family: 'Roboto', sans-serif;  font-weight:300;}
+.navbar-default .navbar-nav > li > a.about:hover, .navbar-default .navbar-nav > li > a.about.active { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 43px -823px; font-family: 'Roboto', sans-serif;  font-weight:300;
  color: #f38918 !important;  }
 
-.navbar-default .navbar-nav > li > a.signin { background: url(../images/menu-icons.png) no-repeat 28px -943px; font-family: 'Roboto', sans-serif;  font-weight:300; }
- .navbar-default .navbar-nav > li > a.signin:hover, .navbar-default .navbar-nav > li > a.signin.active { background: url(../images/menu-icons.png) no-repeat 28px -1064px; font-family: 'Roboto', sans-serif;  font-weight:300;
+.navbar-default .navbar-nav > li > a.signin { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 28px -943px; font-family: 'Roboto', sans-serif;  font-weight:300; }
+ .navbar-default .navbar-nav > li > a.signin:hover, .navbar-default .navbar-nav > li > a.signin.active { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 28px -1064px; font-family: 'Roboto', sans-serif;  font-weight:300;
   color: #f38918 !important;  }
 
 
-.navbar-default .navbar-nav > li > a.Report_Bug { background: url(../images/menu-icons.png) no-repeat 50px -1409px; font-family: 'Roboto', sans-serif;  font-weight:300; }
- .navbar-default .navbar-nav > li > a.Report_Bug:hover, .navbar-default .navbar-nav > li > a.Report_Bug.active { background: url(../images/menu-icons.png) no-repeat 50px -1521px; font-family: 'Roboto', sans-serif;  font-weight:300;
+.navbar-default .navbar-nav > li > a.Report_Bug { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 50px -1409px; font-family: 'Roboto', sans-serif;  font-weight:300; }
+ .navbar-default .navbar-nav > li > a.Report_Bug:hover, .navbar-default .navbar-nav > li > a.Report_Bug.active { background: url(../../../www/app/Plugin/Croogo/webroot/images/menu-icons.png) no-repeat 50px -1521px; font-family: 'Roboto', sans-serif;  font-weight:300;
  color: #f38918 !important;  }
 
 

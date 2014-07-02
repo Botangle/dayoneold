@@ -2,33 +2,33 @@
 
 @font-face {
     font-family: 'robotolight';
-    src: url('Roboto-Light-webfont.eot');
-    src: url('Roboto-Light-webfont.eot?#iefix') format('embedded-opentype'),
-		url('Roboto-Light-webfont.woff') format('woff'),
-		url('Roboto-Light-webfont.ttf') format('truetype'),
-		url('Roboto-Light-webfont.svg#robotolight') format('svg');
+    src: url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Light-webfont.eot');
+    src: url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Light-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Light-webfont.woff') format('woff'),
+		url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Light-webfont.ttf') format('truetype'),
+		url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Light-webfont.svg#robotolight') format('svg');
     font-weight: normal;
     font-style: normal;
 
 }
 @font-face {
     font-family: 'robotobold';
-    src: url('Roboto-Bold-webfont.eot');
-    src: url('Roboto-Bold-webfont.eot?#iefix') format('embedded-opentype'),
-		url('Roboto-Bold-webfont.woff') format('woff'),
-		url('Roboto-Bold-webfont.ttf') format('truetype'),
-		url('Roboto-Bold-webfont.svg#robotobold') format('svg');
+    src: url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Bold-webfont.eot');
+    src: url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Bold-webfont.woff') format('woff'),
+		url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Bold-webfont.ttf') format('truetype'),
+		url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Bold-webfont.svg#robotobold') format('svg');
     font-weight: normal;
     font-style: normal;
 
 }
 @font-face {
     font-family: 'robotomedium';
-    src: url('Roboto-Medium-webfont.eot');
-    src: url('Roboto-Medium-webfont.eot?#iefix') format('embedded-opentype'),
-		url('Roboto-Medium-webfont.woff') format('woff'),
-		url('Roboto-Medium-webfont.ttf') format('truetype'),
-		url('Roboto-Medium-webfont.svg#robotomedium') format('svg');
+    src: url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Medium-webfont.eot');
+    src: url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Medium-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Medium-webfont.woff') format('woff'),
+		url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Medium-webfont.ttf') format('truetype'),
+		url('../../../www/app/Plugin/Croogo/webroot/css/Roboto-Medium-webfont.svg#robotomedium') format('svg');
     font-weight: normal;
     font-style: normal;
 
@@ -45,7 +45,7 @@ body {
 	color:#333; padding:0px !important; margin:0px;
 }
 #Bannerblock {
-	background: url("../images/banner-bg.jpg") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
+	background: url("../../../www/app/Plugin/Croogo/webroot/images/banner-bg.jpg") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
 	height: auto; margin-top:80px;
@@ -70,7 +70,7 @@ body {
 	margin:55px auto 10px auto;
 	clear:both;
 }
-#Bannerblock .joinus .title{ background:url(../images/lin1.png) no-repeat; font-family:Arial, Helvetica, sans-serif; font-size:22px; color:#333; text-align:center; width:100%; }
+#Bannerblock .joinus .title{ background:url(../../../www/app/Plugin/Croogo/webroot/images/lin1.png) no-repeat; font-family:Arial, Helvetica, sans-serif; font-size:22px; color:#333; text-align:center; width:100%; }
 
 #Bannerblock .joinus .joinus-button1{ text-align:center;   }
 
@@ -104,7 +104,7 @@ body {
 }
 
 #HomeQuoteBlock {
-	background: url("../images/banner-bg2.jpg") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
+	background: url("../../../www/app/Plugin/Croogo/webroot/images/banner-bg2.jpg") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
 /*height: 275px;*/
@@ -148,7 +148,7 @@ body {
 								 -ms-transition: all 1s ease-in-out;
 }
 .Search-main1 {
-	background: url("../images/search-box-bg.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	background: url("../../../www/app/Plugin/Croogo/webroot/images/search-box-bg.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
     float: left;
     height: 79px;
     margin-top: 14px;
@@ -225,7 +225,7 @@ a.join-btn:hover{ display:block; background:#2d2d2d; color:#fff; text-decoration
 
 .Tutor-list1{ height:auto; padding:10px 15px; margin:0px; }
 .Tutor-list1 .tutor-img{ width:195px; height:190px; margin:20px auto; text-align:center; }
-.Tutor-list1 .tutor-title{ width:auto; height:auto; margin:0 0 20px 0; text-align:center; background:url(../images/bot-line.png) no-repeat bottom center; padding:0 0 15px 0; font-family: 'Roboto', sans-serif;  font-weight:200; }
+.Tutor-list1 .tutor-title{ width:auto; height:auto; margin:0 0 20px 0; text-align:center; background:url(../../../www/app/Plugin/Croogo/webroot/images/bot-line.png) no-repeat bottom center; padding:0 0 15px 0; font-family: 'Roboto', sans-serif;  font-weight:200; }
 .Tutor-list1 .tutor-title h3 a{ font-size:22px; color:#f38918; font-weight:bold; margin-bottom:5px; padding:0px; font-family:'robotomedium', Arial, Helvetica, sans-serif; } 
 .Tutor-list1 .tutor-title h3 a:hover{ font-size:22px; color:#2d2d2d; font-weight:bold; margin-bottom:5px; padding:0px; font-family:'robotomedium', Arial, Helvetica, sans-serif; } 
 .Tutor-list1 .tutor-title p{ font-size:18px; color:#b56005; margin-bottom:10px; padding:0px; line-height:20px; }
@@ -257,7 +257,7 @@ a.join-btn:hover{ display:block; background:#2d2d2d; color:#fff; text-decoration
 /** Sign Up Page **/
 
 #Bannerblock2 {
-	background: url("../images/banner-bg.png") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
+	background: url("../../../www/app/Plugin/Croogo/webroot/images/banner-bg.png") no-repeat fixed center center / cover rgba(0, 0, 0, 0);
 	box-shadow: 0 -4px 5px -3px #333 inset;
 	display: block;
 	height: auto;
@@ -332,20 +332,20 @@ label.checkbox input[type="checkbox"]{ padding-right:15px; }
 .Social-Boxs p a{ font-size:20px; color:#e27807; font-family:'robotomedium', Arial, Helvetica, sans-serif; padding:0px 0 0 0; text-decoration:none; }
 .Social-Boxs p a:hover{ text-decoration:none; color:#fff;}
 
-.Social-Email{ background:#fff url(../images/social-email-bg.jpg) no-repeat top center; }
-.Social-Email:hover{ background:#f38918 url(../images/social-email-bg2.jpg) no-repeat top center; }
+.Social-Email{ background:#fff url(../../../www/app/Plugin/Croogo/webroot/images/social-email-bg.jpg) no-repeat top center; }
+.Social-Email:hover{ background:#f38918 url(../../../www/app/Plugin/Croogo/webroot/images/social-email-bg2.jpg) no-repeat top center; }
 
-.Social-FB{ background:#fff url(../images/social-fb-bg.jpg) no-repeat top center; }
-.Social-FB:hover{ background:#f38918 url(../images/social-fb-bg2.jpg) no-repeat top center; }
+.Social-FB{ background:#fff url(../../../www/app/Plugin/Croogo/webroot/images/social-fb-bg.jpg) no-repeat top center; }
+.Social-FB:hover{ background:#f38918 url(../../../www/app/Plugin/Croogo/webroot/images/social-fb-bg2.jpg) no-repeat top center; }
 
-.Social-Tweet{ background:#fff url(../images/social-tweeter-bg.jpg) no-repeat top center; }
-.Social-Tweet:hover{ background:#f38918 url(../images/social-tweeter-bg2.jpg) no-repeat top center; }
+.Social-Tweet{ background:#fff url(../../../www/app/Plugin/Croogo/webroot/images/social-tweeter-bg.jpg) no-repeat top center; }
+.Social-Tweet:hover{ background:#f38918 url(../../../www/app/Plugin/Croogo/webroot/images/social-tweeter-bg2.jpg) no-repeat top center; }
 
-.Social-Linkedin{ background:#fff url(../images/social-linkedin-bg.jpg) no-repeat top center; }
-.Social-Linkedin:hover{ background:#f38918 url(../images/social-linkedin-bg2.jpg) no-repeat top center; }
+.Social-Linkedin{ background:#fff url(../../../www/app/Plugin/Croogo/webroot/images/social-linkedin-bg.jpg) no-repeat top center; }
+.Social-Linkedin:hover{ background:#f38918 url(../../../www/app/Plugin/Croogo/webroot/images/social-linkedin-bg2.jpg) no-repeat top center; }
 
-.Social-Googleplus{ background:#fff url(../images/social-google-bg.jpg) no-repeat top center; }
-.Social-Googleplus:hover{ background:#f38918 url(../images/social-google-bg2.jpg) no-repeat top center; }
+.Social-Googleplus{ background:#fff url(../../../www/app/Plugin/Croogo/webroot/images/social-google-bg.jpg) no-repeat top center; }
+.Social-Googleplus:hover{ background:#f38918 url(../../../www/app/Plugin/Croogo/webroot/images/social-google-bg2.jpg) no-repeat top center; }
 
 /* new Style Sheeet Added */
 
@@ -443,15 +443,15 @@ input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-fa
 .search-result-details{ text-align:left; font-size:13px; color:#2b2b2b; line-height:20px; margin-top:10px; height:75px;  }
 .search-result-options{ clear:both; margin:18px 0 0 0; position: relative; top: -30px; }
 
-.option-pro{ background:url(../images/options.jpg) no-repeat -4px -2px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear;	transition: All 400ms linear;  }
-.option-pro:hover{ background:url(../images/options.jpg) no-repeat -4px -23px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear; transition: All 400ms linear;  }
+.option-pro{ background:url(../../../www/app/Plugin/Croogo/webroot/images/options.jpg) no-repeat -4px -2px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear;	transition: All 400ms linear;  }
+.option-pro:hover{ background:url(../../../www/app/Plugin/Croogo/webroot/images/options.jpg) no-repeat -4px -23px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear; transition: All 400ms linear;  }
 
-.option-chat{ background:url(../images/options.jpg) no-repeat -4px -44px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear;	transition: All 400ms linear;  }
-.option-chat:hover{ background:url(../images/options.jpg) no-repeat -4px -64px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear; transition: All 400ms linear;  }
+.option-chat{ background:url(../../../www/app/Plugin/Croogo/webroot/images/options.jpg) no-repeat -4px -44px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear;	transition: All 400ms linear;  }
+.option-chat:hover{ background:url(../../../www/app/Plugin/Croogo/webroot/images/options.jpg) no-repeat -4px -64px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear; transition: All 400ms linear;  }
 
 .option-pro a, .option-chat a, .option-msg a{ display:block; width:15px; height:15px; }
-.option-msg{ background:url(../images/options.jpg) no-repeat -4px -88px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear;	transition: All 400ms linear;  }
-.option-msg:hover{ background:url(../images/options.jpg) no-repeat -4px -108px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear; transition: All 400ms linear;  }
+.option-msg{ background:url(../../../www/app/Plugin/Croogo/webroot/images/options.jpg) no-repeat -4px -88px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear;	transition: All 400ms linear;  }
+.option-msg:hover{ background:url(../../../www/app/Plugin/Croogo/webroot/images/options.jpg) no-repeat -4px -108px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear; transition: All 400ms linear;  }
 
 .mar-left15{ margin-left:15px; }
 .Lesson-row{ width:100%; height:auto; padding:11px 10px; margin:0px; clear:both; background:#fff; border-bottom:1px solid #e7e7e7; cursor:pointer; }
@@ -478,8 +478,8 @@ input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-fa
 .Message-row.active{ background:#fcddbc; }
 
 .Message-detail-Block .sender-text{ border:1px solid #f1f1f1; padding:15px; position:relative; margin-top:15px;  }
-.Message-detail-Block .sender-text #tip-left{ position:absolute; z-index:2; left:-17px; top:15px; height:13px; width:20px; background:url(../images/msg-tip-left.png) no-repeat; }
-.Message-detail-Block .sender-text #tip-right{ position:absolute; z-index:2; right:-17px; top:15px; height:13px; width:20px; background:url(../images/msg-tip-right.png) no-repeat; }
+.Message-detail-Block .sender-text #tip-left{ position:absolute; z-index:2; left:-17px; top:15px; height:13px; width:20px; background:url(../../../www/app/Plugin/Croogo/webroot/images/msg-tip-left.png) no-repeat; }
+.Message-detail-Block .sender-text #tip-right{ position:absolute; z-index:2; right:-17px; top:15px; height:13px; width:20px; background:url(../../../www/app/Plugin/Croogo/webroot/images/msg-tip-right.png) no-repeat; }
 
 .Message-detail-Block .sender-text .sender-name{ font-size:14px; font-weight:bold; color:#f38918; margin-bottom:10px; }
 .Message-detail-Block .sender-text .msg-content{ font-size:14px; line-height:18px; color:#2b2b2b; margin-bottom:15px; }
@@ -556,8 +556,8 @@ input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-fa
 .page-header{ background:#f38918 !important; height:105px; width:100%; border:0px !important; margin-top:0px !important;   }
 .Cal-arrow-box{ clear:both; width:100% !important; height:auto; }
 
-.Cal-Left-btn{ background:url(../images/calendar-left.jpg) no-repeat left !important; width:15px; height:44px; float:left !important; font-size:1px !important; color:#f38918; margin-left: 10px !important; margin-top: 30px; }
-.Cal-Right-btn{ background:url(../images/calendar-right.jpg) no-repeat left !important; width:15px; height:44px; float:right !important; font-size:1px !important; color:#f38918; margin-right: 10px; margin-top: 30px; }
+.Cal-Left-btn{ background:url(../../../www/app/Plugin/Croogo/webroot/images/calendar-left.jpg) no-repeat left !important; width:15px; height:44px; float:left !important; font-size:1px !important; color:#f38918; margin-left: 10px !important; margin-top: 30px; }
+.Cal-Right-btn{ background:url(../../../www/app/Plugin/Croogo/webroot/images/calendar-right.jpg) no-repeat left !important; width:15px; height:44px; float:right !important; font-size:1px !important; color:#f38918; margin-right: 10px; margin-top: 30px; }
 
 /*06-02-2014*/
 
@@ -779,7 +779,7 @@ input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-fa
 .cbp-af-header-shrink .navbar-nav > li > a{ background:none !important; padding-top:0px !important; line-height: 40px !important;}
 .cbp-af-header-shrink .navbar-brand{ padding-top:15px !important;}
 .cbp-af-header-shrink .navbar-brand img { height:25px!important; width:120px !important;}
-.cbp-af-header-shrink .navbar-header .Beta-tag { height:37px!important;background: url("../images/shrinkbeta.png") no-repeat scroll left center rgba(0, 0, 0, 0) !important;     left: -50px !important;}
+.cbp-af-header-shrink .navbar-header .Beta-tag { height:37px!important;background: url("../../../www/app/Plugin/Croogo/webroot/images/shrinkbeta.png") no-repeat scroll left center rgba(0, 0, 0, 0) !important;     left: -50px !important;}
 .cbp-af-header-shrink .navbar-collapse { height:35px !important;}
 .cbp-af-header-shrink{ min-height:45px !important; }
 
