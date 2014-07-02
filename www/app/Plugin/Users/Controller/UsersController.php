@@ -356,23 +356,6 @@ class UsersController extends UsersAppController {
 				$error = false;
 				$errorMsg = 'Your information can not be updated. Please, try again.';
 
-				// upload user's profile pic if selected
-//				if (!empty($this->request->data['User']['profilepic']['tmp_name']) && is_uploaded_file($this->request->data['User']['profilepic']['tmp_name'])) {
-//
-//					try {
-//						$this->request->data['User']['profilepic'] = $this->_uploadPic();
-//					} catch (Exception $e) {
-//						CakeLog::warning("Had issues handling an uploaded profile image.  Error was:" . $e->getMessage());
-//
-//						$error = true;
-//						// send back a nice flash message to the user and make sure the profile pic doesn't get saved
-//						// into the DB when there is nothing there
-//						$errorMsg = "Sorry, we had issues uploading your pic.  Please try again or use a different image if you keep having issues.";
-//					}
-//				} else {
-//					unset($this->request->data['User']['profilepic']);
-//				}
-
 				$user = $this->User->find('first', array(
 					'conditions' => array(
 						'User.id' => $this->request->data['User']['id'],
