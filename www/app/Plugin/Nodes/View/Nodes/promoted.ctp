@@ -71,10 +71,59 @@
 				<div class="tutor-bio">
 					<p><?php echo $user['User']['extracurricular_interests'] ?></p>
 					<div class="social">
-						<a href="<?php echo !empty($user['User']['link_fb']) ? $user['User']['link_fb'] : '#'; ?>"><?php echo $this->Html->image('/croogo/img/facebook.png', array('class' => 'img-circle-left')); ?></a>
-						<a href="<?php echo !empty($user['User']['link_twitter']) ? $user['User']['link_twitter'] : '#'; ?>"><?php echo $this->Html->image('/croogo/img/twitter.png', array('')); ?></a>
-						<a href="<?php echo !empty($user['User']['link_googleplus']) ? $user['User']['link_googleplus'] : '#'; ?>"><?php echo $this->Html->image('/croogo/img/google.png', array('')); ?></a>
-						<a href="<?php echo !empty($user['User']['link_thumblr']) ? $user['User']['link_thumblr'] : '#'; ?>"><?php echo $this->Html->image('/croogo/img/trumbler.png', array('class' => 'img-circle-right')); ?></a>
+						<?php
+						// social link - FB
+						$link = '#';
+						
+						if (!empty($user['User']['link_fb'])) {
+							$link =  $user['User']['link_fb'];
+						}
+						
+						echo $this->Html->image("/croogo/img/facebook.png", array(
+								'class' => 'img-circle-left',
+								'url' => $link
+							));
+						?>
+						
+						<?php
+						// social link - Twitter
+						$link = '#';
+						
+						if (!empty($user['User']['link_twitter'])) {
+							$link =  $user['User']['link_twitter'];
+						}
+						
+						echo $this->Html->image("/croogo/img/twitter.png", array(
+								'url' => $link
+							));
+						?>
+						
+						<?php
+						// social link - Google+
+						$link = '#';
+						
+						if (!empty($user['User']['link_googleplus'])) {
+							$link =  $user['User']['link_googleplus'];
+						}
+						
+						echo $this->Html->image("/croogo/img/google.png", array(
+								'url' => $link
+							));
+						?>
+						
+						<?php
+						// social link - Thumblr
+						$link = '#';
+						
+						if (!empty($user['User']['link_thumblr'])) {
+							$link =  $user['User']['link_thumblr'];
+						}
+						
+						echo $this->Html->image("/croogo/img/trumbler.png", array(
+								'class' => 'img-circle-right',
+								'url' => $link
+							));
+						?>
 					</div>
 				</div>
 			</div>
