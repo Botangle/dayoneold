@@ -30,6 +30,11 @@ spend a bit of time learning how they work.
 ## To start sending in code
 Please see the Contributing.md file
 
+## Artisan additions
+We've added the following additional tools to `artisan` to make our lives easier.
+
+- Generators ([https://github.com/JeffreyWay/Laravel-4-Generators](https://github.com/JeffreyWay/Laravel-4-Generators))
+
 ## MySQL
 
 You need to use an SSH connection.
