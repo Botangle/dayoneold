@@ -1,5 +1,6 @@
 <?php
 App::uses('AppHelper', 'View/Helper');
+App::uses("Model", "Users.Lesson");
 
 class LessonXmlTransformerHelper extends AppHelper {
 
@@ -54,9 +55,11 @@ class LessonXmlTransformerHelper extends AppHelper {
                 'student'                       => $transformedStudent,
                 'lesson_date'                   => $lesson['lesson_date'],
                 'lesson_time'                   => $lesson['lesson_time'],
-                'duration'                      => $lesson['duration'],
+                'duration'                      => $this->transformDuration($lesson['duration']),
                 'subject'                       => $lesson['subject'],
-                'repetition'                    => '',                  // @TODO: work this into our API eventually
+
+                // if we shift this to an ID, then we need to send back strings through our API
+                'repetition'                    => $lesson['repet'],
                 'notes'                         => $lesson['notes'],
                 'is_confirmed'                  => $lesson['is_confirmed'],
             );
@@ -75,9 +78,11 @@ class LessonXmlTransformerHelper extends AppHelper {
             'student_id'                    => $lesson['student'],
             'lesson_date'                   => $lesson['lesson_date'],
             'lesson_time'                   => $lesson['lesson_time'],
-            'duration'                      => $lesson['duration'],
+            'duration'                      => $this->transformDuration($lesson['duration']),
             'subject'                       => $lesson['subject'],
-            'repetition'                    => '',                  // @TODO: work this into our API eventually
+
+            // if we shift this to an ID, then we need to send back strings through our API
+            'repetition'                    => $lesson['repet'],
             'notes'                         => $lesson['notes'],
             'is_confirmed'                  => $lesson['is_confirmed'],
         );
@@ -92,5 +97,17 @@ class LessonXmlTransformerHelper extends AppHelper {
         } else {
             return $profilePic;
         }
+    }
+
+    /**
+     * Transforms from a string (.5, 1.0, 1.5, etc) to a minute representation of our lesson
+     * as specified by our API
+     *
+     * @param $durationField
+     * @return mixed
+     */
+    private function transformDuration($durationField)
+    {
+        return $durationField * 60;
     }
 }

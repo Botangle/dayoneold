@@ -28,8 +28,13 @@ class Lesson extends UsersAppModel {
      */
     public $need_stripe_account_setup = false;
 
+    static public $repetitionValues = array(
+        0 => 'Single lesson',
+        1 => 'Daily',
+        2 => 'Weekly',
+    );
 
-/**
+    /**
  * Validation
  *
  * @var array

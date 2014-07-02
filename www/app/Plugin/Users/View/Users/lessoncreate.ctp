@@ -1,15 +1,33 @@
-<?php 
+<?php
+
+// if a studentView variable exists, then we're working on displaying this form to a student
+// and we want to make all the fields show in that manner
+if(isset($studentView)) {
+    $studentView = 1;
+    $userNameDisplay = 'Expert';
+
+} else {
+    // we're displaying this form to a tutor and we want to display all the fields in a consistent manner there
+    // PLUS, we want to *name* all the fields in a consistent manner
+    $studentView = 0;
+    $userNameDisplay = 'Student';
+}
+
+
 echo $this->Html->css(array(
 			'/croogo/css/bootstrap-datetimepicker', 
 		));
 echo $this->Html->script(array(
 			'/croogo/js/bootstrap-datetimepicker', 
-			));		
-$studetnanem= $readonly= $studetnanemid = "";
+			));
+
+// these values are unknown if we're dealing with a tutor (who chooses a student name from a list)
+// but are already known if a student is suggesting a lesson
+$studentName= $readonly= $studentNameId = "";
 if(isset($user)){
 
-	$studetnanem = $user['User']['username'];
-	$studetnanemid = $user['User']['id'];
+	$studentName = $user['User']['username'];
+	$studentNameId = $user['User']['id'];
 	$readonly = "readonly='readonly'";
 }
 
@@ -28,18 +46,16 @@ if(isset($user)){
         <p class="FontStyle20 color1"><?php echo __("Propose Lesson Meeting")?></p>
         
          <?php echo $this->Form->create('Lesson',array('class'=>'form-horizontal','url' => array('controller' => 'users', 'action' => 'lessons_add')));?>
+          <?php echo $this->Form->hidden('student_view', array('value' => $studentView)); ?>
       
             <div class="control-group">
-           
-		  
-             
+
               <div class="control-group">
-                <label class="control-label" for="tutorname">Student:</label>
+                <label class="control-label" for="name"><?php echo h($userNameDisplay) ?>:</label>
                 <div class="controls">
-                 <?php echo $this->Form->input('tutorname',array('class'=>'textbox','placeholder'=>"Student Name",'label' => false,$readonly,'value'=>$studetnanem));
+                 <?php echo $this->Form->input('username',array('class'=>'textbox','placeholder'=>$userNameDisplay . " Name",'label' => false,$readonly,'value'=>$studentName));
 				 
-				  echo $this->Form->hidden('tutor',array('class'=>'textbox','placeholder'=>"Student Name",'label' => false,$readonly,'value'=>$studetnanemid));
-				//  echo $this->Form->hidden('tutor',array('class'=>'textbox','placeholder'=>"Student Name",'label' => false,'id'=>'LessonTutorValue'))
+				  echo $this->Form->hidden('user_id',array('value'=>$studentNameId));
 				 ?>
                  
                 </div>
@@ -47,7 +63,7 @@ if(isset($user)){
               <div class="control-group">
                 <label class="control-label" for="lesson-time">Lesson Time:</label>
                 <div class="controls">
-				<?php echo $this->Form->input('lesson_date',array('class'=>'textbox','placeholder'=>"Expert",'label' => false,'id'=>'dtp_input2','type'=>'hidden'));?>
+				<?php echo $this->Form->input('lesson_date',array('class'=>'textbox','label' => false,'id'=>'dtp_input2','type'=>'hidden'));?>
 				   
 				<div class=" input-append date form_date" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd" style="width:47%;">
 					
@@ -56,7 +72,7 @@ if(isset($user)){
 					<span class="add-on" style="height:44px"><i class="icon-th"></i></span>
              
                 </div>
-				<?php echo $this->Form->input('lesson_time',array('class'=>'textbox','placeholder'=>"Expert",'label' => false,'id'=>'dtp_input3','type'=>'hidden'));?>
+				<?php echo $this->Form->input('lesson_time',array('class'=>'textbox','label' => false,'id'=>'dtp_input3','type'=>'hidden'));?>
 				   <div class=" input-append date form_time" data-date="" data-date-format="hh:ii" data-link-field="dtp_input3" data-link-format="hh:ii" style="width:33%;">
                     <input size="16" class="textbox2" type="text" value="" readonly>
                     <span class="add-on" style="height:44px"><i class="icon-remove"></i></span>
@@ -74,24 +90,28 @@ if(isset($user)){
 				 
                   <select name="data[Lesson][duration]" id="Lessonduration">
                       <option value="-1">-- Please choose --</option>
-				  <?php for($i=.5;$i<12.5;$i=$i+.5){
+				  <?php for($i = 30; $i < 750; $i = $i + 30){
 						$sel = "";
+
 						if(isset($Lesson) && $Lesson['Lesson']['duration']==$i){
-							$sel = 'selected="selected"';
+							$sel = ' selected="selected"';
 						}
-						$pos = explode(".",$i);
+
+                        $durationString = $i / 60;
+
+						$pos = explode(".",$durationString);
 						 
-						$show=$i;
+						$show = $durationString;
 						if(isset($pos[1]) && $pos[1]=='5'){
 							  $show = $pos[0].".5";
 						}
 
-                      if($i == .5) {
-                          echo '<option value="' . $i .'" ' . $sel . '>30 min</option>';
-                      } elseif($i == 1.0) {
-                          echo '<option value="' . $i .'" ' . $sel . '>1 hour</option>';
+                      if($i == 30) {
+                          echo "<option value='{$i}'{$sel}>30 min</option>";
+                      } elseif($i == 60) {
+                          echo "<option value='{$i}'{$sel}>1 hour</option>";
                       } else {
-                         echo '<option value="' . $i .'" ' . $sel . '>' . $show . ' hours</option>';
+                         echo "<option value='{$i}'{$sel}>{$show} hours</option>";
                       }
 				  } ?>
 				  </select>
@@ -108,10 +128,18 @@ if(isset($user)){
                 <label class="control-label" for="repeats">Repeats:</label>
                 <div class="controls">
                 <?php 
-                $options = array('Single lesson' => 'Single lesson','Daily' => 'Daily','Weekly' => 'Weekly');
-			$attributes = array('legend' => false,'checked' => 'Single lesson','value'=>'Single lesson',
-			'label' => array('class' => 'radio'));
-			echo $this->Form->radio('repet', $options, $attributes);?>
+                echo $this->Form->radio(
+                    'repetition',
+                    $lessonRepetitions,
+                    array(
+                        'legend' => false,
+                        'checked' => 0,
+                        'value' => 0,
+                        'label' => array(
+                            'class' => 'radio'
+                        )
+                    )
+                );?>
                 
                 </div>
               </div>
