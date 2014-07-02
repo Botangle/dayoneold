@@ -9,7 +9,10 @@
         "magniloquent/magniloquent": "dev-master",
         "codesleeve/asset-pipeline": "dev-master"
 	},
-	"autoload": {
+    "require-dev": {
+        "way/generators": "2.*"
+    },
+    "autoload": {
 		"classmap": [
 			"app/commands",
 			"app/controllers",
