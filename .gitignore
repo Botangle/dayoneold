@@ -1,4 +1,15 @@
-# App
+# Laravel Files
+/laravel/bootstrap/compiled.php
+/laravel/vendor
+composer.phar
+composer.lock
+.env.*.php
+.env.php
+.DS_Store
+Thumbs.db
+
+
+# Cake App
 Config/database.php
 Vendor/Simpletest/
 View/Themed/
@@ -21,7 +32,6 @@ www/app/Plugin/Stripe
 www/app/Plugin/Uploader/
 
 # Others
-.DS_Store
 ./Plugin/*
 !./Plugin/Acl
 !./Plugin/Extensions
@@ -44,7 +54,3 @@ www/app/Vendor/*
 
 # Bash scripts
  scripts/*
-
-# Mobileapp
-www/app/webroot/mobileapp
-
