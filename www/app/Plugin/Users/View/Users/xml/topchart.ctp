@@ -6,6 +6,7 @@ foreach($userlist as $user) {
 
     $newUsers[] = array(
         'id'                            => $user['id'],
+        'username'                      => $user['username'],
         'firstname'                     => $user['name'],
         'lastname'                      => $user['lname'],
         'profilepic'                    => $this->UserXmlTransformer->transformProfilePic($user['profilepic']),
