@@ -39,6 +39,8 @@ $showActions = isset($showActions) ? $showActions : true;
 				);
 			?>
 			<?php endif; ?>
+			
+			<li><a class="btn btn-secondry" method="get" href="/admin/users/users/export">Export to CSV</a></li>
 		</ul>
 	</div>
 </div>

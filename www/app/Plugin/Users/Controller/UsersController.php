@@ -35,6 +35,7 @@ class UsersController extends UsersAppController {
 		'Stripe' => array(
 			'className' => 'StripeConnect',
 		),
+		'CsvView.CsvView',
 	);
 
 /**
@@ -188,6 +189,21 @@ class UsersController extends UsersAppController {
 		}
 	}
 
+/**
+ * Admin export to csv
+ *
+ * @return void
+ * @access public
+ */
+	public function admin_export() {
+		$results = $this->User->find('all', array(
+			'fields' => 'User.name, User.lname, User.email',
+		));
+		
+		$this->response->download('users.csv');
+		$this->CsvView->quickExport($results);
+	}
+	
 /**
  * Admin add
  *
