@@ -12,6 +12,7 @@
         "chronon/stripe": "dev-master",
         "burzum/cakephp-imagine-plugin": "1.0.5",
         "mjohnson/uploader": "4.5.4",
-        "aws/aws-sdk-php": "~2.2"
+        "aws/aws-sdk-php": "~2.2",
+		"josegonzalez/cakephp-csvview": "1.2.0"
     }
 }
