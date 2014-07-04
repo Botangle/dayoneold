@@ -195,12 +195,25 @@ class UsersController extends UsersAppController {
  * @return void
  * @access public
  */
-	public function admin_export() {
+	public function admin_export($role_id) {
+		if (empty($role_id)) {
+			throw new NotFoundException('404');
+		}
+				
 		$results = $this->User->find('all', array(
 			'fields' => 'User.name, User.lname, User.email',
+			'conditions' => array(
+				'User.role_id' => $role_id,
+			)
 		));
 		
-		$this->response->download('users.csv');
+		$filename = 'users_experts.csv';
+		
+		if ($role_id == '4') {
+			$filename = 'users_students.csv';
+		}
+		
+		$this->response->download($filename);
 		$this->CsvView->quickExport($results);
 	}
 	
