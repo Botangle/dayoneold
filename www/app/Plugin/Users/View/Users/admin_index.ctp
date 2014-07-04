@@ -45,8 +45,8 @@ $showActions = isset($showActions) ? $showActions : true;
 				Export <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="/admin/users/users/export/students">Export Students to CSV</a></li>
-					<li><a href="/admin/users/users/export/experts">Export Experts to CSV</a></li>
+					<li><a href="/admin/users/users/export/4">Export Students to CSV</a></li>
+					<li><a href="/admin/users/users/export/2">Export Experts to CSV</a></li>
 				</ul>
 			</div>
 		</ul>
