@@ -52,7 +52,7 @@
 
 <!--Wrapper main-content Block End Here-->
 <!--Wrapper main-content1 Block Start Here-->
-{{-- echo $this->element('footermiddle'); --}}
+@include('partials.footer-middle')
 <!--Wrapper main-content1 Block End Here-->
 
 {{-- echo $this->element('footerbottom'); ?>
