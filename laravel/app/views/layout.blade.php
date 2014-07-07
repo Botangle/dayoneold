@@ -34,14 +34,14 @@
 <body>
 <!--Wrapper Main Nav Block Start Here-->
 @section('navigation')
-    @include('nav')
+    @include('partials.nav')
 @show
 
 <!--Wrapper Main Nav Block End Here-->
 
 <!--Wrapper Bannerblock Block Start Here-->
 @section('header')
-    @include('headerinner')
+    @include('partials.header-inner')
 @show
 <!--Wrapper Bannerblock Block End Here-->
 <!--Wrapper HomeQuoteBlock Block End Here-->
