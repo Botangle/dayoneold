@@ -1,10 +1,13 @@
+@extends('layout')
+
 <!--Wrapper main-content Block Start Here-->
-<?php 
- 
+{{--
 echo $this->element("breadcrame",array('breadcrumbs'=>
 	array('Sign In'=>'Sign In'))
 	);
-	?>
+--}}
+
+@section('content')
 <div id="main-content">
   <div class="container">
     <div class="row-fluid">
@@ -17,21 +20,18 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
         <p class="FontStyle20">Already a Botangle member?</p>
         <p>Please enter your Botangle username/password to access your Botangle account.</p>
         <div class="Signup">
-         <?php echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' => 'login'),'class'=>'form-inline form-horizontal'));?>
-
+            {{ Form::open([
+            'action' => ['UserController@postLogin'],
+            'class' => 'form-inline form-horizontal',
+            ]) }}
          
           <div class="form-group span5" style="margin-left:0px;">
             <label class="sr-only" for="Username2">Username</label>
-			<?php
-			echo $this->Form->input('username', array('class'=>'form-control textbox1','placeholder'=>'Username','label'=>false ));
-			?>
-            
+            {{ Form::text('username', '', ['class'=>'form-control textbox1','placeholder'=>'Username']) }}
           </div>
           <div class="form-group span5">
             <label class="sr-only" for="Password2">Password</label>
-           <?php
-			echo $this->Form->input('password', array('class'=>'form-control textbox1','placeholder'=>'Password','label'=>false));
-			?>
+           {{ Form::password('password', ['class'=>'form-control textbox1','placeholder'=>'Password']) }}
           </div>
          <div class="span2">
            <button type="submit" class="btn btn-primary">Login</button>
@@ -42,34 +42,25 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
             </label>
       </div>
       <div class="span12 mar0">
-	  <?php
-	  echo $this->Html->link(__("Did you forget your username /password?"), array('action'=> 'forgot'))
-	  ?>
-	  
-       </div>
-        <?php echo $this->Form->end();?>
- 
+          {{ HTML::link(action('UserController@getForgot'), trans("Did you forget your username /password?")) }}
 
-          
+       </div>
+        {{ Form::close() }}
+
         </div>
       </div>
       <div class="span3 PageRight-Block">
        <p class="FontStyle20">Not a member? Sign Up here</p>
-        <p>Get a Free Account. Sign Up here.</p><br>
-<br>
-<?php 
-echo $this->Html->link(__("Sign Up"), array('action'=> 'registration','tutor'), array( 'class' => 'btn btn-primary'))
-/*
-<button type="submit" class="btn btn-primary">Sign Up</button> */
-?>
- 
+        <p>Get a Free Account. Sign Up here.</p><br><br>
+          {{ HTML::link(action('RegistrationController@getRegisterExpert'), trans("Sign Up"), ['class' => 'btn btn-primary']) }}
       </div>
     </div>
     <!-- @end .row --> 
     
-	<?php echo $this->element('Croogo.getintouch'); ?>
+	@include('partials.get-in-touch')
     
   </div>
   <!-- @end .container --> 
 </div>
-<!--Wrapper main-content Block End Here--> 
+<!--Wrapper main-content Block End Here-->
+@overwrite

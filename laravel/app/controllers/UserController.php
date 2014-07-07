@@ -2,13 +2,21 @@
 
 class UserController extends BaseController {
 
+    public function getForgot()
+    {
+    }
+
     public function getIndex()
     {
     }
 
     public function getLogin()
     {
+        return View::make('user.login');
+    }
 
+    public function postLogin()
+    {
     }
 
     /**
