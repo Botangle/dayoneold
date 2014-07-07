@@ -41,7 +41,7 @@
 
 <!--Wrapper Bannerblock Block Start Here-->
 @section('header')
-    @import('headerinner')
+    @include('headerinner')
 @show
 <!--Wrapper Bannerblock Block End Here-->
 <!--Wrapper HomeQuoteBlock Block End Here-->

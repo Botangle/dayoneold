@@ -9,10 +9,11 @@
                 <div class="span3 pull-right">
                     <div class="Header-Account-info"><span> Welcome <?php echo ucfirst($this->Session->read('Auth.User.username')) ?>  </span>  |  <?php
                         echo $this->Html->link(__('Sign Out'), '/logout', array('class' => 'signin', 'title' => __('Sign Out')));
-                        ?></div><form method="post" action="<?php echo $this->webroot ?>user/search" id="searchuser">
+                        ?></div><form method="post" action="/user/search" id="searchuser">
                         <div class="Header-search">
                             <input name="searchvalue" id="searchvalue" type="text" style="line-height: 20px" />
-                            <?php echo $this->Html->image('/croogo/img/search-img.jpg', array('class' => 'submit', 'id' => 'search')); ?> </div>
+                            {{ HTML::image('/img/search-img.jpg', trans('Search'), ['class' => 'submit', 'id' => 'search']) }}
+                        </div>
                     </form>
                 </div>
             </div>
@@ -26,12 +27,13 @@
                     <p>Join<br>
                         <span>Botangle</span></p>
                 </div>
-                <form method="post" action="<?php echo $this->webroot ?>user/search" id="searchuser">
+                <form method="post" action="/user/search" id="searchuser">
                     <div class="span3 pull-right">
                         <div class="Header-search">
                             <input name="searchvalue" id="searchvalue" type="text" style="line-height: 20px" />
-                            <?php echo $this->Html->image('/croogo/img/search-img.jpg', array('class' => 'submit', 'id' => 'search')); ?> </div>
-                        <div class="Header-Free-info">Find help immediately?<br>
+                            {{ HTML::image('/img/search-img.jpg', trans('Search'), ['class' => 'submit', 'id' => 'search']) }}
+                        </div>
+                        <div class="Header-Free-info">{{ trans('Find help immediately!') }}<br>
                             <!--          <span>Try for 7 days free!</span> -->
                         </div>
                     </div>
@@ -93,12 +95,10 @@ echo $this->Html->css(array(
                     minLength: 0,
                     source: data,
                     focus: function(event, ui) {
-                        console.log(this.id)
                         $j("#LessonSubject").val(ui.item.label);
                         return false;
                     },
                     select: function(event, ui) {
-                        console.log(this.id)
                         $j("#LessonSubject").val(ui.item.label);
                         return false;
                     }
