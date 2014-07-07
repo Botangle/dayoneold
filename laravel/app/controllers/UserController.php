@@ -45,7 +45,7 @@ class UserController extends BaseController {
         $validator = Validator::make(Input::all(), $rules);
         $validated = $validator->fails();
 
-        $salt = Config::get('cake.salt');
+        $salt = Config::get('auth.cake.salt');
         $password = sha1($salt . $password);
 
         // @TODO: attempt only logins for active users
@@ -69,7 +69,7 @@ class UserController extends BaseController {
         Auth::user()->setOnlineStatus(true);
 
         // @TODO: do we want to send them a welcome back message?
-        return Redirect::intended('user.profile');
+        return Redirect::intended(URL::route('user.my-account'));
 
             // API: handle our API info and send back info
 //            if($this->RequestHandler->isXml()) {
@@ -99,8 +99,8 @@ class UserController extends BaseController {
 
     public function getLogout()
     {
-        print "we're here";
-        die;
+        Auth::logout();
+        return Redirect::home();
     }
 
     public function getMyAccount()

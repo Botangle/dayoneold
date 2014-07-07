@@ -60,12 +60,22 @@ Route::controller('users', 'UsersController');
  * User controller (used for private handling of an individual user account and info)
  * Also used for viewing an individual's profile
  */
-Route::controller('user', 'UserController', array(
-        'getForgot'     => 'user.forgot',
-        'getLogin'      => 'user.login',
-        'getLogout'     => 'user.logout',
+Route::get('/user/forgot', array(
+        'as'        => 'user.forgot',
+        'uses'      => 'UserController@getForgot',
+    ));
+Route::get('/user/login', array(
+        'as'        => 'user.login',
+        'uses'      => 'UserController@getLogin',
+    ));
+Route::get('/user/logout', array(
+        'as'        => 'user.logout',
+        'uses'      => 'UserController@getLogout',
     ));
 
 Route::controller('user', 'UserController', array(
-        'getProfile'    => 'user.profile',
+        'getMyAccount'    => 'user.my-account',
     ));
+
+//Route::controller('user', 'UserController', array(
+//    ));
