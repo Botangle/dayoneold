@@ -51,21 +51,21 @@
 {{ Breadcrumbs::render() }}
 @show
 
-{{--
 <div id="main-content">
     <div class="container">
-        @if(Session::has('flash_success'))
-        <div class="error">
-            The password you entered is incorrect.</div>
+        @if(Session::has('flash_error'))
+        <div class="alert alert-error error">
+            {{ Session::get('flash_error') }}
+        </div>
+        @endif
 
-        <div class="alert alert-success">
+        @if(Session::has('flash_success'))
+        <div class="alert alert-success success">
             {{ Session::get('flash_success') }}
         </div>
         @endif
-        echo $this->Layout->sessionFlash();
     </div>
 </div>
---}}
 
 @section('content')
 @show
