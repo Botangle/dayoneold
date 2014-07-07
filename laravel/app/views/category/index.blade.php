@@ -3,11 +3,6 @@
 @section('content')
 <!--Wrapper HomeServices Block Start Here-->
 
-{{--
-echo $this->element("breadcrame", array('breadcrumbs' =>
-array('Popular Categories' => 'Popular Categories'))
-);
---}}
 <!--Wrapper main-content Block Start Here-->
 <div id="main-content">
     <div class="container">
@@ -62,7 +57,7 @@ array('Popular Categories' => 'Popular Categories'))
         </div>
         <!-- @end .row -->
 
-        @include('partials.get-in-touch')
+        @include('_partials.get-in-touch')
 
     </div>
     <!-- @end .container -->

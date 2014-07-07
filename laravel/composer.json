@@ -8,7 +8,8 @@
         "machuga/authority-l4": "dev-master",
         "magniloquent/magniloquent": "dev-master",
         "codesleeve/asset-pipeline": "dev-master",
-		"coderabbi/virtuoso": "0.*"
+		"coderabbi/virtuoso": "0.*",
+		"davejamesmiller/laravel-breadcrumbs": "~2.2.1"
 	},
     "require-dev": {
         "way/generators": "2.*"

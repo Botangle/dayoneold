@@ -124,6 +124,7 @@ return array(
 
         // additional providers added for Botangle
         'Coderabbi\Virtuoso\ComposerServiceProvider',
+        'DaveJamesMiller\Breadcrumbs\ServiceProvider',
         'Way\Generators\GeneratorsServiceProvider',
 	),
 
@@ -192,6 +193,8 @@ return array(
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
 
+        // Botangle specific aliases
+        'Breadcrumbs' => 'DaveJamesMiller\Breadcrumbs\Facade',
 	),
 
 );

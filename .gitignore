@@ -3,7 +3,6 @@
 /laravel/vendor
 /laravel/logs
 composer.phar
-composer.lock
 .env.*.php
 .env.php
 .DS_Store
