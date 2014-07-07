@@ -62,7 +62,7 @@ array('Popular Categories' => 'Popular Categories'))
         </div>
         <!-- @end .row -->
 
-        @include('partials.get-in-touch')
+        @include('_partials.get-in-touch')
 
     </div>
     <!-- @end .container -->

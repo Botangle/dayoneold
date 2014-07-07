@@ -34,25 +34,57 @@
 <body>
 <!--Wrapper Main Nav Block Start Here-->
 @section('navigation')
-    @include('partials.nav')
+    @include('_partials.nav')
 @show
 
 <!--Wrapper Main Nav Block End Here-->
 
 <!--Wrapper Bannerblock Block Start Here-->
 @section('header')
-    @include('partials.header-inner')
+    @include('_partials.header-inner')
 @show
 <!--Wrapper Bannerblock Block End Here-->
 <!--Wrapper HomeQuoteBlock Block End Here-->
 <!--Wrapper main-content Block Start Here-->
+
+@if(isset($breadcrumbs))
+<div id="HomeServices">
+    <div class="container">
+        <div class=" row-fluid">
+            <div class="span12 Breadcrame">
+                {{ link('/', trans('Home'),	['class' => 'home active','title' => trans('Home')]) }}
+
+                @foreach($breadcrumbs as $item)
+                    // {{ ucwords(strtolower($v)) }}
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+{{--
+<div id="main-content">
+    <div class="container">
+        @if(Session::has('flash_success'))
+        <div class="error">
+            The password you entered is incorrect.</div>
+
+        <div class="alert alert-success">
+            {{ Session::get('flash_success') }}
+        </div>
+        @endif
+        echo $this->Layout->sessionFlash();
+    </div>
+</div>
+--}}
 
 @section('content')
 @show
 
 <!--Wrapper main-content Block End Here-->
 <!--Wrapper main-content1 Block Start Here-->
-@include('partials.footer-middle')
+@include('_partials.footer-middle')
 <!--Wrapper main-content1 Block End Here-->
 
 <div id="footer">

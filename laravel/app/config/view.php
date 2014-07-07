@@ -38,6 +38,6 @@ return array(
     |
     */
     'composers' => array (
-        'partials.footer-middle' => 'Botangle\Composers\FooterMiddleComposer',
+        '_partials.footer-middle' => 'Botangle\Composers\FooterMiddleComposer',
     ),
 );
