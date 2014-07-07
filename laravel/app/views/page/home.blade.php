@@ -124,6 +124,9 @@ echo $this->Html->css(array(
 </header>
 @overwrite
 
+@section('breadcrumbs')
+@show
+
 @section('content')
 <!--Wrapper HomeServices Block Start Here-->
 <div id="HomeServices">

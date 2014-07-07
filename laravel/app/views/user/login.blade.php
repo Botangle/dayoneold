@@ -1,12 +1,6 @@
 @extends('layout')
 
 <!--Wrapper main-content Block Start Here-->
-{{--
-echo $this->element("breadcrame",array('breadcrumbs'=>
-	array('Sign In'=>'Sign In'))
-	);
---}}
-
 @section('content')
 <div id="main-content">
   <div class="container">

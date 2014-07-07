@@ -47,21 +47,9 @@
 <!--Wrapper HomeQuoteBlock Block End Here-->
 <!--Wrapper main-content Block Start Here-->
 
-@if(isset($breadcrumbs))
-<div id="HomeServices">
-    <div class="container">
-        <div class=" row-fluid">
-            <div class="span12 Breadcrame">
-                {{ link('/', trans('Home'),	['class' => 'home active','title' => trans('Home')]) }}
-
-                @foreach($breadcrumbs as $item)
-                    // {{ ucwords(strtolower($v)) }}
-                @endforeach
-            </div>
-        </div>
-    </div>
-</div>
-@endif
+@section('breadcrumbs')
+{{ Breadcrumbs::render() }}
+@show
 
 {{--
 <div id="main-content">
