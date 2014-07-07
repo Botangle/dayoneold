@@ -65,8 +65,11 @@ class UserController extends BaseController {
 
         Event::fire('Controller.User.loginSuccessful', $this);
 
-        $userId = (int)$this->Session->read('Auth.User.id');
-        $this->setOnlineStatus($userId, true);
+        // register that this user is online now
+        Auth::user()->setOnlineStatus(true);
+
+        // @TODO: do we want to send them a welcome back message?
+        return Redirect::intended('user.profile');
 
             // API: handle our API info and send back info
 //            if($this->RequestHandler->isXml()) {
@@ -81,7 +84,6 @@ class UserController extends BaseController {
 //                $this->set('_rootNode', 'user');
 //                $this->set('_serialize', array('id', 'role', 'firstname', 'lastname', 'profilepic'));
 //            } else {
-        $this->redirect($this->Auth->redirectUrl());
 //            }
     }
 
@@ -93,5 +95,17 @@ class UserController extends BaseController {
     public function getView($username)
     {
 
+    }
+
+    public function getLogout()
+    {
+        print "we're here";
+        die;
+    }
+
+    public function getMyAccount()
+    {
+        print "we're here";
+        die;
     }
 }

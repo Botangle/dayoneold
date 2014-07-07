@@ -7,9 +7,12 @@
                         <span>&nbsp;</span></p>
                 </div>
                 <div class="span3 pull-right">
-                    <div class="Header-Account-info"><span> Welcome <?php echo ucfirst($this->Session->read('Auth.User.username')) ?>  </span>  |  <?php
-                        echo $this->Html->link(__('Sign Out'), '/logout', array('class' => 'signin', 'title' => __('Sign Out')));
-                        ?></div><form method="post" action="/user/search" id="searchuser">
+                    <div class="Header-Account-info">
+                        <span> Welcome {{{ Auth::user()->username }}} </span>
+                        |
+                        {{ HTML::link(route('user.logout'), trans('Sign Out'), ['class' => 'signin', 'title' => trans('Sign Out')]) }}
+                    </div>
+                    <form method="post" action="/user/search" id="searchuser">
                         <div class="Header-search">
                             <input name="searchvalue" id="searchvalue" type="text" style="line-height: 20px" />
                             {{ HTML::image('/img/search-img.jpg', trans('Search'), ['class' => 'submit', 'id' => 'search']) }}

@@ -86,4 +86,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     {
         return ucfirst($this->name) . ' ' . ucfirst($this->lname);
     }
+
+    /**
+     * Whether the specified user is online or not
+     * @param boolean $isOnline
+     */
+    public function setOnlineStatus($isOnline)
+    {
+        $this->is_online = $isOnline;
+        $this->save();
+    }
+
 }

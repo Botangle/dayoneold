@@ -63,4 +63,9 @@ Route::controller('users', 'UsersController');
 Route::controller('user', 'UserController', array(
         'getForgot'     => 'user.forgot',
         'getLogin'      => 'user.login',
+        'getLogout'     => 'user.logout',
+    ));
+
+Route::controller('user', 'UserController', array(
+        'getProfile'    => 'user.profile',
     ));
