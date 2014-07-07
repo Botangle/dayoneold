@@ -105,7 +105,18 @@ class UserController extends BaseController {
 
     public function getMyAccount()
     {
-        print "we're here";
-        die;
+        if(Auth::user()->isTutor()) {
+            return View::make('user.account.expert');
+//                ->nest(
+//                    'leftPanel',
+//                    'page.leftpanel'
+//                );
+        } else {
+            return View::make('user.account.student');
+//                ->nest(
+//                    'leftPanel',
+//                    'page.leftpanel'
+//                );
+        }
     }
 }

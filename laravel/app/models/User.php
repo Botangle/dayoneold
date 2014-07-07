@@ -97,6 +97,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     }
 
     /**
+     * @return bool
+     */
+    public function isTutor()
+    {
+        return ($this->role_id == 2) ? true : false;
+    }
+
+    /**
      * Whether the specified user is online or not
      * @param boolean $isOnline
      */

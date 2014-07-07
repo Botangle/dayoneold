@@ -28,6 +28,12 @@ Breadcrumbs::register('user.login', function($breadcrumbs) {
         $breadcrumbs->push('Sign In', route('user.login'));
     });
 
+Breadcrumbs::register('user.my-account', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+
+        $breadcrumbs->push('My Account', route('user.my-account'));
+    });
+
 Breadcrumbs::register('page', function($breadcrumbs, $page) {
         $breadcrumbs->parent('category', $page->category);
         $breadcrumbs->push($page->title, route('page', $page->id));
