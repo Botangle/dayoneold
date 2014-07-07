@@ -68,4 +68,16 @@ return array(
 
 	),
 
+	/*
+	|--------------------------------------------------------------------------
+	| Password Security Salt (a left-over from CakePHP)
+	|--------------------------------------------------------------------------
+	|
+	| Pull this out as soon as we can and shift to Bcrypt (https://trello.com/c/R8ldG1lC)
+    |
+	*/
+
+    'cake' => array(
+        'salt' => 'b2fe62bbe5ca814148f164ef10e89cb5350808bf',
+    ),
 );

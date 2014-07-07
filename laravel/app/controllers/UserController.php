@@ -43,8 +43,13 @@ class UserController extends BaseController {
         }
 
         $validator = Validator::make(Input::all(), $rules);
+        $validated = $validator->fails();
 
-        if ($validator->fails() || !Auth::attempt(array('username' => $username, 'password' => $password))) {
+        $salt = Config::get('cake.salt');
+        $password = sha1($salt . $password);
+
+        // @TODO: attempt only logins for active users
+        if ($validated || !Auth::attempt(array('username' => $username, 'password' => $password))) {
             Event::fire('Controller.User.loginFailure', $this);
 
 //            if($this->RequestHandler->isXml()) {

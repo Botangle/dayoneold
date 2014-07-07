@@ -54,6 +54,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     }
 
     /**
+     * Get the password for the user.
+     *
+     * @TODO: replace this hack with a proper use of Bcrypt hashing setup long-term: http://stackoverflow.com/a/23409614/334913
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return Hash::make($this->password);
+    }
+
+    /**
      * Builds a quick getter (useable at $user->picture) that gets the appropriate image
      *
      * @return mixed|string
