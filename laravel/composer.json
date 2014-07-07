@@ -7,7 +7,8 @@
 		"laravel/framework": "4.2.*",
         "machuga/authority-l4": "dev-master",
         "magniloquent/magniloquent": "dev-master",
-        "codesleeve/asset-pipeline": "dev-master"
+        "codesleeve/asset-pipeline": "dev-master",
+		"coderabbi/virtuoso": "0.*"
 	},
     "require-dev": {
         "way/generators": "2.*"
@@ -15,6 +16,7 @@
     "autoload": {
 		"classmap": [
 			"app/commands",
+            "app/composers",
 			"app/controllers",
 			"app/models",
 			"app/database/migrations",

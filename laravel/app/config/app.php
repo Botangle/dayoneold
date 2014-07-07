@@ -121,6 +121,9 @@ return array(
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
+
+        // additional providers added for Botangle
+        'Coderabbi\Virtuoso\ComposerServiceProvider',
         'Way\Generators\GeneratorsServiceProvider',
 	),
 
