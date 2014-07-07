@@ -10,4 +10,14 @@ class UserController extends BaseController {
     {
 
     }
+
+    /**
+     * This needs to be given public access
+     *
+     * @param string $username
+     */
+    public function getView($username)
+    {
+
+    }
 }

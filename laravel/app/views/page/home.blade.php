@@ -125,5 +125,120 @@ echo $this->Html->css(array(
 @overwrite
 
 @section('content')
-testing
+<!--Wrapper HomeServices Block Start Here-->
+<div id="HomeServices">
+    <div class="container">
+        <div class=" row-fluid">
+            <div class="span4 Servicebox">
+                <div class="service-img"><img src="/images/join-img.png" alt="Join"></div>
+                <div class="service-text" onclick="window.location.href = '/register'">
+                    <h2>Join Botangle</h2>
+                    <p>lets you connect with one of the<br/> best online experts the moment you'd like a hand.</p>
+                </div>
+            </div>
+            <div class="span4 Servicebox"  onclick="window.location.href = '/user/search'">
+                <div class="service-img"><img src="/images/search-tutor.png" alt="Join"></div>
+                <div class="service-text">
+                    <h2>Search Experts</h2>
+                    <p>Work with someone instantly or schedule<br/> a lesson with your preferred expert at a convenient time. </p>
+                </div>
+            </div>
+            <div class="span4 Servicebox"  onclick="window.location.href = '/user/search'">
+                <div class="service-img"><img src="/images/learn-class.png" alt="Join"></div>
+                <div class="service-text">
+                    <h2>Learn in Class</h2>
+                    <p>You'll be able to chat, use video, upload<br/> documents and write on a shared whiteboard.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Wrapper HomeServices Block End Here-->
+<!--Wrapper HomeQuoteBlock Block Start Here-->
+<header id="HomeQuoteBlock">
+    <div class="container text-center">
+        <div class="QuoteBlock row-fluid">
+            <div class="span12"> <span class="left">"</span>
+                <p> Botangle offers tutoring over video chat. So if you need help, you can get help from anyone, anywhere, for anything. </p>
+                <span class="right">"</span>
+                <p class="quote-client"><span>Jack,</span> New York</span>
+            </div>
+        </div>
+    </div>
+</header>
+@if(count($featuredUsers) > 0)
+<!--Wrapper HomeQuoteBlock Block End Here-->
+<div class="row-fluid Featured-tutors-block">
+    <center>
+        <h2>Featured Experts</h2>
+    </center>
+</div>
+<div class="row-fluid">
+        @foreach ($featuredUsers as $user)
+            <div class="span4 Tutor-list1">
+                <div class="tutor-img">
+                    <a href="{{{ action('UserController@getView', ['username' => $user->username]) }}}">
+                        <img src="{{ $user->picture}}" "class"='img-circle' 'alt' = 'student' 'style' = 'width: 195px; height: 195px'>
+                    </a>
+                </div>
+            </div>
+            <div class="tutor-title">
+                <h3>
+                    <a href="{{{ action('UserController@getView', ['username' => $user->username]) }}}">{{{ $user->full_name }}}</a>
+                </h3>
+                <p>{{{ $user->qualification }}}</p>
+            </div>
+            <div class="tutor-bio">
+                <p>{{{ $user->extracurricular_interests }}}</p>
+                <div class="social">
+                {{-- social link - FB --}}
+                @if (!empty($user->link_fb)) {
+                    <a href="{{{ $user->link_fb }}}" class="img-circle-left">
+                        <img src="/img/facebook.png">
+                    </a>
+                @endif
+
+            {{--
+                    All of these other options should be added as well
+
+            // social link - Twitter
+            $link = '#';
+
+            if (!empty($user['User']['link_twitter'])) {
+                $link =  $user['User']['link_twitter'];
+            }
+
+            echo $this->Html->image("/croogo/img/twitter.png", array(
+                    'url' => $link
+                ));
+
+            // social link - Google+
+            $link = '#';
+
+            if (!empty($user['User']['link_googleplus'])) {
+                $link =  $user['User']['link_googleplus'];
+            }
+
+            echo $this->Html->image("/croogo/img/google.png", array(
+                    'url' => $link
+                ));
+
+            // social link - Thumblr
+            $link = '#';
+
+            if (!empty($user['User']['link_thumblr'])) {
+                $link =  $user['User']['link_thumblr'];
+            }
+
+            echo $this->Html->image("/croogo/img/trumbler.png", array(
+                    'class' => 'img-circle-right',
+                    'url' => $link
+                ));
+            --}}
+        </div>
+    </div>
+
+    @endforeach
+</div>
+@endif
 @overwrite

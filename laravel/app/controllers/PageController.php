@@ -6,8 +6,12 @@ class PageController extends BaseController {
 
     public function getIndex()
     {
+        $featuredUsers = User::featured()->get();
+
         $this->layout = 'layout';
-        return View::make('page.home');
+        return View::make('page.home', array(
+                'featuredUsers' => $featuredUsers,
+            ));
     }
 
     public function getAbout()
