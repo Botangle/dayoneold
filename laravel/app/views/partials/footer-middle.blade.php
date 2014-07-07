@@ -3,10 +3,10 @@
         <div class="row-fluid">
             <div class="span3 joined-member-box">
                 <div class="joined-member"> Joined members
-                    <p><p>Needed - userjo</p></p>
+                    <p>{{{ $usersJoined }}}</p>
                 </div>
                 <div class="joined-member"> Online members
-                    <p><p>Needed - useron</p></p>
+                    <p>{{{ $usersOnline }}}</p>
                 </div>
             </div>
             <div class="span5 social-updates">
@@ -18,28 +18,21 @@
                 </div>
             </div>
 
-            $news = $this->Custom->getNewsList();
-
             <div class="span4 latest-news-box">
                 <div class="latest-news-box">
                     <p class="title1">{{ trans("Latest News") }}</p>
-                    @if(!empty($news)) {
-                        @foreach($news as $k=>$v)
-                            {{--
+                    @if(!empty($news))
+                        @foreach($news as $newsItem)
                             <div class="media latest-news1">
-                                $date = date('M',strtotime($v['News']['date']));
-                                $day = date('d',strtotime($v['News']['date']));
                                 <div class="pull-left media-date">
-                                    <div class="date"> $day </div>
-                                    <div class="month"> $date </div>
+                                    <div class="date">{{{ $newsItem->date->format('M') }}}</div>
+                                    <div class="month">{{{ $newsItem->date->format('d') }}}</div>
                                 </div>
-
                                 <div class="media-body">
-                                    <h4 class="media-heading1">
-                                        $v['News']['title'] </h4>
-                                    <a href="/news/detail/ str_replace(" ","-",$v['News']['title']) / $v['News']['id'] ">Read more</a></div>
+                                    <h4 class="media-heading1">{{{ $newsItem->title }}}</h4>
+                                    <a href="{{ action('NewsController@getDetail', ['id' => $newsItem->id]) }}">{{ trans('Read more') }}</a>
+                                </div>
                             </div>
-                            --}}
                         @endforeach
                     @endif
                 </div>

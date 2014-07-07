@@ -26,6 +26,11 @@ Route::get('/registration/tutor', 'RegistrationController@getRegisterExpert');
 Route::controller('categories', 'CategoryController');
 
 /**
+ * News controller (used for viewing info about our news items)
+ */
+Route::controller('news', 'NewsController');
+
+/**
  * Users controller (used for public viewing of group user info)
  */
 Route::controller('users', 'UsersController');

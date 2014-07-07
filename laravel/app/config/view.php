@@ -28,4 +28,16 @@ return array(
 
 	'pagination' => 'pagination::slider-3',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Virtuoso View Composers
+    |--------------------------------------------------------------------------
+    |
+    | View Composers that we register with the Virtuoso system to keep things cleaner
+    | Details available here: https://github.com/coderabbi/virtuoso/blob/master/README.md
+    |
+    */
+    'composers' => array (
+        'partials.footer-middle' => 'Botangle\Composers\FooterMiddleComposer',
+    ),
 );

@@ -24,6 +24,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	protected $hidden = array('password', 'remember_token');
 
     /**
+     * Scopes our users down to just active users
+     *
+     * @param $query
+     */
+    public function scopeActive($query)
+    {
+        $query->where('status', 1);
+    }
+
+    /**
      * Scopes our users down to just show our featured users on the homepage
      *
      * @param $query
@@ -31,6 +41,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     public function scopeFeatured($query)
     {
         $query->where('is_featured', '=', 1);
+    }
+
+    /**
+     * Scopes our users down to just online users
+     *
+     * @param $query
+     */
+    public function scopeOnline($query)
+    {
+        $query->where('is_online', 1);
     }
 
     /**
