@@ -62,7 +62,7 @@ array('Popular Categories' => 'Popular Categories'))
         </div>
         <!-- @end .row -->
 
-        {{-- echo $this->element('Croogo.getintouch'); --}}
+        @include('partials.get-in-touch')
 
     </div>
     <!-- @end .container -->
