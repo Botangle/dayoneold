@@ -2,8 +2,6 @@
 
 class CategoryController extends BaseController {
 
-    protected $layout = 'layout';
-
     public function getIndex()
     {
         $categories = Category::active()->where('parent_id', null)->get();
