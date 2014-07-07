@@ -12,7 +12,8 @@
 		"davejamesmiller/laravel-breadcrumbs": "~2.2.1"
 	},
     "require-dev": {
-        "way/generators": "2.*"
+        "way/generators": "2.*",
+		"barryvdh/laravel-ide-helper": "1.*"
     },
     "autoload": {
 		"classmap": [
@@ -32,6 +33,7 @@
 		],
 		"post-update-cmd": [
 			"php artisan clear-compiled",
+            "php artisan ide-helper:generate",
 			"php artisan optimize"
 		],
 		"post-create-project-cmd": [

@@ -123,6 +123,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
         // additional providers added for Botangle
+        'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
         'Coderabbi\Virtuoso\ComposerServiceProvider',
         'DaveJamesMiller\Breadcrumbs\ServiceProvider',
         'Way\Generators\GeneratorsServiceProvider',

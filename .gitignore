@@ -51,6 +51,7 @@ www/app/Vendor/*
 *.~
 1
 *.swp
+/laravel/_ide_helper.php
 
 # Bash scripts
  scripts/*
