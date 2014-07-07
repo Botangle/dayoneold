@@ -36,7 +36,7 @@
             </label>
       </div>
       <div class="span12 mar0">
-          {{ HTML::link(action('UserController@getForgot'), trans("Did you forget your username /password?")) }}
+          {{ HTML::link(route('user.forgot'), trans("Did you forget your username /password?")) }}
 
        </div>
         {{ Form::close() }}
@@ -46,7 +46,7 @@
       <div class="span3 PageRight-Block">
        <p class="FontStyle20">Not a member? Sign Up here</p>
         <p>Get a Free Account. Sign Up here.</p><br><br>
-          {{ HTML::link(action('RegistrationController@getRegisterExpert'), trans("Sign Up"), ['class' => 'btn btn-primary']) }}
+          {{ HTML::link(route('register.expert'), trans("Sign Up"), ['class' => 'btn btn-primary']) }}
       </div>
     </div>
     <!-- @end .row --> 

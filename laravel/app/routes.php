@@ -31,10 +31,12 @@ Route::get('/how-it-works', array(
     ));
 
 Route::get('/registration/student', array(
-        'uses' => 'RegistrationController@getRegisterStudent',
+        'as'    => 'register.student',
+        'uses'  => 'RegistrationController@getRegisterStudent',
     ));
 Route::get('/registration/tutor', array(
-        'uses' => 'RegistrationController@getRegisterExpert',
+        'as'    => 'register.expert',
+        'uses'  => 'RegistrationController@getRegisterExpert',
     ));
 
 /**
@@ -59,5 +61,6 @@ Route::controller('users', 'UsersController');
  * Also used for viewing an individual's profile
  */
 Route::controller('user', 'UserController', array(
-        'getLogin' => 'user.login',
+        'getForgot'     => 'user.forgot',
+        'getLogin'      => 'user.login',
     ));
