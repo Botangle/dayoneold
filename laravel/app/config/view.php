@@ -38,6 +38,7 @@ return array(
     |
     */
     'composers' => array (
-        '_partials.footer-middle' => 'Botangle\Composers\FooterMiddleComposer',
+        '_partials.nav'             => 'Botangle\Composers\MainMenuComposer',
+        '_partials.footer-middle'   => 'Botangle\Composers\FooterMiddleComposer',
     ),
 );

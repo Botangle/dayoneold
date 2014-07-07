@@ -10,7 +10,7 @@
                     <div class="Header-Account-info">
                         <span> Welcome {{{ Auth::user()->username }}} </span>
                         |
-                        {{ HTML::link(route('user.logout'), trans('Sign Out'), ['class' => 'signin', 'title' => trans('Sign Out')]) }}
+                        {{ HTML::link(route('logout'), trans('Sign Out'), ['class' => 'signin', 'title' => trans('Sign Out')]) }}
                     </div>
                     <form method="post" action="/user/search" id="searchuser">
                         <div class="Header-search">

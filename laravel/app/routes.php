@@ -54,7 +54,9 @@ Route::controller('news', 'NewsController');
 /**
  * Users controller (used for public viewing of group user info)
  */
-Route::controller('users', 'UsersController');
+Route::controller('users', 'UsersController', array(
+        'getTopChart'   => 'users.topcharts',
+    ));
 
 /**
  * User controller (used for private handling of an individual user account and info)
@@ -65,11 +67,11 @@ Route::get('/user/forgot', array(
         'uses'      => 'UserController@getForgot',
     ));
 Route::get('/user/login', array(
-        'as'        => 'user.login',
+        'as'        => 'login',
         'uses'      => 'UserController@getLogin',
     ));
 Route::get('/user/logout', array(
-        'as'        => 'user.logout',
+        'as'        => 'logout',
         'uses'      => 'UserController@getLogout',
     ));
 
