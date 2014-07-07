@@ -126,6 +126,7 @@ return array(
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
         'Coderabbi\Virtuoso\ComposerServiceProvider',
         'DaveJamesMiller\Breadcrumbs\ServiceProvider',
+        'Menu\MenuServiceProvider',
         'Way\Generators\GeneratorsServiceProvider',
 	),
 
@@ -195,7 +196,7 @@ return array(
 		'View'            => 'Illuminate\Support\Facades\View',
 
         // Botangle specific aliases
-        'Breadcrumbs' => 'DaveJamesMiller\Breadcrumbs\Facade',
+        'Breadcrumbs'       => 'DaveJamesMiller\Breadcrumbs\Facade',
+        'Menu'              => 'Menu\Menu',
 	),
-
 );

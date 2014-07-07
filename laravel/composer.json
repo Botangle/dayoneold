@@ -9,7 +9,8 @@
         "magniloquent/magniloquent": "dev-master",
         "codesleeve/asset-pipeline": "dev-master",
 		"coderabbi/virtuoso": "0.*",
-		"davejamesmiller/laravel-breadcrumbs": "~2.2.1"
+		"davejamesmiller/laravel-breadcrumbs": "~2.2.1",
+		"vespakoen/menu": "dev-master"
 	},
     "require-dev": {
         "way/generators": "2.*",
