@@ -13,6 +13,6 @@ class NewsController extends BaseController {
      */
     public function getDetail($id)
     {
-
+		return View::make('news.detail');
     }
 }
