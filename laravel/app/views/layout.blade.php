@@ -48,7 +48,7 @@
 <!--Wrapper main-content Block Start Here-->
 
 @section('breadcrumbs')
-{{ Breadcrumbs::render() }}
+{{ Breadcrumbs::renderIfExists() }}
 @show
 
 <div id="main-content">

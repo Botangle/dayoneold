@@ -97,5 +97,7 @@ Route::group(array('before' => 'auth'), function(){
         ));
 });
 
-//Route::controller('user', 'UserController', array(
-//    ));
+Route::get('/user/{username}', array(
+        'as'        => 'user.profile',
+        'uses'      => 'UserController@getView',
+    ));

@@ -95,16 +95,8 @@ class UserController extends BaseController {
     {
         if(Auth::user()->isTutor()) {
             return View::make('user.account.expert');
-//                ->nest(
-//                    'leftPanel',
-//                    'page.leftpanel'
-//                );
         } else {
             return View::make('user.account.student');
-//                ->nest(
-//                    'leftPanel',
-//                    'page.leftpanel'
-//                );
         }
     }
 
@@ -115,10 +107,24 @@ class UserController extends BaseController {
     /**
      * This needs to be given public access
      *
-     * @param string $username
+     * @param integer $id
      */
-    public function getView($username)
+    public function getView($id)
     {
+        if (is_numeric($id)) {
+            $model = User::findOrFail($id);
+        }
+        else {
+            $model = User::where('username' , '=', $id)->first();
+        }
 
+        return View::make('user.view', array(
+                'model' => $model,
+                'userRating' => array(),
+                'subjects' => array(),
+                'userReviews' => array(),
+                'lessonClasscount' => array(),
+                'userStatuses' => array(),
+            ));
     }
 }

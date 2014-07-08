@@ -1,11 +1,15 @@
-<?php
-echo $this->element("breadcrame", array('breadcrumbs' =>
-	array($user['User']['username'] => $user['User']['username']))
-);
+@extends('layout')
 
-$subject = explode(",", $user['User']['subject']);
+@section('breadcrumbs')
+{{ Breadcrumbs::renderIfExists('user', $model->full_name) }}
+@overwrite
+
+@section('content')
+<?php
+$subject = explode(",", $user->subject);
 ?>
-<script src="<?php echo $this->webroot ?>croogo/js/calander/bic_calendar.js"></script>
+
+<script src="/js/calander/bic_calendar.js"></script>
 <!--Wrapper main-content Block Start Here-->
 <div id="main-content">
 	<div class="container">
@@ -18,11 +22,7 @@ $subject = explode(",", $user['User']['subject']);
 			<div class="span9 PageLeft-Block">
 				<div class="row-fluid">
 					<div class="span4">
-						<?php if (!empty($user['User']['profilepic'])) : ?>
-							<?php echo $this->Html->image($user['User']['profilepic'], array('class' => 'img-circle', 'alt' => 'student', 'style' => 'width: 242px; height: 242px')); ?>
-						<?php else : ?>
-							<img src="<?php echo $this->webroot ?>images/botangle-default-pic.jpg" class="img-circle" alt="student">
-						<?php endif; ?>
+                        {{ HTML::image($user->picture, '', ['class' => 'img-circle', 'alt' => 'student', 'style' => 'width: 242px; height: 242px']) }}
 					</div>
 					<div class="span8">
 						<p class="pull-right">Rate : <span class="FontStyle16 color1"><strong>$
@@ -40,13 +40,13 @@ $subject = explode(",", $user['User']['subject']);
 										echo 0;
 									}
 									?></strong></span></p>
-						<p class="FontStyle28 color1"><?php echo h(ucfirst($user['User']['name'] . " " . $user['User']['lname'])); ?>
-							<?php /* if($user['User']['is_online'] == 1){ ?>
+						<p class="FontStyle28 color1">{{ $user->full_name }}
+							<?php /* if($user->['is_online'] == 1){ ?>
 							  <img src="<?php echo $this->webroot?>images/online.png" alt="online">
 							  <?php } else {  ?>
 							  <img src="<?php echo $this->webroot?>images/offline.png" alt="onffline">
 							  <?php } */ ?>
-							<br /><span style="font-size:13px"><?php echo ucfirst($user['User']['username']); ?></span>
+							<br /><span style="font-size:13px"><?php echo ucfirst($user->username); ?></span>
 							<br/>
 							<?php if (isset($userstatus[0]['Mystatus']['status_text'])) { ?>
 								<span style="font-size:13px"><b>Mood: </b><?php echo(h($userstatus[0]['Mystatus']['status_text'])); ?></span>
@@ -54,20 +54,18 @@ $subject = explode(",", $user['User']['subject']);
 
 						</p>
 
-						<p><?php echo h($user['User']['university']) ?><br>
+						<p>{{ $user->university) }}<br>
 							<br>
-							<?php echo h($user['User']['other_experience']) ?></p>
-						<p><?php
-							echo __("Subject:");
-							foreach ($subject as $k => $v) {
-								echo '<span class="tag01">' . h($v) . '</span> ';
-							}
-							?>
+							{{ $user->other_experience }}</p>
+						<p>Subject:
+							@foreach ($subjects as $k => $v)
+								<span class="tag01"> {{ $v }} </span>
+							@endforeach
 						</p>
 						<div class="row-fluid">
 							<div class="span6"><span class="pull-left">Botangle Star: &nbsp; </span> <input type="number" name="your_awesome_parameter" id="some_id" class="rating" value="<?php echo round($userRating[0]['avg']) ?>" readonly="isReadonly"/></div>
-							<div class="span3"><span class="color1"><?php echo count($userReviews) ?> <?php echo __("Reviews") ?></span></div>
-							<div class="span3"><span class="color1"><?php echo $lessonClasscount[0][0]['totalrecords'] ?> <?php echo __("Classes") ?></span></div>
+							<div class="span3"><span class="color1"><?php echo count($userReviews) ?> <?php echo trans("Reviews") ?></span></div>
+							<div class="span3"><span class="color1"><?php echo $lessonClasscount[0][0]['totalrecords'] ?> <?php echo trans("Classes") ?></span></div>
 						</div>
 						<div class="row-fluid Rate-this-tutor message-tutor">
 							<!--<div class="span6"><span class="pull-left">Give your Rating: &nbsp; </span> <input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="remove"/></div>-->
@@ -75,7 +73,7 @@ $subject = explode(",", $user['User']['subject']);
 							<p class="option-msg">
 								<?php
 								echo $this->Html->link(
-										__(''), '/users/messages/' . $user['User']['username'], array('data-toggle' => 'Message', 'title' => __('Message')));
+										trans(''), '/users/messages/' . $user->username, array('data-toggle' => 'Message', 'title' => trans('Message')));
 								?>
 							</p>
 
@@ -125,10 +123,10 @@ $subject = explode(",", $user['User']['subject']);
 										<div class="panel-body">
 											<div class="row-fluid Add-Payment-blocks bottomrow">
 
-												<?php if ($this->Session->read('Auth.User.role_id') == 2 && $this->Session->read('Auth.User.id') == $user['User']['id']) {
+												<?php if ($this->Session->read('Auth.User.role_id') == 2 && $this->Session->read('Auth.User.id') == $user->id) {
 													?>
 													<div class="span12">
-														<p class="FontStyle20 color1"><?php echo __("What's in Your mind:") ?></p>
+														<p class="FontStyle20 color1"><?php echo trans("What's on your mind:") ?></p>
 													</div>
 
 													<?php
@@ -140,7 +138,7 @@ $subject = explode(",", $user['User']['subject']);
 															<label class="inline span11">
 																<?php echo $this->Form->textarea('status_text', array('placeholder' => "What's in your mind?", 'label' => false, 'value' => '', 'type' => 'text', 'class' => 'textarea', 'maxlength' => '300')); ?>
 																<div id="textarea_feedback" class="chrremaing"></div>
-																<?php echo $this->Form->hidden('username', array('value' => $user['User']['username'], 'type' => 'text')); ?>
+																<?php echo $this->Form->hidden('username', array('value' => $user->['username'], 'type' => 'text')); ?>
 															</label>
 														</div>
 													</div>
@@ -164,13 +162,13 @@ $subject = explode(",", $user['User']['subject']);
 													?>
 													<?php
 													echo '<div class="left width50">';
-													foreach ($userstatus as $userstatues) {
+													foreach ($userStatuses as $status) {
 														if ($i % 2 != 0) {
 															?>
 															<div class="timelinestatus">
-																<p class="status"><?php echo h($userstatues['Mystatus']['status_text']); ?></p>
-																<p class="time"><?php echo date('d M Y | l', strtotime($userstatues['Mystatus']['created'])); ?>
-																	<?php echo date('h:i a', strtotime($userstatues['Mystatus']['created'])); ?></p>
+																<p class="status"><?php echo h($status['Mystatus']['status_text']); ?></p>
+																<p class="time"><?php echo date('d M Y | l', strtotime($status['Mystatus']['created'])); ?>
+																	<?php echo date('h:i a', strtotime($status['Mystatus']['created'])); ?></p>
 															</div>
 															<?php
 														}
@@ -178,13 +176,13 @@ $subject = explode(",", $user['User']['subject']);
 													}
 													echo '</div>';
 													echo '<div class="right width50">';
-													foreach ($userstatus as $userstatues) {
+													foreach ($userStatuses as $status) {
 														if ($j % 2 == 0) {
 															?>
 															<div class="timelinestatusright right">
-																<p class="status"><?php echo h($userstatues['Mystatus']['status_text']); ?></p>
-																<p class="time"><?php echo date('d M Y | l', strtotime($userstatues['Mystatus']['created'])); ?>
-																	<?php echo date('h:i a', strtotime($userstatues['Mystatus']['created'])); ?></p>
+																<p class="status"><?php echo h($status['Mystatus']['status_text']); ?></p>
+																<p class="time"><?php echo date('d M Y | l', strtotime($status['Mystatus']['created'])); ?>
+																	<?php echo date('h:i a', strtotime($status['Mystatus']['created'])); ?></p>
 															</div>
 															<?php
 														}
@@ -216,25 +214,25 @@ $subject = explode(",", $user['User']['subject']);
 							<div class="tab-pane fade" id="aboutprofile">
 								<div class="student-profile">
 									<a class="pull-left" href="#">
-										<img src="<?php echo $this->webroot ?>images/aboutme-img.png" alt="about"> </a>
+										<img src="/images/aboutme-img.png" alt="about"> </a>
 									<div class="media-body">
-										<h4 class="media-heading"><?php echo __("Teaching Experience") ?></h4>
-										<p><?php echo h($user['User']['teaching_experience']) ?></p>
+										<h4 class="media-heading"><?php echo trans("Teaching Experience") ?></h4>
+										<p><?php echo h($user->teaching_experience) ?></p>
 									</div></div>
 
 								<div class="student-profile">
 									<a class="pull-left" href="#">
-										<img src="<?php echo $this->webroot ?>images/interests-img.png" alt="about"> </a>
+										<img src="/images/interests-img.png" alt="about"> </a>
 									<div class="media-body">
-										<h4 class="media-heading"><?php echo __("Extracurricular Interests") ?></h4>
-										<p><?php echo h($user['User']['extracurricular_interests']) ?></p>
+										<h4 class="media-heading"><?php echo trans("Extracurricular Interests") ?></h4>
+										<p>{{ $user->extracurricular_interests }}</p>
 									</div></div>
-								<?php if ($user['User']['expertise'] != "") { ?>
+								<?php if ($user->expertise != "") { ?>
 									<div class="student-profile">
 										<a class="pull-left" href="#">
-											<img src="<?php echo $this->webroot ?>images/subjects.png" alt="subjects"> </a>
+											<img src="/images/subjects.png" alt="subjects"> </a>
 										<div class="media-body">
-											<?php echo h($user['User']['expertise']) ?>
+											{{ $user->expertise }}
 
 										</div></div> <?php } ?>
 							</div>
@@ -253,7 +251,7 @@ $subject = explode(",", $user['User']['subject']);
 												<?php if (file_exists(WWW_ROOT . DS . 'uploads' . DS . $review['User']['id'] . DS . 'profile' . DS . $review['User']['profilepic']) && $review['User']['profilepic'] != "") { ?>
 													<img src="<?php echo $this->webroot . 'uploads/' . $review['User']['id'] . '/profile/' . $review['User']['profilepic'] ?> "class="img-circle" alt="student" width="242px" height="242px">
 												<?php } else { ?>
-													<img src="<?php echo $this->webroot ?>images/people1.jpg" class="img-circle" alt="expert">
+													<img src="/images/people1.jpg" class="img-circle" alt="expert">
 												<?php } ?>
 											</div>
 											<div class="span3">
@@ -275,7 +273,7 @@ $subject = explode(",", $user['User']['subject']);
 								} else {
 									?>
 									<div class="Myclass-list row-fluid">
-										<div class="span2"><?php echo __("No reviews yet") ?></div></div>
+										<div class="span2"><?php echo trans"No reviews yet") ?></div></div>
 								<?php } ?>
 							</div>
 
@@ -341,7 +339,7 @@ $subject = explode(",", $user['User']['subject']);
 								//set ajax call
 								reqAjax: {
 									type: 'get',
-									url: '<?php echo $this->webroot ?>users/calandareventsprofile/<?php echo $user['User']['id'] ?>'
+									url: '/users/calandareventsprofile/<?php echo $user->['id'] ?>'
 												}
 											});
 										});
@@ -358,7 +356,7 @@ $subject = explode(",", $user['User']['subject']);
 		</div>
 		<!-- @end .row -->
 
-		<?php echo $this->element('Croogo.getintouch'); ?>
+		@include('_partials.get-in-touch')
 
 	</div>
 	<!-- @end .container -->
@@ -367,7 +365,7 @@ $subject = explode(",", $user['User']['subject']);
 
 <?php
 echo $this->Html->script(array(
-	'/croogo/js/bootstrap-rating-input.min',
+	'/js/bootstrap-rating-input.min',
 ));
 ?>
 
@@ -380,7 +378,7 @@ echo $this->Html->script(array(
 </div>
 <?php
 echo $this->Html->script(array(
-	'/croogo/js/bootstrap-rating-input.min',
+	'/js/bootstrap-rating-input.min',
 ));
 ?>
 <script type="text/javascript">
@@ -399,7 +397,7 @@ echo $this->Html->script(array(
 	function callPopup() {
 
 		var currentclass = jQuery(this).hasClass('reviews')
-		var url = Croogo.basePath + 'users/createlessons/ajax/<?php echo $user['User']['id'] ?>';
+		var url = Croogo.basePath + 'users/createlessons/ajax/<?php echo $user->['id'] ?>';
 		jQuery('body').append('<div class="modal-backdrop in"></div>')
 		jQuery("#myModal").css({'display': 'block', 'height': 'auto', 'top': '25%', 'position': 'absolute'});
 
@@ -418,3 +416,4 @@ echo $this->Html->script(array(
 		jQuery("#myModal").html('').css('display', 'none');
 	}
 </script> 
+@overwrite

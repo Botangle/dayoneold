@@ -18,7 +18,15 @@ class UserMenuComposer implements Composer
 
         $menu->add(route('user.my-account'), trans('My Account'));
         if(\Auth::user()->isTutor()) {
-            $menu->add('/', trans('My Profile')); // @TODO: fix the link here to work properly ( /user/{username} )
+            $menu->add(
+                action(
+                    'UserController@getView',
+                    array(
+                        'username' => \Auth::user()->username,
+                    )
+                ),
+                trans('My Profile')
+            );
         }
 
         $menu->add(route('user.messages'), trans('Messages'));

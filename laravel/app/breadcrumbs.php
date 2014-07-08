@@ -44,6 +44,10 @@ Breadcrumbs::register('user.my-account', function($breadcrumbs) {
         $breadcrumbs->parent('home');
         $breadcrumbs->push('My Account', route('user.my-account'));
     });
+Breadcrumbs::register('user.profile', function($breadcrumbs, $user) {
+        $breadcrumbs->parent('home');
+        $breadcrumbs->push(HTML::entities($user), route('user.profile', array($user)));
+    });
 
 Breadcrumbs::register('page', function($breadcrumbs, $page) {
         $breadcrumbs->parent('category', $page->category);
