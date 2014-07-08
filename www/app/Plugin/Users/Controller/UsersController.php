@@ -2379,17 +2379,17 @@ class UsersController extends UsersAppController {
 
 			$this->set('userlist', $this->paginate());
 
-			$category = $this->Category->find('all', array('conditions' => array('status' => 1, 'parent_id' => null)));
+			$categories = $this->Category->find('all', array('conditions' => array('status' => 1, 'parent_id' => null)));
 
 			$total = 0;
-
+			
 			// calculate category count
-			foreach ($category as $k => $v) {
-				$category[$k]['Category']['count'] = $this->User->getCategoryUserCount($category[$k]['Category']['id']);
-				$total += $category[$k]['Category']['count'];
+			foreach ($categories as $k => $v) {
+				$categories[$k]['Category']['count'] = $this->User->getCategoryUserCount($category[$k]['Category']['id']);
+				$total += $categories[$k]['Category']['count'];
 			}
 			
-			$this->set(compact('userlist', 'category', 'categoryname', 'online', 'total'));
+			$this->set(compact('userlist', 'categories', 'categoryname', 'online', 'total'));
 		}
 	}
 
