@@ -40,5 +40,6 @@ return array(
     'composers' => array (
         '_partials.nav'             => 'Botangle\Composers\MainMenuComposer',
         '_partials.footer-middle'   => 'Botangle\Composers\FooterMiddleComposer',
+        'user._sidebar'             => 'Botangle\Composers\UserMenuComposer',
     ),
 );

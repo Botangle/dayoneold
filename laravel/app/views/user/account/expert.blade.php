@@ -1,5 +1,6 @@
 @extends('layout')
 
+@section('content')
 {{--
 echo $this->Html->script(array('/croogo/js/autocomplete/jquery-1.9.1',
 	'/croogo/js/autocomplete/jquery.ui.core', '/croogo/js/autocomplete/jquery.ui.widget', '/croogo/js/autocomplete/jquery.ui.position', '/croogo/js/autocomplete/jquery.ui.menu', '/croogo/js/autocomplete/jquery.ui.autocomplete',
@@ -87,7 +88,7 @@ echo $this->Html->css(array(
 			</div>
 		</div>
 		<div class="row-fluid">
-			<?php // echo $this->Element("myaccountleft") ?>
+			@include('user._sidebar')
 
 			<div class="span9">
 				<h2 class="page-title"><?php echo trans("My Account") ?></h2>
@@ -314,4 +315,5 @@ echo $this->Html->css(array(
 </div>
 <!-- @end .container --> 
 </div>
-<!--Wrapper main-content Block End Here--> 
+<!--Wrapper main-content Block End Here-->
+@overwrite
