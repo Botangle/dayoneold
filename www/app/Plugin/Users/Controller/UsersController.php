@@ -58,10 +58,10 @@ class UsersController extends UsersAppController {
 
 	public $helper = array('Categories.Category', 'Session');
 
-    public function __construct($request = null, $response = null) {
-        parent::__construct($request, $response);
-        $this->getEventManager()->attach(new UserListener());
-    }
+	public function __construct($request = null, $response = null) {
+		parent::__construct($request, $response);
+		$this->getEventManager()->attach(new UserListener());
+	}
 
 	function beforeFilter() {
 		$fields = ConnectionManager::getDataSource('default');
@@ -76,7 +76,7 @@ class UsersController extends UsersAppController {
 		$this->Security->csrfCheck = false;
 
 //        $this->Security->unlockedActions = array('search', 'add', 'billing', 'index', 'registration');
-        $this->Security->unlockedActions = array('*');
+		$this->Security->unlockedActions = array('*');
 
 		$this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
 
@@ -199,24 +199,24 @@ class UsersController extends UsersAppController {
 		if (empty($role_id)) {
 			throw new NotFoundException('404');
 		}
-				
+
 		$results = $this->User->find('all', array(
 			'fields' => 'User.name, User.lname, User.email',
 			'conditions' => array(
 				'User.role_id' => $role_id,
 			)
 		));
-		
+
 		$filename = 'users_experts.csv';
-		
+
 		if ($role_id == '4') {
 			$filename = 'users_students.csv';
 		}
-		
+
 		$this->response->download($filename);
 		$this->CsvView->quickExport($results);
 	}
-	
+
 /**
  * Admin add
  *
@@ -411,10 +411,10 @@ class UsersController extends UsersAppController {
 		}
 
 		$this->set('title_for_layout', __d('croogo', 'Users'));
-		
+
 		$user = $this->User->find('first', array('conditions' => array('User.id' => $this->request->data['User']['id'])));
 		$this->set('user', $user);
-		
+
 		if ($this->Session->read('Auth.User.role_id') == 4) {
 			$this->render('index2');
 		}
@@ -578,320 +578,305 @@ class UsersController extends UsersAppController {
 		}
 	}
 
-    /**
-     * Add a user to the database
-     *
-     * @api
-     * - expecting things about as normal.  Our form was adjusted to reflect what the mobile app is sending
-     *      - firstname / lastname (instead of name/lname)
-     *      - password_confirmation (instead of verify_password)
-     *      - timezone (as seconds offset (normal or negative) from UTC)
-     *
-     * @return void
-     * @access public
-     */
+/**
+ * Add a user to the database
+ *
+ * @api
+ * - expecting things about as normal.  Our form was adjusted to reflect what the mobile app is sending
+ *      - firstname / lastname (instead of name/lname)
+ *      - password_confirmation (instead of verify_password)
+ *      - timezone (as seconds offset (normal or negative) from UTC)
+ *
+ * @return void
+ * @access public
+ */
 	public function add() {
 		if (empty($this->request->data)) {
-            return $this->loadAddPage();
-        }
+			return $this->loadAddPage();
+		}
 
-        // if we haven't been sent one of these options, then someone is trying to mess with us
-        if(!isset($this->request->data['RegisterExpertForm']) && !isset($this->request->data['RegisterStudentForm'])) {
-            // let's error out and end this now
-            throw new MethodNotAllowedException();
-        }
+		// if we haven't been sent one of these options, then someone is trying to mess with us
+		if (!isset($this->request->data['RegisterExpertForm']) && !isset($this->request->data['RegisterStudentForm'])) {
+			// let's error out and end this now
+			throw new MethodNotAllowedException();
+		}
 
-        $type = 'student';
-        $key = 'RegisterStudentForm';
-        if(isset($this->request->data['RegisterExpertForm'])) {
-            $type = 'expert';
-            $key = 'RegisterExpertForm';
-        }
+		$type = 'student';
+		$key = 'RegisterStudentForm';
+		if (isset($this->request->data['RegisterExpertForm'])) {
+			$type = 'expert';
+			$key = 'RegisterExpertForm';
+		}
 
-        // scrub our post data to try and protect ourselves a bit against what we might get sent
-        // and we only send in the core form values we are interested in
-        $semiSafeData = $this->scrubRegistrationData($type, $this->request->data[$key]);
+		// scrub our post data to try and protect ourselves a bit against what we might get sent
+		// and we only send in the core form values we are interested in
+		$semiSafeData = $this->scrubRegistrationData($type, $this->request->data[$key]);
 
-        // now we initialize our user with various values we need
-        $semiSafeData = $this->setInitialValues($type, $semiSafeData);
+		// now we initialize our user with various values we need
+		$semiSafeData = $this->setInitialValues($type, $semiSafeData);
 
-        // translate values from something our XML API has been told to send into something that CakePHP is expecting
-        // we adjust fieldnames and try to make things more like Laravel 4 will like down the road
-        $semiSafeData = $this->handleTranslationlayer($semiSafeData);
+		// translate values from something our XML API has been told to send into something that CakePHP is expecting
+		// we adjust fieldnames and try to make things more like Laravel 4 will like down the road
+		$semiSafeData = $this->handleTranslationlayer($semiSafeData);
 
-        // now put things back in a form that Cake models understand
-        $semiSafeData = array($key => $semiSafeData);
+		// now put things back in a form that Cake models understand
+		$semiSafeData = array($key => $semiSafeData);
 
-        // and then proceed to handle registration
-        $this->handleRegistration($type, $semiSafeData);
+		// and then proceed to handle registration
+		$this->handleRegistration($type, $semiSafeData);
 	}
 
-    private function loadAddPage()
-    {
-        $this->set('title_for_layout', __d('croogo', 'Register'));
-        $this->set('type', $this->Session->read('type'));
-        return $this->render('add');
-    }
+	private function loadAddPage() {
+		$this->set('title_for_layout', __d('croogo', 'Register'));
+		$this->set('type', $this->Session->read('type'));
+		return $this->render('add');
+	}
 
-    /**
-     * We try and protect ourselves here a little.  Oh for a nicer framework that would guard us without this being necessary
-     *
-     * @param $type
-     * @param $unsafeData
-     */
-    private function scrubRegistrationData($type, $unsafeData)
-    {
-        // protected against a malicious user overwriting any other user's info while registering
-        unset($unsafeData['id']);
+/**
+ * We try and protect ourselves here a little.  Oh for a nicer framework that would guard us without this being necessary
+ *
+ * @param $type
+ * @param $unsafeData
+ */
+	private function scrubRegistrationData($type, $unsafeData) {
+		// protected against a malicious user overwriting any other user's info while registering
+		unset($unsafeData['id']);
 
-        // do a basic conversion of data.  It still isn't that safe, but it's better than nothing at the moment
-        // Let's improve this down the road
-        $unsafeData['username'] = htmlspecialchars($unsafeData['username']);
-        $unsafeData['firstname'] = htmlspecialchars($unsafeData['firstname']);
-        $unsafeData['lastname'] = htmlspecialchars($unsafeData['lastname']);
+		// do a basic conversion of data.  It still isn't that safe, but it's better than nothing at the moment
+		// Let's improve this down the road
+		$unsafeData['username'] = htmlspecialchars($unsafeData['username']);
+		$unsafeData['firstname'] = htmlspecialchars($unsafeData['firstname']);
+		$unsafeData['lastname'] = htmlspecialchars($unsafeData['lastname']);
 
-        // @TODO: any other security improvements we want to make?  Still a bunch of fields that are going to go through here
-        //$this->request->data['User']['website'] = htmlspecialchars($this->request->data['User']['website']);
+		// @TODO: any other security improvements we want to make?  Still a bunch of fields that are going to go through here
+		//$this->request->data['User']['website'] = htmlspecialchars($this->request->data['User']['website']);
 
-        return $unsafeData;
-    }
+		return $unsafeData;
+	}
 
-    /**
-     * @param $semiSafeData
-     */
-    private function setInitialValues($type, $semiSafeData)
-    {
-        // prevent a trivial ability to change a user's role to an admin
-        // (previously you could just change the role_id in the form submitted!)
-        // instead, we're now hard-coding this and not giving people the option to mess with us
+/**
+ * @param $semiSafeData
+ */
+	private function setInitialValues($type, $semiSafeData) {
+		// prevent a trivial ability to change a user's role to an admin
+		// (previously you could just change the role_id in the form submitted!)
+		// instead, we're now hard-coding this and not giving people the option to mess with us
 
-        if($type == 'expert') {
-            $semiSafeData['role_id'] = 2;
-        } else {
-            $semiSafeData['role_id'] = 4;
-        }
+		if ($type == 'expert') {
+			$semiSafeData['role_id'] = 2;
+		} else {
+			$semiSafeData['role_id'] = 4;
+		}
 
-        // setup an activation key if needed down the road
-        $semiSafeData['activation_key'] = md5(uniqid());
+		// setup an activation key if needed down the road
+		$semiSafeData['activation_key'] = md5(uniqid());
 
-        // activate this account in our system
-        $semiSafeData['status'] = 1;
+		// activate this account in our system
+		$semiSafeData['status'] = 1;
 
-        return $semiSafeData;
-    }
+		return $semiSafeData;
+	}
 
-    /**
-     * Translates from what our API and forms are sending us into what Cake and our DB still want
-     *
-     * @param $semiSafeData
-     * @return mixed
-     */
-    private function handleTranslationLayer($semiSafeData)
-    {
-        // Translation layer because our original DB column names were badly chosen
-        $semiSafeData['name'] = $semiSafeData['firstname'];
-        $semiSafeData['lname'] = $semiSafeData['lastname'];
+/**
+ * Translates from what our API and forms are sending us into what Cake and our DB still want
+ *
+ * @param $semiSafeData
+ * @return mixed
+ */
+	private function handleTranslationLayer($semiSafeData) {
+		// Translation layer because our original DB column names were badly chosen
+		$semiSafeData['name'] = $semiSafeData['firstname'];
+		$semiSafeData['lname'] = $semiSafeData['lastname'];
 
-        // we adjusted the fieldname for verifying passwords to more closely match Laravel 4
-        $semiSafeData['verify_password'] = $semiSafeData['password_confirmation'];
+		// we adjusted the fieldname for verifying passwords to more closely match Laravel 4
+		$semiSafeData['verify_password'] = $semiSafeData['password_confirmation'];
 
-        // unset the old values
-        unset($semiSafeData['firstname']);
-        unset($semiSafeData['lastname']);
-        unset($semiSafeData['password_confirmation']);
+		// unset the old values
+		unset($semiSafeData['firstname']);
+		unset($semiSafeData['lastname']);
+		unset($semiSafeData['password_confirmation']);
 
-        return $semiSafeData;
-    }
+		return $semiSafeData;
+	}
 
-    /**
-     * Handles the registration process
-     *
-     * @param $semiSafeData
-     */
-    private function handleRegistration($type, $semiSafeData)
-    {
-        // check to see if we're adding a student or a tutor
-        if($type == 'expert') {
-            // we're registering a tutor
-            $result = $this->registerExpert($semiSafeData);
+/**
+ * Handles the registration process
+ *
+ * @param $semiSafeData
+ */
+	private function handleRegistration($type, $semiSafeData) {
+		// check to see if we're adding a student or a tutor
+		if ($type == 'expert') {
+			// we're registering a tutor
+			$result = $this->registerExpert($semiSafeData);
 
-            $redirectUrl = array('action' => 'billing');
-            $successMessage = __d(
-                'croogo',
-                'You have successfully registered an account. Please enter in your billing info to show up in the search results.'
-            );
-        }
-        // we're registering a student
-        else {
-            $result = $this->registerStudent($semiSafeData);
+			$redirectUrl = array('action' => 'billing');
+			$successMessage = __d(
+					'croogo', 'You have successfully registered an account. Please enter in your billing info to show up in the search results.'
+			);
+		}
+		// we're registering a student
+		else {
+			$result = $this->registerStudent($semiSafeData);
 
-            $redirectUrl = array('action' => 'index');
-            $successMessage = __d(
-                'croogo',
-                'You have successfully registered an account! On to find a good tutor! :-)'
-            );
-        }
+			$redirectUrl = array('action' => 'index');
+			$successMessage = __d(
+					'croogo', 'You have successfully registered an account! On to find a good tutor! :-)'
+			);
+		}
 
-        if (!$result) {
-            Croogo::dispatchEvent('Controller.Users.registrationFailure', $this);
+		if (!$result) {
+			Croogo::dispatchEvent('Controller.Users.registrationFailure', $this);
 
-            $message = __d('croogo', 'The User could not be saved. Please, try again.');
+			$message = __d('croogo', 'The User could not be saved. Please, try again.');
 
-            if($this->RequestHandler->isXml()) {
-                $errors = $this->User->invalidFields();
-                return $this->sendXmlError(5, current($errors)[0]); // only send back the first validation error
-            } else {
-                $this->Session->setFlash(
-                    $message,
-                    'default',
-                    array('class' => 'error')
-                );
-                return $this->loadAddPage();
-            }
-        }
+			if ($this->RequestHandler->isXml()) {
+				$errors = $this->User->invalidFields();
+				return $this->sendXmlError(5, current($errors)[0]); // only send back the first validation error
+			} else {
+				$this->Session->setFlash(
+						$message, 'default', array('class' => 'error')
+				);
+				return $this->loadAddPage();
+			}
+		}
 
-        Croogo::dispatchEvent('Controller.Users.registrationSuccessful', $this);
+		Croogo::dispatchEvent('Controller.Users.registrationSuccessful', $this);
 
-        // this was never turned on, I think we can throw it away
-        // $this->giveOutTrophiesToFirstOneHundredUsers()
+		// this was never turned on, I think we can throw it away
+		// $this->giveOutTrophiesToFirstOneHundredUsers()
 
-        Croogo::dispatchEvent('Controller.Users.beforeLogin', $this);
+		Croogo::dispatchEvent('Controller.Users.beforeLogin', $this);
 
-        if (!$this->Auth->login($result['User'])) {
-            Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
-            $message = 'The password you entered is incorrect.';
-            if($this->RequestHandler->isXml()) {
-                return $this->sendXmlError(3, $message);
-            } else {
-                $this->Session->setFlash($message, 'default', array('class' => 'error'), 'auth');
-                $this->redirect($this->Auth->loginAction);
-            }
-        }
+		if (!$this->Auth->login($result['User'])) {
+			Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
+			$message = 'The password you entered is incorrect.';
+			if ($this->RequestHandler->isXml()) {
+				return $this->sendXmlError(3, $message);
+			} else {
+				$this->Session->setFlash($message, 'default', array('class' => 'error'), 'auth');
+				$this->redirect($this->Auth->loginAction);
+			}
+		}
 
-        Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
+		Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
 
-        $userId = $this->Session->read('Auth.User.id');
-        $this->setOnlineStatus($userId, true);
+		$userId = $this->Session->read('Auth.User.id');
+		$this->setOnlineStatus($userId, true);
 
-        // Not sure what this is used for, I think we should get rid of it eventually
-        $_SESSION['userid'] = $userId;
+		// Not sure what this is used for, I think we should get rid of it eventually
+		$_SESSION['userid'] = $userId;
 
-        // now, we work on sending back API information if requested
-        if($this->RequestHandler->isXml()) {
-            $user = $this->Session->read('Auth.User');
+		// now, we work on sending back API information if requested
+		if ($this->RequestHandler->isXml()) {
+			$user = $this->Session->read('Auth.User');
 
-            // we'll translate a bit between what we've got in the system and what we send out
-            $this->set('user', $user);
-            $this->set('message', $successMessage);
+			// we'll translate a bit between what we've got in the system and what we send out
+			$this->set('user', $user);
+			$this->set('message', $successMessage);
 
-            $this->helpers[] = 'Users.UserXmlTransformer';
-        } else {
-            $this->Session->setFlash($successMessage, 'default', array('class' => 'success'));
-            $this->redirect($redirectUrl);
-        }
-    }
+			$this->helpers[] = 'Users.UserXmlTransformer';
+		} else {
+			$this->Session->setFlash($successMessage, 'default', array('class' => 'success'));
+			$this->redirect($redirectUrl);
+		}
+	}
 
-    /**
-     * Registers our student or fails out
-     *
-     * @param $unsafeData
-     * @return bool
-     */
-    private function registerStudent($unsafeData) {
-        // $this->RegisterStudentForm->set($unsafeData);
-
-        // @TODO: we'd love to enable validations here eventually
-        // for now, we're leaving this off though ...
-        // if($this->StudentAccountCreationForm->validates()) {
-        // }
-
+/**
+ * Registers our student or fails out
+ *
+ * @param $unsafeData
+ * @return bool
+ */
+	private function registerStudent($unsafeData) {
+		// $this->RegisterStudentForm->set($unsafeData);
+		// @TODO: we'd love to enable validations here eventually
+		// for now, we're leaving this off though ...
+		// if($this->StudentAccountCreationForm->validates()) {
+		// }
 //        App::import("Model", "Users.RegisterStudentForm");
 //        $student = new RegisterStudentForm();
-
 //        App::import("Model", "Users.User");
+		// now convert out of our setup to a user model array
+		$unsafeData = $unsafeData['RegisterStudentForm'];
+		$data['User'] = $unsafeData;
 
-        // now convert out of our setup to a user model array
-        $unsafeData = $unsafeData['RegisterStudentForm'];
-        $data['User'] = $unsafeData;
+		// have the user account handle some of the filtering for us
+		$this->User->create($data, true);
 
-        // have the user account handle some of the filtering for us
-        $this->User->create($data, true);
+		return $this->User->save();
+	}
 
-        return $this->User->save();
-    }
+/**
+ * Registers our tutor or fails out
+ *
+ * @param $unsafeData
+ * @return mixed
+ */
+	private function registerExpert($unsafeData) {
+		// now convert out of our setup to a user model array
+		$unsafeData = $unsafeData['RegisterExpertForm'];
+		$data['User'] = $unsafeData;
 
-    /**
-     * Registers our tutor or fails out
-     *
-     * @param $unsafeData
-     * @return mixed
-     */
-    private function registerExpert($unsafeData) {
-        // now convert out of our setup to a user model array
-        $unsafeData = $unsafeData['RegisterExpertForm'];
-        $data['User'] = $unsafeData;
+		$this->User->create($unsafeData, true);
 
-        $this->User->create($unsafeData, true);
+		return $this->User->save();
+	}
 
-        return $this->User->save();
-    }
+/**
+ * Whether the specified user is online or not
+ * @param $isOnline
+ */
+	private function setOnlineStatus($userId, $isOnline) {
+		$this->User->id = $userId;
+		$this->User->saveField('is_online', $isOnline);
+	}
 
-    /**
-     * Whether the specified user is online or not
-     * @param $isOnline
-     */
-    private function setOnlineStatus($userId, $isOnline)
-    {
-        $this->User->id = $userId;
-        $this->User->saveField('is_online', $isOnline);
-    }
+/**
+ * @TODO: decide whether we even need this or whether we can just throw it away completely
+ *
+ * Be forewarned, it's really messy in here, India guy code coming up
+ */
+	private function giveOutTrophiesToFirstOneHundredUsers() {
+		$newUser = $this->User->getLastInsertId();
+		// $newUser = 4;
+		$trophyamountlesson = "trophy";
 
-    /**
-     * @TODO: decide whether we even need this or whether we can just throw it away completely
-     *
-     * Be forewarned, it's really messy in here, India guy code coming up
-     */
-    private function giveOutTrophiesToFirstOneHundredUsers()
-    {
-        $newUser = $this->User->getLastInsertId();
-        // $newUser = 4;
-        $trophyamountlesson = "trophy";
+		if ($this->Session->check('requestedbyuser')) {
+			if ($newUser < 100) {
+				$requesteduser = $this->User->find('first', array(
+					'conditions' => array(
+						'User.id' => $this->Session->read('requestedbyuser'),
+					),
+				));
 
-        if ($this->Session->check('requestedbyuser')) {
-            if ($newUser < 100) {
-                $requesteduser = $this->User->find('first', array(
-                        'conditions' => array(
-                            'User.id' => $this->Session->read('requestedbyuser'),
-                        ),
-                    ));
+				if ($this->Session->check('requestedbyuser')) {
+					if ($requesteduser['User']['role_id'] == 2) {
+						$trophyamountlesson = '5';
+					} else if ($requesteduser['User']['role_id'] == 4) {
+						$trophyamountlesson = 'lesson';
+					}
+				}
+			}
 
-                if ($this->Session->check('requestedbyuser')) {
-                    if ($requesteduser['User']['role_id'] == 2) {
-                        $trophyamountlesson = '5';
-                    } else if ($requesteduser['User']['role_id'] == 4) {
-                        $trophyamountlesson = 'lesson';
-                    }
-                }
-            }
+			$this->request->data['Userpoint']['user_id'] = $newUser;
+			$this->request->data['Userpoint']['point'] = 5;
+			$this->request->data['Userpoint']['date'] = date('Y-m-d H:i:s');
+			$this->request->data['Userpoint']['trophyamountlesson'] = "";
+			$this->request->data['Userpoint']['paid_or_not'] = 0;
 
-            $this->request->data['Userpoint']['user_id'] = $newUser;
-            $this->request->data['Userpoint']['point'] = 5;
-            $this->request->data['Userpoint']['date'] = date('Y-m-d H:i:s');
-            $this->request->data['Userpoint']['trophyamountlesson'] = "";
-            $this->request->data['Userpoint']['paid_or_not'] = 0;
-
-            $this->Userpoint->save($this->request->data);
-            unset($this->request->data['Userpoint']);
-            $this->Userpoint->create();
-            $this->request->data['Userpoint']['user_id'] = $this->Session->read('requestedbyuser');
-            $this->request->data['Userpoint']['point'] = 1;
-            $this->request->data['Userpoint']['date'] = date('Y-m-d H:i:s');
-            $this->request->data['Userpoint']['trophyamountlesson'] = $trophyamountlesson;
-            $this->request->data['Userpoint']['paid_or_not'] = 0;
-            $this->Userpoint->save($this->request->data);
-            $this->Session->delete('requestedbyuser');
-        }
-    }
+			$this->Userpoint->save($this->request->data);
+			unset($this->request->data['Userpoint']);
+			$this->Userpoint->create();
+			$this->request->data['Userpoint']['user_id'] = $this->Session->read('requestedbyuser');
+			$this->request->data['Userpoint']['point'] = 1;
+			$this->request->data['Userpoint']['date'] = date('Y-m-d H:i:s');
+			$this->request->data['Userpoint']['trophyamountlesson'] = $trophyamountlesson;
+			$this->request->data['Userpoint']['paid_or_not'] = 0;
+			$this->Userpoint->save($this->request->data);
+			$this->Session->delete('requestedbyuser');
+		}
+	}
 
 /**
  * Activate the user (via email confirmation)
@@ -1027,14 +1012,14 @@ class UsersController extends UsersAppController {
 		$this->set(compact('user', 'username', 'key'));
 	}
 
-    /**
-     * Login
-     *
-     * @api
-     * @return boolean
-     * @access public
-     */
-    public function login() {
+/**
+ * Login
+ *
+ * @api
+ * @return boolean
+ * @access public
+ */
+	public function login() {
 		$this->set('title_for_layout', __d('croogo', 'Log in'));
 		if ($this->request->is('post')) {
 			Croogo::dispatchEvent('Controller.Users.beforeLogin', $this);
@@ -1042,35 +1027,35 @@ class UsersController extends UsersAppController {
 			if ($this->Auth->login()) {
 				Croogo::dispatchEvent('Controller.Users.loginSuccessful', $this);
 
-                $userId = (int)$this->Session->read('Auth.User.id');
-                $this->setOnlineStatus($userId, true);
+				$userId = (int) $this->Session->read('Auth.User.id');
+				$this->setOnlineStatus($userId, true);
 
-                // not sure what this is used for, it'd be nice to get rid of it
+				// not sure what this is used for, it'd be nice to get rid of it
 				$_SESSION['userid'] = $userId;
 
-                // API: handle our API info and send back info
-                if($this->RequestHandler->isXml()) {
-                    $user = $this->Session->read('Auth.User');
+				// API: handle our API info and send back info
+				if ($this->RequestHandler->isXml()) {
+					$user = $this->Session->read('Auth.User');
 
-                    // we'll translate a bit between what we've got and our system
-                    $this->set('id', $user['id']);
-                    $this->set('role', $user['Role']['alias']);
-                    $this->set('firstname', $user['name']);
-                    $this->set('lastname', $user['lname']);
-                    $this->set('profilepic', $user['profilepic']);
-                    $this->set('_rootNode', 'user');
-                    $this->set('_serialize', array('id', 'role', 'firstname', 'lastname', 'profilepic'));
-                } else {
-                    $this->redirect($this->Auth->redirectUrl());
-                }
+					// we'll translate a bit between what we've got and our system
+					$this->set('id', $user['id']);
+					$this->set('role', $user['Role']['alias']);
+					$this->set('firstname', $user['name']);
+					$this->set('lastname', $user['lname']);
+					$this->set('profilepic', $user['profilepic']);
+					$this->set('_rootNode', 'user');
+					$this->set('_serialize', array('id', 'role', 'firstname', 'lastname', 'profilepic'));
+				} else {
+					$this->redirect($this->Auth->redirectUrl());
+				}
 			} else {
 				Croogo::dispatchEvent('Controller.Users.loginFailure', $this);
-                if($this->RequestHandler->isXml()) {
-                    return $this->sendXmlError(1, "The password you entered is incorrect");
-                } else {
-                    $this->Session->setFlash('The password you entered is incorrect.', 'default', array('class' => 'error'), 'auth');
-                    $this->redirect($this->Auth->loginAction);
-                }
+				if ($this->RequestHandler->isXml()) {
+					return $this->sendXmlError(1, "The password you entered is incorrect");
+				} else {
+					$this->Session->setFlash('The password you entered is incorrect.', 'default', array('class' => 'error'), 'auth');
+					$this->redirect($this->Auth->loginAction);
+				}
 			}
 		}
 	}
@@ -1085,10 +1070,10 @@ class UsersController extends UsersAppController {
 		Croogo::dispatchEvent('Controller.Users.beforeLogout', $this);
 		$this->Session->setFlash(__d('croogo', 'Log out successful.'), 'default', array('class' => 'success'));
 
-        $userId = (int)$this->Session->read('Auth.User.id');
-        $this->setOnlineStatus($this->Session->read('Auth.User.id'), false);
+		$userId = (int) $this->Session->read('Auth.User.id');
+		$this->setOnlineStatus($this->Session->read('Auth.User.id'), false);
 
-        $data = array();
+		$data = array();
 		$data['User']['id'] = $userId;
 
 		$this->redirect($this->Auth->logout(), null, false); // we don't want to die as soon as the redirect is over
@@ -1107,25 +1092,24 @@ class UsersController extends UsersAppController {
 			$username = $this->Auth->user('username');
 		}
 		$user = $this->User->find('first', array(
-            'conditions' => array(
-                'username' => $username,
+			'conditions' => array(
+				'username' => $username,
+				// we want to make sure to leave out our admin user(s) from this list
+				'NOT' => array(
+					'role_id' => 1,
+				)
+			)
+		));
 
-                // we want to make sure to leave out our admin user(s) from this list
-                'NOT' => array(
-                    'role_id' => 1,
-                )
-            )
-        ));
+		if (!isset($user['User']['id'])) {
 
-        if (!isset($user['User']['id'])) {
-
-            // API: handle our API info and send back info
-            if($this->RequestHandler->isXml()) {
-                return $this->sendXmlError(2, "User not found");
-            } else {
-                $this->Session->setFlash(__d('croogo', 'Invalid User.'), 'default', array('class' => 'error'));
-                $this->redirect('/');
-            }
+			// API: handle our API info and send back info
+			if ($this->RequestHandler->isXml()) {
+				return $this->sendXmlError(2, "User not found");
+			} else {
+				$this->Session->setFlash(__d('croogo', 'Invalid User.'), 'default', array('class' => 'error'));
+				$this->redirect('/');
+			}
 		}
 
 		$this->set('title_for_layout', $user['User']['name']);
@@ -1158,8 +1142,8 @@ class UsersController extends UsersAppController {
 		  $log = $this->User->getDataSource()->getLog(false, false);
 		  debug($log); */
 
-        App::import("Model", "Users.Lesson");
-        $lessonRepetitions = Lesson::$repetitionValues;
+		App::import("Model", "Users.Lesson");
+		$lessonRepetitions = Lesson::$repetitionValues;
 
 		$this->set(compact('user', 'userRate', 'userRating', 'userReviews', 'lessonClasscount', 'lessonRepetitions', 'userstatus'));
 
@@ -1184,11 +1168,11 @@ class UsersController extends UsersAppController {
  * @package billing
  */
 	public function billing($layout = null) {
-        $isMobile = false;
-        if($layout != null) {
-            $this->layout = $layout;
-            $isMobile = true;
-        }
+		$isMobile = false;
+		if ($layout != null) {
+			$this->layout = $layout;
+			$isMobile = true;
+		}
 
 		$id = $this->Session->read('Auth.User.id');
 
@@ -1238,11 +1222,11 @@ class UsersController extends UsersAppController {
 			$this->set('publishable_key', Configure::read('Stripe.publishable_key'));
 
 
-            if($isMobile) {
-                return $this->render('Users/billing/student_mobile');
-            } else {
-                $this->render('Users/billing/student');
-            }
+			if ($isMobile) {
+				return $this->render('Users/billing/student_mobile');
+			} else {
+				$this->render('Users/billing/student');
+			}
 		} else {
 
 			$stripe_setup = false;
@@ -1293,19 +1277,19 @@ class UsersController extends UsersAppController {
 		// now check the results we get back from Stripe. if this isn't an array, then we've got errors
 		if (!is_array($result)) {
 
-            // @TODO: confirm whether these errors are generic enough to show to the general public, I think they are
-            $message = $result;
-            if($this->request->is('ajax')) {
-                $this->sendJsonError($message);
-            } else {
-                $this->Session->setFlash(__d('croogo', $result), 'default', array('class' => 'error'));
+			// @TODO: confirm whether these errors are generic enough to show to the general public, I think they are
+			$message = $result;
+			if ($this->request->is('ajax')) {
+				$this->sendJsonError($message);
+			} else {
+				$this->Session->setFlash(__d('croogo', $result), 'default', array('class' => 'error'));
 
-                // redirect back to the page again and ask for their data again
-                // @TODO: it'd be nice if we'd auto-populate their info with what we know
-                // but we threw a bunch of it away :-)
-                // In reality, we shouldn't have too many errors here as long as the server is setup ok
-                $this->redirect(array('action' => 'billing'));
-            }
+				// redirect back to the page again and ask for their data again
+				// @TODO: it'd be nice if we'd auto-populate their info with what we know
+				// but we threw a bunch of it away :-)
+				// In reality, we shouldn't have too many errors here as long as the server is setup ok
+				$this->redirect(array('action' => 'billing'));
+			}
 		} else {
 
 			// then let's save the user account to the DB so we can refer to it again in the future
@@ -1313,9 +1297,9 @@ class UsersController extends UsersAppController {
 			// @TODO: we should really make sure this saves in the future ...
 			$this->User->save($user);
 
-            Croogo::dispatchEvent('Controller.Users.studentStripeAccountSetup', $this);
+			Croogo::dispatchEvent('Controller.Users.studentStripeAccountSetup', $this);
 
-            // Now let's see if we're in the middle of an initial lesson setup (instead of someone proactively dealing with setting up their account)
+			// Now let's see if we're in the middle of an initial lesson setup (instead of someone proactively dealing with setting up their account)
 			// if we are, we'll need to finish up our lesson setup
 			if ($this->Session->read('initial_lesson_setup')) {
 				$user_id_to_message = $this->Session->read('new_lesson_user_id_to_message');
@@ -1417,9 +1401,9 @@ class UsersController extends UsersAppController {
 			);
 			$this->User->save($data);
 
-            Croogo::dispatchEvent('Controller.Users.tutorStripeAccountSetup', $this);
+			Croogo::dispatchEvent('Controller.Users.tutorStripeAccountSetup', $this);
 
-            $this->Session->setFlash(__d('croogo', "We've connected your account with Stripe successfully."), 'default', array('class' => 'success'));
+			$this->Session->setFlash(__d('croogo', "We've connected your account with Stripe successfully."), 'default', array('class' => 'success'));
 
 			$this->redirect(array('action' => 'billing'));
 		}
@@ -1534,32 +1518,32 @@ class UsersController extends UsersAppController {
 		$this->set('users', $this->paginate());
 	}
 
-    /**
-     * lessons function
-     *
-     * @api
-     *
-     * Lists the active, upcoming, and past lessons according to logged-in user,
-     * insofar as the user is a tutor.
-     */
+/**
+ * lessons function
+ *
+ * @api
+ *
+ * Lists the active, upcoming, and past lessons according to logged-in user,
+ * insofar as the user is a tutor.
+ */
 	public function lessons() {
 
-        $userId = (int)$this->Session->read('Auth.User.id');
-        $roleId = (int)$this->Session->read('Auth.User.role_id');
+		$userId = (int) $this->Session->read('Auth.User.id');
+		$roleId = (int) $this->Session->read('Auth.User.role_id');
 
-        $upcomingLessons = $this->Lesson->upcomingLessons($userId, $roleId);
+		$upcomingLessons = $this->Lesson->upcomingLessons($userId, $roleId);
 		$activeLessons = $this->Lesson->activeLessons($userId, $roleId);
-        $pastLessons = $this->Lesson->pastLessons($userId, $roleId);
+		$pastLessons = $this->Lesson->pastLessons($userId, $roleId);
 
-        if($this->RequestHandler->isXml()) {
-            $this->helpers[] = 'Users.LessonXmlTransformer';
-        }
+		if ($this->RequestHandler->isXml()) {
+			$this->helpers[] = 'Users.LessonXmlTransformer';
+		}
 
-        $this->set('activeLessons', $activeLessons);
-        $this->set('upcomingLessons', $upcomingLessons);
-        $this->set('pastLessons', $pastLessons);
+		$this->set('activeLessons', $activeLessons);
+		$this->set('upcomingLessons', $upcomingLessons);
+		$this->set('pastLessons', $pastLessons);
 
-        $this->render('lessons');
+		$this->render('lessons');
 	}
 
 /**
@@ -1578,20 +1562,20 @@ class UsersController extends UsersAppController {
 		$lesson_id = (int) $lesson['Lesson']['id'];
 		$role_id = (int) $this->Session->read('Auth.User.role_id');
 
-        // if our user doesn't have a role id, it's going to break all sorts of things
-        // let's check and redirect to the login page if needed
-        if($role_id == 0) {
-            $this->redirect(
-                Router::url(
-                    array(
-                        'plugin' => 'users',
-                        'controller' => 'users',
-                        'action' => 'login'
-                    )
-                )
-            );
-            throw new UnauthorizedException("Sorry, you need to login first");
-        }
+		// if our user doesn't have a role id, it's going to break all sorts of things
+		// let's check and redirect to the login page if needed
+		if ($role_id == 0) {
+			$this->redirect(
+					Router::url(
+							array(
+								'plugin' => 'users',
+								'controller' => 'users',
+								'action' => 'login'
+							)
+					)
+			);
+			throw new UnauthorizedException("Sorry, you need to login first");
+		}
 
 		// handle all our video stuff with Opentok
 		$opentok_session_id = $lesson['Lesson']['opentok_session_id'];
@@ -1756,51 +1740,50 @@ class UsersController extends UsersAppController {
 			$user_id_to_message = null;
 			$id = null;
 			$student_needs_stripe_account_setup = false;
-            $lesson = $this->request->data;
+			$lesson = $this->request->data;
 
-            if(!isset($lesson) || !isset($lesson['Lesson']) || !isset($lesson['Lesson']['student_view'])) {
-                // @TODO: throw an exception, we're expecting it and need it
-            }
+			if (!isset($lesson) || !isset($lesson['Lesson']) || !isset($lesson['Lesson']['student_view'])) {
+				// @TODO: throw an exception, we're expecting it and need it
+			}
 
-            if($lesson['Lesson']['student_view'] != 0 && $lesson['Lesson']['student_view'] != 1) {
-                // @TODO: throw an exception, someone is doing something weird here
-            }
+			if ($lesson['Lesson']['student_view'] != 0 && $lesson['Lesson']['student_view'] != 1) {
+				// @TODO: throw an exception, someone is doing something weird here
+			}
 
-            // we adjust our public API values into what we expect internally
-            // @TODO: let's change this out long-term so the fields that our DB field names match what our view / API send in
-            // the view / API names are much, **much** clearer
+			// we adjust our public API values into what we expect internally
+			// @TODO: let's change this out long-term so the fields that our DB field names match what our view / API send in
+			// the view / API names are much, **much** clearer
+			// we'll shift from a nice clean integer value for our repetition setup to an ugly string we'd like to get rid of
+			if (isset($lesson['Lesson']['repetition'])) {
 
-            // we'll shift from a nice clean integer value for our repetition setup to an ugly string we'd like to get rid of
-            if(isset($lesson['Lesson']['repetition'])) {
+				$selectedRepetition = $lesson['Lesson']['repetition'];
 
-                $selectedRepetition = $lesson['Lesson']['repetition'];
+				App::import("Model", "Users.Lesson");
+				if (isset(Lesson::$repetitionValues[$selectedRepetition])) {
+					$lesson['Lesson']['repet'] = Lesson::$repetitionValues[$selectedRepetition];
+				} else {
+					$lesson['Lesson']['repet'] = 'Single lesson';
+				}
+				unset($lesson['Lesson']['repetition']);
+			}
 
-                App::import("Model", "Users.Lesson");
-                if(isset(Lesson::$repetitionValues[$selectedRepetition])) {
-                    $lesson['Lesson']['repet'] = Lesson::$repetitionValues[$selectedRepetition];
-                } else {
-                    $lesson['Lesson']['repet'] = 'Single lesson';
-                }
-                unset($lesson['Lesson']['repetition']);
-            }
+			// shift from a nice clean integer (minute-based duration) to a nasty string (.5, 1.0, etc)
+			if (isset($lesson['Lesson']['duration'])) {
 
-            // shift from a nice clean integer (minute-based duration) to a nasty string (.5, 1.0, etc)
-            if(isset($lesson['Lesson']['duration'])) {
+				// if we're dealing with a half hour setup, our old data displayed it as .5 instead of 0.5
+				// so we should mimic that for now
+				$removeLeadingZero = false;
+				if ($lesson['Lesson']['duration'] == 30) {
+					$removeLeadingZero = true;
+				}
 
-                // if we're dealing with a half hour setup, our old data displayed it as .5 instead of 0.5
-                // so we should mimic that for now
-                $removeLeadingZero = false;
-                if($lesson['Lesson']['duration'] == 30) {
-                    $removeLeadingZero = true;
-                }
+				// converts to half-hour increments which our DB will convert to strings
+				$lesson['Lesson']['duration'] = ($lesson['Lesson']['duration'] / 60);
 
-                // converts to half-hour increments which our DB will convert to strings
-                $lesson['Lesson']['duration'] = ($lesson['Lesson']['duration'] / 60);
-
-                if($removeLeadingZero) {
-                    $lesson['Lesson']['duration'] = substr($lesson['Lesson']['duration'], 1);
-                }
-            }
+				if ($removeLeadingZero) {
+					$lesson['Lesson']['duration'] = substr($lesson['Lesson']['duration'], 1);
+				}
+			}
 
 
 			if ($this->addLesson($lesson, $user_id_to_message, $id, $student_needs_stripe_account_setup)) {
@@ -1812,53 +1795,50 @@ class UsersController extends UsersAppController {
 					$this->Session->write('new_lesson_user_id_to_message', $user_id_to_message);
 					$this->Session->write('new_lesson_lesson_id', $id);
 
-                    // redirect to our billing page to get setup with Stripe
-                    if($this->RequestHandler->isXml()) {
+					// redirect to our billing page to get setup with Stripe
+					if ($this->RequestHandler->isXml()) {
 
-                        // send back lesson information
-                        // and also info on the redirect we're about to make
-                        $redirect = array(
-                            'url' => Router::url(
-                                    array(
-                                        'plugin'        => 'users',
-                                        'controller'    => 'users',
-                                        'action'        => 'billing',
-                                        'layout'        => 'mobile-billing',
-                                    ),
-                                    true
-                                ),
-                        );
+						// send back lesson information
+						// and also info on the redirect we're about to make
+						$redirect = array(
+							'url' => Router::url(
+									array(
+								'plugin' => 'users',
+								'controller' => 'users',
+								'action' => 'billing',
+								'layout' => 'mobile-billing',
+									), true
+							),
+						);
 
-                        $this->set('lesson', $lesson);
-                        $this->set('redirect', $redirect);
-                        return $this->render('lesson_created');
-                    } else {
-                        $this->redirect(array('action' => 'billing'));
-                    }
+						$this->set('lesson', $lesson);
+						$this->set('redirect', $redirect);
+						return $this->render('lesson_created');
+					} else {
+						$this->redirect(array('action' => 'billing'));
+					}
 				} else {
 					// otherwise, let's handle the post lesson add setup
 					$this->postLessonAddSetup($id, $user_id_to_message);
 				}
 			} else {
-                $message = __d('croogo', 'The Lesson could not be saved. Please try again.');
+				$message = __d('croogo', 'The Lesson could not be saved. Please try again.');
 
-                if($this->RequestHandler->isXml()) {
-                    return $this->sendXmlError(4, $message);
-                } else {
-                    $this->Session->setFlash(
-                        $message,
-                        'default',
-                        array('class' => 'error')
-                    );
-                }
+				if ($this->RequestHandler->isXml()) {
+					return $this->sendXmlError(4, $message);
+				} else {
+					$this->Session->setFlash(
+							$message, 'default', array('class' => 'error')
+					);
+				}
 			}
 		}
 
-        // send this information in to our base tutor create view
-        App::import("Model", "Users.Lesson");
-        $this->set('lessonRepetitions', Lesson::$repetitionValues);
+		// send this information in to our base tutor create view
+		App::import("Model", "Users.Lesson");
+		$this->set('lessonRepetitions', Lesson::$repetitionValues);
 
-        // @TODO: confirm, but I think this is dead code at this point
+		// @TODO: confirm, but I think this is dead code at this point
 		if (isset($this->request->params['pass'][0]) && $this->request->params['pass'][0] == 'ajax') {
 			$this->request->params['pass'][1];
 			$Tutorinfo = $this->User->find('first', array('conditions' => array('User.id' => $this->request->params['pass'][1])));
@@ -1882,64 +1862,61 @@ class UsersController extends UsersAppController {
  * @param $student_needs_stripe_account_setup
  * @return bool
  */
-	private function addLesson(&$data, &$user_id_to_message, &$id, &$student_needs_stripe_account_setup)
-    {
-        $currentUserId = (int) $this->Auth->user('id');
+	private function addLesson(&$data, &$user_id_to_message, &$id, &$student_needs_stripe_account_setup) {
+		$currentUserId = (int) $this->Auth->user('id');
 
-        // these values are common to both setups
-        $data['Lesson']['add_date'] = date('Y-m-d');
-        $data['Lesson']['is_confirmed'] = '0';
+		// these values are common to both setups
+		$data['Lesson']['add_date'] = date('Y-m-d');
+		$data['Lesson']['is_confirmed'] = '0';
 
-        // this gets run when a student proposes a lesson to a tutor
+		// this gets run when a student proposes a lesson to a tutor
 		if ($data['Lesson']['student_view'] == 1) {
 
 			$user_id_to_message = (int) $data['Lesson']['user_id'];
 
-			$data['Lesson']['tutor']                = $user_id_to_message;
-			$data['Lesson']['student']              = $currentUserId;
-			$data['Lesson']['readlesson']           = '1';
-			$data['Lesson']['readlessontutor']      = '0';
-			$data['Lesson']['laststatus_tutor']     = 0;
-			$data['Lesson']['laststatus_student']   = 1;
+			$data['Lesson']['tutor'] = $user_id_to_message;
+			$data['Lesson']['student'] = $currentUserId;
+			$data['Lesson']['readlesson'] = '1';
+			$data['Lesson']['readlessontutor'] = '0';
+			$data['Lesson']['laststatus_tutor'] = 0;
+			$data['Lesson']['laststatus_student'] = 1;
 
 			$student = $this->User->find('first', array('conditions' => array('User.id' => $this->Auth->user('id'))));
 
 			// if we don't have a stripe customer id for this student, then we need to request billing information
-            if(!isset($student['User']['stripe_customer_id']) || $student['User']['stripe_customer_id'] == "") {
-                $student_needs_stripe_account_setup = true;
-            }
+			if (!isset($student['User']['stripe_customer_id']) || $student['User']['stripe_customer_id'] == "") {
+				$student_needs_stripe_account_setup = true;
+			}
 		} else {
 			// this gets run when a tutor creates a lesson to do with a student on the /users/createlessons page
-
-            // we need to look up the username the tutor types in, and then grab the appropriate user id
-            // @TODO: work on handling errors here, we're going to have them and they need to be handled
+			// we need to look up the username the tutor types in, and then grab the appropriate user id
+			// @TODO: work on handling errors here, we're going to have them and they need to be handled
 			$student = $this->User->find('first', array('conditions' => array('username' => $data['Lesson']['username'])));
 			$studentId = $student['User']['id'];
 
 			// we'll want to message this person below
 			$user_id_to_message = (int) $studentId;
 
-			$data['Lesson']['tutor']                    = $currentUserId;
-			$data['Lesson']['student']                  = (int) $studentId;
-			$data['Lesson']['readlesson']               = '0';
-			$data['Lesson']['readlessontutor']          = '1';
-			$data['Lesson']['laststatus_tutor']         = 1;
-			$data['Lesson']['laststatus_student']       = 0;
+			$data['Lesson']['tutor'] = $currentUserId;
+			$data['Lesson']['student'] = (int) $studentId;
+			$data['Lesson']['readlesson'] = '0';
+			$data['Lesson']['readlessontutor'] = '1';
+			$data['Lesson']['laststatus_tutor'] = 1;
+			$data['Lesson']['laststatus_student'] = 0;
 		}
 
-        // clean out our view specific variable, we don't want to attempt to save to the DB
-        unset($data['Lesson']['student_view']);
+		// clean out our view specific variable, we don't want to attempt to save to the DB
+		unset($data['Lesson']['student_view']);
 
-        $this->Lesson->create($data);
+		$this->Lesson->create($data);
 		if ($this->Lesson->save($data, false)) {
 			$id = $this->Lesson->getLastInsertId();
-            $data['Lesson']['id'] = $id;
+			$data['Lesson']['id'] = $id;
 
 // @TODO: work out what the below was supposed to do
 // Best guess is that it was supposed to allow duplicating lessons or editing a lesson and then creating a new
 // record.  But we're going to need to re-work that, either I (David) broke it when refactoring earlier (possible)
 // or it never worked in the first place (also possible)
-
 //			if (isset($data['Lesson']['parent_id']) && $data['Lesson']['parent_id'] != "") {
 //
 //				unset($data['Lesson']);
@@ -1952,7 +1929,7 @@ class UsersController extends UsersAppController {
 //				$this->Lesson->save($data);
 //			}
 
-            Croogo::dispatchEvent('Controller.Users.lessonAdded', $this);
+			Croogo::dispatchEvent('Controller.Users.lessonAdded', $this);
 
 			return true;
 		} else {
@@ -1967,11 +1944,11 @@ class UsersController extends UsersAppController {
 		// @TODO: do we want to do any type of checking to see if there were problems along the way?
 		$this->addLessonMessage($user_id_to_message);
 
-        // and then we want to email the appropriate person as well
-        $this->sendLessonProposal($lesson_id, $user_id_to_message);
+		// and then we want to email the appropriate person as well
+		$this->sendLessonProposal($lesson_id, $user_id_to_message);
 
 		// if a student is proposing a lesson and the student hasn't just needed to setup billing
-        // we'll go ahead and generate lesson session ids so our lessons work (and so the expert doesn't have to wait as long)
+		// we'll go ahead and generate lesson session ids so our lessons work (and so the expert doesn't have to wait as long)
 		if (isset($this->request->data['Lesson']) && $this->request->data['Lesson']['student_view'] == 1) {
 			$data = array();
 			$data['Lesson']['id'] = (int) $lesson_id;
@@ -1988,17 +1965,17 @@ class UsersController extends UsersAppController {
 			$this->Lesson->save($data);
 		}
 
-        $message = __d('croogo', 'Your lesson has been added successfully.');
+		$message = __d('croogo', 'Your lesson has been added successfully.');
 
-        // if we're being called via Ajax, then it's related to our mobile billing system page
-        // and we need to send back a JSON message
-        if($this->request->is('ajax')) {
-            $this->sendJsonSuccess($message);
-        } else {
-            // otherwise send a flash message so they can see it on page reload
-            $this->Session->setFlash($message, 'default', array('class' => 'success'));
-    		$this->redirect(array('action' => 'lessons'));
-        }
+		// if we're being called via Ajax, then it's related to our mobile billing system page
+		// and we need to send back a JSON message
+		if ($this->request->is('ajax')) {
+			$this->sendJsonSuccess($message);
+		} else {
+			// otherwise send a flash message so they can see it on page reload
+			$this->Session->setFlash($message, 'default', array('class' => 'success'));
+			$this->redirect(array('action' => 'lessons'));
+		}
 	}
 
 /**
@@ -2025,64 +2002,59 @@ class UsersController extends UsersAppController {
 //        }
 	}
 
-    /**
-     * Sends a proposed lesson email to the receipient in addition to a message through the system
-     *
-     * @TODO: move this to an event listener library instead of having it in our controller
-     *
-     * @param $lesson_id
-     * @param $user_id
-     * @return bool
-     */
-    private function sendLessonProposal($lesson_id, $user_id) {
+/**
+ * Sends a proposed lesson email to the receipient in addition to a message through the system
+ *
+ * @TODO: move this to an event listener library instead of having it in our controller
+ *
+ * @param $lesson_id
+ * @param $user_id
+ * @return bool
+ */
+	private function sendLessonProposal($lesson_id, $user_id) {
 
-        $lesson = $this->Lesson->find('first', array('conditions' => array('Lesson.id' => $lesson_id)));
+		$lesson = $this->Lesson->find('first', array('conditions' => array('Lesson.id' => $lesson_id)));
 
-        if(count($lesson) == 0) {
-            $this->log("Couldn't properly retrieve lesson information prior to sending an email notification about a new lesson.", LOG_EMERG);
-            return;
-        }
+		if (count($lesson) == 0) {
+			$this->log("Couldn't properly retrieve lesson information prior to sending an email notification about a new lesson.", LOG_EMERG);
+			return;
+		}
 
-        if($lesson['Lesson']['student'] == $user_id) {
-            $contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
-            $lessonRequestor = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
-        } else {
-            $contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
-            $lessonRequestor = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
-        }
+		if ($lesson['Lesson']['student'] == $user_id) {
+			$contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
+			$lessonRequestor = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
+		} else {
+			$contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
+			$lessonRequestor = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
+		}
 
-        if(count($contact) == 0 || count($lessonRequestor) == 0) {
-            $this->log("Couldn't retrieve tutor / student info prior to sending an email notification about a new lesson.", LOG_EMERG);
-            return;
-        }
+		if (count($contact) == 0 || count($lessonRequestor) == 0) {
+			$this->log("Couldn't retrieve tutor / student info prior to sending an email notification about a new lesson.", LOG_EMERG);
+			return;
+		}
 
-        // @TODO: make sure these variables are vetted for security, people could attack each other this way too
-        $emailLessonData = array(
-            'contactName'   => $contact['User']['name'],
-            'date'          => $lesson['Lesson']['lesson_date'], // @TODO: make sure these are stored in UTC on the server ...
-            'time'          => $lesson['Lesson']['lesson_time'],
-            'subject'       => $lesson['Lesson']['subject'],
-            'notes'         => $lesson['Lesson']['notes'],
-            'requestor' => array(
-                'fullName'  => $lessonRequestor['User']['name'] . ' ' . $lessonRequestor['User']['lname'],
-                'id'        => $lessonRequestor['User']['id'],
-                'name'      => $lessonRequestor['User']['name'],
-                'username'  => $lessonRequestor['User']['username'],
-            ),
-        );
+		// @TODO: make sure these variables are vetted for security, people could attack each other this way too
+		$emailLessonData = array(
+			'contactName' => $contact['User']['name'],
+			'date' => $lesson['Lesson']['lesson_date'], // @TODO: make sure these are stored in UTC on the server ...
+			'time' => $lesson['Lesson']['lesson_time'],
+			'subject' => $lesson['Lesson']['subject'],
+			'notes' => $lesson['Lesson']['notes'],
+			'requestor' => array(
+				'fullName' => $lessonRequestor['User']['name'] . ' ' . $lessonRequestor['User']['lname'],
+				'id' => $lessonRequestor['User']['id'],
+				'name' => $lessonRequestor['User']['name'],
+				'username' => $lessonRequestor['User']['username'],
+			),
+		);
 
-        // send out an email saying that we've got a new lesson request that they should take a look at
-        // and give them some details on it so they know what is being requested
-        return $this->_sendEmail(
-            array(Configure::read('Site.title'), $this->_getSenderEmail()),
-            $contact['User']['email'],
-            __d('croogo', '[%s] New Lesson Proposed', 'Botangle'),
-            'Users.new_lesson', // @TODO: this and the next option down need work
-            'new lesson proposal',
-            $this->theme,
-            compact('emailLessonData')
-        );
-    }
+		// send out an email saying that we've got a new lesson request that they should take a look at
+		// and give them some details on it so they know what is being requested
+		return $this->_sendEmail(
+						array(Configure::read('Site.title'), $this->_getSenderEmail()), $contact['User']['email'], __d('croogo', '[%s] New Lesson Proposed', 'Botangle'), 'Users.new_lesson', // @TODO: this and the next option down need work
+						'new lesson proposal', $this->theme, compact('emailLessonData')
+		);
+	}
 
 /**
  * Generates some session ids we need to actually run a lesson
@@ -2186,19 +2158,19 @@ class UsersController extends UsersAppController {
 		if ($this->Session->read('Auth.User.role_id') == 2 && $data['Lesson']['tutor'] == $this->Session->read('Auth.User.id')
 		) {
 
-            $tutor = $this->User->find('first', array('conditions' => array('User.id' => (int)$this->Session->read('Auth.User.id'))));
+			$tutor = $this->User->find('first', array('conditions' => array('User.id' => (int) $this->Session->read('Auth.User.id'))));
 
-            // check to see if the tutor is allowed to confirm this lesson yet or not
-            // if they don't have a Stripe account, then we want to enforce that, as we can't handle payments at the end of the lesson
-            // without it
-            if(count($tutor) > 0 && isset($tutor['User']) && $tutor['User']['stripe_user_id'] == '') {
-                $this->Session->setFlash(__d('botangle', "Sorry, we need you to setup an account with Stripe before you can confirm a lesson."), 'default', array('class' => 'error'));
-                $this->redirect(array('action' => 'billing'));
-            }
+			// check to see if the tutor is allowed to confirm this lesson yet or not
+			// if they don't have a Stripe account, then we want to enforce that, as we can't handle payments at the end of the lesson
+			// without it
+			if (count($tutor) > 0 && isset($tutor['User']) && $tutor['User']['stripe_user_id'] == '') {
+				$this->Session->setFlash(__d('botangle', "Sorry, we need you to setup an account with Stripe before you can confirm a lesson."), 'default', array('class' => 'error'));
+				$this->redirect(array('action' => 'billing'));
+			}
 
 			$data['Lesson']['readlessontutor'] = 1;
 			$data['Lesson']['is_confirmed'] = 0;
-            $send_confirmation_to_user_id = $data['Lesson']['student'];
+			$send_confirmation_to_user_id = $data['Lesson']['student'];
 		}
 		// if this is a student who had a lesson created for them that they need to confirm
 		// then we want to set things up and confirm
@@ -2206,7 +2178,7 @@ class UsersController extends UsersAppController {
 		) {
 			$data['Lesson']['readlesson'] = 1;
 			$data['Lesson']['is_confirmed'] = 0;
-            $send_confirmation_to_user_id = $data['Lesson']['tutor'];
+			$send_confirmation_to_user_id = $data['Lesson']['tutor'];
 		} else {
 			throw new CakeException('Sorry, something went badly wrong, please try again.');
 		}
@@ -2229,72 +2201,66 @@ class UsersController extends UsersAppController {
 			}
 		}
 
-        $this->Lesson->id = (int)$data['Lesson']['id'];
+		$this->Lesson->id = (int) $data['Lesson']['id'];
 		$this->Lesson->save($data);
 
 		$this->redirect(array('action' => 'lessons'), null, false);
 
-        // send an email confirmation after we've sent the user on to the next page
-        $this->sendLessonConfirmation((int)$data['Lesson']['id'], $send_confirmation_to_user_id);
+		// send an email confirmation after we've sent the user on to the next page
+		$this->sendLessonConfirmation((int) $data['Lesson']['id'], $send_confirmation_to_user_id);
 	}
 
-    /**
-     * Sends a proposed lesson email to the receipient in addition to a message through the system
-     *
-     * @param $lesson_id
-     * @param $user_id
-     * @return bool
-     */
-    private function sendLessonConfirmation($lesson_id, $user_id) {
+/**
+ * Sends a proposed lesson email to the receipient in addition to a message through the system
+ *
+ * @param $lesson_id
+ * @param $user_id
+ * @return bool
+ */
+	private function sendLessonConfirmation($lesson_id, $user_id) {
 
-        $lesson = $this->Lesson->find('first', array('conditions' => array('Lesson.id' => $lesson_id)));
+		$lesson = $this->Lesson->find('first', array('conditions' => array('Lesson.id' => $lesson_id)));
 
-        if(count($lesson) == 0) {
-            $this->log("Couldn't properly retrieve lesson information prior to sending an email notification about a confirmed lesson.", LOG_EMERG);
-            return;
-        }
+		if (count($lesson) == 0) {
+			$this->log("Couldn't properly retrieve lesson information prior to sending an email notification about a confirmed lesson.", LOG_EMERG);
+			return;
+		}
 
-        if($lesson['Lesson']['student'] == $user_id) {
-            $contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
-            $lessonConfirmer = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
-        } else {
-            $contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
-            $lessonConfirmer = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
-        }
+		if ($lesson['Lesson']['student'] == $user_id) {
+			$contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
+			$lessonConfirmer = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
+		} else {
+			$contact = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['tutor'])));
+			$lessonConfirmer = $this->User->find('first', array('conditions' => array('User.id' => $lesson['Lesson']['student'])));
+		}
 
-        if(count($contact) == 0 || count($lessonConfirmer) == 0) {
-            $this->log("Couldn't retrieve tutor / student info prior to sending an email notification about a confirmed lesson.", LOG_EMERG);
-            return;
-        }
+		if (count($contact) == 0 || count($lessonConfirmer) == 0) {
+			$this->log("Couldn't retrieve tutor / student info prior to sending an email notification about a confirmed lesson.", LOG_EMERG);
+			return;
+		}
 
-        // @TODO: make sure these variables are vetted for security, people could attack each other this way too
-        $emailLessonData = array(
-            'contactName'   => $contact['User']['name'],
-            'subject'       => $lesson['Lesson']['subject'],
-            'notes'         => $lesson['Lesson']['notes'],
-            'confirmedBy' => array(
-                'fullName'  => $lessonConfirmer['User']['name'] . ' ' . $lessonConfirmer['User']['lname'],
-                'id'        => $lessonConfirmer['User']['id'],
-                'name'      => $lessonConfirmer['User']['name'],
-                'username'  => $lessonConfirmer['User']['username'],
-            ),
-        );
+		// @TODO: make sure these variables are vetted for security, people could attack each other this way too
+		$emailLessonData = array(
+			'contactName' => $contact['User']['name'],
+			'subject' => $lesson['Lesson']['subject'],
+			'notes' => $lesson['Lesson']['notes'],
+			'confirmedBy' => array(
+				'fullName' => $lessonConfirmer['User']['name'] . ' ' . $lessonConfirmer['User']['lname'],
+				'id' => $lessonConfirmer['User']['id'],
+				'name' => $lessonConfirmer['User']['name'],
+				'username' => $lessonConfirmer['User']['username'],
+			),
+		);
 
-        // send out an email saying that we've got a new lesson request that they should take a look at
-        // and give them some details on it so they know what is being requested
-        return $this->_sendEmail(
-            array(Configure::read('Site.title'), $this->_getSenderEmail()),
-            $contact['User']['email'],
-            __d('croogo', '[%s] Lesson Confirmed', 'Botangle'),
-            'Users.lesson_confirmed', // @TODO: this and the next option down need work
-            'lesson confirmed',
-            $this->theme,
-            compact('emailLessonData')
-        );
-    }
+		// send out an email saying that we've got a new lesson request that they should take a look at
+		// and give them some details on it so they know what is being requested
+		return $this->_sendEmail(
+						array(Configure::read('Site.title'), $this->_getSenderEmail()), $contact['User']['email'], __d('croogo', '[%s] Lesson Confirmed', 'Botangle'), 'Users.lesson_confirmed', // @TODO: this and the next option down need work
+						'lesson confirmed', $this->theme, compact('emailLessonData')
+		);
+	}
 
-
-    public function mycalander() {
+	public function mycalander() {
 		
 	}
 
@@ -2360,12 +2326,12 @@ class UsersController extends UsersAppController {
 		$this->layouts = false;
 	}
 
-    /**
-     * @api
-     * @param null $categoryname
-     * @param null $online
-     */
-    public function topchart($categoryname = null, $online = null) {
+/**
+ * @api
+ * @param null $categoryname
+ * @param null $online
+ */
+	public function topchart($categoryname = null, $online = null) {
 		$otherconditions = array('status' => 1, 'role_id' => 2);
 
 		if ($categoryname == 'all') {
@@ -2396,27 +2362,35 @@ class UsersController extends UsersAppController {
 				))
 		);
 
-        $this->paginate['User']['conditions'] = $otherconditions;
-        $this->paginate['User']['fields'] = array('*,avg(`Review`.`rating`) as `rating`');
-        $this->paginate['User']['group'] = array('User.id');
-        $this->paginate['User']['order'] = 'avg(`Review`.`rating`) DESC';
+		$this->paginate['User']['conditions'] = $otherconditions;
+		$this->paginate['User']['fields'] = array('*,avg(`Review`.`rating`) as `rating`');
+		$this->paginate['User']['group'] = array('User.id');
+		$this->paginate['User']['order'] = 'avg(`Review`.`rating`) DESC';
 
-        if($this->RequestHandler->isXml()) {
-            $this->paginate['User']['limit']        = 100;
-            $this->paginate['User']['maxLimit']     = 1000;
+		if ($this->RequestHandler->isXml()) {
+			$this->paginate['User']['limit'] = 100;
+			$this->paginate['User']['maxLimit'] = 1000;
 
-            $this->helpers[] = 'Users.UserXmlTransformer';
+			$this->helpers[] = 'Users.UserXmlTransformer';
 
-            $this->set('userlist', $this->paginate());
-        } else {
-            $this->paginate['User']['limit'] = 21;
+			$this->set('userlist', $this->paginate());
+		} else {
+			$this->paginate['User']['limit'] = 21;
 
-            $this->set('userlist', $this->paginate());
+			$this->set('userlist', $this->paginate());
 
-            $category = $this->Category->find('all', array('conditions' => array('status' => 1, 'parent_id' => null)));
+			$category = $this->Category->find('all', array('conditions' => array('status' => 1, 'parent_id' => null)));
 
-            $this->set(compact('userlist', 'category', 'categoryname', 'online'));
-        }
+			$total = 0;
+
+			// calculate category count
+			foreach ($category as $k => $v) {
+				$category[$k]['Category']['count'] = $this->User->getCategoryUserCount($category[$k]['Category']['id']);
+				$total += $category[$k]['Category']['count'];
+			}
+			
+			$this->set(compact('userlist', 'category', 'categoryname', 'online'));
+		}
 	}
 
 	public function joinuser($id) {
@@ -2427,77 +2401,75 @@ class UsersController extends UsersAppController {
 		exit();
 	}
 
-    /**
-     * @param $userRate
-     * @param $totalTime
-     * @return double
-     */
-    protected function calculateTutorTotalAmount($userRate, $totalTime)
-    {
-        $pritype = $userRate['UserRate']['price_type'];
-        $pricerate = $userRate['UserRate']['rate'];
-        $totalamount = 0;
+/**
+ * @param $userRate
+ * @param $totalTime
+ * @return double
+ */
+	protected function calculateTutorTotalAmount($userRate, $totalTime) {
+		$pritype = $userRate['UserRate']['price_type'];
+		$pricerate = $userRate['UserRate']['rate'];
+		$totalamount = 0;
 
-        if ($pritype == 'permin') {
-            $totaltimeuseinmin = $totalTime / 60;
-            $totalamount = ($totaltimeuseinmin) * $pricerate;
-        } else {
-            $pricerate = $pricerate / 60;
-            $totaltimeuseinmin = $totalTime / 60;
-            $totalamount = $totaltimeuseinmin * $pricerate;
-        }
+		if ($pritype == 'permin') {
+			$totaltimeuseinmin = $totalTime / 60;
+			$totalamount = ($totaltimeuseinmin) * $pricerate;
+		} else {
+			$pricerate = $pricerate / 60;
+			$totaltimeuseinmin = $totalTime / 60;
+			$totalamount = $totaltimeuseinmin * $pricerate;
+		}
 
-        // return a formatted decimal to two decimal places with no commas
-        // this will work much better in our DB and with Stripe
-        return sprintf('%0.2f', $totalamount);
-    }
+		// return a formatted decimal to two decimal places with no commas
+		// this will work much better in our DB and with Stripe
+		return sprintf('%0.2f', $totalamount);
+	}
 
-    /**
-     * Called if no lesson payment exists and we need one made
-     *
-     * @param $lessonId
-     * @param $role
-     * @param $userId
-     * @return mixed
-     * @throws InternalErrorException
-     */
-    protected function findLessonAndCreatePaymentForIt($lessonId, $role, $userId)
-    {
-        $conditions = array(
-            'id' => (int)$lessonId,
-        );
-        if($role == 2) {
-            $conditions['tutor'] = (int)$this->Auth->user('id');
-        } else {
-            // we're dealing with a student because we've checked to make sure role is only 2 or 4 earlier
-            $conditions['student'] = (int)$this->Auth->user('id');
-        }
+/**
+ * Called if no lesson payment exists and we need one made
+ *
+ * @param $lessonId
+ * @param $role
+ * @param $userId
+ * @return mixed
+ * @throws InternalErrorException
+ */
+	protected function findLessonAndCreatePaymentForIt($lessonId, $role, $userId) {
+		$conditions = array(
+			'id' => (int) $lessonId,
+		);
+		if ($role == 2) {
+			$conditions['tutor'] = (int) $this->Auth->user('id');
+		} else {
+			// we're dealing with a student because we've checked to make sure role is only 2 or 4 earlier
+			$conditions['student'] = (int) $this->Auth->user('id');
+		}
 
-        // @TODO: this is going to need to be re-thought through
-        $lesson = $this->Lesson->find(
-            'first', array(
-                'conditions' => $conditions,
-            )
-        );
+		// @TODO: this is going to need to be re-thought through
+		$lesson = $this->Lesson->find(
+				'first', array(
+			'conditions' => $conditions,
+				)
+		);
 
-        if(count($lesson) == 0) {
-            throw new InternalErrorException("Hmm, things aren't working.");
-        }
+		if (count($lesson) == 0) {
+			throw new InternalErrorException("Hmm, things aren't working.");
+		}
 
-        // now we build our new lesson payment information
-        $data['LessonPayment']['lesson_id']         = (int)$lesson['Lesson']['id'];
-        $data['LessonPayment']['student_id']        = (int)$lesson['Lesson']['student'];
-        $data['LessonPayment']['tutor_id']          = (int)$lesson['Lesson']['tutor'];
-        $data['LessonPayment']['payment_complete']  = 0;
-        $this->LessonPayment->save($data);
+		// now we build our new lesson payment information
+		$data['LessonPayment']['lesson_id'] = (int) $lesson['Lesson']['id'];
+		$data['LessonPayment']['student_id'] = (int) $lesson['Lesson']['student'];
+		$data['LessonPayment']['tutor_id'] = (int) $lesson['Lesson']['tutor'];
+		$data['LessonPayment']['payment_complete'] = 0;
+		$this->LessonPayment->save($data);
 
-        $data['LessonPayment']['id'] = (int)$this->LessonPayment->id;
+		$data['LessonPayment']['id'] = (int) $this->LessonPayment->id;
 
-        // and send it on back to be used further
-        return $data;
-    }
+		// and send it on back to be used further
+		return $data;
+	}
 
-     /**
+/**
  * Update remaining
  *
  * A very general function, should probably be separated in the future.
@@ -2513,214 +2485,199 @@ class UsersController extends UsersAppController {
  *
  * @package billing
  */
+	public function updateremaining() {
+		$totalTime = 0;
+		$lessonComplete = false;
+		$userRate = null;
 
-    public function updateremaining()
-    {
-        $totalTime = 0;
-        $lessonComplete = false;
-        $userRate = null;
+		/**
+		 * parameters sent in
+		 * - lessonid
+		 * - roletype (2 = tutor, 4 = student)
+		 * - completelesson (only sent if we're trying to bill this lesson, will be one in that case)
+		 */
+		$pleaseCompleteLesson = false;
+		if (isset($this->params->data['completelesson']) && $this->params->data['completelesson'] == 1) {
+			$pleaseCompleteLesson = true;
+		}
 
-        /**
-         * parameters sent in
-         * - lessonid
-         * - roletype (2 = tutor, 4 = student)
-         * - completelesson (only sent if we're trying to bill this lesson, will be one in that case)
-         */
+		$role = (int) $this->params->data['roletype'];
 
-        $pleaseCompleteLesson = false;
-        if (isset($this->params->data['completelesson']) && $this->params->data['completelesson'] == 1) {
-            $pleaseCompleteLesson = true;
-        }
+		// we retrieving this lesson payment either with a tutor id or a student id in addition to the lesson id
+		// otherwise, anyone can try and contact this page ..
+		$conditions = array(
+			'lesson_id' => (int) $this->params->data['lessonid'],
+		);
+		if ($role == 2) {
+			$conditions['tutor_id'] = (int) $this->Auth->user('id');
+		} elseif ($role == 4) {
+			// we're dealing with a student
+			$conditions['student_id'] = (int) $this->Auth->user('id');
+		} else {
+			throw new NotFoundException("Sorry, things aren't working.");
+		}
 
-        $role = (int)$this->params->data['roletype'];
+		// then find the lesson payment for this person that matches those criteria (id and lesson id)
+		$lessonPayment = $this->LessonPayment->find(
+				'first', array(
+			'conditions' => $conditions,
+				)
+		);
 
-        // we retrieving this lesson payment either with a tutor id or a student id in addition to the lesson id
-        // otherwise, anyone can try and contact this page ..
-        $conditions = array(
-            'lesson_id' => (int)$this->params->data['lessonid'],
-        );
-        if($role == 2) {
-            $conditions['tutor_id'] = (int)$this->Auth->user('id');
-        } elseif($role == 4) {
-            // we're dealing with a student
-            $conditions['student_id'] = (int)$this->Auth->user('id');
-        } else {
-            throw new NotFoundException("Sorry, things aren't working.");
-        }
+		// if a lesson payment record doesn't exist for the lesson we were given
+		// with this information, then we'd like to generate it (assuming that lesson / user combo exists) from
+		// the lesson table
+		if (empty($lessonPayment)) {
+			$lessonPayment = $this->findLessonAndCreatePaymentForIt(
+					(int) $this->params->data['lessonid'], $role, (int) $this->Auth->user('id')
+			);
+		}
 
-        // then find the lesson payment for this person that matches those criteria (id and lesson id)
-        $lessonPayment = $this->LessonPayment->find(
-            'first',
-            array(
-                'conditions' => $conditions,
-            )
-        );
+		$lessonId = $lessonPayment['LessonPayment']['lesson_id'];
+		$studentId = $lessonPayment['LessonPayment']['student_id'];
+		$tutorId = $lessonPayment['LessonPayment']['tutor_id'];
 
-        // if a lesson payment record doesn't exist for the lesson we were given
-        // with this information, then we'd like to generate it (assuming that lesson / user combo exists) from
-        // the lesson table
-        if (empty($lessonPayment)) {
-            $lessonPayment = $this->findLessonAndCreatePaymentForIt(
-                (int)$this->params->data['lessonid'],
-                $role,
-                (int)$this->Auth->user('id')
-            );
-        }
+		if ($lessonPayment['LessonPayment']['lesson_complete_tutor'] == 1 && $lessonPayment['LessonPayment']['lesson_complete_student'] == 1) {
+			$lessonComplete = true;
+		}
 
-        $lessonId   = $lessonPayment['LessonPayment']['lesson_id'];
-        $studentId  = $lessonPayment['LessonPayment']['student_id'];
-        $tutorId    = $lessonPayment['LessonPayment']['tutor_id'];
+		// if our lesson payment is not complete, then we've got a bunch of things we want to do
+		if (!$lessonComplete) {
 
-        if($lessonPayment['LessonPayment']['lesson_complete_tutor'] == 1 && $lessonPayment['LessonPayment']['lesson_complete_student'] == 1) {
-            $lessonComplete = true;
-        }
+			// update our lesson timer depending on our role
+			// we do this for both parties on a regular basis to keep folks honest
+			$totalTime = $this->updateLessonTimer($role, $lessonId);
 
-        // if our lesson payment is not complete, then we've got a bunch of things we want to do
-        if(!$lessonComplete) {
+			// retrieve our user rate and hang on to it so we can re-use it in a bit
+			// @TODO: long-term, we want to be pulling this user rate from the Lesson
+			// where we keep it to prevent tutors from raising rates after the lesson gets scheduled
+			$userRate = $this->UserRate->find(
+					'first', array('conditions' => array('userid' => $tutorId))
+			);
 
-            // update our lesson timer depending on our role
-            // we do this for both parties on a regular basis to keep folks honest
-            $totalTime = $this->updateLessonTimer($role, $lessonId);
+			// figure out the payment amount
+			$lessonPayment['LessonPayment']['payment_amount'] = $this->calculateTutorTotalAmount($userRate, $totalTime);
 
-            // retrieve our user rate and hang on to it so we can re-use it in a bit
-            // @TODO: long-term, we want to be pulling this user rate from the Lesson
-            // where we keep it to prevent tutors from raising rates after the lesson gets scheduled
-            $userRate = $this->UserRate->find(
-                'first',
-                array('conditions' => array('userid' => $tutorId))
-            );
+			// if someone wants to end the lesson, then we want to record that
+			if ($pleaseCompleteLesson) {
+				$lessonPayment['LessonPayment']['lesson_complete_tutor'] = 1;
+				$lessonPayment['LessonPayment']['lesson_complete_student'] = 1;
+			}
+			$this->LessonPayment->save($lessonPayment);
 
-            // figure out the payment amount
-            $lessonPayment['LessonPayment']['payment_amount'] = $this->calculateTutorTotalAmount($userRate, $totalTime);
+			// then, if our payment isn't complete yet, then let's bill for it
+			// we don't leave this outside for fear of having race conditions between the student and the tutor
+			// we'd really like the first person to ask for this to be completed to be the one who calculates totals
+			// theoretically, if the second person makes it past the lesson payment query above before the first person
+			// charges things here, we could end up with a double-billing ... :-/
+			if ($pleaseCompleteLesson && $lessonPayment['LessonPayment']['payment_complete'] == 0) {
+				$this->chargeForLesson(
+						$lessonPayment['LessonPayment']['id'], $tutorId, $studentId, $lessonPayment['LessonPayment']['payment_amount']
+				);
+			}
+		}
 
-            // if someone wants to end the lesson, then we want to record that
-            if ($pleaseCompleteLesson) {
-                $lessonPayment['LessonPayment']['lesson_complete_tutor'] = 1;
-                $lessonPayment['LessonPayment']['lesson_complete_student'] = 1;
-            }
-            $this->LessonPayment->save($lessonPayment);
+		/**
+		 * response sent back is JSON
+		 * - specifically, we're interested in lesson_complete_student on the frontend to notify the student if the lesson is over)
+		 *      we'll then notify the student about what is going on
+		 */
+		$updatedLessonPayment = $this->LessonPayment->find(
+				'first', array(
+			'conditions' => array(
+				'lesson_id' => $lessonId,
+			)
+				)
+		);
 
-            // then, if our payment isn't complete yet, then let's bill for it
-            // we don't leave this outside for fear of having race conditions between the student and the tutor
-            // we'd really like the first person to ask for this to be completed to be the one who calculates totals
+		$this->autoRender = false;
+		$this->layouts = false;
 
-            // theoretically, if the second person makes it past the lesson payment query above before the first person
-            // charges things here, we could end up with a double-billing ... :-/
-            if ($pleaseCompleteLesson && $lessonPayment['LessonPayment']['payment_complete'] == 0) {
-                $this->chargeForLesson(
-                    $lessonPayment['LessonPayment']['id'],
-                    $tutorId,
-                    $studentId,
-                    $lessonPayment['LessonPayment']['payment_amount']
-                );
-            }
+		if ($lessonComplete) {
+			// @TODO: we want to send back different information requesting that this person get sent to the receipt page
+			echo json_encode(array(
+				'lessonComplete' => 1,
+			));
+		} else {
+			// we want to show them the updated information
+			echo json_encode(array(
+				'newPrice' => $this->calculateTutorTotalAmount($userRate, $totalTime + 60),
+				'lessonComplete' => $updatedLessonPayment['LessonPayment']['lesson_complete_student'],
+				'totaltime' => $totalTime,
+			));
+		}
+	}
 
-        }
+/**
+ * Updates our lesson timer depending on who we're working with
+ *
+ * @TODO: would love to move this to our Lesson model long-term, would make this far cleaner
+ *
+ * @param $role
+ * @param $lessonId
+ */
+	private function updateLessonTimer($role, $lessonId) {
+		$lesson = $this->Lesson->find(
+				'first', array(
+			'conditions' => array(
+				'id' => (int) $lessonId,
+			),
+				)
+		);
 
-        /**
-         * response sent back is JSON
-         * - specifically, we're interested in lesson_complete_student on the frontend to notify the student if the lesson is over)
-         *      we'll then notify the student about what is going on
-         */
-        $updatedLessonPayment = $this->LessonPayment->find(
-            'first', array(
-                'conditions' => array(
-                    'lesson_id' => $lessonId,
-                )
-            )
-        );
+		if ($role == 2) {
+			$totalTime = $lesson['Lesson']['remainingduration'] + 60;
 
-        $this->autoRender = false;
-        $this->layouts = false;
+			$this->Lesson->id = $lesson['Lesson']['id'];
+			$this->Lesson->saveField('remainingduration', $totalTime);
+		} else if ($role == 4) {
+			$totalTime = $lesson['Lesson']['student_lessontaekn_time'] + 60;
 
-        if($lessonComplete) {
-            // @TODO: we want to send back different information requesting that this person get sent to the receipt page
-            echo json_encode(array(
-                    'lessonComplete'    => 1,
-                ));
-        } else {
-            // we want to show them the updated information
-            echo json_encode(array(
-                    'newPrice'          => $this->calculateTutorTotalAmount($userRate, $totalTime + 60),
-                    'lessonComplete'    => $updatedLessonPayment['LessonPayment']['lesson_complete_student'],
-                    'totaltime'         => $totalTime,
-                ));
-        }
-    }
+			$this->Lesson->id = $lesson['Lesson']['id'];
+			$this->Lesson->saveField('student_lessontaekn_time', $totalTime);
+		}
 
-    /**
-     * Updates our lesson timer depending on who we're working with
-     *
-     * @TODO: would love to move this to our Lesson model long-term, would make this far cleaner
-     *
-     * @param $role
-     * @param $lessonId
-     */
-    private function updateLessonTimer($role, $lessonId)
-    {
-        $lesson = $this->Lesson->find(
-            'first', array(
-                'conditions' => array(
-                    'id' => (int)$lessonId,
-                ),
-            )
-        );
+		return $totalTime;
+	}
 
-        if ($role == 2) {
-            $totalTime = $lesson['Lesson']['remainingduration'] + 60;
+/**
+ * Handle billing for this particular lesson.
+ *
+ * @param $lessonPaymentId
+ * @param $tutorId
+ * @param $studentId
+ * @param $amount
+ */
+	private function chargeForLesson($lessonPaymentId, $tutorId, $studentId, $amount) {
+		try {
+			$fee = $amount * .30; // take a 30% commission
+			// format our fee to work well with Stripe and when we save it to the DB
+			$fee = sprintf('%0.2f', $fee);
 
-            $this->Lesson->id = $lesson['Lesson']['id'];
-            $this->Lesson->saveField('remainingduration', $totalTime);
-        } else if($role == 4) {
-            $totalTime = $lesson['Lesson']['student_lessontaekn_time'] + 60;
+			$results = $this->charge((int) $tutorId, (int) $studentId, $amount, $fee);
 
-            $this->Lesson->id = $lesson['Lesson']['id'];
-            $this->Lesson->saveField('student_lessontaekn_time', $totalTime);
-        }
+			// if we have success billing, we'll note the fact and save things
+			if (is_array($results)) {
+				$data = array();
 
-        return $totalTime;
-    }
+				// @TODO: do we need to set tutor_id, or payment amount as we pass this info in to the DB?
 
-    /**
-     * Handle billing for this particular lesson.
-     *
-     * @param $lessonPaymentId
-     * @param $tutorId
-     * @param $studentId
-     * @param $amount
-     */
-    private function chargeForLesson($lessonPaymentId, $tutorId, $studentId, $amount)
-    {
-        try {
-            $fee = $amount * .30; // take a 30% commission
+				$data['LessonPayment']['id'] = $lessonPaymentId;
+				$data['LessonPayment']['payment_complete'] = 1;
+				$data['LessonPayment']['fee'] = $fee;
+				$data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
+				$this->LessonPayment->save($data);
 
-            // format our fee to work well with Stripe and when we save it to the DB
-            $fee = sprintf('%0.2f', $fee);
+				Croogo::dispatchEvent('Controller.Users.lessonCharged', $this);
+			}
+		} catch (Exception $e) {
+			// otherwise
+			$this->log(sprintf('Error charging for lesson payment %s : %s', $lessonPaymentId, $e->getMessage()), LOG_ALERT);
+		}
 
-            $results = $this->charge((int)$tutorId, (int)$studentId, $amount, $fee);
-
-            // if we have success billing, we'll note the fact and save things
-            if (is_array($results)) {
-                $data = array();
-
-                // @TODO: do we need to set tutor_id, or payment amount as we pass this info in to the DB?
-
-                $data['LessonPayment']['id'] = $lessonPaymentId;
-                $data['LessonPayment']['payment_complete'] = 1;
-                $data['LessonPayment']['fee'] = $fee;
-                $data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
-                $this->LessonPayment->save($data);
-
-                Croogo::dispatchEvent('Controller.Users.lessonCharged', $this);
-            }
-        } catch(Exception $e) {
-            // otherwise
-            $this->log(sprintf('Error charging for lesson payment %s : %s', $lessonPaymentId, $e->getMessage()), LOG_ALERT);
-        }
-
-        // otherwise we'll leave this for the system to bill again somehow
-        // @TODO: should we have an auto-retry system setup here?
-    }
+		// otherwise we'll leave this for the system to bill again somehow
+		// @TODO: should we have an auto-retry system setup here?
+	}
 
 	public function _updateremaining() {
 		$this->Lesson->id = $this->params->query['lessonid'];
@@ -2833,8 +2790,8 @@ class UsersController extends UsersAppController {
 
 			// then, if our payment isn't complete yet, then let's bill for it
 			if ($this->request->data['LessonPayment']['payment_complete'] == 0) {
-                $this->_chargeForLesson();
-            }
+				$this->_chargeForLesson();
+			}
 		}
 
 		$u = $this->LessonPayment->find('first', array('conditions' => array('lesson_id' => $this->params->query['lessonid'])));
@@ -2844,29 +2801,29 @@ class UsersController extends UsersAppController {
 		$this->layouts = false;
 	}
 
-    private function _chargeForLesson()
-    {
-        $tutorId = (int) $this->request->data['LessonPayment']['tutor_id'];
-        $userId = (int) $this->Auth->user('id');
+	private function _chargeForLesson() {
+		$tutorId = (int) $this->request->data['LessonPayment']['tutor_id'];
+		$userId = (int) $this->Auth->user('id');
 
-        $amount = $this->request->data['LessonPayment']['payment_amount']; // @TODO: convert this DB column to a decimal instead?
-        $fee = $amount * .30; // take a 30% commission
+		$amount = $this->request->data['LessonPayment']['payment_amount']; // @TODO: convert this DB column to a decimal instead?
+		$fee = $amount * .30; // take a 30% commission
 
-        $results = $this->charge($tutorId, $userId, $this->request->data['LessonPayment']['payment_amount'], $fee);
+		$results = $this->charge($tutorId, $userId, $this->request->data['LessonPayment']['payment_amount'], $fee);
 
-        // if we have success billing, we'll note the fact and save things
-        if (is_array($results)) {
-            $this->request->data['LessonPayment']['payment_complete'] = 1;
-            $this->request->data['LessonPayment']['fee'] = $fee; // @TODO: convert this DB column to a decimal instead?
-            $this->request->data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
-            $this->LessonPayment->save($this->request->data);
+		// if we have success billing, we'll note the fact and save things
+		if (is_array($results)) {
+			$this->request->data['LessonPayment']['payment_complete'] = 1;
+			$this->request->data['LessonPayment']['fee'] = $fee; // @TODO: convert this DB column to a decimal instead?
+			$this->request->data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
+			$this->LessonPayment->save($this->request->data);
 
-        Croogo::dispatchEvent('Controller.Users.lessonCharged', $this);
-        }
+			Croogo::dispatchEvent('Controller.Users.lessonCharged', $this);
+		}
 
-        // otherwise we'll leave this for the system to bill again somehow
-        // @TODO: should we have an auto-retry system setup here?
-    }
+		// otherwise we'll leave this for the system to bill again somehow
+		// @TODO: should we have an auto-retry system setup here?
+	}
+
 /**
  * Payment made.  This action displays the details on the payment they just made.
  *
@@ -2874,23 +2831,23 @@ class UsersController extends UsersAppController {
  */
 	public function paymentmade() {
 
-        $role = $this->params->query['role'];
+		$role = $this->params->query['role'];
 
-        if($role != 'tutor' && $role != 'student') {
-            throw new NotFoundException("Sorry, things aren't working");
-        }
+		if ($role != 'tutor' && $role != 'student') {
+			throw new NotFoundException("Sorry, things aren't working");
+		}
 
-        if($role == 'student') {
-            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array(
-                    'lesson_id' => (int) $this->params->query['lessonid'],
-                    'student_id' => $this->Auth->user('id'),
-                )));
-        } else {
-            $lessonPayment = $this->LessonPayment->find('first', array('conditions' => array(
-                    'lesson_id' => (int) $this->params->query['lessonid'],
-                    'tutor_id' => $this->Auth->user('id'),
-                )));
-        }
+		if ($role == 'student') {
+			$lessonPayment = $this->LessonPayment->find('first', array('conditions' => array(
+					'lesson_id' => (int) $this->params->query['lessonid'],
+					'student_id' => $this->Auth->user('id'),
+			)));
+		} else {
+			$lessonPayment = $this->LessonPayment->find('first', array('conditions' => array(
+					'lesson_id' => (int) $this->params->query['lessonid'],
+					'tutor_id' => $this->Auth->user('id'),
+			)));
+		}
 
 		$this->set(compact('lessonPayment', 'role'));
 	}
@@ -3026,4 +2983,5 @@ class UsersController extends UsersAppController {
 			$this->redirect('/user/' . $this->request->data['Users']['username']);
 		}
 	}
+
 }
