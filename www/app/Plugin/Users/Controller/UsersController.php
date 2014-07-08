@@ -2389,7 +2389,7 @@ class UsersController extends UsersAppController {
 				$total += $category[$k]['Category']['count'];
 			}
 			
-			$this->set(compact('userlist', 'category', 'categoryname', 'online'));
+			$this->set(compact('userlist', 'category', 'categoryname', 'online', 'total'));
 		}
 	}
 
