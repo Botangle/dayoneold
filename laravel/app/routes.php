@@ -49,7 +49,12 @@ Route::controller('categories', 'CategoryController', array(
 /**
  * News controller (used for viewing info about our news items)
  */
-Route::controller('news', 'NewsController');
+//Route::controller('news', 'NewsController');
+
+Route::get('/news/detail/{id}', array(
+        'as'    => 'news.detail',
+        'uses'  => 'NewsController@getDetail',
+    ));
 
 /**
  * Users controller (used for public viewing of group user info)
