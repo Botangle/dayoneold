@@ -2385,7 +2385,7 @@ class UsersController extends UsersAppController {
 			
 			// calculate category count
 			foreach ($categories as $k => $v) {
-				$categories[$k]['Category']['count'] = $this->User->getCategoryUserCount($category[$k]['Category']['id']);
+				$categories[$k]['Category']['count'] = $this->User->getCategoryUserCount($categories[$k]);
 				$total += $categories[$k]['Category']['count'];
 			}
 			
