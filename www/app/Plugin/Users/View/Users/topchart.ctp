@@ -42,23 +42,15 @@
 				<p class="FontStyle20 mar-left15">Filter by category</p>
 				<ul>
 
-					<li><a href="<?php echo $this->webroot ?>users/topchart/" title="Messages">All Categories <span class="badge pull-right" id="totalCategory">0</span></a></li>
+					<li><a href="<?php echo $this->webroot ?>users/topchart/" title="Messages">All Categories <span class="badge pull-right" id="totalCategory"><?= $total ?></span></a></li>
 					<?php
-					$totalResult = 0;
 					if (!isset($online)) {
 						$online = "";
 					}
-					foreach ($category as $k => $v) {
+					foreach ($categories as $k => $v) {
 						?>
-						<li><a href="<?php echo $this->webroot ?>users/topchart/<?php echo $v['Category']['id'] ?>/<?php echo $online ?>" title="Lessons"><?php echo $v['Category']['name'] ?><span class="badge pull-right"><?php
-									$resultsCount = $this->User->getCategoryusercount($v['Category']['id']);
-									echo $resultsCount;
-									$totalResult = $resultsCount + $totalResult;
-									?></span></a></li>
+						<li><a href="<?php echo $this->webroot ?>users/topchart/<?php echo $v['Category']['id'] ?>/<?php echo $online ?>" title="Lessons"><?php echo $v['Category']['name'] ?><span class="badge pull-right"><?= $v['Category']['count'] ?></span></a></li>
 					<?php } ?>
-					<script> jQuery('#totalCategory').html('<?php echo $totalResult ?>');
-					</script>
-
 				</ul>
 
 			</div>
