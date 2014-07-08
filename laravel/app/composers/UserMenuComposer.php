@@ -21,14 +21,9 @@ class UserMenuComposer implements Composer
             $menu->add('/', trans('My Profile')); // @TODO: fix the link here to work properly ( /user/{username} )
         }
 
-        $menu->add('/users/messages', trans('Messages'));
-        // @TODO: add in an unread messages badge: echo $this->User->Getunreadmessage($this->Session->read('Auth.User.id'));
-        // <span class="badge pull-right"></span>
-
-        $menu->add('/users/lessons', trans('Lessons'));
-        // @TODO: add in an unread messages badge: echo $this->User->Getunreadlesson($this->Session->read('Auth.User') );
-        // <span class="badge pull-right"></span>
-        $menu->add('/users/billing', trans('Billing'));
+        $menu->add(route('user.messages'), trans('Messages'));
+        $menu->add(route('user.lessons'), trans('Lessons'));
+        $menu->add(route('user.billing'), trans('Billing'));
 
         $menu->getItemsByContentType('Menu\Items\Contents\Link')
             ->map(function($item)
@@ -37,6 +32,16 @@ class UserMenuComposer implements Composer
 
                     if($item->isActive()) {
                         $item->getContent()->addClass('active');
+                    }
+
+                    if($item->getContent()->getUrl() == route('user.messages')) {
+                        $item->getContent()->nest('<span class="badge pull-right">X</span>');
+                        // @TODO: add in an unread messages badge: echo $this->User->Getunreadmessage($this->Session->read('Auth.User.id'));
+                    }
+
+                    if($item->getContent()->getUrl() == route('user.lessons')) {
+                        $item->getContent()->nest('<span class="badge pull-right">X</span>');
+                        // @TODO: add in an unread lessons badge: echo $this->User->Getunreadlesson($this->Session->read('Auth.User') );
                     }
                 });
 

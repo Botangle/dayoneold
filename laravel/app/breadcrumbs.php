@@ -28,9 +28,20 @@ Breadcrumbs::register('login', function($breadcrumbs) {
         $breadcrumbs->push('Sign In', route('login'));
     });
 
+Breadcrumbs::register('user.billing', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+        $breadcrumbs->push('Billing', route('user.billing'));
+    });
+Breadcrumbs::register('user.lessons', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+        $breadcrumbs->push('Lessons', route('user.lessons'));
+    });
+Breadcrumbs::register('user.messages', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+        $breadcrumbs->push('My Messages', route('user.messages'));
+    });
 Breadcrumbs::register('user.my-account', function($breadcrumbs) {
         $breadcrumbs->parent('home');
-
         $breadcrumbs->push('My Account', route('user.my-account'));
     });
 

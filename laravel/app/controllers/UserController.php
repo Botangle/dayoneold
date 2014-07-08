@@ -2,11 +2,15 @@
 
 class UserController extends BaseController {
 
+    public function getBilling()
+    {
+    }
+
     public function getForgot()
     {
     }
 
-    public function getIndex()
+    public function getLessons()
     {
     }
 
@@ -87,16 +91,6 @@ class UserController extends BaseController {
 //            }
     }
 
-    /**
-     * This needs to be given public access
-     *
-     * @param string $username
-     */
-    public function getView($username)
-    {
-
-    }
-
     public function getMyAccount()
     {
         if(Auth::user()->isTutor()) {
@@ -112,5 +106,19 @@ class UserController extends BaseController {
 //                    'page.leftpanel'
 //                );
         }
+    }
+
+    public function getMessages()
+    {
+    }
+
+    /**
+     * This needs to be given public access
+     *
+     * @param string $username
+     */
+    public function getView($username)
+    {
+
     }
 }

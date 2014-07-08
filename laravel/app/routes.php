@@ -90,6 +90,9 @@ Route::get('/user/forgot', array(
 
 Route::group(array('before' => 'auth'), function(){
     Route::controller('user', 'UserController', array(
+            'getBilling'      => 'user.billing',
+            'getLessons'      => 'user.lessons',
+            'getMessages'     => 'user.messages',
             'getMyAccount'    => 'user.my-account',
         ));
 });
