@@ -57,7 +57,7 @@ class UserController extends BaseController {
 //            } else {
 //            }
 
-            return Redirect::route('user.login')
+            return Redirect::route('login')
                 ->with('flash_error', 'The password you entered is incorrect.')
                 ->withErrors($validator)
                 ->withInput();
@@ -95,12 +95,6 @@ class UserController extends BaseController {
     public function getView($username)
     {
 
-    }
-
-    public function getLogout()
-    {
-        Auth::logout();
-        return Redirect::home();
     }
 
     public function getMyAccount()

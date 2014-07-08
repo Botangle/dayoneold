@@ -15,7 +15,7 @@
         <p>Please enter your Botangle username/password to access your Botangle account.</p>
         <div class="Signup">
             {{ Form::open([
-            'action' => ['UserController@postLogin'],
+            'url' => 'login',
             'class' => 'form-inline form-horizontal',
             ]) }}
          

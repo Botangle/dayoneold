@@ -22,10 +22,10 @@ Breadcrumbs::register('categories.index', function($breadcrumbs) {
         $breadcrumbs->push('Popular Categories', route('categories.index'));
     });
 
-Breadcrumbs::register('user.login', function($breadcrumbs) {
+Breadcrumbs::register('login', function($breadcrumbs) {
         $breadcrumbs->parent('home');
 
-        $breadcrumbs->push('Sign In', route('user.login'));
+        $breadcrumbs->push('Sign In', route('login'));
     });
 
 Breadcrumbs::register('user.my-account', function($breadcrumbs) {
