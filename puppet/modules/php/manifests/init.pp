@@ -52,6 +52,7 @@ class php () {
     exec { "php5enmod":
         path    => "/usr/bin:/usr/sbin",
         command => "sudo php5enmod mcrypt",
+        require => [ Package['php5'], Class['server'], Package['apache2'], Package['mysql-server'] ],
         notify => Service['apache2'],
     }
 
