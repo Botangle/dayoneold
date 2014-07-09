@@ -44,6 +44,23 @@ if($env == "dev") {
 
 if(file_exists(__DIR__ . '/core-' . $env . '.php')) {
     require(__DIR__ . '/core-'.$env.'.php');
+} else {
+    // NOTE: we *don't* want to set these variables here, but we need them so new devs
+    // can get going without them set.  These *should* be placed in another file (core-dev or core-production)
+    // so they aren't a part of our Git repo
+    $tokBoxApiKey       = '';
+    $tokBoxApiSecret    = '';
+
+    $twiddlaUsername    = '';
+    $twiddlaPassword    = '';
+
+    $stripeTestSecret           = '';
+    $stripeTestPublishableKey   = '';
+    $stripeTestClientId         = '';
+
+    $stripeLiveSecret           = '';
+    $stripeLivePublishableKey   = '';
+    $stripeLiveClientId         = '';
 }
 
 // now import our Croogo stuff after we've already had a change to setup some other key items
