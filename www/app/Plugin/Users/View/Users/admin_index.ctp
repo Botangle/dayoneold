@@ -39,6 +39,16 @@ $showActions = isset($showActions) ? $showActions : true;
 				);
 			?>
 			<?php endif; ?>
+			
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				Export <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="/admin/users/users/export/4">Export Students to CSV</a></li>
+					<li><a href="/admin/users/users/export/2">Export Experts to CSV</a></li>
+				</ul>
+			</div>
 		</ul>
 	</div>
 </div>

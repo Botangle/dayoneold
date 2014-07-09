@@ -289,4 +289,11 @@ class User extends UsersAppModel {
 		return true;
 	}
 
+	function getCategoryUserCount($category) {
+		App::import("Model", "Users.User");
+		$User = new User();
+		
+		return $User->find('count', array('conditions' => array('subject LIKE' => '%' . $category['Category']['name'] . '%')));
+	}
+
 }

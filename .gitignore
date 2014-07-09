@@ -19,6 +19,8 @@ www/app/Config/*-production.php
 # Leave out Plugin files loaded in by Composer
 www/app/Plugin/Stripe
 www/app/Plugin/Uploader/
+www/app/Plugin/DebugKit
+www/app/Plugin/CsvView
 
 # Others
 .DS_Store
@@ -48,3 +50,9 @@ www/app/Vendor/*
 # Mobileapp
 www/app/webroot/mobileapp
 
+
+Imagine
+
+private
+
+nbproject
