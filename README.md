@@ -18,9 +18,9 @@ Once the first two items are installed, then install `vagrant-hostmanager` as fo
 ## Getting started
 
 - In the Terminal / console, type `vagrant up`.  This will build a VM for you with our settings applied
-- Once done, type `vagrant ssh` and then `cd /var/www/app`
+- Once done, type `vagrant ssh` and then `cd /var/www`
 - Run `composer.phar install`, which will load up all our various libraries
-- Run `artisan migrate --env=local`
+- Run `./artisan migrate --env=local`
 
 You should be able to access your Botangle setup now in a web browser: [http://new.botangle.dev](http://new.botangle.dev)
 
