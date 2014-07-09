@@ -13,6 +13,9 @@ class NewsController extends BaseController {
      */
     public function getDetail($id)
     {
-		return View::make('news.detail');
+		$news = News::findOrFail($id);
+		return View::make('news.detail', array(
+			'news' => $news,
+		));
     }
 }

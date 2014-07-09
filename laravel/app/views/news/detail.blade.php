@@ -25,10 +25,10 @@
 								<?php //} ?>
 							</div>
 							<div class="span9 media-text">
-								<p class="FontStyle20"><a href="#" ><?php //echo $news['News']['title'] ?></a></p>
-								<p><?php //echo $news['News']['details'] ?></p>
+								<p class="FontStyle20"><a href="#" >{{{ $news->title }}}</a></p>
+								<p>{{{ $news->details }}}</p>
 								<br>
-								<p>Posted on: <?php //echo date('M d,Y', strtotime($news['News']['date'])) ?> </p></div>
+								<p>Posted on: {{{ $news->date }}} </p></div>
 						</div> </div>
 
 				</div>
