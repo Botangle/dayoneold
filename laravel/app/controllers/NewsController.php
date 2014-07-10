@@ -14,8 +14,11 @@ class NewsController extends BaseController {
     public function getDetail($id)
     {
 		$news = News::findOrFail($id);
-		return View::make('news.detail', array(
-			'news' => $news,
-		));
+		
+		return View::make('news.detail', array('news' => $news))
+			->nest(
+				'leftPanel',
+				'page.leftpanel'
+			);
     }
 }
