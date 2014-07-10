@@ -68,3 +68,8 @@ Breadcrumbs::register('about', function($breadcrumbs) {
 	$breadcrumbs->parent('home');
 	$breadcrumbs->push('About', route('about'));
 });
+
+Breadcrumbs::register('reportbug', function($breadcrumbs) {
+	$breadcrumbs->parent('home');
+	$breadcrumbs->push('Report A Bug', route('reportbug'));
+});
