@@ -16,7 +16,7 @@ class PageController extends BaseController {
 
     public function getAbout()
     {
-        return View::make('page.reportbug')
+        return View::make('page.about')
             ->nest(
                 'leftPanel',
                 'page.leftpanel'
