@@ -63,3 +63,8 @@ Breadcrumbs::register('how-it-works', function($breadcrumbs) {
 	$breadcrumbs->parent('home');
 	$breadcrumbs->push('How It Works', route('how-it-works'));
 });
+
+Breadcrumbs::register('about', function($breadcrumbs) {
+	$breadcrumbs->parent('home');
+	$breadcrumbs->push('About', route('about'));
+});
