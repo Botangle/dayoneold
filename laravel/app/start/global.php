@@ -79,3 +79,21 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
+
+/*
+|--------------------------------------------------------------------------
+| Macros
+|--------------------------------------------------------------------------
+|
+*/
+
+HTML::macro('leftmenu_link', function($route, $text) {
+    $class = '';
+    $routeName = Route::currentRouteName();
+
+    if (isset($routeName)) {
+        $class = $routeName == $route ? 'active' : '';
+    }
+
+    return '<li>' . HTML::linkRoute($route, $text, [], ['class' => $class, 'title' => $text]) . '</li>';
+});
