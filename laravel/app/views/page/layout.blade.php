@@ -20,9 +20,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
             <div class="span9">
                 <h2 class="page-title">@yield('page-title')</h2>
                 <div class="StaticPageRight-Block">
-                    <div class="PageLeft-Block">
-                        @yield('content')
-                    </div>
+					@yield('content')
                 </div>
             </div>
         </div>
