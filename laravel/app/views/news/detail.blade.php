@@ -22,7 +22,7 @@
 								<?php //if (file_exists(WWW_ROOT . DS . 'uploads' . DS . 'news' . DS . $news['News']['image']) && $news['News']['image'] != "") { ?>
 									<!--<img src="<?php //echo $this->webroot . 'uploads/news/' . $news['News']['image'] ?> ">-->
 								<?php //} else { ?>
-									<img src="/images/media-1.jpg" alt="media">
+									{{ HTML::image('images/media-1.jpg', 'media') }}
 								<?php //} ?>
 							</div>
 							<div class="span9 media-text">
