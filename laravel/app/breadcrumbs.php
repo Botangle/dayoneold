@@ -58,3 +58,8 @@ Breadcrumbs::register('news.detail', function($breadcrumbs) {
         $breadcrumbs->parent('home');
         $breadcrumbs->push('News', route('news.detail'));
     });
+
+Breadcrumbs::register('how-it-works', function($breadcrumbs) {
+	$breadcrumbs->parent('home');
+	$breadcrumbs->push('How It Works', route('how-it-works'));
+});

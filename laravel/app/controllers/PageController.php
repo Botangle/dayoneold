@@ -40,4 +40,9 @@ class PageController extends BaseController {
                 'page.leftpanel'
             );
 	}
+	
+	public function getHowItWorks()
+	{
+		return View::make('page.howitworks');
+	}
 }
