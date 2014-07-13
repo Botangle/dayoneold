@@ -21,6 +21,7 @@ Route::get('/contact', array(
         'as'        => 'contact',
         'uses'      => 'PageController@getContact',
     ));
+Route::post('/contact','PageController@getContactForm');
 Route::get('/reportbug', array(
         'as'        => 'reportbug',
         'uses'      => 'PageController@getReportbug',

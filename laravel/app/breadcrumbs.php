@@ -73,3 +73,8 @@ Breadcrumbs::register('reportbug', function($breadcrumbs) {
 	$breadcrumbs->parent('home');
 	$breadcrumbs->push('Report A Bug', route('reportbug'));
 });
+
+Breadcrumbs::register('contact', function($breadcrumbs) {
+	$breadcrumbs->parent('home');
+	$breadcrumbs->push('Contact Us', route('contact'));
+});
