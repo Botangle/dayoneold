@@ -3,9 +3,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>
-        {{--
-            Configure::read('Site.title');
-        --}}
+		@if (trim($__env->yieldContent('page-title')))
+			@yield('page-title') |
+		@endif 
+		{{ Config::get('site.title') }}
     </title>
     <link href='//fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
 
