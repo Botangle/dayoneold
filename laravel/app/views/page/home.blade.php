@@ -183,7 +183,7 @@ echo $this->Html->css(array(
 	<div class="span4 Tutor-list1">
 		<div class="tutor-img">
 			<a href="{{{ action('UserController@getView', ['username' => $user->username]) }}}">
-				<img src="{{ $user->picture or '/images/tutor.jpg' }}" class="img-circle" alt="student" style="width: 195px; height: 195px">
+				<img src="<?php echo !empty($user->profilepic ) ? $user->profilepic : '/images/tutor.jpg' ?>" class="img-circle" alt="student" style="width: 195px; height: 195px">
 			</a>
 		</div>
 		<div class="tutor-title">
