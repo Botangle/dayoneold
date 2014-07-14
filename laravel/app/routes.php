@@ -26,6 +26,7 @@ Route::get('/reportbug', array(
         'as'        => 'reportbug',
         'uses'      => 'PageController@getReportbug',
     ));
+Route::post('/reportbug','PageController@getReportBugForm');
 Route::get('/how-it-works', array(
         'as'        => 'how-it-works',
         'uses'      => 'PageController@getHowItWorks',
