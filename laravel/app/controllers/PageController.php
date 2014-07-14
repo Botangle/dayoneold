@@ -51,7 +51,7 @@ class PageController extends BaseController {
 		{
 
 		$message->from($data['email'] , $data['name']);
-		$message->to('zhaff@yahoo.com')->cc('test@neptunescripts.com')->subject($data['subject']);
+		$message->to(Config::get('site.email'))->subject($data['subject']);
 
 		});
 
@@ -96,7 +96,7 @@ class PageController extends BaseController {
 		{
 
 		$message->from($data['email'] , $data['name']);
-		$message->to('zhaff@yahoo.com')->cc('test@neptunescripts.com')->subject($data['subject']);
+		$message->to(Config::get('site.email'))->subject($data['subject']);
 
 		});
 
