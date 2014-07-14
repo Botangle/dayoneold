@@ -181,66 +181,48 @@ echo $this->Html->css(array(
             <div class="span4 Tutor-list1">
                 <div class="tutor-img">
                     <a href="{{{ action('UserController@getView', ['username' => $user->username]) }}}">
-                        <img src="{{ $user->picture}}" "class"='img-circle' 'alt' = 'student' 'style' = 'width: 195px; height: 195px'>
+                        <img src="{{ $user->picture or '/images/tutor.jpg' }}" class="img-circle" alt="student" style="width: 195px; height: 195px">
                     </a>
                 </div>
-            </div>
-            <div class="tutor-title">
-                <h3>
-                    <a href="{{{ action('UserController@getView', ['username' => $user->username]) }}}">{{{ $user->full_name }}}</a>
-                </h3>
-                <p>{{{ $user->qualification }}}</p>
-            </div>
-            <div class="tutor-bio">
+				<div class="tutor-title">
+					<h3>
+						<a href="{{{ action('UserController@getView', ['username' => $user->username]) }}}">{{{ $user->full_name }}}</a>
+					</h3>
+					<p>{{{ $user->qualification }}}</p>
+				 </div>
+				<div class="tutor-bio">
                 <p>{{{ $user->extracurricular_interests }}}</p>
                 <div class="social">
                 {{-- social link - FB --}}
-                @if (!empty($user->link_fb)) {
+                @if (!empty($user->link_fb))
                     <a href="{{{ $user->link_fb }}}" class="img-circle-left">
                         <img src="/img/facebook.png">
                     </a>
                 @endif
-
-            {{--
-                    All of these other options should be added as well
-
-            // social link - Twitter
-            $link = '#';
-
-            if (!empty($user['User']['link_twitter'])) {
-                $link =  $user['User']['link_twitter'];
-            }
-
-            echo $this->Html->image("/croogo/img/twitter.png", array(
-                    'url' => $link
-                ));
-
-            // social link - Google+
-            $link = '#';
-
-            if (!empty($user['User']['link_googleplus'])) {
-                $link =  $user['User']['link_googleplus'];
-            }
-
-            echo $this->Html->image("/croogo/img/google.png", array(
-                    'url' => $link
-                ));
-
-            // social link - Thumblr
-            $link = '#';
-
-            if (!empty($user['User']['link_thumblr'])) {
-                $link =  $user['User']['link_thumblr'];
-            }
-
-            echo $this->Html->image("/croogo/img/trumbler.png", array(
-                    'class' => 'img-circle-right',
-                    'url' => $link
-                ));
-            --}}
+				
+				{{-- social link - Twitter --}}
+                @if (!empty($user->link_twitter))
+                    <a href="{{{ $user->link_twitter }}}" class="img-circle-left">
+                        <img src="/img/twitter.png">
+                    </a>
+                @endif
+				
+				{{-- social link - Google+ --}}
+                @if (!empty($user->link_googleplus))
+                    <a href="{{{ $user->link_googleplus }}}" class="img-circle-left">
+                        <img src="/img/google.png">
+                    </a>
+                @endif
+				
+				{{-- social link - Thumblr --}}
+                @if (!empty($user->link_thumblr))
+                    <a href="{{{ $user->link_thumblr }}}" class="img-circle-left">
+                        <img src="/img/trumbler.png">
+                    </a>
+                @endif
         </div>
     </div>
-
+            </div>
     @endforeach
 </div>
 @endif
