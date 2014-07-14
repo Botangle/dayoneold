@@ -77,6 +77,42 @@ class PageController extends BaseController {
             );
 	}
 	
+	public function getReportbugForm(){
+		$data = Input::all();
+
+		//Validation rules
+		$rules = array (
+			'name' => 'required',
+			'email' => 'required|email',
+			'subject' => 'required|min:25',
+			'message' => 'required|min:25',
+		);
+
+		$validator = Validator::make ($data, $rules);
+
+		if ($validator -> passes()){
+
+		Mail::send('emails.reportbug', $data, function($message) use ($data)
+		{
+
+		$message->from($data['email'] , $data['name']);
+		$message->to('zhaff@yahoo.com')->cc('test@neptunescripts.com')->subject($data['subject']);
+
+		});
+
+		Session::flash('flash_success', 'Thanks for submitting your bug report!');
+		
+		return View::make('page.reportbug')
+            ->nest(
+                'leftPanel',
+                'page.leftpanel'
+            );
+
+		}else{
+			return Redirect::to('/reportbug')->withErrors($validator)->withInput();
+		}
+	}
+	
 	public function getHowItWorks()
 	{
 		return View::make('page.howitworks');
