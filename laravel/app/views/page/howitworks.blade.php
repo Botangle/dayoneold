@@ -1,5 +1,9 @@
 @extends('layout')
 
+@section('page-title')
+    {{{ trans('How it Works') }}}
+@stop
+
 @section('content')
 <!--Wrapper main-content Block Start Here-->
 <div id="main-content" class="how-it-works">
