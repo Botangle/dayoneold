@@ -78,9 +78,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
     public function scopeAverageRating($query)
     {
-
+        $query->leftJoin('reviews', 'reviews.rate_to', '=', 'users.id')
+            ->select(array('users.*',
+                    DB::raw('AVG(rating) as ratings_average')
+                ))
+            ->groupBy('id')
+            ->orderBy('ratings_average', 'DESC');
     }
-    
+
     /**
      * Get the password for the user.
      *
