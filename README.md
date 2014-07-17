@@ -27,6 +27,9 @@ You should be able to access your Botangle setup now in a web browser: [http://n
 Note: we use migrations (see above) heavily as we make changes to the DB, so if you haven't used them before, please
 spend a bit of time learning how they work.
 
+Note: if you can't get xdebug to connect with PHPStorm (or whichever IDE you're using), ensure that port 9000 of the
+firewall on your own computer is open.
+
 ## To start sending in code
 Please see the Contributing.md file
 
