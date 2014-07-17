@@ -105,7 +105,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
      */
     public function getPictureAttribute()
     {
-        return ($this->profilepic != null) ? $this->profilepic : "/images/tutor1.jpg";
+        return ($this->profilepic != null) ? $this->profilepic : "/images/default.png";
     }
 
     /**

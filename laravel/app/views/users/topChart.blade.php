@@ -45,11 +45,7 @@
                                 <div class="span4 search-result-box">
                                     <div class="search-result-img">
                                         <a href="{{ url('user') .'/'. $user->username }}">
-                                            <?php if (!empty($user->profilepic)): ?>
-                                                {{ Html::image($user->profilepic, 'student', array('class' => 'img-circle', 'style' => 'width: 117px; height: 117px')) }}
-                                            <?php else : ?>
-                                                {{ Html::image(url('images/default.png'), 'people', array('class' => "img-circle")) }}
-                                            <?php endif; ?>
+                                            {{ Html::image(url($user->picture), 'tutor', array('class' => 'img-circle', 'style' => 'width: 117px; height: 117px')) }}
                                         </a>
                                     </div>
                                     <div class="search-result-options">
@@ -89,8 +85,7 @@
         </div>
         <!-- @end .row -->
 
-        <?php // echo $this->element('Croogo.getintouch'); ?>
-
+        @include('_partials.get-in-touch')
     </div>
     <!-- @end .container -->
 </div>
