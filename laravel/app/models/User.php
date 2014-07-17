@@ -33,6 +33,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	protected $hidden = array('password', 'remember_token');
 
     /**
+     * Relationship for user reviews
+     * @return mixed
+     */
+    public function Reviews()
+    {
+        return $this->hasMany('Review', 'rate_to');
+    }
+
+    /**
      * Scopes our users down to just active users
      *
      * @param $query
@@ -62,6 +71,21 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         $query->where('is_online', 1);
     }
 
+    public function scopeTutor($query)
+    {
+        $query->where('role_id', 2);
+    }
+
+    public function scopeAverageRating($query)
+    {
+        $query->leftJoin('reviews', 'reviews.rate_to', '=', 'users.id')
+            ->select(array('users.*',
+                    DB::raw('AVG(rating) as ratings_average')
+                ))
+            ->groupBy('id')
+            ->orderBy('ratings_average', 'DESC');
+    }
+
     /**
      * Get the password for the user.
      *
@@ -81,7 +105,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
      */
     public function getPictureAttribute()
     {
-        return ($this->profilepic != null) ? $this->profilepic : "/images/tutor1.jpg";
+        return ($this->profilepic != null) ? $this->profilepic : "/images/default.png";
     }
 
     /**
@@ -114,4 +138,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         $this->save();
     }
 
+    public function getAverageRatingAttribute()
+    {
+        return round($this->ratings_average, 0, PHP_ROUND_HALF_DOWN);
+    }
 }
