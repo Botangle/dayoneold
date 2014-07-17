@@ -78,3 +78,10 @@ Breadcrumbs::register('contact', function($breadcrumbs) {
 	$breadcrumbs->parent('home');
 	$breadcrumbs->push('Contact Us', route('contact'));
 });
+
+Breadcrumbs::register('users.top-chart', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+
+        $breadcrumbs->push('Top Charts', route('users.top-chart'));
+    });
+

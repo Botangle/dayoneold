@@ -107,6 +107,9 @@
 <link rel="stylesheet" type="text/css" href="/css/prettyCheckable.css" />
 <script type="text/javascript" src="/js/prettyCheckable.js"></script>
 
+@section('jsFiles')
+@show
+
 <script type='text/javascript'>
     $().ready(function() {
 
@@ -116,6 +119,8 @@
 
             });
         }
+        @section('jqueryReady')
+        @show
     });
 
     <?php /* Lucky Orange JS tracking script */ ?>
