@@ -17,6 +17,7 @@
                     <?php echo __("Credits"); ?>
 
                     <?php if($balance > 0): ?>
+                        (<?php echo h(number_format($balance, 2)) ?> available)
                     <p class="pull-right">
                         <?php
                         echo $this->Html->link(
@@ -53,7 +54,51 @@
                                 <?php echo __("Transactions")?>
                             </p>
                         </div>
-                        <p>A list of transactions goes here</p>
+                        <?php if(count($transactions) > 0) : ?>
+                        <table class="table table-striped table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Transaction</th>
+                                    <?php /* can't believe I'm doing this in the name of expediency, please take it out */ ?>
+                                    <th style="width: 50px; padding-right: 2em;">Amount</th>
+                                    <th>Reference #</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach($transactions as $transaction) {
+                                $transaction = $transaction['Transaction']; ?>
+                                <tr>
+                                    <td><?php echo date("m/d/Y", strtotime($transaction['created'])) ?></td>
+                                    <td>
+                                        <?php
+                                        switch($transaction['type']) {
+                                            case "buy":
+                                                echo "Bought";
+                                                break;
+                                            case "sell":
+                                                echo "Sold";
+                                                break;
+                                            case "transfer":
+                                                echo "Transferred";
+                                                break;
+                                        }
+                                        ?>
+                                    </td>
+                                    <?php /* can't believe I'm doing this in the name of expediency, please take it out */ ?>
+                                    <td style="text-align: right !important; width: 50px; padding-right: 2em;"><?php echo number_format($transaction['amount'], 2); ?></td>
+                                    <td>
+                                        <?php
+                                        // we don't have transaction keys for transfers, just buys and sells
+                                        if($transaction['type'] != 'transfer') {
+                                            echo h($transaction['transaction_key']);
+                                        } ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                        <?php endif; ?>
                     </div>
                 </div>
 
