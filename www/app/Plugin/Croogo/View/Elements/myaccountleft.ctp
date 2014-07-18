@@ -3,7 +3,7 @@
  * @todo this should be moved to /app/View/Elements/
  */
 
-$accountsetting = $index = $accountbilling = $accountmessages = $accountLessons = $accountcalander = $accountinvite = $paymentsetting = "";
+$accountsetting = $index = $accountbilling = $accountmessages = $accountLessons = $accountcalander = $accountinvite = $paymentsetting = $credits = "";
 
 if ( $this->params['action'] == 'index' && $this->params['controller'] == 'users') {
 		$index = "active";
@@ -35,6 +35,9 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'invit
 
 if ( $this->params['controller'] == 'users' && $this->params['action'] == 'paymentsetting' ) {
 	$paymentsetting = "active";
+}
+if( $this->params['controller'] == 'credits' && $this->params['action'] == 'index' ) {
+    $credits = "active";
 }
 
 ?>
@@ -75,6 +78,16 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'payme
 				);
  			?>
 	  </li>
+        <li>
+            <a href="/credits/" title="Credits" class="<?php echo $credits; ?>">
+                <?php echo __('Credits'); ?>
+                <span class="badge pull-right">
+                    <?php
+                    echo number_format($this->Credits->getBalance($this->Session->read('Auth.User.id') ), 2);
+                    ?>
+                </span>
+            </a>
+        </li>
     <li>
 			<?php
 				echo $this->Html->link(

@@ -56,7 +56,7 @@ class UsersController extends UsersAppController {
  */
 	public $uses = array('Users.User', 'Users.UserRate', 'Users.Lesson', 'Users.Usermessage', 'Users.Review', 'Categories.Category', 'Users.Userpoint', 'Users.LessonPayment', 'Users.Mystatus');
 
-	public $helper = array('Categories.Category', 'Session', 'Cache');
+	public $helper = array('Categories.Category', 'Session', 'Cache', 'Credits');
 	
 	public $cacheAction = array(
 		'topchart' => '1 hour',
