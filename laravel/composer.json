@@ -11,7 +11,8 @@
 		"coderabbi/virtuoso": "0.*",
 		"davejamesmiller/laravel-breadcrumbs": "~2.2.1",
 		"vespakoen/menu": "dev-master",
-        "magniloquent/magniloquent": "dev-master"
+        "magniloquent/magniloquent": "dev-master",
+        "anahkiasen/former": "dev-master"
 	},
     "require-dev": {
         "way/generators": "2.*",
