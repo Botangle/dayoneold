@@ -128,6 +128,7 @@ return array(
         'DaveJamesMiller\Breadcrumbs\ServiceProvider',
         'Menu\MenuServiceProvider',
         'Way\Generators\GeneratorsServiceProvider',
+        'Former\FormerServiceProvider',
 	),
 
 	/*
@@ -198,5 +199,6 @@ return array(
         // Botangle specific aliases
         'Breadcrumbs'       => 'DaveJamesMiller\Breadcrumbs\Facade',
         'Menu'              => 'Menu\Menu',
+        'Former'            => 'Former\Facades\Former',
 	),
 );
