@@ -56,8 +56,8 @@ class CreditsController extends UsersAppController {
 	}
 
 	function beforeFilter() {
-		$fields = ConnectionManager::getDataSource('default');
-		$dsc = $fields->config;
+		$dataSource = ConnectionManager::getDataSource('default');
+		$dsc = $dataSource->config;
 		$this->databaseName = $dsc['database'];
 
 		parent::beforeFilter();
@@ -88,7 +88,9 @@ class CreditsController extends UsersAppController {
 
             if($this->Transaction->validates()) {
 
-                // @TODO: add in a DB transaction here to handle rolling changes back if we have payment or other issues
+                // run everything in a DB transaction to handle rolling changes back if we have payment or other issues
+                $dataSource = ConnectionManager::getDataSource('default');
+                $dataSource->begin();
                 try {
 
                     $this->Transaction->save();
@@ -115,20 +117,34 @@ class CreditsController extends UsersAppController {
 
                     // now save our info
                     $this->UserCredit->save($userCredit);
-                } catch(Exception $e) {
-                    // @TODO: add roll-back capability
-                }
 
-                // set our amount to an int (it should be on already) prior to sending it back to the user
-                // makes things more secure this way
-                $amount = (int)$this->request->data['Transaction']['amount'];
-                $this->Session->setFlash(
-                    __d('croogo', "You have purchased {$amount} Botangle credits successfully"),
-                    'default',
-                    array(
-                        'class' => 'success',
-                    )
-                );
+                    // now commit our changes
+                    $dataSource->commit();
+
+                    // set our amount to an int (it should be on already) prior to sending it back to the user
+                    // makes things more secure this way
+                    $amount = (int)$this->request->data['Transaction']['amount'];
+                    $this->Session->setFlash(
+                        __d('croogo', "You have purchased {$amount} Botangle credits successfully"),
+                        'default',
+                        array(
+                            'class' => 'success',
+                        )
+                    );
+                } catch(Exception $e) {
+                    $this->Session->setFlash(
+                        __d('croogo', "We had problems making that purchase.  Please try again."),
+                        'default',
+                        array(
+                            'class' => 'error',
+                        )
+                    );
+
+                    // @TODO: log info about the error if it's related to payments
+
+                    // rollback our changes if we have issues
+                    $dataSource->rollback();
+                }
 
                 $this->redirect(array('action' => 'create'));
             }
