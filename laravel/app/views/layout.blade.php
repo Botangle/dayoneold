@@ -8,6 +8,8 @@
 		@endif 
 		{{ Config::get('site.title') }}
     </title>
+	
+	@section('head')
     <link href='//fonts.googleapis.com/css?family=Roboto:400,100,300' rel='stylesheet' type='text/css'>
 
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
@@ -16,9 +18,9 @@
     <link rel="stylesheet" type="text/css" href="/css/global.css" />
     <link rel="stylesheet" type="text/css" href="/css/dev.css" />
 
-
     <script type="text/javascript" src="/js/jquery.js"></script>
     <script type="text/javascript" src="/js/bootstrap.js"></script>
+	 
 
     {{-- @TODO: Let's take this line out and move it to only the pages we need it on --}}
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
@@ -26,7 +28,8 @@
     <script type="text/javascript" src="/js/cbpAnimatedHeader.min.js"></script>
     <script type="text/javascript" src="/js/classie.js"></script>
     <script type="text/javascript" src="/js/modernizr.custom.js"></script>
-
+	@show
+	
     {{--
     $CurrentController = $this->params['controller'];
     $CurrentAction = $this->params['action'];
