@@ -1,15 +1,16 @@
 @extends('layout')
 
-@section('header')
-{{--
-echo $this->Html->script(array( '/croogo/js/autocomplete/jquery-1.9.1',
-'/croogo/js/autocomplete/jquery.ui.core','/croogo/js/autocomplete/jquery.ui.widget','/croogo/js/autocomplete/jquery.ui.position','/croogo/js/autocomplete/jquery.ui.menu','/croogo/js/autocomplete/jquery.ui.autocomplete',
-));
+@section('head')
+@parent
+{{HTML::script('js/jqueryui/jquery.ui.core')}}
+{{HTML::script('js/jqueryui/jquery.ui.widget')}}
+{{HTML::script('js/jqueryui/jquery.ui.position')}}
+{{HTML::script('js/jqueryui/jquery.ui.menu')}}
+{{HTML::script('js/jqueryui/jquery.ui.autocomplete')}}
 
-echo $this->Html->css(array(
-'/croogo/css/autocomplete/themes/base/jquery.ui.all', '/croogo/css/autocomplete/demos',
-));
---}}
+{{HTML::style('css/jqueryui/jquery.ui.all')}}
+{{HTML::style('css/jqueryui/demos')}}
+
 <script>
 	$(function() {
 		$.getJSON("/subject/search", function(response) {
@@ -23,7 +24,7 @@ echo $this->Html->css(array(
 					return false;
 				},
 				select: function(event, ui) {
-					console.log(ui)
+					console.log(ui);
 					$("#searchvalue").val(ui.item.label);
 
 
@@ -35,7 +36,7 @@ echo $this->Html->css(array(
 						.append("<a>" + item.label + "</a>")
 						.appendTo(ul);
 			};
-		})
+		});
 	});
 
 	jQuery(function() {
@@ -79,7 +80,7 @@ echo $this->Html->css(array(
 					select: function(event, ui) {
 						var terms = split(this.value);
 						if (typeid == 'LessonTutor') {
-							jQuery("#" + typeid + "Value").val(ui.item.id)
+							jQuery("#" + typeid + "Value").val(ui.item.id);
 						}
 						// remove the current input
 						terms.pop();
@@ -93,8 +94,9 @@ echo $this->Html->css(array(
 				});
 	});
 </script>
+@stop
 
-
+@section('header')
 <header id="Bannerblock">
     <div class="container text-center">
         <h1>What do you need help with?</h1>
@@ -183,7 +185,7 @@ echo $this->Html->css(array(
 	<div class="span4 Tutor-list1">
 		<div class="tutor-img">
 			<a href="{{{ action('UserController@getView', ['username' => $user->username]) }}}">
-				<img src="<?php echo !empty($user->profilepic ) ? $user->profilepic : '/images/tutor.jpg' ?>" class="img-circle" alt="student" style="width: 195px; height: 195px">
+				<img src="<?php echo!empty($user->profilepic) ? $user->profilepic : '/images/tutor.jpg' ?>" class="img-circle" alt="student" style="width: 195px; height: 195px">
 			</a>
 		</div>
 		<div class="tutor-title">
