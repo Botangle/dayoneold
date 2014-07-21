@@ -44,6 +44,12 @@ class Transaction extends AppModel {
 	);
 
     /**
+     * A cached user total amount so we don't repeatedly query for a total in the same response
+     * @var decimal
+     */
+    private $_cachedUserTotalAmount;
+
+    /**
      * Validate our transaction in various manners depending on what we're doing
      * @var array
      */
@@ -75,6 +81,12 @@ class Transaction extends AppModel {
                 'rule' => 'validateDecimalIfNotABuy',
                 'message' => "In here",
                 'required' => false,
+            ),
+            'check_that_their_sell_amount_isnt_at_or_under_zero' => array(
+                'rule' => 'validateThatUserDoesntHaveANegativeBalance',
+                'message' => "Sorry, you can't sell credits when your balance is at or below zero. :-)",
+                'required'  => true,
+                'last'      => true,
             ),
             'make_sure_they_have_that_amount_to_sell' => array(
                 'rule' => 'validateUserHasThatAmountToSell',
@@ -134,6 +146,26 @@ class Transaction extends AppModel {
     {
         if($this->data['Transaction']['type'] != 'buy') {
             return Validation::decimal($this->data['Transaction']['amount']);
+        }
+        return true;
+    }
+
+    /**
+     * Make sure this person isn't trying to sell when they already have a negative balance
+     *
+     * @param $check
+     * @return bool
+     */
+    public function validateThatUserDoesntHaveANegativeBalance($check)
+    {
+        if($this->data['Transaction']['type'] == 'sell') {
+            $user_id = $this->data['Transaction']['user_id'];
+            $transactionTotal = $this->getUserTotals((int)$user_id);
+
+            // if our transaction total is beneath zero already, then they aren't allowed to sell anything more (obviously :-)
+            if($transactionTotal <= 0) {
+                return false;
+            }
         }
         return true;
     }
@@ -224,18 +256,23 @@ class Transaction extends AppModel {
      * @param $userId
      * @return int|decimal
      */
-    function getUserTotals($userId){
-        $conditions = "user_id  = ". (int)$userId;
-        $total = $this->find('first', array(
-                'conditions' => $conditions,
-                'fields'=>'sum(amount) as amount'
-            ));
+    function getUserTotals($userId, $useCached = true) {
 
-        if(isset($total[0]['amount'])){
-            return $total[0]['amount'];
-        } else{
-            return 0;
+        if(!$useCached || $useCached && !$this->_cachedUserTotalAmount) {
+            $conditions = "user_id  = ". (int)$userId;
+            $total = $this->find('first', array(
+                    'conditions' => $conditions,
+                    'fields'=>'sum(amount) as amount'
+                ));
+
+            if(isset($total[0]['amount'])){
+                $this->_cachedUserTotalAmount = $total[0]['amount'];
+            } else{
+                $this->_cachedUserTotalAmount = 0;
+            }
         }
+
+        return $this->_cachedUserTotalAmount;
     }
 
     public function addBuy()
@@ -329,13 +366,13 @@ class Transaction extends AppModel {
 
         // if we already have a record, let's update it
         if (count($userCredit) > 0) {
-            $userCredit['UserCredit']['amount'] = $this->getUserTotals((int)$userId);
+            $userCredit['UserCredit']['amount'] = $this->getUserTotals((int)$userId, false);
         } else {
             // otherwise, we'll build a new row
             $userCredit = array(
                 'UserCredit' => array(
                     'user_id' => (int)$userId,
-                    'amount' => $this->getUserTotals((int)$userId),
+                    'amount' => $this->getUserTotals((int)$userId, false),
                 )
             );
         }

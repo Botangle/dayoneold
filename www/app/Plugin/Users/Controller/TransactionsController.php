@@ -130,6 +130,16 @@ class TransactionsController extends PostLessonAddController {
                                 'class' => 'success',
                             )
                         );
+
+                        $this->redirect(
+                            Router::url(
+                                array(
+                                    'plugin'        => 'users',
+                                    'controller'    => 'credits',
+                                    'action'        => 'index'
+                                )
+                            )
+                        );
                     }
                 } else {
                     $this->Session->setFlash(
@@ -140,16 +150,6 @@ class TransactionsController extends PostLessonAddController {
                         )
                     );
                 }
-
-                $this->redirect(
-                    Router::url(
-                        array(
-                            'plugin'        => 'users',
-                            'controller'    => 'credits',
-                            'action'        => 'index'
-                        )
-                    )
-                );
             }
         }
 
