@@ -108,3 +108,8 @@ Route::get('/user/{username}', array(
         'as'        => 'user.profile',
         'uses'      => 'UserController@getView',
     ));
+
+Route::get('/subject/search', array(
+        'as'        => 'subject.search',
+        'uses'      => 'SubjectController@search',
+    ));

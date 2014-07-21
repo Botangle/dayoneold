@@ -2,14 +2,15 @@
 
 @section('head')
 @parent
-{{HTML::script('js/jqueryui/jquery.ui.core')}}
-{{HTML::script('js/jqueryui/jquery.ui.widget')}}
-{{HTML::script('js/jqueryui/jquery.ui.position')}}
-{{HTML::script('js/jqueryui/jquery.ui.menu')}}
-{{HTML::script('js/jqueryui/jquery.ui.autocomplete')}}
+{{--HTML::script('js/jqueryui/jquery-1.9.1.js')--}}
+{{HTML::script('js/jqueryui/jquery.ui.core.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.widget.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.position.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.menu.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.autocomplete.js')}}
 
-{{HTML::style('css/jqueryui/jquery.ui.all')}}
-{{HTML::style('css/jqueryui/demos')}}
+{{HTML::style('css/jqueryui/themes/base/jquery.ui.all.css')}}
+{{HTML::style('css/jqueryui/demos.css')}}
 
 <script>
 	$(function() {
@@ -26,13 +27,11 @@
 				select: function(event, ui) {
 					console.log(ui);
 					$("#searchvalue").val(ui.item.label);
-
-
 					return false;
 				}
 			})
 					.data("ui-autocomplete")._renderItem = function(ul, item) {
-				return $("<li>")
+						return $("<li>")
 						.append("<a>" + item.label + "</a>")
 						.appendTo(ul);
 			};
@@ -101,12 +100,9 @@
     <div class="container text-center">
         <h1>What do you need help with?</h1>
         <div class="Searchblock row-fluid">
-
-
             <form method="post" action="/user/search" id="searchuser" class="form-search">
                 <div class="Search-main1">
                     <input name="searchvalue" id="searchvalue" type="text" placeholder="Example: Chemistry, Maths etc" />
-
                 </div>
                 <div class="Search-main1-btn">
                     <button type="submit" class="btn search-main-btn">Search</button>
