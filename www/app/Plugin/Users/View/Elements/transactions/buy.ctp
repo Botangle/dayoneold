@@ -21,7 +21,11 @@ echo $this->Form->input(
     )
 );
 ?>
-<p>Purchase Botangle credits so you can signup for lessons!</p>
+<?php if($refill_needed): ?>
+    <p>Hmm, we'll need you to purchase some credits before we can notify that expert about your lesson proposal.</p>
+<?php else: ?>
+    <p>Purchase Botangle credits so you can signup for lessons!</p>
+<?php endif; ?>
 
 <div class="control-group">
     <label class="control-label span2" for="type">Desired Amount</label>

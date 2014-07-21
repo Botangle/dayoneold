@@ -1,12 +1,12 @@
 <?php
-App::uses('UsersAppController', 'Users.Controller');
+App::uses('PostLessonAddController', 'Users.Controller');
 App::Import('ConnectionManager');
 
 /*
  * TransactionsController Controller
  */
 
-class TransactionsController extends UsersAppController {
+class TransactionsController extends PostLessonAddController {
 
 /**
  * Components
@@ -108,13 +108,29 @@ class TransactionsController extends UsersAppController {
                 }
 
                 if($status) {
-                    $this->Session->setFlash(
-                        $successMsg,
-                        'default',
-                        array(
-                            'class' => 'success',
-                        )
-                    );
+
+                    // Now let's see if we're in the middle of a lesson setup that got interrupted by the need for a credit refill
+                    // if we are, we'll need to finish up our lesson setup
+                    if ($this->Session->read('credit_refill_needed')) {
+                        $user_id_to_message = $this->Session->read('new_lesson_user_id_to_message');
+                        $lesson_id = $this->Session->read('new_lesson_lesson_id');
+
+                        // clear up our session so we don't have anything else weird happen to this person later on
+                        $this->Session->delete('credit_refill_needed');
+                        $this->Session->delete('new_lesson_lesson_id');
+                        $this->Session->delete('new_lesson_user_id_to_message');
+
+                        // a redirect and session flash gets posted here
+                        $this->postLessonAddSetup($lesson_id, $user_id_to_message);
+                    } else {
+                        $this->Session->setFlash(
+                            $successMsg,
+                            'default',
+                            array(
+                                'class' => 'success',
+                            )
+                        );
+                    }
                 } else {
                     $this->Session->setFlash(
                         $errorMsg,
@@ -139,6 +155,11 @@ class TransactionsController extends UsersAppController {
 
         if(isset($this->request->data['Transaction']['type']) && $this->request->data['Transaction']['type'] == 'sell') {
             $this->render('sell');
+        }
+
+        $this->set('refill_needed', false);
+        if ($this->Session->read('credit_refill_needed')) {
+            $this->set('refill_needed', true);
         }
     }
 }

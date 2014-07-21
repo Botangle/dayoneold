@@ -43,18 +43,14 @@ class UserCredit extends AppModel {
      */
     function getBalance($userId){
 
-        if(!isset($this->_balanceCache)) {
-            $conditions = "user_id = ". (int)$userId;
-            $count = $this->find('first', array('conditions' => $conditions));
+        $conditions = "user_id = ". (int)$userId;
+        $count = $this->find('first', array('conditions' => $conditions));
 
-            // @TODO: cache this amount so we don't have to query for it every time
-            if(isset($count['UserCredit']['amount'])) {
-                $this->_balanceCache = $count['UserCredit']['amount'];
-            } else {
-                $this->_balanceCache = 0;
-            }
+        // @TODO: cache this amount so we don't have to query for it every time
+        if(isset($count['UserCredit']['amount'])) {
+            return $count['UserCredit']['amount'];
+        } else {
+            return 0;
         }
-
-        return $this->_balanceCache;
     }
 }

@@ -161,6 +161,7 @@ class Transaction extends AppModel {
                 return false;
             }
         }
+        return true;
     }
 
     /**
