@@ -87,7 +87,7 @@ class TransactionsController extends UsersAppController {
 
             if($this->Transaction->validates()) {
 
-                $amount             = (int)$this->request->data['Transaction']['amount'];
+                $amount             = $this->request->data['Transaction']['amount'];
                 $transactionType    = $this->request->data['Transaction']['type'];
 
                 $successMsg = '';
@@ -96,12 +96,14 @@ class TransactionsController extends UsersAppController {
 
                 if($transactionType == 'buy') {
                     $status     = $this->Transaction->addBuy();
+                    $amount     = (int)$amount;
                     $successMsg = __d('croogo', "You have purchased {$amount} Botangle credits successfully");
                     $errorMsg   = __d('croogo', "We had problems making that purchase.  Please try again.");
                 }
 
                 if($transactionType == 'sell') {
                     $status     = $this->Transaction->addSell();
+                    $amount     = number_format($amount, 2);
                     $successMsg = __d('croogo', "You have sold {$amount} Botangle credits successfully");
                     $errorMsg   = __d('croogo', "We had problems making that sale.  Please try again.");
                 }
@@ -134,6 +136,10 @@ class TransactionsController extends UsersAppController {
                     )
                 );
             }
+        }
+
+        if(isset($this->request->data['Transaction']['type']) && $this->request->data['Transaction']['type'] == 'sell') {
+            $this->render('sell');
         }
     }
 }
