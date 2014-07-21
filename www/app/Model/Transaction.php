@@ -76,6 +76,11 @@ class Transaction extends AppModel {
                 'message' => "In here",
                 'required' => false,
             ),
+            'make_sure_they_have_that_amount_to_sell' => array(
+                'rule' => 'validateUserHasThatAmountToSell',
+                'message' => "Sorry, our records on your credit balance seem to have been mixed up.  Please contact support for assistance.",
+                'required' => true,
+            ),
             'if_selling_too_much' => array(
                 'rule' => 'validateMaxOneHundredCreditsSoldPer24Hrs',
                 'message' => "Sorry, you can only sell 100 credits per 24 hrs",
@@ -130,6 +135,32 @@ class Transaction extends AppModel {
             return Validation::decimal($this->data['Transaction']['amount']);
         }
         return true;
+    }
+
+    /**
+     * Make sure that our user's credit denormalized value matches what our transaction total says we have
+     * If it doesn't, then something fishy is going on and it's best to just error out
+     *
+     * @param $check
+     */
+    public function validateUserHasThatAmountToSell($check)
+    {
+        if($this->data['Transaction']['type'] == 'sell') {
+
+            $user_id = $this->data['Transaction']['user_id'];
+
+            $transactionTotal = $this->getUserTotals((int)$user_id);
+
+            App::import("Model", "UserCredit");
+            $userCredit = new UserCredit();
+            $userTotal = $userCredit->getBalance((int)$user_id);
+
+            if($userTotal != $transactionTotal) {
+                // @TODO: log an error about this, probably worth having someone look into ...
+
+                return false;
+            }
+        }
     }
 
     /**

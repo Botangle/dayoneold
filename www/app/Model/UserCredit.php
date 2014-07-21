@@ -34,4 +34,27 @@ class UserCredit extends AppModel {
 		'type',
 		'created'
 	);
+
+    /**
+     * Enables retrieving a scoped balance amount for this user
+     *
+     * @param $userId
+     * @return int|mixed
+     */
+    function getBalance($userId){
+
+        if(!isset($this->_balanceCache)) {
+            $conditions = "user_id = ". (int)$userId;
+            $count = $this->find('first', array('conditions' => $conditions));
+
+            // @TODO: cache this amount so we don't have to query for it every time
+            if(isset($count['UserCredit']['amount'])) {
+                $this->_balanceCache = $count['UserCredit']['amount'];
+            } else {
+                $this->_balanceCache = 0;
+            }
+        }
+
+        return $this->_balanceCache;
+    }
 }
