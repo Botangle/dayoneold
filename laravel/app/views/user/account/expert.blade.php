@@ -271,43 +271,7 @@ echo $this->Html->css(array(
 					</div>
 				</div>
 
-				<div class="PageLeft-Block">
-					<p class="FontStyle20 color1"><?php echo trans("Change Password") ?></p>
-					<?php
-					//echo $this->Form->create('User', array('class' => 'form-inline form-horizontal', "role" => "form"));
-					//echo $this->Form->input('id');
-					//echo $this->Form->hidden('type', array('value' => "changepasword", 'name' => 'data[User][changepassword]'));
-					?>
-
-					<div class="row-fluid">
-						<div class="form-group span5">
-							<label class="sr-only" for="Username2"><?php echo trans("Old Password") ?></label>
-							<?php // echo $this->Form->input('password', array('class' => 'form-control textbox1', 'placeholder' => "Old Password", 'label' => false, 'id' => 'old_password', 'name' => 'data[User][oldpassword]')); ?>
-						</div>
-
-					</div>
-					<br>
-					<div class="row-fluid">
-						<div class="form-group span5">
-							<label class="sr-only" for="Username2">New Password</label>
-							<?php // echo $this->Form->input('password', array('class' => 'form-control textbox1', 'placeholder' => "New Password", 'label' => false)); ?>
-						</div>
-
-						<div class="form-group span5">
-							<label class="sr-only" for="Password2">Confirm Password</label>
-							<?php // echo $this->Form->input('verify_password', array('type' => 'password', 'class' => 'form-control textbox1', 'placeholder' => "Confirm Password", 'label' => false)); ?>
-						</div>
-					</div><br>
-
-					<div class="row-fluid">
-						<div class="span12">
-							<?php
-							// echo $this->Form->button(__('Update Password'), array('type' => 'submit', 'class' => 'btn btn-primary', 'name' => 'button', 'value' => 'change_password'));
-							?>
-						</div>
-					</div>
-					<?php // echo $this->Form->end(); ?>
-				</div>
+                @include('user.account.change-password')
 			</div>
 		</div>
 	</div>
