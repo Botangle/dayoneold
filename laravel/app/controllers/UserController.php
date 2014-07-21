@@ -47,13 +47,17 @@ class UserController extends BaseController {
         }
 
         $validator = Validator::make(Input::all(), $rules);
-        $validated = $validator->fails();
+        $validationFailed = $validator->fails();
 
-        $salt = Config::get('auth.cake.salt');
-        $password = sha1($salt . $password);
+        $user = User::where('username', $username)->first();
+        if ($user){
+            $loginSuccess = $user->isPasswordCorrect($password);
+        } else {
+            $loginSuccess = false;
+        }
 
         // @TODO: attempt only logins for active users
-        if ($validated || !Auth::attempt(array('username' => $username, 'password' => $password))) {
+        if ($validationFailed || !$loginSuccess) {
             Event::fire('Controller.User.loginFailure', $this);
 
 //            if($this->RequestHandler->isXml()) {
@@ -93,10 +97,71 @@ class UserController extends BaseController {
 
     public function getMyAccount()
     {
-        if(Auth::user()->isTutor()) {
-            return View::make('user.account.expert');
+        if(Auth::user()->isTutor() || Auth::user()->isAdmin()) {
+            return View::make('user.account.expert', array(
+                    'user'  => Auth::user()
+                ));
         } else {
-            return View::make('user.account.student');
+            return View::make('user.account.student', array(
+                    'user'  => Auth::user()
+                ));
+        }
+    }
+
+    public function postMyAccount()
+    {
+        $userId = Input::get('id');
+        if (Auth::user()->id != $userId && !Auth::user()->isAdmin()){
+            App::abort('404', 'You are not authorized to update this user account.');
+        }
+        $user = User::findOrFail($userId);
+
+        // TODO Validate and update the my-account data
+
+        return Redirect::back()
+            ->withInput(Input::all())
+            ->with('flash_success', trans("We're gonna update your data soon."));
+    }
+
+    public function postChangePassword()
+    {
+        $userId = Input::get('id');
+        if (Auth::user()->id != $userId && !Auth::user()->isAdmin()){
+            App::abort('404', 'You are not authorized to update this user account.');
+        }
+        $user = User::findOrFail($userId);
+
+        // TODO: determine best location for this validator extension
+        Validator::extend('password_correct', function($attribute, $value, $parameters ){
+                $user = User::findOrFail($parameters[0]);
+                return $user->isPasswordCorrect($value);
+            });
+        // Build the custom messages array.
+        $messages = array(
+            'password_correct' => trans('The :attribute is incorrect.'),
+            'confirmed'        => trans('New Password and Confirm Password did not match.'),
+        );
+
+        // Validate old and new passwords for correct field format
+        $rules = array(
+            'old_password'      => array('required', 'min:6', 'max:255', 'password_correct:'.$user->id),
+            'new_password'      => array('required', 'min:6', 'max:255', 'confirmed'),
+        );
+        $validator = Validator::make(Input::all(), $rules, $messages);
+        $failedValidation = $validator->fails();
+
+        if ($failedValidation){
+            return Redirect::route('user.my-account')
+                ->withErrors($validator)
+                ->with('flash_error', trans("Password change failed."));
+        }
+
+        if ($user->updatePassword(Input::get('old_password'), Input::get('new_password'))){
+            return Redirect::route('user.my-account')
+                ->with('flash_success', trans("You have changed your password."));
+        } else {
+            return Redirect::route('user.my-account')
+                ->with('flash_error', trans("There was a problem updating your password."));
         }
     }
 
@@ -111,6 +176,7 @@ class UserController extends BaseController {
      */
     public function getView($id)
     {
+        //TODO: verfiy that users can't add a purely numeric username otherwise this is a bug
         if (is_numeric($id)) {
             $model = User::findOrFail($id);
         }

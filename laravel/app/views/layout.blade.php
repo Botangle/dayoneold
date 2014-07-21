@@ -55,13 +55,21 @@
 <div id="main-content">
     <div class="container">
         @if(Session::has('flash_error'))
-        <div class="alert alert-error error">
-            {{ Session::get('flash_error') }}
+        <div id="flashMessage" class="alert alert-error error">
+            <strong>{{ Session::get('flash_error') }}</strong>
+            @if($errors->count() > 0)
+            <ul>
+                @foreach ($errors->all() as $message)
+                <li>{{ $message }}</li>
+                @endforeach
+            </ul>
+            @endif
+
         </div>
         @endif
 
         @if(Session::has('flash_success'))
-        <div class="alert alert-success success">
+        <div id="flashMessage" class="alert alert-success success">
             {{ Session::get('flash_success') }}
         </div>
         @endif

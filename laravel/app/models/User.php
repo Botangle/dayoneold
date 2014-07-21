@@ -129,6 +129,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     }
 
     /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return ($this->role_id == 1) ? true : false;
+    }
+
+    /**
      * Whether the specified user is online or not
      * @param boolean $isOnline
      */
@@ -141,5 +149,44 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     public function getAverageRatingAttribute()
     {
         return round($this->ratings_average, 0, PHP_ROUND_HALF_DOWN);
+    }
+
+    /**
+     * Returns the encrypted version of $password
+     * @param $password
+     * @return string
+     */
+    protected function encryptPassword($password)
+    {
+        $salt = Config::get('auth.cake.salt');
+        return sha1($salt . $password);
+    }
+
+    /**
+     * Returns whether the supplied password is correct for the current user
+     * @param $password
+     * @return bool
+     */
+    public function isPasswordCorrect($password)
+    {
+        return Auth::attempt(array(
+                'username' => $this->username,
+                'password' => $this->encryptPassword($password)
+            ));
+    }
+
+    /**
+     * Updates the user's password to newPassword if the oldPassword matches
+     * @param $oldPassword
+     * @param $newPassword
+     * @return bool
+     */
+    public function updatePassword($oldPassword, $newPassword)
+    {
+        if ($this->isPasswordCorrect($oldPassword)){
+            $this->password = $this->encryptPassword($newPassword);
+            return $this->save();
+        }
+        return false;
     }
 }

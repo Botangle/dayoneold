@@ -101,6 +101,7 @@ Route::group(array('before' => 'auth'), function(){
             'getLessons'      => 'user.lessons',
             'getMessages'     => 'user.messages',
             'getMyAccount'    => 'user.my-account',
+            'postChangePassword'    => 'user.change-password',
         ));
 });
 
