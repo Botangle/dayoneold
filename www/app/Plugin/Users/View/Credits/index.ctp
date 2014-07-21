@@ -22,7 +22,7 @@
                         <?php
                         echo $this->Html->link(
                             __('+  Add Credits'),
-                            '/credits/create'
+                            '/transactions/create'
                             ,
                             array(
                                 'title' => __('+  Add Credits'),
@@ -43,7 +43,7 @@
                             </p>
                         </div>
                         <p>Looks like you don't have any pre-purchased Botangle credits.  We'll need you to add some before you can schedule a lesson.</p>
-                        <?php include('_create.php'); ?>
+                        <?php include('../Transaction/_create.php'); ?>
                     </div>
                 </div>
                 <?php else: ?>

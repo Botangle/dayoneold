@@ -163,4 +163,95 @@ class Transaction extends AppModel {
             return 0;
         }
     }
+
+    public function addBuy()
+    {
+        // @TODO: add in pre-event notifications here
+        return $this->addTransaction();
+        // @TODO: add in post-event notifications here
+    }
+
+    public function addSell()
+    {
+        // @TODO: add in pre-event notifications here
+        return $this->addTransaction();
+        // @TODO: add in post-event notifications here
+    }
+
+    private function addTransaction()
+    {
+        // run everything in a DB transaction to handle rolling changes back if we have payment or other issues
+        $dataSource = ConnectionManager::getDataSource('default');
+        $dataSource->begin();
+
+        try {
+
+            $data = $this->data;
+
+            if(!$this->save()) {
+                $dataSource->rollback();
+                return false;
+            }
+
+            $data['Transaction']['id'] = $this->getLastInsertID();
+
+            // now handle updating our user credit denormalized field info
+            // would love to move this into a model instead of leaving it in the controller
+            if(!$this->insertOrUpdateUserCredit($data['Transaction']['user_id'])) {
+                $dataSource->rollback();
+                return false;
+            }
+
+            // now commit our changes
+            $dataSource->commit();
+
+            return true;
+        } catch(Exception $e) {
+            // @TODO: log info about the error if it's related to payments
+
+            // rollback our changes if we have issues
+            $dataSource->rollback();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $userId
+     */
+    protected function insertOrUpdateUserCredit($userId)
+    {
+        // find a user credit model if we have one in our system
+        App::import("Model", "UserCredit");
+        $userCreditModel = new UserCredit();
+        $userCredit = $userCreditModel->findByUserId((int)$userId);
+
+        // unset our User key as we don't want to adjust the User model in any way, shape or form (gosh ... :-/)
+        unset($userCredit['User']);
+
+        // we want to have a safety check between the user credit table and the transaction amount total
+        // when we transfer money out, we'll make sure the user really *does* have that amount in their account
+        // otherwise, they may be trying to hack the system
+
+        // if we already have a record, let's update it
+        if (count($userCredit) > 0) {
+            $userCredit['UserCredit']['amount'] = $this->getUserTotals((int)$userId);
+        } else {
+            // otherwise, we'll build a new row
+            $userCredit = array(
+                'UserCredit' => array(
+                    'user_id' => (int)$userId,
+                    'amount' => $this->getUserTotals((int)$userId),
+                )
+            );
+        }
+
+        // now save our info
+        if(!$userCreditModel->save($userCredit)) {
+            $errors = $userCreditModel->validationErrors;
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

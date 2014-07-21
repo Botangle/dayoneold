@@ -6,9 +6,9 @@ CroogoRouter::connect('/credits/', array(
         'controller' => 'credits',
         'action' => 'index')
 );
-CroogoRouter::connect('/credits/create', array(
+CroogoRouter::connect('/transactions/create', array(
         'plugin' => 'users',
-        'controller' => 'credits',
+        'controller' => 'transactions',
         'action' => 'create')
 );
 
