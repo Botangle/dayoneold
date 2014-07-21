@@ -173,6 +173,9 @@ class Transaction extends AppModel {
 
     public function addSell()
     {
+        // change the sign on the transaction amount when we sell
+        $this->data['Transaction']['amount'] = 0 - $this->data['Transaction']['amount'];
+        
         // @TODO: add in pre-event notifications here
         return $this->addTransaction();
         // @TODO: add in post-event notifications here

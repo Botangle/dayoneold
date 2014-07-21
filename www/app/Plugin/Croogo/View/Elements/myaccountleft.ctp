@@ -79,7 +79,7 @@ if( $this->params['controller'] == 'credits' && $this->params['action'] == 'inde
  			?>
 	  </li>
         <li>
-            <a href="/credits/" title="Credits" class="<?php echo $credits; ?>">
+            <a href="/credits" title="Credits" class="<?php echo $credits; ?>">
                 <?php echo __('Credits'); ?>
                 <span class="badge pull-right">
                     <?php

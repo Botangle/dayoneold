@@ -30,7 +30,7 @@
 
 <div class="StaticPageRight-Block">
     <div class="PageLeft-Block">
-        <?php include('_buy.php'); ?>
+        <?php echo $this->element('transactions/buy'); ?>
     </div>
 </div>
 

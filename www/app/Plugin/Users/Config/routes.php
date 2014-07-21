@@ -1,7 +1,7 @@
 <?php
 
 /* Credits system */
-CroogoRouter::connect('/credits/', array(
+CroogoRouter::connect('/credits', array(
         'plugin' => 'users',
         'controller' => 'credits',
         'action' => 'index')

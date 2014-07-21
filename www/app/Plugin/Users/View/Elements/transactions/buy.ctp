@@ -6,7 +6,14 @@
  * Date: 7/18/14
  * Time: 11:29 AM
  */
-echo $this->Form->create('Transaction',array('class'=>'form-horizontal'));
+echo $this->Form->create('Transaction',array(
+        'class'=>'form-horizontal',
+        'url' => array(
+            'plugin'        => 'users',
+            'controller'    => 'transactions',
+            'action'        => 'create',
+        ),
+    ));
 echo $this->Form->input(
     'type', array(
         'value' => 'buy',
@@ -17,7 +24,7 @@ echo $this->Form->input(
 <p>Purchase Botangle credits so you can signup for lessons!</p>
 
 <div class="control-group">
-    <label class="control-label span2" for="type">Desired Number</label>
+    <label class="control-label span2" for="type">Desired Amount</label>
     <div class="controls span5">
         <?php echo $this->Form->input(
             'amount', array(

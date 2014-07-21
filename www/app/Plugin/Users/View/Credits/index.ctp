@@ -43,7 +43,7 @@
                             </p>
                         </div>
                         <p>Looks like you don't have any pre-purchased Botangle credits.  We'll need you to add some before you can schedule a lesson.</p>
-                        <?php include('../Transaction/_buy.php'); ?>
+                        <?php echo $this->element('transactions/buy'); ?>
                     </div>
                 </div>
                 <?php else: ?>
@@ -109,8 +109,7 @@
                                 <?php echo __("Sell Credits")?>
                             </p>
                         </div>
-                        <p>Sell your Botangle credits for cash.</p>
-                        <p>Please note, there is a maximum limit of 100 credits sold each day. (make this small)</p>
+                        <?php echo $this->element('transactions/sell'); ?>
                     </div>
                 </div>
                 <?php endif; ?>

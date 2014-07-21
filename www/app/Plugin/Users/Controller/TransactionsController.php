@@ -100,7 +100,7 @@ class TransactionsController extends UsersAppController {
                     $errorMsg   = __d('croogo', "We had problems making that purchase.  Please try again.");
                 }
 
-                if($transactionType == '') {
+                if($transactionType == 'sell') {
                     $status     = $this->Transaction->addSell();
                     $successMsg = __d('croogo', "You have sold {$amount} Botangle credits successfully");
                     $errorMsg   = __d('croogo', "We had problems making that sale.  Please try again.");
@@ -124,10 +124,16 @@ class TransactionsController extends UsersAppController {
                     );
                 }
 
-                $this->redirect(array('action' => 'create'));
+                $this->redirect(
+                    Router::url(
+                        array(
+                            'plugin'        => 'users',
+                            'controller'    => 'credits',
+                            'action'        => 'index'
+                        )
+                    )
+                );
             }
         }
     }
-
-
 }
