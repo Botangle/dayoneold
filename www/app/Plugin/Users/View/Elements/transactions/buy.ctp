@@ -43,7 +43,7 @@ echo $this->Form->input(
     <div class="span2"></div>
     <div class="span5">
         <button type="submit" class="btn btn-primary">Buy Credits</button>
+        <p class="muted"><small>(1 Credit = 1 USD)</small></p>
     </div>
 </div>
-
 <?php echo $this->Form->end();?>

@@ -39,7 +39,8 @@ echo $this->Form->input(
     <div class="span2"></div>
     <div class="span5">
         <button type="submit" class="btn btn-primary">Sell Credits</button>
+        <p class="text-info"><small>NOTE: a maximum of 100 credits can be sold each 24 hrs.</small></p>
+        <p class="muted"><small>(1 Credit = 1 USD)</small></p>
     </div>
 </div>
-<p>Please note, there is a maximum limit of 100 credits sold each day.</p>
 <?php echo $this->Form->end();?>
