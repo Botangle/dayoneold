@@ -30,7 +30,7 @@
 
 <div class="StaticPageRight-Block">
     <div class="PageLeft-Block">
-        <?php include('_create.php'); ?>
+        <?php include('_buy.php'); ?>
     </div>
 </div>
 
