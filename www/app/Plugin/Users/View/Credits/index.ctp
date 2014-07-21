@@ -89,13 +89,7 @@
                                     </td>
                                     <?php /* can't believe I'm doing this in the name of expediency, please take it out */ ?>
                                     <td style="text-align: right !important; width: 50px; padding-right: 2em;"><?php echo number_format($transaction['amount'], 2); ?></td>
-                                    <td>
-                                        <?php
-                                        // we don't have transaction keys for transfers, just buys and sells
-                                        if($transaction['type'] != 'transfer') {
-                                            echo h($transaction['transaction_key']);
-                                        } ?>
-                                    </td>
+                                    <td><?php echo h($transaction['transaction_key']); ?></td>
                                 </tr>
                             <?php } ?>
                             </tbody>

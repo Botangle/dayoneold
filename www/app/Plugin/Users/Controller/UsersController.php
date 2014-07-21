@@ -1374,38 +1374,6 @@ class UsersController extends PostLessonAddController {
 	}
 
 /**
- * Charge function
- *
- * Handles payment with Stripe for a pre-setup customer account
- *
- * @access protected
- * @param  $tutorId   : The specific Tutor id we should be sending money to
- * @param  $userId   : The specific User id we should be charging
- * @param  $amount   : Payment amount
- * @param  $fee      : amount we take as our cut
- */
-	protected function charge($tutorId, $userId, $amount, $fee) {
-
-		// we need our tutor access token (from stripe) so we can add application fees and send money to this person
-		$tutor = $this->User->find('first', array('conditions' => array('User.id' => $tutorId)));
-
-		// we need our customer account ID (from stripe) so we know what credit card to charge
-		$user = $this->User->find('first', array('conditions' => array('User.id' => $userId)));
-
-		// The Stripe plugin automatically handles data validation and error handling
-		// See docs here: https://github.com/chronon/CakePHP-StripeComponent-Plugin
-
-		$charge = array(
-			'stripeCustomer' => $user['User']['stripe_customer_id'],
-			'amount' => $amount,
-			'application_fee' => $fee,
-			'currency' => 'usd',
-		);
-
-		return $this->Stripe->connectCharge($tutor['User']['access_token'], $charge);
-	}
-
-/**
  * Search function
  *
  * Searches for lessons given certen parameters of experience, online status,
@@ -2371,7 +2339,7 @@ class UsersController extends PostLessonAddController {
 			// charges things here, we could end up with a double-billing ... :-/
 			if ($pleaseCompleteLesson && $lessonPayment['LessonPayment']['payment_complete'] == 0) {
 				$this->chargeForLesson(
-						$lessonPayment['LessonPayment']['id'], $tutorId, $studentId, $lessonPayment['LessonPayment']['payment_amount']
+						$lessonId, $lessonPayment['LessonPayment']['id'], $tutorId, $studentId, $lessonPayment['LessonPayment']['payment_amount']
 				);
 			}
 		}
@@ -2447,13 +2415,18 @@ class UsersController extends PostLessonAddController {
  * @param $studentId
  * @param $amount
  */
-	private function chargeForLesson($lessonPaymentId, $tutorId, $studentId, $amount) {
+	private function chargeForLesson($lessonId, $lessonPaymentId, $tutorId, $studentId, $amount) {
 		try {
-			$fee = $amount * .30; // take a 30% commission
+			$fee = $amount * .15; // take a 15% commission
+
+            // @TODO: add in a DB transaction here to handle making sure things all go through together
+
 			// format our fee to work well with Stripe and when we save it to the DB
 			$fee = sprintf('%0.2f', $fee);
 
-			$results = $this->charge((int) $tutorId, (int) $studentId, $amount, $fee);
+            App::import('Model', 'Transaction');
+            $transaction = new Transaction;
+            $results = $transaction->charge((int)$lessonId, (int) $tutorId, (int) $studentId, $amount, $fee);
 
 			// if we have success billing, we'll note the fact and save things
 			if (is_array($results)) {
@@ -2464,7 +2437,9 @@ class UsersController extends PostLessonAddController {
 				$data['LessonPayment']['id'] = $lessonPaymentId;
 				$data['LessonPayment']['payment_complete'] = 1;
 				$data['LessonPayment']['fee'] = $fee;
-				$data['LessonPayment']['stripe_charge_id'] = $results['stripe_id'];
+
+                // @TODO: change from this to just a transaction_id instead ...
+				$data['LessonPayment']['stripe_charge_id'] = $results['id'];
 				$this->LessonPayment->save($data);
 
 				Croogo::dispatchEvent('Controller.Users.lessonCharged', $this);

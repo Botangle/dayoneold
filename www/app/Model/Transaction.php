@@ -93,7 +93,8 @@ class Transaction extends AppModel {
             'message' => "Sorry, your transaction was of the wrong type",
         ),
 
-        // required if a buy or sell
+        // needed across the board, but we don't enforce this, as models will get validated or saved prior to having a transaction_key
+        // (especially when doing transfers)
         'transaction_key' => array(
             'allowEmpty' => false,
             'alphaNumeric',
@@ -230,7 +231,7 @@ class Transaction extends AppModel {
                 'fields'=>'sum(amount) as amount'
             ));
 
-        if($total[0]['amount'] > 0){
+        if(isset($total[0]['amount'])){
             return $total[0]['amount'];
         } else{
             return 0;
@@ -239,6 +240,9 @@ class Transaction extends AppModel {
 
     public function addBuy()
     {
+        // enforce that this is a buy
+        $this->data['Transaction']['type'] = 'buy';
+
         // @TODO: add in pre-event notifications here
         return $this->addTransaction();
         // @TODO: add in post-event notifications here
@@ -248,16 +252,30 @@ class Transaction extends AppModel {
     {
         // change the sign on the transaction amount when we sell
         $this->data['Transaction']['amount'] = 0 - $this->data['Transaction']['amount'];
-        
+
+        // enforce that this is a sell
+        $this->data['Transaction']['type'] = 'sell';
+
         // @TODO: add in pre-event notifications here
         return $this->addTransaction();
         // @TODO: add in post-event notifications here
     }
 
+    public function addTransfer()
+    {
+        // enforce that this is a transfer
+        $this->data['Transaction']['type'] = 'transfer';
+
+        // @TODO: add in pre-event notifications here
+        return $this->addTransaction();
+        // @TODO: add in post-event notifications here
+    }
+
+
     private function addTransaction()
     {
         // run everything in a DB transaction to handle rolling changes back if we have payment or other issues
-        $dataSource = ConnectionManager::getDataSource('default');
+        $dataSource = $this->getDataSource();
         $dataSource->begin();
 
         try {
@@ -329,5 +347,64 @@ class Transaction extends AppModel {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Creates two transactions to move money from one user's credit balance to the other
+     *
+     * @access protected
+     * @param  $lessonId  : The lesson that these transactions are for
+     * @param  $expertId  : The specific Expert id we should be sending money to
+     * @param  $studentId   : The specific Student id we should be charging
+     * @param  $amount   : Payment amount
+     * @param  $fee      : amount we take as our cut
+     */
+    public function charge($lessonId, $expertId, $studentId, $amount, $fee) {
+
+        $dataSource = $this->getDataSource();
+        $dataSource->begin();
+
+        try {
+            // charge the student the full amount
+            $studentTransaction = new Transaction;
+            $studentTransaction->create(array(
+                    'Transaction' => array(
+                        'user_id'   => (int)$studentId,
+                        'amount'    => (0 - $amount), // make this amount negative, as we're taking it away from the student
+                        'lesson_id' => (int)$lessonId,
+                    ),
+                ));
+            if(!$studentTransaction->addTransfer()) {
+                // @TODO: handle the errors here
+            }
+            $chargeId = $studentTransaction->getLastInsertID();
+
+            $studentTransaction->id = $chargeId;
+            $studentTransaction->saveField('transaction_key', $chargeId);
+
+            $expertTransaction = new Transaction;
+            $expertTransaction->create(array(
+                    'Transaction' => array(
+                        'user_id'           => (int)$expertId,
+                        'amount'            => ($amount - $fee), // make this amount negative, as we're taking it away from the student
+                        'lesson_id'         => (int)$lessonId,
+                        'transaction_key'   => (int)$chargeId,
+                    ),
+                ));
+            if(!$expertTransaction->addTransfer()) {
+                // @TODO: handle the errors here
+            }
+
+            $dataSource->commit();
+
+            // return an array with an id for our transaction if things work
+            return array('id' => (int)$chargeId);
+        }
+        catch (Exception $e) {
+            // @TODO: do we want to log this in some way?
+        }
+
+        $dataSource->rollback();
+        return false;
     }
 }
