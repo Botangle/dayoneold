@@ -18,6 +18,8 @@
 
                     <?php if($balance > 0): ?>
                         (<?php echo h(number_format($balance, 2)) ?> available)
+                    <?php endif; ?>
+                    <?php if(count($transactions) > 0): ?>
                     <p class="pull-right">
                         <?php
                         echo $this->Html->link(
@@ -34,7 +36,7 @@
                     <?php endif; ?>
                 </h2>
 
-                <?php if($balance == 0): ?>
+                <?php if(count($transactions) == 0): ?>
                 <div class="StaticPageRight-Block">
                     <div class="PageLeft-Block">
                         <div class="span12">
