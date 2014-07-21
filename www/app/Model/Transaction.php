@@ -76,6 +76,11 @@ class Transaction extends AppModel {
                 'message' => "In here",
                 'required' => false,
             ),
+            'if_selling_too_much' => array(
+                'rule' => 'validateMaxOneHundredCreditsSoldPer24Hrs',
+                'message' => "Sorry, you can only sell 100 credits per 24 hrs",
+                'required' => true,
+            ),
         ),
         // either buy, sell or transfer, required
         'type' => array(
@@ -127,6 +132,42 @@ class Transaction extends AppModel {
         return true;
     }
 
+    /**
+     * If we're doing a sell, we can only sell 100 credits in a twenty-four hour period.  Otherwise, error out
+     *
+     * @param $check
+     * @return bool
+     */
+    public function validateMaxOneHundredCreditsSoldPer24Hrs($check)
+    {
+        if($this->data['Transaction']['type'] == 'sell') {
+
+            $amount = $this->data['Transaction']['amount'];
+
+            // if this specific transaction amount is greater than 100, we can error out immediately
+            if($amount > 100) {
+                return false;
+            }
+
+            // otherwise, let's sum all 'sell' transactions in the last 24 hrs and prevent a transfer out if
+            // it combined with our current transaction amount is greater than 100
+            $user_id = $this->data['Transaction']['user_id'];
+            $amountSold = $this->find('first', array(
+                    'fields'        => 'sum(amount) as amount',
+                    'conditions'    => "Transaction.created > DATE_SUB(NOW(), INTERVAL 24 HOUR)
+                                            AND type = 'sell'
+                                            AND user_id = " . (int)$user_id,
+                ));
+
+            // get the absolute value of our previously sold amount, as it's a negative in the DB
+            $amountPreviouslySold = abs($amountSold[0]['amount']);
+
+            if(($amount + $amountPreviouslySold) > 100) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * If we're doing a buy, folks have to buy a complete credit (not a partial one)
