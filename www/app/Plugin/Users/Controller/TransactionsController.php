@@ -72,7 +72,6 @@ class TransactionsController extends UsersAppController {
         // by whether this user is logged in or not
         if ($this->Session->check('Auth.User')) {
             $this->Auth->allow('create');
-            $this->Auth->allow('test');
         }
 	}
 
