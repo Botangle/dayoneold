@@ -116,11 +116,35 @@ class UserController extends BaseController {
         }
         $user = User::findOrFail($userId);
 
-        // TODO Validate and update the my-account data
+        // Set the base context (the student account is a subset of the tutor)
+        $user->addContext('student-save');
 
-        return Redirect::back()
-            ->withInput(Input::all())
-            ->with('flash_success', trans("We're gonna update your data soon."));
+        // If the user is a tutor, there are more fields to be validated and saved
+        if ($user->isTutor() || $user->isAdmin()){
+            $user->addContext('tutor-save');
+        }
+
+        /* TODO: Implement profilepic upload and fetching with Amazon S3
+        if (Input::hasFile('profilepic')){
+            $file = Input::file('file');
+            $filename = $file->getClientOriginalName();
+            $profileDir = url('/upload');
+            if (!$file->move($profileDir, $filename)){
+                return Redirect::route('user.my-account')
+                    ->with('flash_error', trans("Profile Picture could not be saved. Please, try again."));
+            }
+            $user->profilepic = $filename;
+        }*/
+
+        if ($user->save(Input::all())) {
+            return Redirect::back()
+                ->withInput(Input::all())
+                ->with('flash_success', trans("Your information has been updated"));
+        } else {
+            return Redirect::route('user.my-account')
+                ->withErrors($user->errors())
+                ->with('flash_error', trans("Your information could not be updated. Please try again."));
+        }
     }
 
     public function postChangePassword()
@@ -148,9 +172,8 @@ class UserController extends BaseController {
             'new_password'      => array('required', 'min:6', 'max:255', 'confirmed'),
         );
         $validator = Validator::make(Input::all(), $rules, $messages);
-        $failedValidation = $validator->fails();
 
-        if ($failedValidation){
+        if ($validator->fails()){
             return Redirect::route('user.my-account')
                 ->withErrors($validator)
                 ->with('flash_error', trans("Password change failed."));

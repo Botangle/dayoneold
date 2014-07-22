@@ -5,7 +5,7 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
-class User extends Eloquent implements UserInterface, RemindableInterface {
+class User extends MagniloquentContextsPlus implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;
 
@@ -31,6 +31,59 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var array
 	 */
 	protected $hidden = array('password', 'remember_token');
+
+    /**
+     * What POST values we'll even take with massive assignment
+     * @var array
+     */
+    protected $fillable = array(
+        'name',
+        'lname',
+        'subject',
+        'qualification',
+        'teaching_experience',
+        'extracurriculur_interests',
+        'university',
+        'other_experience',
+        'expertise',
+        'profilepic',
+        'link_fb',
+        'link_twitter',
+        'link_googleplus',
+        'link_thumblr',
+    );
+
+    protected $niceNames = array(
+        'name'  => 'First Name',
+        'lname' => 'Last Name',
+    );
+
+    /**
+     * Validation rules
+     */
+    public static $rules = array(
+        "save" => array(
+        ),
+        "change-password" => array(
+
+        ),
+        'student-save' => array(
+            'name'                      => array('required|max:50'),
+            'lname'                     => array('required|max:50'),
+            'profilepic'                => array('image', 'max:5000'), // 5MB
+        ),
+        'tutor-save' => array(
+            'subject'                   => array('required'),
+            'university'                => array('max:255'),
+            'other_experience'          => array('max:255'),
+            'link_fb'                   => array('max:255'),
+            'link_twitter'              => array('max:255'),
+            'link_googleplus'           => array('max:255'),
+            'link_thumblr'              => array('max:255'),
+        ),
+        'update'    => array(),
+        'create'    => array(),
+    );
 
     /**
      * Relationship for user reviews
