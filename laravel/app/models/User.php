@@ -42,7 +42,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         'subject',
         'qualification',
         'teaching_experience',
-        'extracurriculur_interests',
+        'extracurricular_interests',
         'university',
         'other_experience',
         'expertise',

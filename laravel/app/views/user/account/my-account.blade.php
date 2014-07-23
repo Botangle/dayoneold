@@ -95,7 +95,6 @@
 
                         {{ Former::hidden('id') }}
 
-                        @section('profile-pic')
                         <div class="row-fluid">
                             <div class="control-group">
                                 <label class="control-label"></label>
@@ -113,64 +112,34 @@
                                 </div>
                             </div>
                         </div>
-                        @show
 
-                        @section('profile-fields')
-                        <div class="row-fluid">
-                            {{ Former::text('username')
-                            ->addClass('textbox')
-                            ->placeholder(trans('Username'))
-                            ->label(__('Username:'))
-                            ->disabled()
-                            ->required()
-                            }}
-                        </div>
-                        <div class="row-fluid">
-                            {{ Former::text('name')
-                            ->addClass('textbox')
-                            ->placeholder(trans('First Name'))
-                            ->label(__('First Name:'))
-                            ->required()
-                            }}
-                        </div>
-                        <div class="row-fluid">
-                            {{ Former::text('lname')
-                            ->addClass('textbox')
-                            ->placeholder(trans('Last Name'))
-                            ->label(__('Last Name:'))
-                            ->required()
-                            }}
-                        </div>
-                        <div class="row-fluid">
-                            {{ Former::text('email')
-                            ->addClass('textbox')
-                            ->placeholder(trans('Email Address'))
-                            ->label(__('Email Address:'))
-                            ->disabled()
-                            ->required()
-                            }}
-                        </div>
-                        @show
+                        @if ($mode == 'expert')
+                            @include('user.account.expert-fields')
+                        @elseif ($mode == 'student')
+                            @include('user.account.student-fields')
+                        @endif
 
                         <div class="row-fluid">
                             {{ Former::actions(
                             Former::submit(trans('Update Info'))
-                            ->addclass('btn btn-primary')
+                            ->addClass('btn btn-primary')
                             ->name('update_info')
-                            )->addclass('control-group')
+                            )->addClass('control-group')
                             }}
                         </div>
-                        {{ Form::close() }}
+                        {{ Former::close() }}
                     </div>
+                    <!-- @end .PageLeft-Block -->
                 </div>
+                <!-- @end .StaticPageRight-Block -->
 
                 @include('user.account.change-password', array('user' => $user))
             </div>
+            <!-- @end .span9 -->
         </div>
+        <!-- @end .row -->
     </div>
-    <!-- @end .row -->
-</div>
-<!-- @end .container -->
+    <!-- @end .container -->
 </div>
 <!--Wrapper main-content Block End Here-->
 @overwrite

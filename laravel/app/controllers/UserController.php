@@ -98,14 +98,14 @@ class UserController extends BaseController {
     public function getMyAccount()
     {
         if(Auth::user()->isTutor() || Auth::user()->isAdmin()) {
-            return View::make('user.account.expert', array(
-                    'user'  => Auth::user()
-                ));
+            $mode = 'expert';
         } else {
-            return View::make('user.account.student', array(
-                    'user'  => Auth::user()
-                ));
+            $mode = 'student';
         }
+        return View::make('user.account.my-account', array(
+                'user'  => Auth::user(),
+                'mode'  => $mode,
+            ));
     }
 
     public function postMyAccount()

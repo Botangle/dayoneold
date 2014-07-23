@@ -1,6 +1,5 @@
 <div class="PageLeft-Block">
     <p class="FontStyle20 color1"><?php echo trans("Change Password") ?></p>
-    {{ Former::framework('Nude') }}
     {{ Former::open()
     ->secure()
     ->method('POST')
@@ -8,6 +7,8 @@
     ->route('user.change-password')
     ->role('form')
     }}
+
+    {{ Former::framework('Nude') }}
 
     {{ Former::hidden('id', $user->id) }}
 
