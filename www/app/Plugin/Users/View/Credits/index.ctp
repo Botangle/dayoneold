@@ -71,7 +71,7 @@
                             <?php foreach($transactions as $transaction) {
                                 $transaction = $transaction['Transaction']; ?>
                                 <tr>
-                                    <td><?php echo date("m/d/Y", strtotime($transaction['created'])) ?></td>
+                                    <td><?php echo date("M d, Y", strtotime($transaction['created'])) ?></td>
                                     <td>
                                         <?php
                                         switch($transaction['type']) {
