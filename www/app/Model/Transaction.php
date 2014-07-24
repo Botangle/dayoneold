@@ -280,9 +280,7 @@ class Transaction extends AppModel {
         // enforce that this is a buy
         $this->data['Transaction']['type'] = 'buy';
 
-        // @TODO: add in pre-event notifications here
         return $this->addTransaction();
-        // @TODO: add in post-event notifications here
     }
 
     public function addSell()
@@ -293,9 +291,7 @@ class Transaction extends AppModel {
         // enforce that this is a sell
         $this->data['Transaction']['type'] = 'sell';
 
-        // @TODO: add in pre-event notifications here
         return $this->addTransaction();
-        // @TODO: add in post-event notifications here
     }
 
     public function addTransfer()
@@ -303,9 +299,7 @@ class Transaction extends AppModel {
         // enforce that this is a transfer
         $this->data['Transaction']['type'] = 'transfer';
 
-        // @TODO: add in pre-event notifications here
         return $this->addTransaction();
-        // @TODO: add in post-event notifications here
     }
 
 
