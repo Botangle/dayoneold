@@ -32,6 +32,7 @@
     <div class="PageLeft-Block">
         <?php echo $this->element('transactions/buy', array(
                 'refill_needed' => $refill_needed,
+                'token'         => $token,
             )); ?>
     </div>
 </div>

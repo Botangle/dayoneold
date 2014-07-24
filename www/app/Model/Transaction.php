@@ -444,4 +444,36 @@ class Transaction extends AppModel {
         $dataSource->rollback();
         return false;
     }
+
+    /**
+     *
+     * @param array $options Options passed from Model::save().
+     * @return boolean True if the operation should continue, false if it should abort
+     * @link http://book.cakephp.org/2.0/en/models/callback-methods.html#beforesave
+     * @see Model::save()
+     */
+    public function beforeSave($options = array())
+    {
+        if($this->data['Transaction']['type'] == 'buy' || $this->data['Transaction']['type'] == 'sell') {
+            if($this->data['Transaction']['type'] == 'buy') {
+                $event = new CakeEvent('Transaction.handle_purchase', $this, array(
+                    'amount' => $this->data['Transaction']['amount'],
+                    'nonce' => $this->data['Transaction']['nonce'],
+                    'customer' => $this->data['User'],
+                ));
+            } else {
+                $event = new CakeEvent('Transaction.handle_sale', $this, array('nonce' => $this->data['Transaction']['nonce']));
+            }
+            $this->getEventManager()->dispatch($event);
+            if($event->isStopped()) {
+                return false;
+            } else {
+                // make sure our user info isn't somehow saved to the DB.  We only use it to allow events to know info
+                unset($this->data['User']);
+            }
+
+        }
+
+        return parent::beforeSave($options);
+    }
 }

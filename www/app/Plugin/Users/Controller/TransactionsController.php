@@ -15,6 +15,7 @@ class TransactionsController extends PostLessonAddController {
  * @access public
  */
 	public $components = array(
+        'Braintree',
 		'Search.Prg' => array(
 			'presetForm' => array(
 				'paramType' => 'querystring',
@@ -53,6 +54,10 @@ class TransactionsController extends PostLessonAddController {
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
 		$this->getEventManager()->attach(new UserListener());
+
+        // we've got a Braintree payment listener event setup to handle payment transactions when they happen
+        App::uses('BraintreePaymentListener', 'Event');
+        $this->Transaction->getEventManager()->attach(new BraintreePaymentListener());
 	}
 
 	function beforeFilter() {
@@ -62,26 +67,42 @@ class TransactionsController extends PostLessonAddController {
 
 		parent::beforeFilter();
 
-// the below doesn't handle all the actions we need unlocked.  For now, to get the site working again,
-// I'm enabling them all again
 		$this->Security->validatePost = true;
-		$this->Security->csrfCheck = false;
-//        $this->Security->csrfCheck = true;
+		$this->Security->csrfCheck = true;
 
         // instead of worrying about aro / acl permissions on a per controller basis, we're going to loosen up and define things
         // by whether this user is logged in or not
         if ($this->Session->check('Auth.User')) {
             $this->Auth->allow('create');
         }
+
+        // Here, we disable the Security post validation for POST requests to our "create" action so they work
+        if(isset($this->Security) &&  ($this->request->is('post')) && $this->action == 'create'){
+            $this->Security->validatePost = false;
+        }
 	}
 
     public function create()
     {
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') && isset($_POST['payment_method_nonce'])) {
+
+            if(isset($_POST['payment_method_nonce'])) {
+                $this->request->data['Transaction']['nonce'] = $_POST['payment_method_nonce'];
+            }
+
+            // adjust our payment nonce if we're in debugging mode so we can
+            // make purchases without really triggering a Braintree purchase
+            if(Configure::read('debug') == 2) {
+                $this->request->data['Transaction']['nonce'] = Braintree_Test_Nonces::$paypalOneTimePayment;
+            }
 
             $userId = $this->Auth->user('id');
 
             $this->request->data['Transaction']['user_id'] = (int)$userId;
+
+            // this user data is cleaned from our request data prior to being saved to the DB
+            // we mainly want to make it available to our event system as needed
+            $this->request->data['User'] = $this->Auth->user();
             $this->Transaction->set($this->request->data);
 
             if($this->Transaction->validates()) {
@@ -156,6 +177,10 @@ class TransactionsController extends PostLessonAddController {
         if(isset($this->request->data['Transaction']['type']) && $this->request->data['Transaction']['type'] == 'sell') {
             $this->render('sell');
         }
+
+        // generate our token to be used in communicating with Braintree
+        /** @var $braintreeComponent BraintreeComponent */
+        $this->set('token', $this->Braintree->generateToken());
 
         $this->set('refill_needed', false);
         if ($this->Session->read('credit_refill_needed')) {

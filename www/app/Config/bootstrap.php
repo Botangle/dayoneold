@@ -94,11 +94,21 @@ if($env == "production") {
     Configure::write('Stripe.client_id', $stripeLiveClientId);
     Configure::write('Stripe.publishable_key', $stripeLivePublishableKey);
     Configure::write('Stripe.secret', $stripeLiveSecret); // we put this in this way too so by default we can look here
+
+    Configure::write('Braintree.environment', 'live');
+    Configure::write('Braintree.merchantId', $braintreeLiveMerchantId);
+    Configure::write('Braintree.publicKey', $braintreeLivePublishableKey);
+    Configure::write('Braintree.privateKey', $braintreeLivePrivateKey); // we put this in this way too so by default we can look here
 } else {
     Configure::write('Stripe.mode', 'Test');
     Configure::write('Stripe.client_id', $stripeTestClientId);
     Configure::write('Stripe.publishable_key', $stripeTestPublishableKey);
     Configure::write('Stripe.secret', $stripeTestSecret); // we put this in this way too so by default we can look here
+
+    Configure::write('Braintree.environment', 'sandbox');
+    Configure::write('Braintree.merchantId', $braintreeTestMerchantId);
+    Configure::write('Braintree.publicKey', $braintreeTestPublishableKey);
+    Configure::write('Braintree.privateKey', $braintreeTestPrivateKey); // we put this in this way too so by default we can look here
 }
 
 /* We best do some logging */
