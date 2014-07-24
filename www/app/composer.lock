@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5aea3a3c077e348ecf65b9bbe84a18c8",
+    "hash": "c685cab900b51af6b439ebf57f935892",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -751,6 +751,94 @@
             "time": "2013-09-27 17:39:06"
         },
         {
+            "name": "paypal/adaptivepayments-sdk-php",
+            "version": "dev-namespace-php5.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paypal/adaptivepayments-sdk-php.git",
+                "reference": "2b3ca64338f6f62b1741bea55f1f0c9d6f3f6964"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paypal/adaptivepayments-sdk-php/zipball/2b3ca64338f6f62b1741bea55f1f0c9d6f3f6964",
+                "reference": "2b3ca64338f6f62b1741bea55f1f0c9d6f3f6964",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "paypal/sdk-core-php": "2.4.*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PayPal\\Service": "lib/",
+                    "PayPal\\Types": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "PayPal",
+                    "homepage": "https://github.com/paypal/adaptivepayments-sdk-php/contributors"
+                }
+            ],
+            "description": "PayPal adaptivepayments SDK for PHP",
+            "homepage": "https://developer.paypal.com",
+            "keywords": [
+                "paypal",
+                "php",
+                "sdk"
+            ],
+            "time": "2014-05-22 17:11:29"
+        },
+        {
+            "name": "paypal/sdk-core-php",
+            "version": "v2.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paypal/sdk-core-php.git",
+                "reference": "226d3492f80847f09c99debb4d3220d5e744ddc8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paypal/sdk-core-php/zipball/226d3492f80847f09c99debb4d3220d5e744ddc8",
+                "reference": "226d3492f80847f09c99debb4d3220d5e744ddc8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PayPal": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "PayPal",
+                    "homepage": "https://github.com/paypal/sdk-core-php/contributors"
+                }
+            ],
+            "description": "PayPal Core SDK for PHP",
+            "homepage": "https://github.com/paypal/sdk-core-php",
+            "keywords": [
+                "paypal",
+                "php",
+                "sdk"
+            ],
+            "time": "2013-09-11 14:27:58"
+        },
+        {
             "name": "stripe/stripe-php",
             "version": "v1.11.0",
             "source": {
@@ -867,7 +955,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "opentok/opentok": 20,
-        "chronon/stripe": 20
+        "chronon/stripe": 20,
+        "paypal/adaptivepayments-sdk-php": 20
     },
     "platform": {
         "php": ">=5.4.0"

@@ -118,6 +118,13 @@ class Transaction extends AppModel {
             'rule' => 'validateLessonIdIfATransaction',
         ),
         'created', // we want to have this auto-populated as a date
+
+        'paypal_email_address' => array(
+            'rule' => 'validateEmailAddressForSell',
+            'message' => "Sorry, we need a valid email address here",
+            'requred' => true,
+        )
+
     );
 
     /**
@@ -249,6 +256,20 @@ class Transaction extends AppModel {
         return true;
     }
 
+    /**
+     * If we're doing a sell, folks have to specify a valid email address
+     * Otherwise, this rule can pass
+     *
+     * @param $check
+     * @return bool
+     */
+    public function validateEmailAddressForSell($check)
+    {
+        if($this->data['Transaction']['type'] == 'sell') {
+            return Validation::email($this->data['Transaction']['paypal_email_address']);
+        }
+        return true;
+    }
 
     /**
      * Used to return a live user total based on the transactions table totals
@@ -280,9 +301,7 @@ class Transaction extends AppModel {
         // enforce that this is a buy
         $this->data['Transaction']['type'] = 'buy';
 
-        // @TODO: add in pre-event notifications here
         return $this->addTransaction();
-        // @TODO: add in post-event notifications here
     }
 
     public function addSell()
@@ -293,9 +312,7 @@ class Transaction extends AppModel {
         // enforce that this is a sell
         $this->data['Transaction']['type'] = 'sell';
 
-        // @TODO: add in pre-event notifications here
         return $this->addTransaction();
-        // @TODO: add in post-event notifications here
     }
 
     public function addTransfer()
@@ -303,9 +320,7 @@ class Transaction extends AppModel {
         // enforce that this is a transfer
         $this->data['Transaction']['type'] = 'transfer';
 
-        // @TODO: add in pre-event notifications here
         return $this->addTransaction();
-        // @TODO: add in post-event notifications here
     }
 
 
@@ -462,7 +477,11 @@ class Transaction extends AppModel {
                     'customer' => $this->data['User'],
                 ));
             } else {
-                $event = new CakeEvent('Transaction.handle_sale', $this, array('nonce' => $this->data['Transaction']['nonce']));
+                $event = new CakeEvent('Transaction.handle_sale', $this, array(
+                    'email'     => $this->data['Transaction']['paypal_email_address'],
+                    // we need to send the absolute value, as this will be a negative otherwise
+                    'amount'    => abs($this->data['Transaction']['amount']),
+                ));
             }
             $this->getEventManager()->dispatch($event);
             if($event->isStopped()) {
