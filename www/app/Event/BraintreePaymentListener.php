@@ -26,12 +26,13 @@ class BraintreePaymentListener implements CakeEventListener {
      */
     public function handlePurchase(CakeEvent $event)
     {
+        $amount = $event->data['amount'];
         $nonce = $event->data['nonce'];
         $user = $event->data['customer'];
 
         $result = Braintree_Transaction::sale(array(
-                'amount' => '100.00',
-                'paymentMethodNonce' => $nonce,
+                'amount'                => $amount,
+                'paymentMethodNonce'    => $nonce,
                 'customer' => array(
                     'firstName'     => $user['name'], // argh, I'm going to be so glad when we can clean this up :-(
                     'lastName'      => $user['lname'],
