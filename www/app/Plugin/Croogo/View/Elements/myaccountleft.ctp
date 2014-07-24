@@ -44,6 +44,15 @@ if( $this->params['controller'] == 'credits' && $this->params['action'] == 'inde
 
 <div class="span3 LeftMenu-Block">
 	<ul>
+        <li>
+            <?php
+            echo $this->Html->link(
+                __('My Account'),	'/users/',
+                array('title'=>__('My Account') ,'class'=>$index  )
+            );
+            ?>
+        </li>
+        <li>
         <?php if ($this->Session->read('Auth.User.id') && $this->Session->read('Auth.User.role_id') == 2) : ?>
             <li>
                 <a href="<?php echo $this->webroot ?>user/<?php echo $this->Session->read('Auth.User.username'); ?>"
@@ -90,15 +99,6 @@ if( $this->params['controller'] == 'credits' && $this->params['action'] == 'inde
                 </span>
             </a>
         </li>
-    <li>
-			<?php
-				echo $this->Html->link(
-					__('My Account'),	'/users/',
-					array('title'=>__('My Account') ,'class'=>$index  )
-				);
- 			?>
-		</li>
-    <li>
 			<?php /*
 				echo $this->Html->link(
 					__('Account Settings'),	'/users/accountsetting',
