@@ -15,6 +15,7 @@ class CreditsController extends UsersAppController {
  * @access public
  */
 	public $components = array(
+        'Braintree',
 		'Search.Prg' => array(
 			'presetForm' => array(
 				'paramType' => 'querystring',
@@ -82,6 +83,13 @@ class CreditsController extends UsersAppController {
                     'user_id' => (int)$this->Auth->user('id'),
                 )
             ));
+
+        if(count($transactions) == 0) {
+            // generate our token to be used in communicating with Braintree
+            /** @var $braintreeComponent BraintreeComponent */
+            $this->set('token', $this->Braintree->generateToken());
+            $this->set('refill_needed', false);
+        }
 
         $this->set('balance', $this->User->getBalance($this->Auth->user('id')));
         $this->set('email', $this->Auth->user('email')); // our user's email address so they can send money to Paypal

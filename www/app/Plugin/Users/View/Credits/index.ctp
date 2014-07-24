@@ -45,7 +45,10 @@
                             </p>
                         </div>
                         <p>Looks like you don't have any pre-purchased Botangle credits.  We'll need you to add some before you can schedule a lesson.</p>
-                        <?php echo $this->element('transactions/buy'); ?>
+                        <?php echo $this->element('transactions/buy', array(
+                                'refill_needed' => $refill_needed,
+                                'token' => $token,
+                            )); ?>
                     </div>
                 </div>
                 <?php else: ?>

@@ -8,6 +8,7 @@
  */
 $this->Html->script('https://js.braintreegateway.com/v2/braintree.js', array('inline' => false)); ?>
 <?php echo $this->Form->create('Transaction',array(
+        'id' => 'TransactionCreateForm',
         'class'=>'form-horizontal',
         'url' => array(
             'plugin'        => 'users',
@@ -54,7 +55,7 @@ echo $this->Form->input(
 <div class="row-fluid Add-Payment-blocks">
     <div class="span2"></div>
     <div class="span3">
-        <button type="submit" class="btn btn-primary" style="display: none;">Buy Credits</button>
+        <button type="submit" class="btn btn-primary main-button" style="display: none;">Buy Credits</button>
         <p class="muted">Buy credits using PayPal</p>
         <p class="muted"><small>(1 Credit = 1 USD)</small></p>
     </div>
@@ -79,7 +80,7 @@ if(Configure::read('debug') == '2'): ?>
     var payPalWatcherId;
     function track_change() {
         if($("#TransactionCreateForm [name='payment_method_nonce']").val() != '') {
-            $('#TransactionCreateForm button.btn-primary').fadeIn();
+            $('#TransactionCreateForm button.main-button').fadeIn();
             clearInterval(payPalWatcherId);
         }
     }
