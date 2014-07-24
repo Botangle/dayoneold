@@ -94,11 +94,35 @@ if($env == "production") {
     Configure::write('Stripe.client_id', $stripeLiveClientId);
     Configure::write('Stripe.publishable_key', $stripeLivePublishableKey);
     Configure::write('Stripe.secret', $stripeLiveSecret); // we put this in this way too so by default we can look here
+
+    Configure::write('Braintree.environment', 'live');
+    Configure::write('Braintree.merchantId', $braintreeLiveMerchantId);
+    Configure::write('Braintree.publicKey', $braintreeLivePublishableKey);
+    Configure::write('Braintree.privateKey', $braintreeLivePrivateKey); // we put this in this way too so by default we can look here
+
+    Configure::write('Paypal.mode', 'live');
+    Configure::write('Paypal.senderEmail', $paypalLiveSenderEmail);
+    Configure::write('Paypal.username', $paypalLiveUsername);
+    Configure::write('Paypal.password', $paypalLivePassword);
+    Configure::write('Paypal.signature', $paypalLiveSignature);
+    Configure::write('Paypal.appId', $paypalLiveAppId);
 } else {
     Configure::write('Stripe.mode', 'Test');
     Configure::write('Stripe.client_id', $stripeTestClientId);
     Configure::write('Stripe.publishable_key', $stripeTestPublishableKey);
     Configure::write('Stripe.secret', $stripeTestSecret); // we put this in this way too so by default we can look here
+
+    Configure::write('Braintree.environment', 'sandbox');
+    Configure::write('Braintree.merchantId', $braintreeTestMerchantId);
+    Configure::write('Braintree.publicKey', $braintreeTestPublishableKey);
+    Configure::write('Braintree.privateKey', $braintreeTestPrivateKey); // we put this in this way too so by default we can look here
+
+    Configure::write('Paypal.mode', 'sandbox');
+    Configure::write('Paypal.senderEmail', $paypalTestSenderEmail);
+    Configure::write('Paypal.username', $paypalTestUsername);
+    Configure::write('Paypal.password', $paypalTestPassword);
+    Configure::write('Paypal.signature', $paypalTestSignature);
+    Configure::write('Paypal.appId', $paypalTestAppId);
 }
 
 /* We best do some logging */
