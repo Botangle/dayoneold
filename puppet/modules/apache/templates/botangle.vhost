@@ -1,4 +1,4 @@
-<VirtualHost *:80>
+<VirtualHost <%= @server_name %>:80>
 
     ServerName <%= @server_name %>
 
@@ -19,7 +19,7 @@
 
 </VirtualHost>
 
-<VirtualHost *:443>
+<VirtualHost <%= @server_name %>:443>
 
     ServerName <%= @server_name %>
 
