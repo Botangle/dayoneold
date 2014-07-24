@@ -105,6 +105,7 @@ if($env == "production") {
     Configure::write('Paypal.username', $paypalLiveUsername);
     Configure::write('Paypal.password', $paypalLivePassword);
     Configure::write('Paypal.signature', $paypalLiveSignature);
+    Configure::write('Paypal.appId', $paypalLiveAppId);
 } else {
     Configure::write('Stripe.mode', 'Test');
     Configure::write('Stripe.client_id', $stripeTestClientId);
@@ -121,6 +122,7 @@ if($env == "production") {
     Configure::write('Paypal.username', $paypalTestUsername);
     Configure::write('Paypal.password', $paypalTestPassword);
     Configure::write('Paypal.signature', $paypalTestSignature);
+    Configure::write('Paypal.appId', $paypalTestAppId);
 }
 
 /* We best do some logging */

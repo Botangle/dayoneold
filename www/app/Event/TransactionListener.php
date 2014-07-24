@@ -71,32 +71,25 @@ class TransactionListener implements CakeEventListener {
             'acct1.UserName'    => Configure::read('Paypal.username'),
             'acct1.Password'    => Configure::read('Paypal.password'),
             'acct1.Signature'   => Configure::read('Paypal.signature'),
+            "acct1.AppId"       => Configure::read('Paypal.appId'),
         );
+
+        $payRequest = new PayPal\Types\AP\PayRequest();
 
         $receiver = new PayPal\Types\AP\Receiver();
         $receiver->email    = $event->data['email'];
         $receiver->amount   = $event->data['amount'];
-
         $receiverList = new PayPal\Types\AP\ReceiverList(array(
             $receiver,
         ));
+        $payRequest->receiverList = $receiverList;
 
-        // this doesn't need to be a completely legit value, as it isn't needed for implicit payments
-        $cancelUrl = 'https://www.botangle.com';
-
-        // this doesn't need to be a completely legit value, as it isn't needed for implicit payments
-        $returnUrl = 'https://www.botangle.com';
-
-        $payRequest = new PayPal\Types\AP\PayRequest(
-            new PayPal\Types\Common\RequestEnvelope("en_US"),
-            'PAY',
-            $cancelUrl,
-            // specifying this in USD is fine
-            // https://developer.paypal.com/docs/classic/api/adaptive-payments/Pay_API_Operation/#id098QF000M7Q__id092NN06105Z
-            'USD',
-            $receiverList,
-            $returnUrl
-        );
+        $requestEnvelope = new PayPal\Types\Common\RequestEnvelope("en_US");
+        $payRequest->requestEnvelope = $requestEnvelope;
+        $payRequest->actionType = "PAY";
+        $payRequest->cancelUrl = 'https://www.botangle.com';
+        $payRequest->returnUrl = "https://www.botangle.com";
+        $payRequest->currencyCode = "USD";
 
         // now we specify senderEmail address
         // doing so turns this into an implicit payment, which doesn't need visible browser auth from the user
@@ -107,7 +100,7 @@ class TransactionListener implements CakeEventListener {
             $response = $service->Pay($payRequest);
 
             // if successful, update the transaction_key of our $event->subject() with the info we get back from Paypal
-            if(strtoupper($response->responseEnvelope->ack == 'SUCCESS')) {
+            if(strtoupper($response->responseEnvelope->ack) == 'SUCCESS') {
 
                 $success = false;
 
@@ -122,9 +115,9 @@ class TransactionListener implements CakeEventListener {
                 }
 
                 // if we have success, then let's record the transaction id and return
-                if($success && isset($response->paymentInfoList->paymentInfo)) {
+                if($success) {
                     $ourTransaction = $event->subject();
-                    $ourTransaction->data['Transaction']['transaction_key'] = $response->paymentInfoList->paymentInfo['transactionId'];
+                    $ourTransaction->data['Transaction']['transaction_key'] = $response->responseEnvelope->correlationId;
 
                     return;
                 } else {
