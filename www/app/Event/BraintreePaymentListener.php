@@ -27,17 +27,30 @@ class BraintreePaymentListener implements CakeEventListener {
     public function handlePurchase(CakeEvent $event)
     {
         $nonce = $event->data['nonce'];
+        $user = $event->data['customer'];
 
         $result = Braintree_Transaction::sale(array(
                 'amount' => '100.00',
                 'paymentMethodNonce' => $nonce,
+                'customer' => array(
+                    'firstName'     => $user['name'], // argh, I'm going to be so glad when we can clean this up :-(
+                    'lastName'      => $user['lname'],
+                    'email'         => $user['email'],
+                ),
             ));
 
         // or update the transaction_key of our $event->subject() with the info we get back from Braintree
         if($result->success) {
             $ourTransaction = $event->subject();
             $ourTransaction->data['Transaction']['transaction_key'] = $result->transaction->id;
-            return;
+
+            // now let's try to submit for settlement, as we've provided the good that we wanted to provide (our credits)
+            $result = Braintree_Transaction::submitForSettlement($result->transaction->id);
+            if($result->success) {
+                return;
+            } else {
+                // @TODO: we'll let this go through for now, but long-term, we'd like to setup an auto-retry to ensure that settlements go through
+            }
         } else {
             // otherwise, stop everything
             $event->stopPropagation();

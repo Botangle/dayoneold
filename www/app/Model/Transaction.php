@@ -459,6 +459,7 @@ class Transaction extends AppModel {
                 $event = new CakeEvent('Transaction.handle_purchase', $this, array(
                     'amount' => $this->data['Transaction']['amount'],
                     'nonce' => $this->data['Transaction']['nonce'],
+                    'customer' => $this->data['User'],
                 ));
             } else {
                 $event = new CakeEvent('Transaction.handle_sale', $this, array('nonce' => $this->data['Transaction']['nonce']));
@@ -466,7 +467,11 @@ class Transaction extends AppModel {
             $this->getEventManager()->dispatch($event);
             if($event->isStopped()) {
                 return false;
+            } else {
+                // make sure our user info isn't somehow saved to the DB.  We only use it to allow events to know info
+                unset($this->data['User']);
             }
+
         }
 
         return parent::beforeSave($options);

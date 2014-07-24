@@ -99,6 +99,10 @@ class TransactionsController extends PostLessonAddController {
             $userId = $this->Auth->user('id');
 
             $this->request->data['Transaction']['user_id'] = (int)$userId;
+
+            // this user data is cleaned from our request data prior to being saved to the DB
+            // we mainly want to make it available to our event system as needed
+            $this->request->data['User'] = $this->Auth->user();
             $this->Transaction->set($this->request->data);
 
             if($this->Transaction->validates()) {
