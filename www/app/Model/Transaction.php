@@ -118,6 +118,13 @@ class Transaction extends AppModel {
             'rule' => 'validateLessonIdIfATransaction',
         ),
         'created', // we want to have this auto-populated as a date
+
+        'paypal_email_address' => array(
+            'rule' => 'validateEmailAddressForSell',
+            'message' => "Sorry, we need a valid email address here",
+            'requred' => true,
+        )
+
     );
 
     /**
@@ -249,6 +256,20 @@ class Transaction extends AppModel {
         return true;
     }
 
+    /**
+     * If we're doing a sell, folks have to specify a valid email address
+     * Otherwise, this rule can pass
+     *
+     * @param $check
+     * @return bool
+     */
+    public function validateEmailAddressForSell($check)
+    {
+        if($this->data['Transaction']['type'] == 'sell') {
+            return Validation::email($this->data['Transaction']['paypal_email_address']);
+        }
+        return true;
+    }
 
     /**
      * Used to return a live user total based on the transactions table totals
