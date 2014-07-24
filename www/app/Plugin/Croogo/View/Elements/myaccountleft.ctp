@@ -50,6 +50,16 @@ if( $this->params['controller'] == 'credits' && $this->params['action'] == 'inde
                    title="Messages"><?php echo __('My Profile') ?></a>
             </li>
         <?php endif; ?>
+        <?php if ($this->Session->read('Auth.User.id') && $this->Session->read('Auth.User.role_id') == 2) : ?>
+            <li>
+                <?php
+                echo $this->Html->link(
+                    __('Billing'),	'/users/billing',
+                    array('title'=>__('Billing') ,'class'=>$accountbilling)
+                );
+                ?>
+            </li>
+        <?php endif; ?>
         <li>
 			<a href="<?php echo $this->webroot ?>users/messages" title="Messages" class="<?php echo $accountmessages ?>">
 				<?php echo __('Messages')?>
@@ -70,14 +80,6 @@ if( $this->params['controller'] == 'credits' && $this->params['action'] == 'inde
 				</span>
 			</a>
 		</li>
-    <li>
-			<?php
-				echo $this->Html->link(
-					__('Billing'),	'/users/billing',
-					array('title'=>__('Billing') ,'class'=>$accountbilling)
-				);
- 			?>
-	  </li>
         <li>
             <a href="/credits" title="Credits" class="<?php echo $credits; ?>">
                 <?php echo __('Credits'); ?>

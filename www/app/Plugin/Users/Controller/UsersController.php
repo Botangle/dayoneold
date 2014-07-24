@@ -674,14 +674,14 @@ class UsersController extends PostLessonAddController {
  * @param $semiSafeData
  */
 	private function handleRegistration($type, $semiSafeData) {
-		// check to see if we're adding a student or a tutor
+		// check to see if we're adding a student or a expert
 		if ($type == 'expert') {
-			// we're registering a tutor
+			// we're registering an expert
 			$result = $this->registerExpert($semiSafeData);
 
 			$redirectUrl = array('action' => 'billing');
 			$successMessage = __d(
-					'croogo', 'You have successfully registered an account. Please enter in your billing info to show up in the search results.'
+					'croogo', 'You have successfully registered an account. Please add in your hourly rate and you will be set.'
 			);
 		}
 		// we're registering a student
@@ -1173,7 +1173,7 @@ class UsersController extends PostLessonAddController {
 
 		// role_id == 4 is student. Finally figured that out.
 		// If the student is the one currently trying to pay the tutor:
-		if ($this->Session->read('Auth.User.role_id') == 4) {
+		if ($this->Session->read('Auth.User.role_id') == 4 && $isMobile) {
 			$roleid = 2;
 
 			$needs_payments_setup = true;
@@ -1187,11 +1187,7 @@ class UsersController extends PostLessonAddController {
 			$this->set('publishable_key', Configure::read('Stripe.publishable_key'));
 
 
-			if ($isMobile) {
-				return $this->render('Users/billing/student_mobile');
-			} else {
-				$this->render('Users/billing/student');
-			}
+            return $this->render('Users/billing/student_mobile');
 		} else {
 
 			$stripe_setup = false;
@@ -1469,8 +1465,6 @@ class UsersController extends PostLessonAddController {
  * Selects lesson information from the database, and begins the payment
  * workflow. Presumably, this would also manage the whiteboard content, once
  * the feature is in its fully-functional form.
- *
- * @package billing
  */
 	public function whiteboarddata($lessonid = null) {
 		$lesson = $this->Lesson->find('first', array('conditions' => array('id' => $lessonid)));
@@ -1922,8 +1916,6 @@ class UsersController extends PostLessonAddController {
  * Handles the confirmation of a lesson. A student proposes a lesson to the tutor,
  * then the tutor confirms it. This function then establishes the twiddla
  * meeting details.
- *
- * @package billing
  */
 	public function confirmedbytutor($lessonid = null) {
 		$data = $this->Lesson->find('first', array('conditions' => array('id' => (int) $lessonid)));
