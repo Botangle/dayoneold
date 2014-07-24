@@ -55,9 +55,9 @@ class TransactionsController extends PostLessonAddController {
 		parent::__construct($request, $response);
 		$this->getEventManager()->attach(new UserListener());
 
-        // we've got a Braintree payment listener event setup to handle payment transactions when they happen
-        App::uses('BraintreePaymentListener', 'Event');
-        $this->Transaction->getEventManager()->attach(new BraintreePaymentListener());
+        // we've got a Transaction payment listener event setup to handle payment transactions when they happen
+        App::uses('TransactionListener', 'Event');
+        $this->Transaction->getEventManager()->attach(new TransactionListener());
 	}
 
 	function beforeFilter() {
@@ -84,16 +84,19 @@ class TransactionsController extends PostLessonAddController {
 
     public function create()
     {
-        if ($this->request->is('post') && isset($_POST['payment_method_nonce'])) {
+        if ($this->request->is('post')) {
 
-            if(isset($_POST['payment_method_nonce'])) {
-                $this->request->data['Transaction']['nonce'] = $_POST['payment_method_nonce'];
-            }
+            // if we're doing a buy (using Braintree, then let's make sure we have a nonce setup
+            if($this->request->data['Transaction']['type'] == 'buy') {
+                if(isset($_POST['payment_method_nonce'])) {
+                    $this->request->data['Transaction']['nonce'] = $_POST['payment_method_nonce'];
+                }
 
-            // adjust our payment nonce if we're in debugging mode so we can
-            // make purchases without really triggering a Braintree purchase
-            if(Configure::read('debug') == 2) {
-                $this->request->data['Transaction']['nonce'] = Braintree_Test_Nonces::$paypalOneTimePayment;
+                // adjust our payment nonce if we're in debugging mode so we can
+                // make purchases without really triggering a Braintree purchase
+                if(Configure::read('debug') == 2) {
+                    $this->request->data['Transaction']['nonce'] = Braintree_Test_Nonces::$paypalOneTimePayment;
+                }
             }
 
             $userId = $this->Auth->user('id');
@@ -163,6 +166,11 @@ class TransactionsController extends PostLessonAddController {
                         );
                     }
                 } else {
+
+                    if(isset($this->Transaction->validationErrors['api'])) {
+                        $errorMsg = $this->Transaction->validationErrors['api'];
+                    }
+
                     $this->Session->setFlash(
                         $errorMsg,
                         'default',
@@ -175,6 +183,7 @@ class TransactionsController extends PostLessonAddController {
         }
 
         if(isset($this->request->data['Transaction']['type']) && $this->request->data['Transaction']['type'] == 'sell') {
+            $this->set('email', $this->Auth->user('email')); // our user's email address so they can send money to Paypal
             $this->render('sell');
         }
 

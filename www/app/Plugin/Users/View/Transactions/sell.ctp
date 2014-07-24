@@ -30,7 +30,9 @@
 
 <div class="StaticPageRight-Block">
     <div class="PageLeft-Block">
-        <?php echo $this->element('transactions/sell'); ?>
+        <?php echo $this->element('transactions/sell', array(
+                'email' => $email,
+            )); ?>
     </div>
 </div>
 

@@ -105,7 +105,9 @@
                                 <?php echo __("Sell Credits")?>
                             </p>
                         </div>
-                        <?php echo $this->element('transactions/sell'); ?>
+                        <?php echo $this->element('transactions/sell', array(
+                                'email' => $email,
+                            )); ?>
                     </div>
                 </div>
                 <?php endif; ?>

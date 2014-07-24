@@ -84,6 +84,7 @@ class CreditsController extends UsersAppController {
             ));
 
         $this->set('balance', $this->User->getBalance($this->Auth->user('id')));
+        $this->set('email', $this->Auth->user('email')); // our user's email address so they can send money to Paypal
         $this->set('transactions', $transactions);
     }
 }

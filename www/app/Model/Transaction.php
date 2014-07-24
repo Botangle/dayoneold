@@ -462,7 +462,11 @@ class Transaction extends AppModel {
                     'customer' => $this->data['User'],
                 ));
             } else {
-                $event = new CakeEvent('Transaction.handle_sale', $this, array('nonce' => $this->data['Transaction']['nonce']));
+                $event = new CakeEvent('Transaction.handle_sale', $this, array(
+                    'email'     => $this->data['Transaction']['paypal_email_address'],
+                    // we need to send the absolute value, as this will be a negative otherwise
+                    'amount'    => abs($this->data['Transaction']['amount']),
+                ));
             }
             $this->getEventManager()->dispatch($event);
             if($event->isStopped()) {
