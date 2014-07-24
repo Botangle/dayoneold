@@ -59,7 +59,11 @@ echo $this->Form->input(
         <p class="muted"><small>(1 Credit = 1 USD)</small></p>
     </div>
 </div>
+<?php
+// it's handy to be able to short-circuit things if we're in dev mode
+if(Configure::read('debug') == '2'): ?>
 <button type="submit" class="btn btn-primary">Buy Test</button>
+<?php endif; ?>
 <?php echo $this->Form->end();?>
 
 <script>
