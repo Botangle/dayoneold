@@ -34,19 +34,19 @@
 			);
 			?>
 
-			<!--        <li> <?php
+			<?php /*<li> <?php
 			echo $this->Html->link(
 					__('Faq'), '/faq'
 					, array('class' => $cls1, 'title' => __('faq'))
 			);
-			?></li>-->
-			<!--        <li>
+			?></li>
+			<li>
 			<?php
 			echo $this->Html->link(
 					__('Testimonials'), '/testimonials'
 					, array('class' => $cls7, 'title' => __('testimonials'))
 			);
-			?></li>-->
+			?></li>*/ ?>
 		<li>
 			<?php
 			echo $this->Html->link(
@@ -56,28 +56,28 @@
 			?>
 
 		</li>
-		<!--        <li> <?php
+		<?php /*<li> <?php
 		echo $this->Html->link(
 				__('Terms of use'), '/terms'
 				, array('class' => $cls2, 'title' => __('Terms of use'))
 		);
-		?></li>-->
-		<!--        <li>
+		?></li>
+		<li>
 		<?php
 		echo $this->Html->link(
 				__('Updates'), '/updates'
 				, array('class' => $cls5, 'title' => __('Updates'))
 		);
 		?>
-				</li> -->
-		<!--        <li>
+		</li>
+		<li>
 		<?php
 		echo $this->Html->link(
 				__('Media'), '/media'
 				, array('class' => $cls6, 'title' => __('Media'))
 		);
 		?>
-				</li>  -->
+		</li>*/ ?>
 		<li>
 			<?php
 			echo $this->Html->link(
