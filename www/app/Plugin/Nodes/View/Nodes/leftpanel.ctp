@@ -9,6 +9,7 @@
 			$cls5 = "";
 			$cls6 = "";
 			$cls7 = "";
+            $cls8 = '';
 			if (isset($this->params['named']['slug']) && $this->params['named']['slug'] == 'about') {
 				$cls = "active";
 			} else if (isset($this->params['named']['slug']) && $this->params['named']['slug'] == 'faq') {
@@ -17,6 +18,8 @@
 				$cls2 = "active";
 			} else if (isset($this->params['named']['slug']) && $this->params['named']['slug'] == 'contact') {
 				$cls3 = "active";
+            } else if (isset($this->params['named']['slug']) && $this->params['named']['slug'] == 'policies') {
+                $cls8 = "active";
 			} else if ($this->params->action == 'reportbug') {
 				$cls4 = "active";
 			} else if (isset($this->params['named']['slug']) && $this->params['named']['slug'] == 'updates') {
@@ -54,8 +57,15 @@
 					, array('class' => $cls3, 'title' => __('Contact Us'))
 			);
 			?>
-
 		</li>
+        <li>
+            <?php
+            echo $this->Html->link(
+                __('Policies'), '/policies'
+                , array('class' => $cls8, 'title' => __('Our Policies'))
+            );
+            ?>
+        </li>
 		<?php /*<li> <?php
 		echo $this->Html->link(
 				__('Terms of use'), '/terms'
