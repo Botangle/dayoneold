@@ -7,7 +7,7 @@
     ->label(__('Subject:'))
     ->required()
     }}
-    <span class="FontStyle11"><em><?php echo trans("Separate Subjects with commas") ?></em></span>
+    <p class="help-block field-helper-below">{{ trans("Separate Subjects with commas") }}</p>
 </div>
 
 @include('user.account.core-fields')
