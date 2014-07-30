@@ -193,27 +193,73 @@ class UserController extends BaseController {
     }
 
     /**
-     * This needs to be given public access
-     *
-     * @param integer $id
+     * @param $id
+     * @return \Illuminate\View\View
      */
     public function getView($id)
     {
-        //TODO: verfiy that users can't add a purely numeric username otherwise this is a bug
+        //TODO: verify that users can't add a purely numeric username otherwise this is a bug
         if (is_numeric($id)) {
-            $model = User::findOrFail($id);
+            $model = User::where('id', $id)->averageRating()->first();
+            if (!$model){
+                App::abort('404', 'You are not authorized to view this page.');
+            }
         }
         else {
-            $model = User::where('username' , '=', $id)->first();
+            $model = User::where('username' , '=', $id)->averageRating()->first();
         }
+
+        $activeUser = Auth::user();
+        if ($activeUser){
+            $isOwnTutorProfile = ($activeUser->id == $model->id && $model->isTutor());
+        } else {
+            $isOwnTutorProfile = false;
+        }
+
+        $userStatuses = $model->statuses;
+
+        $userLessonStats = Lesson::where('tutor', $model->id)
+            ->where('is_confirmed', true)
+            ->select(array(
+                DB::raw('COUNT(lessons.id) as lessons_count'),
+                DB::raw('SUM(duration) as total_duration')
+            ))
+            ->groupBy('tutor')
+            ->first();
 
         return View::make('user.view', array(
                 'model' => $model,
-                'userRating' => array(),
-                'subjects' => array(),
-                'userReviews' => array(),
-                'lessonClasscount' => array(),
-                'userStatuses' => array(),
+                'isOwnTutorProfile' => $isOwnTutorProfile,
+                'userStatuses'      => $userStatuses,
+                'userLessonStats'   => $userLessonStats,
+                'subjects' => explode(",", $model->subject),
             ));
+    }
+
+    /**
+     * Add a new status update for the current user
+     * @return mixed
+     */
+    public function postStatus()
+    {
+        $userId = Input::get('id');
+        if (Auth::user()->id != $userId){
+            App::abort('404', "You are not authorized to update another user's status.");
+        }
+        $user = User::findOrFail($userId);
+
+        $profileUrl = 'user/'.$user->username;
+
+        if (UserStatus::create(array(
+                'created_by_id' => $user->id,
+                'status_text'   => Input::get('status_text'),
+                'status'        => 1,
+            ))){
+            return Redirect::to($profileUrl)
+                ->with('flash_success', trans("You have updated your status."));
+        } else {
+            return Redirect::to($profileUrl)
+                ->with('flash_error', trans("There was a problem updating your status."));
+        }
     }
 }

@@ -4,12 +4,17 @@ class Lesson extends Eloquent {
 
     public function student()
     {
-        $this->belongsTo('User', 'student');
+        return $this->belongsTo('User', 'student');
+    }
+
+    public function tutor()
+    {
+        return $this->belongsTo('User', 'tutor');
     }
 
     public function payments()
     {
-        $this->hasMany('LessonPayment');
+        return $this->hasMany('LessonPayment');
     }
 
 }
