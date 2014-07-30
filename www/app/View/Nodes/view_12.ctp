@@ -83,7 +83,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
                <div class="PageLeft-Block">
                    <p class="FontStyle20">How payments works</p>
                    <p>We use Botangle credits to make payments easier.  Purchase Botangle credits using a Paypal account and then
-                   find an expert!  You can also sell your credits back at any time.</p>
+                   find an expert!  You can sell your credits only to Botangle at any time.</p>
                </div>
            </div>
        </div>
