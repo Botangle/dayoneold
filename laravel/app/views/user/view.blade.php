@@ -318,9 +318,13 @@
         jQuery('#myTab a[href="#home"]').tab('show');
     })
 </script>
+<script>
+    // Calendar requires jQuery to be accessible as $
+    var $ = jQuery.noConflict();
+</script>
 {{ Html::script('/js/calendar/bic_calendar.js', array('type' => "text/javascript")) }}
 <script>
-    jQuery(function($) {
+    $(function() {
 
         var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -361,7 +365,7 @@
             //set ajax call
             reqAjax: {
                 type: 'get',
-                url: '/users/calandareventsprofile/<?php echo $model->id ?>'
+                url: '/user/calendarEventsProfile/<?php echo $model->id ?>'
             }
         });
     });
