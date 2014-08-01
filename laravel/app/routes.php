@@ -104,6 +104,11 @@ Route::get('/user/{username}', array(
         'uses'      => 'UserController@getView',
     ));
 
+Route::get('/user/calendarEvents/{id}', array(
+        'as'        => 'user.calendar-events',
+        'uses'      => 'UserController@getCalendarEvents',
+    ));
+
 Route::group(array('before' => 'auth'), function(){
     Route::controller('user', 'UserController', array(
             'getBilling'      => 'user.billing',

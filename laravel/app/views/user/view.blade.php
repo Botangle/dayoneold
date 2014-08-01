@@ -320,7 +320,7 @@
 </script>
 <script>
     // Calendar requires jQuery to be accessible as $
-    var $ = jQuery.noConflict();
+    $ = jQuery.noConflict();
 </script>
 {{ Html::script('/js/calendar/bic_calendar.js', array('type' => "text/javascript")) }}
 <script>
@@ -365,7 +365,7 @@
             //set ajax call
             reqAjax: {
                 type: 'get',
-                url: '/user/calendarEventsProfile/<?php echo $model->id ?>'
+                url: '/user/calendarEvents/<?php echo $model->id ?>'
             }
         });
     });

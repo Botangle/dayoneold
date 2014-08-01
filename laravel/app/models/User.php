@@ -162,6 +162,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
                     DB::raw('COUNT(lessons.id) as lessons_count'),
                     DB::raw('SUM(duration) as total_duration')
                 ))
+            ->where('active', 1)
             ->groupBy('users.id');
     }
 
