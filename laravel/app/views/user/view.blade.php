@@ -207,9 +207,9 @@
                             <div class="tab-pane fade" id="profile">
                                 <div class="class-timeinfo">
                                     @if ($userLessonStats)
-                                    Total Classes: {{ $userLessonStats->lessons_count }} &nbsp; &nbsp;   | &nbsp; &nbsp;   Total Time of Classes: {{ $userLessonStats->total_duration }} hours
+                                    {{ trans('Total Classes (as mentor)') }}: {{ $userLessonStats->lessons_count }} &nbsp; &nbsp;   | &nbsp; &nbsp;   {{ trans('Total Mentoring Time') }}: {{ $userLessonStats->total_duration }} hours
                                     @else
-                                    Total Classes: 0 &nbsp; &nbsp;   | &nbsp; &nbsp;   Total Time of Classes: 0 hours
+                                    {{ trans('Total Classes (as mentor)') }}: 0 &nbsp; &nbsp;   | &nbsp; &nbsp;   {{ trans('Total Mentoring Time') }}: 0 hours
                                     @endif
                                 </div>
 
