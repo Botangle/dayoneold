@@ -101,6 +101,7 @@
                     </div>
                 </div>
 
+                <?php if($enableCreditSales): ?>
                 <div class="StaticPageRight-Block">
                     <div class="PageLeft-Block">
                         <div class="span12">
@@ -113,6 +114,7 @@
                             )); ?>
                     </div>
                 </div>
+                <?php endif; ?>
                 <?php endif; ?>
             </div>
         </div><!-- @end .row -->
