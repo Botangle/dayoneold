@@ -1160,3 +1160,9 @@ a.Social-Boxs-Links:hover {
     font-size: smaller;
     font-style: italic;
 }
+
+/* Get calendar event tooltips to respect line breaks */
+.calendar .tooltip-inner {
+    white-space:pre-wrap;
+    text-align: left;
+}

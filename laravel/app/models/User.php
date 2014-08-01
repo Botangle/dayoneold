@@ -86,12 +86,27 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     );
 
     /**
-     * Relationship for user reviews
+     * Relationship for user reviews (reviews of this user by other users)
      * @return mixed
      */
-    public function Reviews()
+    public function reviews()
     {
-        return $this->hasMany('Review', 'rate_to');
+        return $this->hasMany('Review', 'rate_to')->orderBy('add_date', 'desc');
+    }
+
+    public function rates()
+    {
+        return $this->hasMany('UserRate', 'userid');
+    }
+
+    public function statuses()
+    {
+        return $this->hasMany('UserStatus', 'created_by_id')->orderBy('created_at', 'desc');
+    }
+
+    public function lessons()
+    {
+        return $this->hasMany('Lesson', 'student');
     }
 
     /**
@@ -133,10 +148,22 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     {
         $query->leftJoin('reviews', 'reviews.rate_to', '=', 'users.id')
             ->select(array('users.*',
+                    DB::raw('COUNT(reviews.id) as review_count'),
                     DB::raw('AVG(rating) as ratings_average')
                 ))
-            ->groupBy('id')
+            ->groupBy('users.id')
             ->orderBy('ratings_average', 'DESC');
+    }
+
+    public function scopeLessonsSummary($query)
+    {
+        $query->leftJoin('lessons', 'lessons.tutor', '=', 'users.id')
+            ->select(array('users.*',
+                    DB::raw('COUNT(lessons.id) as lessons_count'),
+                    DB::raw('SUM(duration) as total_duration')
+                ))
+            ->where('active', 1)
+            ->groupBy('users.id');
     }
 
     /**
@@ -242,4 +269,31 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         }
         return false;
     }
+
+    /**
+     * There is currently a 1->many relationship in database but only 1 rate should be active.
+     * For now, this function will handle the selection of the appropriate rate so that any future
+     * schema changes should only require changes to be made here.
+     */
+    public function getActiveRateAttribute()
+    {
+        if (count($this->rates) > 0){
+            // select the first rate...(like old system)
+            $rate = $this->rates->first();
+            $formattedRate =  $rate->formattedRate;
+            return $formattedRate;
+        } else {
+            return UserRate::getCurrency() . 0;
+        }
+    }
+
+    /**
+     * Get the latest UserStatus object for the User
+     * @return mixed
+     */
+    public function getLatestStatusAttribute()
+    {
+        return $this->statuses->first();
+    }
+
 }

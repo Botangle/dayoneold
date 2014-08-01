@@ -122,7 +122,7 @@
 @show
 
 <script type='text/javascript'>
-    $().ready(function() {
+    jQuery(document).ready(function() {
 
         if( $('input:checkbox').length )  {
             $('input:checkbox').prettyCheckable({

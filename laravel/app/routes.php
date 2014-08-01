@@ -84,8 +84,6 @@ Route::controller('users', 'UsersController', array(
         'getTopChart'   => 'users.topcharts',
     ));
 
-
-
 /**
  * User controller (used for private handling of an individual user account and info)
  * Also used for viewing an individual's profile
@@ -95,6 +93,22 @@ Route::get('/user/forgot', array(
         'uses'      => 'UserController@getForgot',
     ));
 
+Route::get('/user/my-account', array(
+        'before' => 'auth',
+        'as'        => 'user.my-account',
+        'uses'      => 'UserController@getMyAccount',
+    ));
+
+Route::get('/user/{username}', array(
+        'as'        => 'user.profile',
+        'uses'      => 'UserController@getView',
+    ));
+
+Route::get('/user/calendarEvents/{id}', array(
+        'as'        => 'user.calendar-events',
+        'uses'      => 'UserController@getCalendarEvents',
+    ));
+
 Route::group(array('before' => 'auth'), function(){
     Route::controller('user', 'UserController', array(
             'getBilling'      => 'user.billing',
@@ -102,13 +116,9 @@ Route::group(array('before' => 'auth'), function(){
             'getMessages'     => 'user.messages',
             'getMyAccount'    => 'user.my-account',
             'postChangePassword'    => 'user.change-password',
+            'postStatus'      => 'user.status',
         ));
 });
-
-Route::get('/user/{username}', array(
-        'as'        => 'user.profile',
-        'uses'      => 'UserController@getView',
-    ));
 
 Route::get('/subject/search', array(
         'as'        => 'subject.search',

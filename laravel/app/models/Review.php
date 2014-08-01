@@ -4,7 +4,17 @@ class Review extends Eloquent {
 
     public function lesson()
     {
-        $this->belongsTo('Lesson');
+        return $this->belongsTo('Lesson');
+    }
+
+    public function reviewer()
+    {
+        return $this->belongsTo('User', 'rate_to');
+    }
+
+    public function reviewedUser()
+    {
+        return $this->belongsTo('User', 'rate_by');
     }
 
 }

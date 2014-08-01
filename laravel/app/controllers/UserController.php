@@ -2,6 +2,11 @@
 
 class UserController extends BaseController {
 
+    public function __construct(){
+//        $this->beforeFilter('csrf', array('only' => 'postCreate, postDelete, postEdit, postRegister, postRemind, postVerify, postSetPassword'));
+        $this->beforeFilter('ajax', array('only' => 'getCalendarEvents'));
+    }
+
     public function getBilling()
     {
     }
@@ -193,27 +198,136 @@ class UserController extends BaseController {
     }
 
     /**
-     * This needs to be given public access
-     *
-     * @param integer $id
+     * @param $id
+     * @return \Illuminate\View\View
      */
     public function getView($id)
     {
-        //TODO: verfiy that users can't add a purely numeric username otherwise this is a bug
+        //TODO: verify that users can't add a purely numeric username otherwise this is a bug
         if (is_numeric($id)) {
-            $model = User::findOrFail($id);
+            $model = User::where('id', $id)->averageRating()->first();
+            if (!$model){
+                App::abort('404', 'You are not authorized to view this page.');
+            }
         }
         else {
-            $model = User::where('username' , '=', $id)->first();
+            $model = User::where('username' , '=', $id)->averageRating()->first();
         }
+
+        $activeUser = Auth::user();
+        if ($activeUser){
+            $isOwnTutorProfile = ($activeUser->id == $model->id && $model->isTutor());
+        } else {
+            $isOwnTutorProfile = false;
+        }
+
+        $userStatuses = $model->statuses;
+
+        $userLessonStats = Lesson::where('tutor', $model->id)
+            ->where('is_confirmed', true)
+            ->select(array(
+                DB::raw('COUNT(lessons.id) as lessons_count'),
+                DB::raw('SUM(duration) as total_duration')
+            ))
+            ->groupBy('tutor')
+            ->first();
 
         return View::make('user.view', array(
                 'model' => $model,
-                'userRating' => array(),
-                'subjects' => array(),
-                'userReviews' => array(),
-                'lessonClasscount' => array(),
-                'userStatuses' => array(),
+                'isOwnTutorProfile' => $isOwnTutorProfile,
+                'userStatuses'      => $userStatuses,
+                'userLessonStats'   => $userLessonStats,
+                'subjects' => explode(",", $model->subject),
             ));
+    }
+
+    /**
+     * Add a new status update for the current user
+     * @return mixed
+     */
+    public function postStatus()
+    {
+        $userId = Input::get('id');
+        if (Auth::user()->id != $userId){
+            App::abort('404', "You are not authorized to update another user's status.");
+        }
+        $user = User::findOrFail($userId);
+
+        $profileUrl = 'user/'.$user->username;
+
+        if (UserStatus::create(array(
+                'created_by_id' => $user->id,
+                'status_text'   => Input::get('status_text'),
+                'status'        => 1,
+            ))){
+            return Redirect::to($profileUrl)
+                ->with('flash_success', trans("You have updated your status."));
+        } else {
+            return Redirect::to($profileUrl)
+                ->with('flash_error', trans("There was a problem updating your status."));
+        }
+    }
+
+    public function getCalendarEvents($id)
+    {
+        $user = User::findOrFail($id);
+        if (Auth::user()){
+            $loggedInUserId = Auth::user()->id;
+        } else {
+            // Guest users should not be able to see any calendar info
+            return Response::json(array());
+        }
+
+        $month = (int) Input::get('mes');
+        $year = (int) Input::get('ano');
+
+        $startDate = new DateTime();
+        $startDate->setDate($year, $month, 1);
+        $startDate->setTime(0, 0, 0);
+        $endDate = new DateTime();
+        $endDate->setDate($year, $month+1, 1);
+        $endDate->setTime(0, 0, 0);
+
+        // Get lessons where the passed in user is either the tutor or the student
+        $lessons = Lesson::active()
+            ->where(function($query) use($user){
+                $query->where('tutor', $user->id)
+                    ->orWhere('student', $user->id);
+            })
+            ->where('lesson_date', '>=', $startDate)
+            ->where('lesson_date', '<', $endDate)
+            ->orderBy('lesson_date', 'asc')
+            ->orderBy('lesson_time', 'asc')
+            ->get();
+
+        // Show all lessons (student and mentor) for $user but only show details where
+        //   the current logged in user is the corresponding mentor/student
+        // Build all lessons for a given day into a single calendar event
+        $daysArray = array();
+        $calendarDate = null;
+        foreach($lessons as $lesson){
+            if ($calendarDate != $lesson->lesson_date){
+                $calendarDate = $lesson->lesson_date;
+                $dayType = $lesson->getDayType($user->id, $loggedInUserId);
+                $lessonDate = DateTime::createFromFormat('Y-m-d', $lesson->lesson_date);
+                $day = array();
+                $day['date']    = $lessonDate->format('j/n/Y'); // d/m/Y doesn't work with bic_calendar
+                $day['title']   = $lesson->getCalendarEventTitle($loggedInUserId, $user->id);
+                $day['link']    = "#";
+                $day['color']   = Lesson::getCalendarEventColor($dayType);
+                $day['class']   = "miclasse";
+                $day['content'] = "";
+                $daysArray[] = $day;
+            } else {
+                $dayType = $lesson->getDayType($user->id, $loggedInUserId, $dayType);
+                // Add this lesson to the existing day
+                $day = $daysArray[count($daysArray)-1];
+                $day['title'] .= "\n\n" . $lesson->getCalendarEventTitle($loggedInUserId, $user->id);
+                $day['color'] = Lesson::getCalendarEventColor($dayType);
+                $daysArray[count($daysArray)-1] = $day;
+            }
+
+        }
+        return Response::json($daysArray);
     }
 }
