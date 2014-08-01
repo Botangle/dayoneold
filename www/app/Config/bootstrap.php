@@ -95,7 +95,7 @@ if($env == "production") {
     Configure::write('Stripe.publishable_key', $stripeLivePublishableKey);
     Configure::write('Stripe.secret', $stripeLiveSecret); // we put this in this way too so by default we can look here
 
-    Configure::write('Braintree.environment', 'live');
+    Configure::write('Braintree.environment', 'production');
     Configure::write('Braintree.merchantId', $braintreeLiveMerchantId);
     Configure::write('Braintree.publicKey', $braintreeLivePublishableKey);
     Configure::write('Braintree.privateKey', $braintreeLivePrivateKey); // we put this in this way too so by default we can look here
