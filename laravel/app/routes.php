@@ -99,6 +99,12 @@ Route::get('/user/my-account', array(
         'uses'      => 'UserController@getMyAccount',
     ));
 
+Route::get('/user/search', array(
+        'before' => 'auth',
+        'as'        => 'user.search',
+        'uses'      => 'UserController@search',
+    ));
+
 Route::get('/user/{username}', array(
         'as'        => 'user.profile',
         'uses'      => 'UserController@getView',
@@ -114,7 +120,6 @@ Route::group(array('before' => 'auth'), function(){
             'getBilling'      => 'user.billing',
             'getLessons'      => 'user.lessons',
             'getMessages'     => 'user.messages',
-            'getMyAccount'    => 'user.my-account',
             'postChangePassword'    => 'user.change-password',
             'postStatus'      => 'user.status',
         ));
@@ -124,3 +129,19 @@ Route::get('/subject/search', array(
         'as'        => 'subject.search',
         'uses'      => 'SubjectController@search',
     ));
+
+
+/**
+ * Lessons controller
+ */
+Route::get('/lesson/create/{expertId}', array(
+        'as'        => 'lesson.create-with-expert',
+        'uses'      => 'LessonController@createWithExpert',
+    ));
+
+Route::post('/lesson/create', array(
+        'as'        => 'lesson.create',
+        'uses'      => 'LessonController@postCreate',
+    ));
+
+Route::controller('lesson', 'LessonController');

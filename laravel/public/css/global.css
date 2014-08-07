@@ -757,8 +757,15 @@ input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-fa
 	.search-result-box{  margin:0px; margin-bottom:80px !important; }
 }
 
-#flashMessage.success { background:#6C3; padding:10px; color:#FFF; text-align:center; margin-top:10px; border-radius:20px;}
-#flashMessage.error {background:#F30; padding:10px; color:#FFF !important; text-align:center; margin-top:10px; border-radius:20px; }
+#flashMessage.success,
+.alert-success {
+    background:#6C3; padding:10px; color:#FFF; text-align:center; margin-top:10px; border-radius:20px;
+}
+
+#flashMessage.error,
+.alert-error {
+    background:#F30; padding:10px; color:#FFF !important; text-align:center; margin-top:10px; border-radius:20px;
+}
 
 #booklesson { font-size:18px; padding:5px 10px; border:1px solid #fff;}
 .controls .radio {
@@ -1165,4 +1172,43 @@ a.Social-Boxs-Links:hover {
 .calendar .tooltip-inner {
     white-space:pre-wrap;
     text-align: left;
+}
+
+/**
+ * Modal - what was previously implemented as inline styles (yuck) and jQuery
+ * moved here during Laravel rewrite
+ * Plus fixing a few other glitches.
+ */
+.modal {
+    left:40%;
+    width:auto;
+    right:20%;
+    height:auto;
+    overflow:hidden;
+    top:25%;
+    display: block;
+    position: absolute;
+}
+.modal-open {
+    overflow: visible;
+}
+
+.modal .span9 {
+    width: 825px;
+}
+
+.modal .PageLeft-Block {
+    border-top-width: 0px;
+    box-shadow: none;
+}
+
+.former-radios label.radio {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.modal .alert-error {
+    display: none;
+    text-align: left;
+    margin-right: 100px;
 }
