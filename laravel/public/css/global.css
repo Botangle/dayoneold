@@ -1212,3 +1212,8 @@ a.Social-Boxs-Links:hover {
     text-align: left;
     margin-right: 100px;
 }
+
+.ui-autocomplete {
+    /* Needs to be greater than the modal, which is currently 1050 */
+    z-index: 9999!important;
+}

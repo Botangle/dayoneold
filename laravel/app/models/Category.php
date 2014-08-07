@@ -44,4 +44,20 @@ class Category extends Eloquent {
         return User::where('subject', 'LIKE', '%'. $this->name .'%')->count();
     }
 
+    /**
+     * Returns a list of categories (e.g. for AutoComplete use)
+     * @return array
+     */
+    public static function getList()
+    {
+        $categories = Category::active()->where('parent_id', null)->orderBy('name')->get(array('id', 'name'));
+
+        $result = array();
+
+        foreach ($categories as $item) {
+            array_push($result, array("id" => $item->id, "label" => $item->name, "value" => strip_tags($item->name)));
+        }
+        return $result;
+    }
+
 }

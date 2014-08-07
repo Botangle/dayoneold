@@ -74,7 +74,7 @@
             {{-- subject - autocomplete required --}}
             {{ Former::text('subject')
                 ->placeholder(trans('Subject'))
-                ->addClass('textbox ui-autocomplete-input')
+                ->addClass('textbox')
                 ->label(__('Subject:'))
                 ->id('LessonSubject')
                 ->required()
@@ -142,5 +142,13 @@
         minView: 0,
         maxView: 1,
         forceParse: 0
+    });
+</script>
+<script>
+    jQuery(function() {
+        var availableCategories = {{ json_encode(Category::getList()) }};
+        $( "#LessonSubject" ).autocomplete({
+            source: availableCategories
+        });
     });
 </script>
