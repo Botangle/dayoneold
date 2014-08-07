@@ -96,7 +96,7 @@ return $( "<li>" )
 	</script>
 
 
-<header id="Bannerblock">
+<header id="Bannerblock" class="home-banner">
   <div class="container text-center">
     <h1>What do you need help with?</h1>
     <div class="Searchblock row-fluid">
