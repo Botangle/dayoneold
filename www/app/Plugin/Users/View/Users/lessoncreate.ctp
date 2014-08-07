@@ -40,11 +40,9 @@ if(isset($user)){
 </style>
 
    <div class="span9">
-      <h2 class="page-title"><?php echo __("Add New Lesson")?></h2>
+      <h2 class="page-title"><?php echo __("Propose Lesson")?></h2>
       <div class="StaticPageRight-Block">
       <div class="PageLeft-Block">
-        <p class="FontStyle20 color1"><?php echo __("Propose Lesson Meeting")?></p>
-        
          <?php echo $this->Form->create('Lesson',array('class'=>'form-horizontal','url' => array('controller' => 'users', 'action' => 'lessons_add')));?>
           <?php echo $this->Form->hidden('student_view', array('value' => $studentView)); ?>
       
