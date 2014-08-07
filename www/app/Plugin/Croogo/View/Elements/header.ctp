@@ -96,14 +96,14 @@ return $( "<li>" )
 	</script>
 
 
-<header id="Bannerblock">
+<header id="Bannerblock" class="home-banner">
   <div class="container text-center">
     <h1>What do you need help with?</h1>
     <div class="Searchblock row-fluid">
       
 	  
 	  <form method="post" action="<?php echo $this->webroot?>user/search" id="searchuser" class="form-search">
-        <div class="Search-main1">
+        <div class="Search-main1" id="home-search">
 		<input name="searchvalue" id="searchvalue" type="text" placeholder="Example: Chemistry, Maths etc" />
 		  
         </div>

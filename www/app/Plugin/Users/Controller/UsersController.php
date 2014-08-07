@@ -35,6 +35,12 @@ class UsersController extends PostLessonAddController {
 			'className' => 'StripeConnect',
 		),
 		'CsvView.CsvView',
+        'Walkthrough' => array(
+            'viewFiles' => array(
+                'search',
+                'view',
+            ),
+        )
 	);
 
 /**

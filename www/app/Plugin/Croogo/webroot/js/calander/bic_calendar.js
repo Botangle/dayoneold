@@ -179,7 +179,7 @@ $.fn.bic_calendar = function(options) {
                 monthTextLayer.append(previousMonthButton);
                 monthTextLayer.append(monthControlTextLayer);
                 monthTextLayer.append(nextMonthButton);
-                monthControlTextLayer.append(textMonthCurrentLayer).append('<div><a href="#" id="booklesson" data-toggle="model" style="  color: #fff;    text-decoration: none;" onclick="callPopup()">Book a Class</a></div>');
+                monthControlTextLayer.append(textMonthCurrentLayer).append('<div><a href="#" id="booklesson" data-toggle="model" style="  color: #fff;    text-decoration: none;" onclick="callPopup()">Book a Lesson</a></div>');
                 headerLayer.append(monthTextLayer);
             }
 

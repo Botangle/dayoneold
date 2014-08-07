@@ -4,9 +4,10 @@
 			<div class="span4 fotter-left"> &copy; <?php echo date('Y'); ?>. All right reserved. botangle.com </div>
 			<div class="span5 fotter-right pull-right">
 				<ul class="nav nav-pills pull-right">
-					<!--          <li><a href="#" title="Blog">Blog</a></li>
-							  <li><a href="#" title="Sitemap">Sitemap</a></li>-->
-<!--					<li>
+                    <?php /*
+					<li><a href="#" title="Blog">Blog</a></li>
+					<li><a href="#" title="Sitemap">Sitemap</a></li>
+                    <li>
 						<?php
 						echo $this->Html->link(
 								__('Terms of use'), '/terms'
@@ -14,14 +15,15 @@
 						);
 						?>
 					</li>
+ */?>
 					<li>
 						<?php
 						echo $this->Html->link(
-								__('Privacy Policy'), '/privacy'
-								, array('class' => ' active', 'title' => __('Privacy Policy'))
+								__('Privacy Policy / Refunds'), '/policies'
+								, array('class' => ' active', 'title' => __('Privacy Policy / Refunds'))
 						);
 						?>
-					</li>-->
+					</li>
 				</ul>
 			</div>
 		</div>

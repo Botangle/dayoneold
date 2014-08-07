@@ -55,8 +55,7 @@ echo $this->Html->scriptBlock(
 ?>
 <?php
 echo $this->Layout->js();
-echo $this->Html->script(array('/croogo/js/autocomplete/jquery-1.9.1',
-	'/croogo/js/autocomplete/jquery.ui.core', '/croogo/js/autocomplete/jquery.ui.widget', '/croogo/js/autocomplete/jquery.ui.position', '/croogo/js/autocomplete/jquery.ui.menu', '/croogo/js/autocomplete/jquery.ui.autocomplete',
+echo $this->Html->script(array('/croogo/js/autocomplete/jquery.ui.core', '/croogo/js/autocomplete/jquery.ui.widget', '/croogo/js/autocomplete/jquery.ui.position', '/croogo/js/autocomplete/jquery.ui.menu', '/croogo/js/autocomplete/jquery.ui.autocomplete',
 ));
 
 echo $this->Html->css(array(
@@ -117,7 +116,5 @@ echo $this->Html->css(array(
 
 </script>
 
-<script src="<?php echo $this->webroot ?>Croogo/js/jquery-1.js"></script> 
-<script src="<?php echo $this->webroot ?>Croogo/js/jquery/bootstrap.js"></script>
-<script src="<?php echo $this->webroot ?>Croogo/js/autocomplete/jquery.min.js"></script>   
+<script src="<?php echo $this->webroot ?>Croogo/js/autocomplete/jquery.min.js"></script>
 <script src="<?php echo $this->webroot ?>Croogo/js/autocomplete/bootstrap.min.js"></script>
