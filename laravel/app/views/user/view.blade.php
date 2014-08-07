@@ -263,56 +263,29 @@
 	</div>
 	<!-- @end .container -->
 </div>
-
-
-<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="left:40%; width:auto; right:20%; height:320px; overflow:hidden; top:25%">
-	<?php
-        $studentView = true;
-    // TODO: fix this lesson create modal
-//        include('lessoncreate.ctp');
-    ?>
+@if (Auth::check())
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-inner-wrapper">
+        @if (Auth::user()->id == $model->id))
+            @include('lessons.addNewModalContent', array(
+            'expert'    => $model,
+            'student'   => null,
+            ))
+        @else
+            @include('lessons.addNewModalContent', array(
+                'expert'    => $model,
+                'student'   => Auth::user(),
+            ))
+        @endif
+    </div>
 </div>
+@endif
 @overwrite
 
 @section('jsFiles')
 @parent
 <script type="text/javascript" src="/js/bootstrap-rating-input.min.js"></script>
 
-<script type="text/javascript">
-    //	$(document).ready(function() {
-    //		var text_max = 300;
-    //		var charre = text_max - jQuery('#UsersStatusText').val().length;
-    //		$('#textarea_feedback').html(charre + ' characters remaining');
-    //
-    //		$('#UsersStatusText').keyup(function() {
-    //			var text_length = $('#UsersStatusText').val().length;
-    //			var text_remaining = text_max - text_length;
-    //
-    //			$('#textarea_feedback').html(text_remaining + ' characters remaining');
-    //		});
-    //	});
-    function callPopup() {
-
-        var currentclass = jQuery(this).hasClass('reviews')
-        var url = Croogo.basePath + 'users/createlessons/ajax/{{ $model->id }}';
-        jQuery('body').append('<div class="modal-backdrop in"></div>')
-        jQuery("#myModal").css({'display': 'block', 'height': 'auto', 'top': '25%', 'position': 'absolute'});
-
-        jQuery('#myModal').css('height', jQuery('.StaticPageRight-Block').outerHeight() + 120)
-        jQuery('.PageLeft-Block').css({'border-top': 0, 'box-shadow': 'none'}).parent('div.span9').css({width: 825 + 'px'})
-        jQuery('.ui-autocomplete').css({'z-index': '999999'})
-
-        jQuery('button[type="reset"]').click(function() {
-            jQuery(".modal-backdrop").remove();
-            jQuery("#myModal").css('display', 'none');
-        })
-
-    }
-    function removebackground() {
-        jQuery(".modal-backdrop").remove();
-        jQuery("#myModal").html('').css('display', 'none');
-    }
-</script>
 <script>
     jQuery(function() {
         jQuery('#myTab a[href="#home"]').tab('show');
@@ -368,7 +341,57 @@
                 url: '/user/calendarEvents/<?php echo $model->id ?>'
             }
         });
+
     });
 </script>
+@stop
 
+@section('jqueryReady')
+@parent
+var $modalOpened = false;
+$('#booklesson').click(function(){
+    @if (Auth::check())
+    if ($modalOpened){
+        $('#myModal').modal('show');
+    } else {
+        $('#myModal').modal('show').css('height', jQuery('.StaticPageRight-Block').outerHeight() + 120);
+        $modalOpened = true;
+    }
+    @else
+    window.location.assign('/login');
+    @endif
+});
+
+$('form[data-async]').on('submit', function(event) {
+    var $form = $(this);
+
+    $.ajax({
+        type: $form.attr('method'),
+        url: $form.attr('action'),
+        data: $form.serialize(),
+
+        success: function(data, status) {
+            if (data.result === 'failed'){
+                // Set a flash message with the errors
+                var flashError = "<p>" + data.errorMessage + "</p><div id='modal-errors'><ul>";
+                $.each(data.errors, function(i,v){
+                    flashError += '<li>'+ v +'</li>';
+                });
+                flashError += '</ul></div>';
+                $('#modal-flash-wrapper').empty().append(flashError).show();
+                $('#myModal').css('height', $('#myModal').height() + $('#modal-flash-wrapper').height());
+            } else {
+                // Refresh the calendar (by moving next and then back)
+                $('.button-month-next').click();
+                $('.button-month-previous').click();
+                // Clear the form and the form's flash div
+                $("#addNewLesson").trigger('reset');
+                $('#modal-flash-wrapper').empty().hide();
+                // Hide the modal
+                $('#myModal').modal('hide');
+            }
+        }
+    });
+    event.preventDefault();
+});
 @stop

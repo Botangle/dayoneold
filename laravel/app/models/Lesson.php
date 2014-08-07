@@ -1,6 +1,6 @@
 <?php
 
-class Lesson extends Eloquent {
+class Lesson extends MagniloquentContextsPlus {
 
     const ROLE_STUDENT = 'student';
     const ROLE_TUTOR = 'tutor';
@@ -9,6 +9,73 @@ class Lesson extends Eloquent {
     const EVENT_COLOR_STUDENT = '#FED2A1';
     const EVENT_COLOR_TUTOR = '#CF6F07';
     const EVENT_COLOR_MIXED = '#F38918';
+
+    const REPEAT_NONE   = 0;
+    const REPEAT_DAILY  = 1;
+    const REPEAT_WEEKLY = 2;
+
+    /**
+     * Adjusting our Laravel created / updated column names to match
+     * what we had in Botangle
+     *
+     * @TODO: take this out long-term to keep things more consistent between this and normal Laravel apps
+     * Note: this table doesn't have an UPDATED_AT, so a mutator is in place lower down to prevent that
+     * causing problems.
+     */
+    const CREATED_AT = 'add_date';
+
+
+    /**
+     * What POST values we'll even take with massive assignment
+     * @var array
+     */
+    protected $fillable = array(
+        'tutor',
+        'student',
+        'lesson_date',
+        'lesson_time',
+        'duration',
+        'subject',
+        'repet',
+        'notes',
+        'active',
+        'is_confirmed',
+    );
+
+    /**
+     * Former and Form classes will use these niceNames instead of deriving them from the db column names
+     * where not specific label is defined on a form, etc.
+     * @var array
+     */
+    protected $niceNames = array(
+    );
+
+    /**
+     * Validation rules
+     */
+    public static $rules = array(
+        "save" => array(
+            'tutor'                     => array('required', 'exists:users,id'),
+            'student'                   => array('required', 'exists:users,id'),
+            'lesson_date'               => array('required', 'date_format:Y-m-d'),
+            'lesson_time'               => array('required', 'date_format:H:i'),
+            'duration'                  => array('integer', 'min:30'),
+            'subject'                   => array('required'),
+            'repet'                     => array('in:0,1,2'), // Same as CONSTs beginnging REPEAT_
+        ),
+        // additional validation rules for the following contexts
+        'update'    => array(),
+        'create'    => array(),
+    );
+
+    /**
+     * Lesson doesn't have an updated_at column but is does have a created_at column (add_date)
+     * @param $value
+     */
+    public function setUpdatedAtAttribute($value)
+    {
+        // Do nothing.
+    }
 
     public function studentUser()
     {
@@ -52,7 +119,6 @@ class Lesson extends Eloquent {
                 $title .= "\n   ". Lang::get('Student: '). e($this->studentUser->username);
             }
             $title .= "\n   ". trans('When: '). $lessonTime;
-            return $title;
 
         } elseif ($this->tutorUser->id == $loggedInUserId){
             $title = e($this->subject);
@@ -62,11 +128,14 @@ class Lesson extends Eloquent {
                 $title .= "\n   ". Lang::get('Tutor: '). e($this->tutorUser->username);
             }
             $title .= "\n   ". trans('When: '). $lessonTime;
-            return $title;
 
         } else {
-            return "Lesson at {$lessonTime}";
+            $title = "Lesson at {$lessonTime}";
         }
+        if (!$this->is_confirmed){
+            $title .= ' ('. trans ('unconfirmed') . ')';
+        }
+        return $title;
     }
 
     /**
@@ -129,5 +198,120 @@ class Lesson extends Eloquent {
         }
     }
 
+    public static function getDurationOptions()
+    {
+        $options = array();
+        for($i = 1; $i < 25; $i++){
+            if ($i == 1){
+                $text = '30 ' . trans('minutes');
+            } elseif ($i == 2){
+                $text = '1 ' . trans('hour');
+            } else {
+                $text = ($i/2) .' ' . trans('hours');
+            }
+            $options[$i*30] = $text;
+        }
+        return $options;
+    }
+
+    public static function getRepetitionOptions()
+    {
+        return array(
+            self::REPEAT_NONE       => trans('Single lesson'),
+            self::REPEAT_DAILY      => trans('Daily'),
+            self::REPEAT_WEEKLY     => trans('Weekly'),
+        );
+        /**
+         * According to https://github.com/Anahkiasen/former/wiki/Features#checkboxes-and-radios
+         * this ought to work. It doesn't though - perhaps it will in a later version.
+         *
+        return array(
+            'label' => array(
+                'name'      => trans('Single lesson'),
+                'value'     => self::REPEAT_NONE,
+            ),
+            'label' => array(
+                'name'      => trans('Daily'),
+                'value'     => self::REPEAT_DAILY,
+            ),
+            'label' => array(
+                'name'      => trans('Weekly'),
+                'value'     => self::REPEAT_WEEKLY,
+            ),
+        );
+        */
+    }
+
+    /**
+     * Update the lesson status attributes according to the changes made since the last version of the lesson
+     * @param bool $isNew
+     * @return bool
+     */
+    public function manageChangesThenSave($isNew = false)
+    {
+        if ($isNew){
+            $this->updateStatusesAfterChanges();
+            return $this->save();
+        } else {
+            $changesArray = array();
+            foreach ($this->getDirty() as $field => $newData)
+            {
+                $oldData = $this->getOriginal($field);
+                if ($oldData != $newData)
+                {
+                    $changesArray[$field] = array(
+                        'from'  => $oldData,
+                        'to'    => $newData,
+                    );
+                }
+            }
+            if (count($changesArray) > 0){
+                $history = json_decode($this->history);
+                if (empty($history)){
+                    $history = array();
+                }
+                $history[] = $changesArray;
+                $this->history = json_encode($history);
+                $this->updateStatusesAfterChanges();
+                return $this->save();
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Updates the lesson statuses to reflect that the current logged in user has made changes to the lesson
+     * that need to be reviewed and confirmed by the other user related to the lesson.
+     * Note: this now handles the circumstance where a 3rd party could amend the lesson requiring both the tutor
+     * and the student to confirm the changes. Not sure it'll ever be needed but it was simple to add.
+     */
+    public function updateStatusesAfterChanges()
+    {
+        $loggedInUserId = Auth::user()->id;
+        if ($loggedInUserId == $this->student) {
+            // the tutor hasn't confirmed this change yet, but the student has
+            $this->readlessontutor = 0;
+            $this->readlesson = 1;
+
+            // the student made the last change and the tutor didn't
+            $this->laststatus_student = 1;
+            $this->laststatus_tutor = 0;
+
+        } else if ($loggedInUserId == $this->tutor) {
+            // the student hasn't confirmed this change yet, but the tutor has
+            $this->readlesson = 0;
+            $this->readlessontutor = 1;
+
+            // the tutor made the last change and the student didn't
+            $this->laststatus_tutor = 1;
+            $this->laststatus_student = 0;
+        } else {
+            $this->readlesson = 0;
+            $this->readlessontutor = 0;
+            $this->laststatus_tutor = 0;
+            $this->laststatus_student = 0;
+        }
+
+    }
 
 }

@@ -330,4 +330,9 @@ class UserController extends BaseController {
         }
         return Response::json($daysArray);
     }
+
+    public function search()
+    {
+
+    }
 }

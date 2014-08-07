@@ -13,85 +13,85 @@
 {{HTML::style('css/jqueryui/demos.css')}}
 
 <script>
-	$(function() {
-		$.getJSON("/subject/search", function(response) {
-			data = response;
+    $(function() {
+        $.getJSON("/subject/search", function(response) {
+            data = response;
 
-			$("#searchvalue").autocomplete({
-				minLength: 0,
-				source: data,
-				focus: function(event, ui) {
-					$("#searchvalue").val(ui.item.label);
-					return false;
-				},
-				select: function(event, ui) {
-					console.log(ui);
-					$("#searchvalue").val(ui.item.label);
-					return false;
-				}
-			})
-					.data("ui-autocomplete")._renderItem = function(ul, item) {
-						return $("<li>")
-						.append("<a>" + item.label + "</a>")
-						.appendTo(ul);
-			};
-		});
-	});
+            $("#searchvalue, #LessonSubject").autocomplete({
+                minLength: 0,
+                source: data,
+                focus: function(event, ui) {
+                    $("#searchvalue").val(ui.item.label);
+                    return false;
+                },
+                select: function(event, ui) {
+                    console.log(ui);
+                    $("#searchvalue").val(ui.item.label);
+                    return false;
+                }
+            })
+                .data("ui-autocomplete")._renderItem = function(ul, item) {
+                return $("<li>")
+                    .append("<a>" + item.label + "</a>")
+                    .appendTo(ul);
+            };
+        });
+    });
 
-	jQuery(function() {
+    jQuery(function() {
 
-		function split(val) {
-			return val.split(/,\s*/);
-		}
-		function extractLast(term) {
-			return split(term).pop();
-		}
-		var typeid = "";
-		jQuery("#searchvalue2")
-				// don't navigate away from the field on tab when selecting an item
-				.bind("keydown", function(event) {
-					typeid = this.id;
-					if (event.keyCode === jQuery.ui.keyCode.TAB &&
-							$(this).data("ui-autocomplete").menu.active) {
-						event.preventDefault();
-					}
-				})
-				.autocomplete({
-					source: function(request, response) {
+        function split(val) {
+            return val.split(/,\s*/);
+        }
+        function extractLast(term) {
+            return split(term).pop();
+        }
+        var typeid = "";
+        jQuery("#searchvalue2")
+            // don't navigate away from the field on tab when selecting an item
+            .bind("keydown", function(event) {
+                typeid = this.id;
+                if (event.keyCode === jQuery.ui.keyCode.TAB &&
+                    $(this).data("ui-autocomplete").menu.active) {
+                    event.preventDefault();
+                }
+            })
+            .autocomplete({
+                source: function(request, response) {
 
-						var url = "/subject/search";
+                    var url = "/subject/search";
 
-						$.getJSON(url, {
-							term: extractLast(request.term)
-						}, response);
-					},
-					search: function() {
-						// custom minLength
-						var term = extractLast(this.value);
-						if (term.length < 2) {
-							return false;
-						}
-					},
-					focus: function() {
-						// prevent value inserted on focus
-						return false;
-					},
-					select: function(event, ui) {
-						var terms = split(this.value);
-						if (typeid == 'LessonTutor') {
-							jQuery("#" + typeid + "Value").val(ui.item.id);
-						}
-						// remove the current input
-						terms.pop();
-						// add the selected item
-						terms.push(ui.item.value);
-						// add placeholder to get the comma-and-space at the end
-						terms.push("");
-						this.value = terms.join(" ");
-						return false;
-					}
-				});
-	});
+                    $.getJSON(url, {
+                        term: extractLast(request.term)
+                    }, response);
+                },
+                search: function() {
+                    // custom minLength
+                    var term = extractLast(this.value);
+                    if (term.length < 2) {
+                        return false;
+                    }
+                },
+                focus: function() {
+                    // prevent value inserted on focus
+                    return false;
+                },
+                select: function(event, ui) {
+                    var terms = split(this.value);
+                    if (typeid == 'LessonTutor') {
+                        jQuery("#" + typeid + "Value").val(ui.item.id);
+                    }
+                    // remove the current input
+                    terms.pop();
+                    // add the selected item
+                    terms.push(ui.item.value);
+                    // add placeholder to get the comma-and-space at the end
+                    terms.push("");
+                    this.value = terms.join(" ");
+                    return false;
+                }
+            });
+    });
 </script>
 @stop
 
@@ -164,7 +164,7 @@
             <div class="span12"> <span class="left">"</span>
                 <p> Botangle offers tutoring over video chat. So if you need help, you can get help from anyone, anywhere, for anything. </p>
                 <span class="right">"</span>
-                <p class="quote-client"><span>Jack,</span> New York</span>
+                <p class="quote-client"><span>Jack,</span> New York</p>
             </div>
         </div>
     </div>
