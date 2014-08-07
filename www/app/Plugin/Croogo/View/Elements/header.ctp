@@ -103,7 +103,7 @@ return $( "<li>" )
       
 	  
 	  <form method="post" action="<?php echo $this->webroot?>user/search" id="searchuser" class="form-search">
-        <div class="Search-main1">
+        <div class="Search-main1" id="home-search">
 		<input name="searchvalue" id="searchvalue" type="text" placeholder="Example: Chemistry, Maths etc" />
 		  
         </div>
