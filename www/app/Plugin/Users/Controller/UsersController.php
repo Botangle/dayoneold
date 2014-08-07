@@ -36,6 +36,12 @@ class UsersController extends UsersAppController {
 			'className' => 'StripeConnect',
 		),
 		'CsvView.CsvView',
+        'Walkthrough' => array(
+            'viewFiles' => array(
+                'search',
+                'view',
+            ),
+        )
 	);
 
 /**

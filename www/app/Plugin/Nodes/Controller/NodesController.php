@@ -41,6 +41,11 @@ class NodesController extends NodesAppController {
 				'filterEmpty' => true,
 			),
 		),
+        'Walkthrough' => array(
+            'viewFiles' => array(
+                'promoted',
+            ),
+        )
 	);
 
 /**
