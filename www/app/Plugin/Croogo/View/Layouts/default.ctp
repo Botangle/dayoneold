@@ -61,7 +61,7 @@
 
 <?php echo $this->element('footerbottom'); ?>
 	<?php
-		//echo $this->Blocks->get('scriptBottom');
+		echo $this->Blocks->get('scriptBottom');
 		//echo $this->Js->writeBuffer();
 	?>
 	</body>
