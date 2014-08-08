@@ -1,119 +1,120 @@
 {{HTML::script('js/bootstrap-datetimepicker.js')}}
 
 {{HTML::style('css/bootstrap-datetimepicker.css')}}
+<div class="modal-body">
+    <div class="span9 clearfix">
+        <h2 class="page-title">{{ trans('Add New Lesson') }}</h2>
+        <div class="StaticPageRight-Block">
+            <div class="PageLeft-Block">
+                <p class="FontStyle20 color1">{{ trans("Propose Lesson Meeting") }}</p>
 
-<div class="span9">
-    <h2 class="page-title">{{ trans('Add New Lesson') }}</h2>
-    <div class="StaticPageRight-Block">
-        <div class="PageLeft-Block">
-            <p class="FontStyle20 color1">{{ trans("Propose Lesson Meeting") }}</p>
+                <div id="modal-flash-wrapper" class="alert alert-error">
 
-            <div id="modal-flash-wrapper" class="alert alert-error">
+                </div>
 
-            </div>
-
-            {{ Former::open()
-            ->method('POST')
-            ->class('form-horizontal')
-            ->route('lesson.create')
-            ->data_async()
-            ->id('addNewLesson')
-            }}
-
-            {{ Former::hidden('tutor', $expert->id) }}
-            @if ($student != null)
-            {{ Former::hidden('student', $student->id) }}
-            @else
-            {{-- I guess we'd need to allow the expert to select one of their existing students  --}}
-            @endif
-
-            <div class="row-fluid">
-                {{ Former::text('expert_name')
-                ->addClass('textbox')
-                ->placeholder(trans('Expert'))
-                ->label(__('Expert:'))
-                ->value($expert->username)
-                ->disabled()
+                {{ Former::open()
+                ->method('POST')
+                ->class('form-horizontal')
+                ->route('lesson.create')
+                ->data_async()
+                ->id('addNewLesson')
                 }}
-            </div>
 
-            {{-- date and time fields --}}
-            <div class="control-group">
-                <label class="control-label" for="lesson-time">Lesson Time:</label>
-                <div class="controls">
-                    {{ Former::hidden('lesson_date')
-                        ->id('dtp_input2')
+                {{ Former::hidden('tutor', $expert->id) }}
+                @if ($student != null)
+                {{ Former::hidden('student', $student->id) }}
+                @else
+                {{-- I guess we'd need to allow the expert to select one of their existing students  --}}
+                @endif
+
+                <div class="row-fluid">
+                    {{ Former::text('expert_name')
+                    ->addClass('textbox')
+                    ->placeholder(trans('Expert'))
+                    ->label(__('Expert:'))
+                    ->value($expert->username)
+                    ->disabled()
                     }}
+                </div>
 
-                    <div class=" input-append date form_date" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd" style="width:47%;">
+                {{-- date and time fields --}}
+                <div class="control-group">
+                    <label class="control-label" for="lesson-time">Lesson Time:</label>
+                    <div class="controls">
+                        {{ Former::hidden('lesson_date')
+                        ->id('dtp_input2')
+                        }}
 
-                        <input size="16" type="text" value="" readonly class="textbox2" style="width:57%" />
-                        <span class="add-on" style="height:44px"><i class="icon-remove"></i></span>
-                        <span class="add-on" style="height:44px"><i class="icon-th"></i></span>
+                        <div class=" input-append date form_date" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd" style="width:47%;">
 
-                    </div>
-                    {{ Former::hidden('lesson_time')->id('dtp_input3') }}
-                    <div class=" input-append date form_time" data-date="" data-date-format="hh:ii" data-link-field="dtp_input3" data-link-format="hh:ii" style="width:33%;">
-                        <input size="16" class="textbox2" type="text" value="" readonly>
-                        <span class="add-on" style="height:44px"><i class="icon-remove"></i></span>
-                        <span class="add-on" style="height:44px"><i class="icon-th"></i></span>
+                            <input size="16" type="text" value="" readonly class="textbox2" style="width:57%" />
+                            <span class="add-on" style="height:44px"><i class="icon-remove"></i></span>
+                            <span class="add-on" style="height:44px"><i class="icon-th"></i></span>
 
+                        </div>
+                        {{ Former::hidden('lesson_time')->id('dtp_input3') }}
+                        <div class=" input-append date form_time" data-date="" data-date-format="hh:ii" data-link-field="dtp_input3" data-link-format="hh:ii" style="width:33%;">
+                            <input size="16" class="textbox2" type="text" value="" readonly>
+                            <span class="add-on" style="height:44px"><i class="icon-remove"></i></span>
+                            <span class="add-on" style="height:44px"><i class="icon-th"></i></span>
+
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {{-- duration field --}}
-            {{ Former::select('duration')
+                {{-- duration field --}}
+                {{ Former::select('duration')
                 ->options(Lesson::getDurationOptions())
                 ->placeholder(trans('-- Please choose --'))
                 ->id('Lessonduration')
                 ->label(__('Duration:'))
                 ->required()
-            }}
+                }}
 
-            {{-- subject - autocomplete required --}}
-            {{ Former::text('subject')
+                {{-- subject - autocomplete required --}}
+                {{ Former::text('subject')
                 ->placeholder(trans('Subject'))
                 ->addClass('textbox')
                 ->label(__('Subject:'))
                 ->id('LessonSubject')
                 ->required()
-            }}
-
-            {{-- former-radios class wrapper added to override existing botangle CSS that's messing
-                with the placement of the radio buttons as generated by Former
-            --}}
-            <div class="former-radios">
-                {{ Former::radios('repet')
-                ->radios(Lesson::getRepetitionOptions())
-                ->check(Lesson::REPEAT_NONE)
-                ->label(__('Repeat:'))
                 }}
-            </div>
 
-            {{-- note --}}
-            {{ Former::textarea('note')
+                {{-- former-radios class wrapper added to override existing botangle CSS that's messing
+                with the placement of the radio buttons as generated by Former
+                --}}
+                <div class="former-radios">
+                    {{ Former::radios('repet')
+                    ->radios(Lesson::getRepetitionOptions())
+                    ->check(Lesson::REPEAT_NONE)
+                    ->label(__('Repeat:'))
+                    }}
+                </div>
+
+                {{-- note --}}
+                {{ Former::textarea('note')
                 ->placeholder(trans('Type Your Note'))
                 ->addClass('textarea')
                 ->label(__('Note:'))
-            }}
+                }}
 
-            {{ Former::actions(
-                    Former::submit(trans('Submit'))
-                        ->addClass('btn btn-primary')
-                        ->name('submit'),
-                    Former::reset(trans('Cancel'))
-                        ->addClass('btn btn-reset')
-                        ->dataDismiss('modal')
+                {{ Former::actions(
+                Former::submit(trans('Submit'))
+                ->addClass('btn btn-primary')
+                ->name('submit'),
+                Former::reset(trans('Cancel'))
+                ->addClass('btn btn-reset')
+                ->dataDismiss('modal')
 
                 )->addClass('control-group')
-            }}
+                }}
 
-            {{ Former::close() }}
+                {{ Former::close() }}
 
-        </div><!-- @end .PageLeft-Block -->
-    </div><!-- @end .StaticPageRight-Block -->
-</div><!-- @end .span9 -->
+            </div><!-- @end .PageLeft-Block -->
+        </div><!-- @end .StaticPageRight-Block -->
+    </div><!-- @end .span9 -->
+</div>
 
 <script>
     var currentdate = new Date();

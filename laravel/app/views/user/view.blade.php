@@ -364,10 +364,17 @@
 var $modalOpened = false;
 $('#booklesson').click(function(){
     @if (Auth::check())
+    $('#modal').on('show', function () {
+        $(this).find('.modal-body').css({
+            width:'auto', //probably not needed
+            height:'auto', //probably not needed
+            'max-height':'100%'
+        });
+    });
     if ($modalOpened){
         $('#myModal').modal('show');
     } else {
-        $('#myModal').modal('show').css('height', jQuery('.StaticPageRight-Block').outerHeight() + 120);
+        $('#myModal').modal('show'); //.css('height', jQuery('.StaticPageRight-Block').outerHeight() + 120);
         $modalOpened = true;
     }
     @else
