@@ -69,7 +69,9 @@ class Lesson extends MagniloquentContextsPlus {
     );
 
     /**
-     * Lesson doesn't have an updated_at column but is does have a created_at column (add_date)
+     * Lesson doesn't have an updated_at column but is does have a created_at column (add_date) - see CONST above
+     * This mutator prevents Eloquent from trying to include the updated_at column
+     * in db updates.
      * @param $value
      */
     public function setUpdatedAtAttribute($value)
@@ -92,9 +94,38 @@ class Lesson extends MagniloquentContextsPlus {
         return $this->hasMany('LessonPayment');
     }
 
+    /**
+     * Generally we're only interested in active lessons
+     * @param $query
+     */
     public function scopeActive($query)
     {
         $query->where('active', 1);
+    }
+
+    /**
+     * Queries the lessons to identify any unread lessons (i.e. the lesson has been changed by someone else
+     * and need's this $user to confirm changes). This will return lessons where $user is the student
+     * or the tutor.
+     * @param $query
+     * @param User $user
+     */
+    public function scopeUnreadLessons($query, User $user)
+    {
+        // this whole thing needs to be wrapped in the outer where, otherwise there might be unexpected results
+        //  when combined with other queries and scopes
+        $query->where(function($query) use($user){
+                // Is student for lesson where student hasn't read
+                $query->where(function($query) use($user){
+                        $query->where('student', $user->id)
+                            ->where('readlesson', false);
+                    });
+                // or is tutor lesson where tutor hasn't read
+                $query->orWhere(function($query) use($user){
+                        $query->where('tutor', $user->id)
+                            ->where('readlessontutor', false);
+                    });
+            });
     }
 
     /**
@@ -312,7 +343,6 @@ class Lesson extends MagniloquentContextsPlus {
             $this->laststatus_tutor = 0;
             $this->laststatus_student = 0;
         }
-
     }
 
 }

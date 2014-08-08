@@ -106,7 +106,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
 
     public function lessons()
     {
-        return $this->hasMany('Lesson', 'student');
+        return $this->hasMany('Lesson', 'student')->where('active', true);
     }
 
     /**

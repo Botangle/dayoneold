@@ -43,12 +43,16 @@ class UserMenuComposer implements Composer
                     }
 
                     if($item->getContent()->getUrl() == route('user.messages')) {
-                        $item->getContent()->nest('<span class="badge pull-right">X</span>');
+                        $item->getContent()->nest(
+                            '<span class="badge pull-right">X</span>'
+                        );
                         // @TODO: add in an unread messages badge: echo $this->User->Getunreadmessage($this->Session->read('Auth.User.id'));
                     }
 
                     if($item->getContent()->getUrl() == route('user.lessons')) {
-                        $item->getContent()->nest('<span class="badge pull-right">X</span>');
+                        $item->getContent()->nest(
+                            '<span class="badge pull-right">'. \Lesson::unreadLessons(\Auth::user())->count() .'</span>'
+                        );
                         // @TODO: add in an unread lessons badge: echo $this->User->Getunreadlesson($this->Session->read('Auth.User') );
                     }
                 });
