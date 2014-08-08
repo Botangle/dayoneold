@@ -94,20 +94,18 @@ Route::get('/user/forgot', array(
     ));
 
 Route::get('/user/my-account', array(
-        'before' => 'auth',
         'as'        => 'user.my-account',
         'uses'      => 'UserController@getMyAccount',
     ));
 
 Route::get('/user/search', array(
-        'before' => 'auth',
         'as'        => 'user.search',
         'uses'      => 'UserController@search',
     ));
 
-Route::get('/user/{username}', array(
-        'as'        => 'user.profile',
-        'uses'      => 'UserController@getView',
+Route::get('/user/lessons', array(
+        'as'        => 'user.lessons',
+        'uses'      => 'UserController@getLessons',
     ));
 
 Route::get('/user/calendarEvents/{id}', array(
@@ -115,15 +113,17 @@ Route::get('/user/calendarEvents/{id}', array(
         'uses'      => 'UserController@getCalendarEvents',
     ));
 
-Route::group(array('before' => 'auth'), function(){
-    Route::controller('user', 'UserController', array(
-            'getBilling'      => 'user.billing',
-            'getLessons'      => 'user.lessons',
-            'getMessages'     => 'user.messages',
-            'postChangePassword'    => 'user.change-password',
-            'postStatus'      => 'user.status',
-        ));
-});
+Route::get('/user/{username}', array(
+        'as'        => 'user.profile',
+        'uses'      => 'UserController@getView',
+    ));
+
+Route::controller('user', 'UserController', array(
+        'getBilling'      => 'user.billing',
+        'getMessages'     => 'user.messages',
+        'postChangePassword'    => 'user.change-password',
+        'postStatus'      => 'user.status',
+    ));
 
 Route::get('/subject/search', array(
         'as'        => 'subject.search',

@@ -5,6 +5,11 @@ class UserController extends BaseController {
     public function __construct(){
 //        $this->beforeFilter('csrf', array('only' => 'postCreate, postDelete, postEdit, postRegister, postRemind, postVerify, postSetPassword'));
         $this->beforeFilter('ajax', array('only' => 'getCalendarEvents'));
+
+        $this->beforeFilter('auth', array(
+                'except' => array('getLogin', 'postLogin', 'search', 'getForgot', 'getView')
+            ));
+
     }
 
     public function getBilling()
@@ -12,10 +17,6 @@ class UserController extends BaseController {
     }
 
     public function getForgot()
-    {
-    }
-
-    public function getLessons()
     {
     }
 
@@ -334,5 +335,10 @@ class UserController extends BaseController {
     public function search()
     {
 
+    }
+
+    public function getLessons()
+    {
+        return View::make('user.lessons');
     }
 }
