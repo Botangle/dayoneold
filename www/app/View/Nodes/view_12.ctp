@@ -77,7 +77,7 @@ echo $this->element("breadcrame",array('breadcrumbs'=>
 
                <div class="PageLeft-Block">
                    <p class="FontStyle20">How pricing works</p>
-                   <p>Botangle connects online learners with leading experts who set their own per minute and/or per hour rates of which Botangle takes a 30% fee.  Botangle's community is always free to join and is committed to promoting educational access worldwide.</p>
+                   <p>Botangle connects online learners with leading experts who set their own per minute and/or per hour rates of which Botangle takes a 15% fee.  Botangle's community is always free to join and is committed to promoting educational access worldwide.</p>
                </div>
 
                <div class="PageLeft-Block">

@@ -3,7 +3,7 @@
  * @todo this should be moved to /app/View/Elements/
  */
 
-$accountsetting = $index = $accountbilling = $accountmessages = $accountLessons = $accountcalander = $accountinvite = $paymentsetting = "";
+$accountsetting = $index = $accountbilling = $accountmessages = $accountLessons = $accountcalander = $accountinvite = $paymentsetting = $credits = "";
 
 if ( $this->params['action'] == 'index' && $this->params['controller'] == 'users') {
 		$index = "active";
@@ -36,15 +36,37 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'invit
 if ( $this->params['controller'] == 'users' && $this->params['action'] == 'paymentsetting' ) {
 	$paymentsetting = "active";
 }
+if( $this->params['controller'] == 'credits' && $this->params['action'] == 'index' ) {
+    $credits = "active";
+}
 
 ?>
 
 <div class="span3 LeftMenu-Block">
 	<ul>
+        <li>
+            <?php
+            echo $this->Html->link(
+                __('My Account'),	'/users/',
+                array('title'=>__('My Account') ,'class'=>$index  )
+            );
+            ?>
+        </li>
+        <li>
         <?php if ($this->Session->read('Auth.User.id') && $this->Session->read('Auth.User.role_id') == 2) : ?>
             <li>
                 <a href="<?php echo $this->webroot ?>user/<?php echo $this->Session->read('Auth.User.username'); ?>"
                    title="Messages"><?php echo __('My Profile') ?></a>
+            </li>
+        <?php endif; ?>
+        <?php if ($this->Session->read('Auth.User.id') && $this->Session->read('Auth.User.role_id') == 2) : ?>
+            <li>
+                <?php
+                echo $this->Html->link(
+                    __('Billing'),	'/users/billing',
+                    array('title'=>__('Billing') ,'class'=>$accountbilling)
+                );
+                ?>
             </li>
         <?php endif; ?>
         <li>
@@ -67,23 +89,16 @@ if ( $this->params['controller'] == 'users' && $this->params['action'] == 'payme
 				</span>
 			</a>
 		</li>
-    <li>
-			<?php
-				echo $this->Html->link(
-					__('Billing'),	'/users/billing',
-					array('title'=>__('Billing') ,'class'=>$accountbilling)
-				);
- 			?>
-	  </li>
-    <li>
-			<?php
-				echo $this->Html->link(
-					__('My Account'),	'/users/',
-					array('title'=>__('My Account') ,'class'=>$index  )
-				);
- 			?>
-		</li>
-    <li>
+        <li>
+            <a href="/credits" title="Credits" class="<?php echo $credits; ?>">
+                <?php echo __('Credits'); ?>
+                <span class="badge pull-right">
+                    <?php
+                    echo number_format($this->Credits->getBalance($this->Session->read('Auth.User.id') ), 2);
+                    ?>
+                </span>
+            </a>
+        </li>
 			<?php /*
 				echo $this->Html->link(
 					__('Account Settings'),	'/users/accountsetting',

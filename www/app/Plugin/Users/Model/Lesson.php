@@ -145,12 +145,12 @@ class Lesson extends UsersAppModel {
     }
 
     /**
-     * We want to leave lessons off if a student isn't setup to pay
+     * We want to leave lessons off if a student doesn't have a positive credit balance
      *
      * @return string
      */
     private function lessonsExtraConditions()
     {
-        return 'INNER JOIN users as student ON (student.id = Lesson.student AND student.stripe_customer_id IS NOT NULL)';
+        return 'INNER JOIN user_credits ON (user_credits.user_id = Lesson.student AND user_credits.amount > 0)';
     }
 }

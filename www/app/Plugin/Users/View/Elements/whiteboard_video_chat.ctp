@@ -8,7 +8,7 @@ echo $openTokHelper->videoInformation($opentok_api_key, $opentok_session_id, $op
 ?>
 <div class="video-chat">
     <?php if($this->Session->read('Auth.User.role_id')==4): ?>
-        <div id="videoChatBox">Your tutor</div>
+        <div id="videoChatBox">Your expert</div>
         <div id="small-stream">You</div>
     <?php else: ?>
         <div id="videoChatBox">Your student</div>

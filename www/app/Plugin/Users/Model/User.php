@@ -296,4 +296,25 @@ class User extends UsersAppModel {
 		return $User->find('count', array('conditions' => array('subject LIKE' => '%' . $category['Category']['name'] . '%')));
 	}
 
+
+    /**
+     * Gets the user's balance.  It sickens me that this has to be in a view helper and in this model, let's get rid of
+     * that as soon as we can ...
+     *
+     * @param $userId
+     * @return int
+     */
+    function getBalance($userId){
+        App::import("Model", "UserCredit");
+        $model = new UserCredit();
+        $conditions = "user_id = ". (int)$userId;
+        $count = $model->find('first', array('conditions' => $conditions));
+
+        // @TODO: cache this amount so we don't have to query for it every time
+        if(isset($count['UserCredit']['amount'])) {
+            return $count['UserCredit']['amount'];
+        } else {
+            return 0;
+        }
+    }
 }
