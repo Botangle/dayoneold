@@ -266,6 +266,7 @@ class Lesson extends MagniloquentContextsPlus {
                 }
             }
             if (count($changesArray) > 0){
+                $changesArray['changes_by'] = Auth::user()->id;
                 $history = json_decode($this->history);
                 if (empty($history)){
                     $history = array();
