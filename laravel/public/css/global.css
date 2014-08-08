@@ -1178,22 +1178,21 @@ a.Social-Boxs-Links:hover {
  * Modal - what was previously implemented as inline styles (yuck) and jQuery
  * moved here during Laravel rewrite
  * Plus fixing a few other glitches.
- *
+ */
 .modal {
     left:40%;
     width:auto;
+    height: auto;
     right:20%;
-    height:auto;
     overflow:hidden;
-    top:25%;
-    display: block;
     position: absolute;
+    max-height: 200%;
 }
 
 .modal-open {
     overflow: visible;
 }
-*/
+
 .modal .span9 {
     width: 825px;
 }

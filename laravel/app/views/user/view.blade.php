@@ -277,20 +277,18 @@
 	<!-- @end .container -->
 </div>
 @if (Auth::check())
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-inner-wrapper">
-        @if (Auth::user()->id == $model->id))
-            @include('lessons.addNewModalContent', array(
+<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    @if (Auth::user()->id == $model->id))
+        @include('lessons.addNewModalContent', array(
+        'expert'    => $model,
+        'student'   => null,
+        ))
+    @else
+        @include('lessons.addNewModalContent', array(
             'expert'    => $model,
-            'student'   => null,
-            ))
-        @else
-            @include('lessons.addNewModalContent', array(
-                'expert'    => $model,
-                'student'   => Auth::user(),
-            ))
-        @endif
-    </div>
+            'student'   => Auth::user(),
+        ))
+    @endif
 </div>
 @endif
 @overwrite
@@ -364,19 +362,12 @@
 var $modalOpened = false;
 $('#booklesson').click(function(){
     @if (Auth::check())
-    $('#modal').on('show', function () {
-        $(this).find('.modal-body').css({
-            width:'auto', //probably not needed
-            height:'auto', //probably not needed
-            'max-height':'100%'
+        $('#myModal').on('shown.bs.modal', function(){
+            $(this).css({
+                height: $('#myModal .span9').outerHeight()
+            });
         });
-    });
-    if ($modalOpened){
         $('#myModal').modal('show');
-    } else {
-        $('#myModal').modal('show'); //.css('height', jQuery('.StaticPageRight-Block').outerHeight() + 120);
-        $modalOpened = true;
-    }
     @else
     window.location.assign('/login');
     @endif
@@ -399,7 +390,7 @@ $('form[data-async]').on('submit', function(event) {
                 });
                 flashError += '</ul></div>';
                 $('#modal-flash-wrapper').empty().append(flashError).show();
-                $('#myModal').css('height', $('#myModal').height() + $('#modal-flash-wrapper').height());
+                $('#myModal').css('height', $('#myModal .span9').outerHeight());
             } else {
                 // Refresh the calendar (by moving next and then back)
                 $('.button-month-next').click();

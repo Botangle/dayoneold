@@ -1,11 +1,8 @@
 {{HTML::script('js/bootstrap-datetimepicker.js')}}
 
 {{HTML::style('css/bootstrap-datetimepicker.css')}}
-<div class="modal-body">
-    <div class="span9 clearfix">
+    <div class="span9">
         <h2 class="page-title">{{ trans('Add New Lesson') }}</h2>
-        <div class="StaticPageRight-Block">
-            <div class="PageLeft-Block">
                 <p class="FontStyle20 color1">{{ trans("Propose Lesson Meeting") }}</p>
 
                 <div id="modal-flash-wrapper" class="alert alert-error">
@@ -111,10 +108,7 @@
 
                 {{ Former::close() }}
 
-            </div><!-- @end .PageLeft-Block -->
-        </div><!-- @end .StaticPageRight-Block -->
     </div><!-- @end .span9 -->
-</div>
 
 <script>
     var currentdate = new Date();
