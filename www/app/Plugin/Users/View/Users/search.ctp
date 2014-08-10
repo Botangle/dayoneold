@@ -77,7 +77,7 @@
 										<p class="FontStyle20">
 											<?php
 											echo $this->Html->link(
-													__(ucfirst($user['User']['username'])), '/user/' . $user['User']['username']
+													ucfirst($user['User']['name']).' '.ucfirst($user['User']['lname']), '/user/' . $user['User']['username']
 													, array('title' => __($user['User']['username']))
 											);
 											?>
