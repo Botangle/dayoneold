@@ -51,7 +51,9 @@ class UserMenuComposer implements Composer
 
                     if($item->getContent()->getUrl() == route('user.lessons')) {
                         $item->getContent()->nest(
-                            '<span class="badge pull-right">'. \Lesson::unreadLessons(\Auth::user())->count() .'</span>'
+                            '<span class="badge pull-right">'.
+                            \Lesson::active()->proposals()->unread(\Auth::user())->count()
+                            .'</span>'
                         );
                         // @TODO: add in an unread lessons badge: echo $this->User->Getunreadlesson($this->Session->read('Auth.User') );
                     }

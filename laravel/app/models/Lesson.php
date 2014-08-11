@@ -100,7 +100,19 @@ class Lesson extends MagniloquentContextsPlus {
      */
     public function scopeActive($query)
     {
-        $query->where('active', 1);
+        $query->where('active', true);
+    }
+
+    /**
+     * @param $query
+     * @param User $user
+     */
+    public function scopeInvolvingUser($query, User $user)
+    {
+        $query->where(function($query) use($user){
+            $query->where('tutor', $user->id)
+                ->orWhere('student', $user->id);
+        });
     }
 
     /**
@@ -108,14 +120,11 @@ class Lesson extends MagniloquentContextsPlus {
      * @param $query
      * @param User $user
      */
-    public function scopeUnreadLessons($query, User $user)
+    public function scopeUnread($query, User $user)
     {
         // this whole thing needs to be wrapped in the outer where, otherwise there might be unexpected results
         //  when combined with other queries and scopes
-        $query->where('active', true)
-            ->where('is_confirmed', false)
-            ->where('lesson_date', '>=', date('Y-m-d'))
-            ->where(function($query) use($user){
+        $query->where(function($query) use($user){
                 // Is student for lesson where student hasn't read
                 $query->where(function($query) use($user){
                         $query->where('student', $user->id)
@@ -131,19 +140,32 @@ class Lesson extends MagniloquentContextsPlus {
 
     /**
      * Lessons that are still proposals (active, unconfirmed and in the future)
-     * and where the user is either the student or the tutor
      * @param $query
-     * @param User $user
      */
-    public function scopeActiveLessonProposals($query, User $user)
+    public function scopeProposals($query)
     {
-        $query->where('active', true)
-            ->where('is_confirmed', false)
-            ->where('lesson_date', '>=', date('Y-m-d'))
-            ->where(function($query) use($user){
-                    $query->where('tutor', $user->id)
-                        ->orWhere('student', $user->id);
-                });
+        $query->where('is_confirmed', false)
+            ->where('lesson_date', '>=', date('Y-m-d'));
+    }
+
+    /**
+     * Lessons that are upcoming (active, confirmed and in the future)
+     * @param $query
+     */
+    public function scopeUpcoming($query)
+    {
+        $query->where('is_confirmed', true)
+            ->where('lesson_date', '>=', date('Y-m-d'));
+    }
+
+    /**
+     * Lessons that are past (active, confirmed and in the past)
+     * @param $query
+     */
+    public function scopePast($query)
+    {
+        $query->where('is_confirmed', true)
+            ->where('lesson_date', '<', date('Y-m-d'));
     }
 
     /**

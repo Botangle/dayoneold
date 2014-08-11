@@ -8,7 +8,7 @@
             <div class="Lesson-row active">
                 <div class="row-fluid">
                     <?php
-                    if ($lesson->tutor == Auth::user()->id){
+                    if ($lesson->userIsTutor(Auth::user())){
                         $otherUser = $lesson->studentUser;
                         $otherDesc = 'student';
                     } else {
@@ -17,26 +17,7 @@
                     }
                     ?>
 
-                    <div class="span1 tutorimg">
-                        {{ Html::image(url($otherUser->picture), $otherDesc, array('class' => 'img-circle', 'style' => 'width="242px" height="242px"')) }}
-                    </div>
-
-                    <div class="span2 tutor-name">
-                        {{ Html::link(url('user', $otherUser->username), $otherUser->username) }}
-                    </div>
-
-                    <div class="span1 date">
-                        {{ $lesson->displayDate }}
-                    </div>
-                    <div class="span1 time">
-                        {{ $lesson->lesson_time }}
-                    </div>
-                    <div class="span1 mins">
-                        {{ $lesson->displayDuration }}
-                    </div>
-                    <div class="span2 subject">
-                        {{ $lesson->subject }}
-                    </div>
+                    @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser))
 
                     <div class="span2 mark">
                         {{ Html::link(url('users/changelesson', $lesson->id), trans('Change'), array(
@@ -58,6 +39,46 @@
 
         <div class="PageLeft-Block">
             <p class="FontStyle20 color1">{{ trans("Upcoming Lessons") }}</p>
+            @foreach($upcomingLessons as $lesson)
+            <div class="Lesson-row active">
+                <div class="row-fluid">
+                    <?php
+                    if ($lesson->tutor == Auth::user()->id){
+                        $otherUser = $lesson->studentUser;
+                        $otherDesc = 'student';
+                    } else {
+                        $otherUser = $lesson->tutorUser;
+                        $otherDesc = 'tutor';
+                    }
+                    ?>
+
+                    @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser))
+
+                    @if($lesson->userIsTutor(Auth::user()))
+                        <div class="span2 mark">
+                            @if($lesson->lesson_date == date('Y-m-d'))
+                                {{ Html::link(url('users/whiteboarddata', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
+                            @else
+                                {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
+                            @endif
+                        </div>
+                    @else
+                        <div class="span2 mark">
+                            {{ Html::link(url('users/changelesson', $lesson->id), trans('Change'), array(
+                            'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal"
+                            )) }}
+                        </div>
+                        <div class="span2 mark">
+                            @if($lesson->lesson_date == date('Y-m-d'))
+                            {{ Html::link(url('users/whiteboarddata', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
+                            @else
+                            {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
+                            @endif
+                        </div>
+                    @endif
+                </div>
+            </div>
+            @endforeach
         </div>
 
         <div class="PageLeft-Block">
