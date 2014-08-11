@@ -59,9 +59,9 @@ class Lesson extends MagniloquentContextsPlus {
             'student'                   => array('required', 'exists:users,id'),
             'lesson_date'               => array('required', 'date_format:Y-m-d'),
             'lesson_time'               => array('required', 'date_format:H:i'),
-            'duration'                  => array('integer', 'min:30'),
+            'duration'                  => array('numeric'),
             'subject'                   => array('required'),
-            'repet'                     => array('in:0,1,2'), // Same as CONSTs beginnging REPEAT_
+            'repet'                     => array('in:0,1,2'), // Same as CONSTs beginning REPEAT_
         ),
         // additional validation rules for the following contexts
         'update'    => array(),
@@ -104,9 +104,7 @@ class Lesson extends MagniloquentContextsPlus {
     }
 
     /**
-     * Queries the lessons to identify any unread lessons (i.e. the lesson has been changed by someone else
-     * and need's this $user to confirm changes). This will return lessons where $user is the student
-     * or the tutor.
+     * Lessons where the user is the one who needs to confirm changes
      * @param $query
      * @param User $user
      */
@@ -114,7 +112,10 @@ class Lesson extends MagniloquentContextsPlus {
     {
         // this whole thing needs to be wrapped in the outer where, otherwise there might be unexpected results
         //  when combined with other queries and scopes
-        $query->where(function($query) use($user){
+        $query->where('active', true)
+            ->where('is_confirmed', false)
+            ->where('lesson_date', '>=', date('Y-m-d'))
+            ->where(function($query) use($user){
                 // Is student for lesson where student hasn't read
                 $query->where(function($query) use($user){
                         $query->where('student', $user->id)
@@ -126,6 +127,23 @@ class Lesson extends MagniloquentContextsPlus {
                             ->where('readlessontutor', false);
                     });
             });
+    }
+
+    /**
+     * Lessons that are still proposals (active, unconfirmed and in the future)
+     * and where the user is either the student or the tutor
+     * @param $query
+     * @param User $user
+     */
+    public function scopeActiveLessonProposals($query, User $user)
+    {
+        $query->where('active', true)
+            ->where('is_confirmed', false)
+            ->where('lesson_date', '>=', date('Y-m-d'))
+            ->where(function($query) use($user){
+                    $query->where('tutor', $user->id)
+                        ->orWhere('student', $user->id);
+                });
     }
 
     /**
@@ -343,6 +361,61 @@ class Lesson extends MagniloquentContextsPlus {
             $this->laststatus_tutor = 0;
             $this->laststatus_student = 0;
         }
+    }
+
+    public function getDisplayDateAttribute()
+    {
+        $date = DateTime::createFromFormat('Y-m-d', $this->lesson_date);
+        return $date->format('M d');
+    }
+
+    public function getDisplayDurationAttribute()
+    {
+        if($this->duration == .5) {
+            $duration = '30 '. trans('minutes');
+        } elseif($this->duration == 1.0) {
+            $duration = '1 ' . trans('hour');
+        } else {
+            $duration = $this->duration .' ' . trans('hours');
+        }
+        return $duration;
+    }
+
+    /**
+     * Can the current user confirm this lesson
+     * @param User $user
+     * @return bool
+     */
+    public function userCanConfirm(User $user)
+    {
+        if (!$this->is_confirmed){
+            if ($this->userIsTutor($user) && !$this->readlessontutor){
+                return true;
+            } elseif (($this->userIsStudent($user) && !$this->readlesson)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Is $user the lesson's tutor
+     * @param User $user
+     * @return bool
+     */
+    public function userIsTutor(User $user)
+    {
+        return ($user->id == $this->tutor);
+    }
+
+    /**
+     * Is $user the lesson's student
+     * @param User $user
+     * @return bool
+     */
+    public function userIsStudent(User $user)
+    {
+        return ($user->id == $this->student);
     }
 
 }

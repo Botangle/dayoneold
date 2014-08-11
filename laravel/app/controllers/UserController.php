@@ -339,6 +339,8 @@ class UserController extends BaseController {
 
     public function getLessons()
     {
-        return View::make('user.lessons');
+        return View::make('user.lessons', array(
+                'proposals' => Lesson::activeLessonProposals(Auth::user())->get(),
+            ));
     }
 }

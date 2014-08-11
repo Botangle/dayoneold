@@ -34,7 +34,9 @@ class LessonController extends BaseController {
     public function postCreate()
     {
         $model = new Lesson;
-        $model->fill(Input::all());
+        $inputs = Input::all();
+        $inputs['duration'] = $inputs['duration'] / 60;
+        $model->fill($inputs);
         if (!$model->validate()){
             return Response::json(array(
                     'result' => 'failed',
