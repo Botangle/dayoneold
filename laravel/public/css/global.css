@@ -1217,3 +1217,7 @@ a.Social-Boxs-Links:hover {
     /* Needs to be greater than the modal, which is currently 1050 */
     z-index: 9999!important;
 }
+
+.span2.mark.lessonratingdata >   div > span {
+     font-size: 25px;
+ }

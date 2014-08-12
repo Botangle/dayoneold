@@ -7,7 +7,7 @@
 </div>
 
 <div class="span1 date">
-    {{ $lesson->displayDate }}
+    {{ $lesson->formatLessonDate('M d') }}
 </div>
 <div class="span1 time">
     {{ $lesson->lesson_time }}

@@ -134,14 +134,23 @@ Route::get('/subject/search', array(
 /**
  * Lessons controller
  */
+Route::model('lesson', 'Lesson');
+
 Route::get('/lesson/create/{expertId}', array(
         'as'        => 'lesson.create-with-expert',
         'uses'      => 'LessonController@createWithExpert',
     ));
 
-Route::post('/lesson/create', array(
-        'as'        => 'lesson.create',
-        'uses'      => 'LessonController@postCreate',
+Route::get('/lesson/{lesson}/edit', array(
+       'uses'      => 'LessonController@getEdit',
     ));
 
-Route::controller('lesson', 'LessonController');
+Route::get('/lesson/{lesson}/review', array(
+        'uses'      => 'LessonController@getReview',
+    ));
+
+Route::controller('lesson', 'LessonController', array(
+        'postCreate'    => 'lesson.create',
+        'postEdit'      => 'lesson.edit',
+        'postReview'    => 'lesson.review',
+    ));

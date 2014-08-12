@@ -1,5 +1,21 @@
 @extends('user.layout')
 
+@section('head')
+@parent
+{{--HTML::script('js/jqueryui/jquery-1.9.1.js')--}}
+{{HTML::script('js/jqueryui/jquery.ui.core.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.widget.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.position.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.menu.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.autocomplete.js')}}
+
+{{HTML::style('css/jqueryui/themes/base/jquery.ui.all.css')}}
+{{HTML::style('css/jqueryui/demos.css')}}
+
+{{HTML::script('js/bootstrap-datetimepicker.js')}}
+{{HTML::style('css/bootstrap-datetimepicker.css')}}
+@stop
+
 @section('page-content')
     <div class="StaticPageRight-Block">
         <div class="PageLeft-Block">
@@ -20,8 +36,9 @@
                     @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser))
 
                     <div class="span2 mark">
-                        {{ Html::link(url('users/changelesson', $lesson->id), trans('Change'), array(
-                            'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal"
+                        {{ Html::link('#', trans('Change'), array(
+                            'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal",
+                            'data-url' => url('lesson', $lesson->id).'/edit'
                         )) }}
                     </div>
 
@@ -64,8 +81,9 @@
                         </div>
                     @else
                         <div class="span2 mark">
-                            {{ Html::link(url('users/changelesson', $lesson->id), trans('Change'), array(
-                            'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal"
+                            {{ Html::link('#', trans('Change'), array(
+                            'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal",
+                            'data-url' => url('lesson', $lesson->id).'/edit'
                             )) }}
                         </div>
                         <div class="span2 mark">
@@ -102,8 +120,13 @@
                     <div class="span2 mark lessonrating">
                         @if ($lesson->review)
                             <p>Rating: <input type="number"  id="{{ $lesson->id }}" value="{{ $lesson->review->rating }}" class="rating" /></p>
-                        @else
-                            {{ Html::link('#', trans('Reviews'), array('class'=>'btn btn-primary btn-primary3 reviews','data-url'=> url('users/lessonreviews',$lesson->id), 'style'=>'width:125px','data-toggle'=>"modal")) }}
+                        @elseif ($lesson->userIsStudent(Auth::user()))
+                            {{ Html::link('#', trans('Review'), array(
+                                'class'=>'btn btn-primary btn-primary3 reviews',
+                                'data-url'=> url('lesson',$lesson->id) . '/review', 
+                                'style'=>'width:125px', 
+                                'data-toggle'=>"modal"
+                            )) }}
                         @endif
                     </div>
 
@@ -126,4 +149,63 @@
 $ = jQuery.noConflict();
 </script>
 <script type="text/javascript" src="/js/bootstrap-rating-input.min.js"></script>
+
+<script>
+jQuery('[data-toggle="modal"]').click(function(e) {
+    var url = jQuery(this).attr('data-url');
+    jQuery.get(url, function(data) {
+
+        jQuery("#myModal").empty().html(data);
+        jQuery('#myModal').on('shown.bs.modal', function(){
+            jQuery(this).css({
+                height: jQuery('#myModal .span9').outerHeight()
+            });
+
+            jQuery('form[data-async]').on('submit', function(event) {
+                var $form = jQuery(this);
+
+                jQuery.ajax({
+                    type: $form.attr('method'),
+                    url: $form.attr('action'),
+                    data: $form.serialize(),
+
+                    success: function(data, status) {
+                        if (data.result === 'failed'){
+                            // Set a flash message with the errors
+                            var flashError = "<p>" + data.errorMessage + "</p><div id='modal-errors'><ul>";
+                            jQuery.each(data.errors, function(i,v){
+                                flashError += '<li>'+ v +'</li>';
+                            });
+                            flashError += '</ul></div>';
+                            jQuery('#modal-flash-wrapper').empty().append(flashError).show();
+                            jQuery('#myModal').css('height', jQuery('#myModal .span9').outerHeight());
+                        } else {
+                            // Refresh the calendar (by moving next and then back)
+                            jQuery('.button-month-next').click();
+                            jQuery('.button-month-previous').click();
+                            // Clear the form and the form's flash div
+                            jQuery("#lessonForm").trigger('reset');
+                            jQuery('#modal-flash-wrapper').empty().hide();
+                            // Hide the modal
+                            jQuery('#myModal').modal('hide');
+                        }
+                    }
+                });
+                event.preventDefault();
+            });
+
+        });
+        jQuery('#myModal').modal('show');
+
+//        jQuery('#myModal').css('height',jQuery('.StaticPageRight-Block').outerHeight()+300)
+//        jQuery('.PageLeft-Block').css({'border-top':0,'box-shadow':'none'}).parent('div.span9').css({width:825+'px'})
+
+        jQuery('.btn-reset').click(function(e){
+            jQuery("#myModal").modal('hide');
+        })
+
+    });
+});
+
+</script>
 @stop

@@ -11,6 +11,9 @@
 
 {{HTML::style('css/jqueryui/themes/base/jquery.ui.all.css')}}
 {{HTML::style('css/jqueryui/demos.css')}}
+
+{{HTML::script('js/bootstrap-datetimepicker.js')}}
+{{HTML::style('css/bootstrap-datetimepicker.css')}}
 @stop
 
 @section('breadcrumbs')
@@ -307,102 +310,96 @@
     $ = jQuery.noConflict();
 </script>
 {{ Html::script('/js/calendar/bic_calendar.js', array('type' => "text/javascript")) }}
-<script>
-    $(function() {
-
-        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-        var dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-
-        var events = [
-            {
-                date: "",
-                title: '',
-                link: '',
-                linkTarget: '',
-                color: '',
-                content: '',
-                class: '',
-                displayMonthController: true,
-                displayYearController: true,
-                nMonths: 6
-            }
-        ];
-
-        $('#calendari_lateral1').bic_calendar({
-            //list of events in array
-            events: events,
-            //enable select
-            enableSelect: true,
-            //enable multi-select
-            multiSelect: true,
-            //set day names
-            dayNames: dayNames,
-            //set month names
-            monthNames: monthNames,
-            //show dayNames
-            showDays: true,
-            //show month controller
-            displayMonthController: true,
-            //show year controller
-            displayYearController: true,
-            //set ajax call
-            reqAjax: {
-                type: 'get',
-                url: '/user/calendarEvents/<?php echo $model->id ?>'
-            }
-        });
-
-    });
-</script>
 @stop
 
 @section('jqueryReady')
 @parent
-var $modalOpened = false;
-$('#booklesson').click(function(){
-    @if (Auth::check())
-        $('#myModal').on('shown.bs.modal', function(){
-            $(this).css({
-                height: $('#myModal .span9').outerHeight()
-            });
-        });
-        $('#myModal').modal('show');
-    @else
-    window.location.assign('/login');
-    @endif
-});
+    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-$('form[data-async]').on('submit', function(event) {
-    var $form = $(this);
+    var dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-    $.ajax({
-        type: $form.attr('method'),
-        url: $form.attr('action'),
-        data: $form.serialize(),
+    var events = [
+        {
+            date: "",
+            title: '',
+            link: '',
+            linkTarget: '',
+            color: '',
+            content: '',
+            class: '',
+            displayMonthController: true,
+            displayYearController: true,
+            nMonths: 6
+        }
+    ];
 
-        success: function(data, status) {
-            if (data.result === 'failed'){
-                // Set a flash message with the errors
-                var flashError = "<p>" + data.errorMessage + "</p><div id='modal-errors'><ul>";
-                $.each(data.errors, function(i,v){
-                    flashError += '<li>'+ v +'</li>';
-                });
-                flashError += '</ul></div>';
-                $('#modal-flash-wrapper').empty().append(flashError).show();
-                $('#myModal').css('height', $('#myModal .span9').outerHeight());
-            } else {
-                // Refresh the calendar (by moving next and then back)
-                $('.button-month-next').click();
-                $('.button-month-previous').click();
-                // Clear the form and the form's flash div
-                $("#addNewLesson").trigger('reset');
-                $('#modal-flash-wrapper').empty().hide();
-                // Hide the modal
-                $('#myModal').modal('hide');
-            }
+    $('#calendari_lateral1').bic_calendar({
+        //list of events in array
+        events: events,
+        //enable select
+        enableSelect: true,
+        //enable multi-select
+        multiSelect: true,
+        //set day names
+        dayNames: dayNames,
+        //set month names
+        monthNames: monthNames,
+        //show dayNames
+        showDays: true,
+        //show month controller
+        displayMonthController: true,
+        //show year controller
+        displayYearController: true,
+        //set ajax call
+        reqAjax: {
+            type: 'get',
+            url: '/user/calendarEvents/<?php echo $model->id ?>'
         }
     });
-    event.preventDefault();
-});
+
+    $('#booklesson').click(function(){
+        @if (Auth::check())
+            $('#myModal').on('shown.bs.modal', function(){
+                $(this).css({
+                    height: $('#myModal .span9').outerHeight()
+                });
+            });
+            $('#myModal').modal('show');
+        @else
+        window.location.assign('/login');
+        @endif
+    });
+
+    $('form[data-async]').on('submit', function(event) {
+        var $form = $(this);
+
+        $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),
+            data: $form.serialize(),
+
+            success: function(data, status) {
+                if (data.result === 'failed'){
+                    // Set a flash message with the errors
+                    var flashError = "<p>" + data.errorMessage + "</p><div id='modal-errors'><ul>";
+                    $.each(data.errors, function(i,v){
+                        flashError += '<li>'+ v +'</li>';
+                    });
+                    flashError += '</ul></div>';
+                    $('#modal-flash-wrapper').empty().append(flashError).show();
+                    $('#myModal').css('height', $('#myModal .span9').outerHeight());
+                } else {
+                    // Refresh the calendar (by moving next and then back)
+                    $('.button-month-next').click();
+                    $('.button-month-previous').click();
+                    // Clear the form and the form's flash div
+                    $("#lessonForm").trigger('reset');
+                    $('#modal-flash-wrapper').empty().hide();
+                    // Hide the modal
+                    $('#myModal').modal('hide');
+                }
+            }
+        });
+        event.preventDefault();
+    });
 @stop

@@ -91,4 +91,6 @@
     <!-- @end .container -->
 </div>
 <!--Wrapper main-content Block End Here-->
+<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+
 @overwrite

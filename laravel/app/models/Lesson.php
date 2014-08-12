@@ -19,11 +19,10 @@ class Lesson extends MagniloquentContextsPlus {
      * what we had in Botangle
      *
      * @TODO: take this out long-term to keep things more consistent between this and normal Laravel apps
-     * Note: this table doesn't have an UPDATED_AT, so a mutator is in place lower down to prevent that
+     * Note: this table doesn't have a CREATED_AT, so a mutator is in place lower down to prevent that
      * causing problems.
      */
-    const CREATED_AT = 'add_date';
-
+    const UPDATED_AT = 'add_date';
 
     /**
      * What POST values we'll even take with massive assignment
@@ -48,6 +47,7 @@ class Lesson extends MagniloquentContextsPlus {
      * @var array
      */
     protected $niceNames = array(
+        'lessonDateTime'    => 'Lesson Time',
     );
 
     /**
@@ -57,8 +57,7 @@ class Lesson extends MagniloquentContextsPlus {
         "save" => array(
             'tutor'                     => array('required', 'exists:users,id'),
             'student'                   => array('required', 'exists:users,id'),
-            'lesson_date'               => array('required', 'date_format:Y-m-d'),
-            'lesson_time'               => array('required', 'date_format:H:i'),
+            'lessonDateTime'            => array('required', 'date_format:Y-m-d G:i:s'),
             'duration'                  => array('numeric'),
             'subject'                   => array('required'),
             'repet'                     => array('in:0,1,2'), // Same as CONSTs beginning REPEAT_
@@ -69,14 +68,19 @@ class Lesson extends MagniloquentContextsPlus {
     );
 
     /**
-     * Lesson doesn't have an updated_at column but is does have a created_at column (add_date) - see CONST above
-     * This mutator prevents Eloquent from trying to include the updated_at column
+     * Lesson doesn't have an created_at column but is does have a updated_at column (add_date) - see CONST above
+     * This mutator prevents Eloquent from trying to include the created_at column
      * in db updates.
      * @param $value
      */
-    public function setUpdatedAtAttribute($value)
+    public function setCreatedAtAttribute($value)
     {
         // Do nothing.
+    }
+
+    public function getLessonDateTimeAttribute()
+    {
+        return $this->lesson_date .' '. 'rabbit';//$this->formatLessonTime('G:i:s');
     }
 
     public function studentUser()
@@ -390,10 +394,26 @@ class Lesson extends MagniloquentContextsPlus {
         }
     }
 
-    public function getDisplayDateAttribute()
+    public function formatLessonDate($format)
     {
         $date = DateTime::createFromFormat('Y-m-d', $this->lesson_date);
-        return $date->format('M d');
+        return $date->format($format);
+    }
+
+    public function formatLessonTime($format)
+    {
+        $date = DateTime::createFromFormat('G:i:s', $this->lesson_time);
+        return $date->format($format);
+    }
+
+    public function getDurationAttribute($value)
+    {
+        return $value * 60;
+    }
+
+    public function setDurationAttribute($value)
+    {
+        $this->attributes['duration'] = $value / 60;
     }
 
     public function getDisplayDurationAttribute()
