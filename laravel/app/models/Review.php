@@ -9,12 +9,12 @@ class Review extends Eloquent {
 
     public function reviewer()
     {
-        return $this->belongsTo('User', 'rate_to');
+        return $this->belongsTo('User', 'rate_by');
     }
 
     public function reviewedUser()
     {
-        return $this->belongsTo('User', 'rate_by');
+        return $this->belongsTo('User', 'rate_to');
     }
 
 }

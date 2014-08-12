@@ -60,7 +60,7 @@
 						<div class="row-fluid">
 							<div class="span6"><span class="pull-left">Botangle Star: &nbsp; </span> <input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="0" value="{{ $model->average_rating }}"/></div>
 							<div class="span3"><span class="color1">{{ $model->review_count }} {{ trans("Reviews") }}</span></div>
-							<div class="span3"><span class="color1">{{ ($userLessonStats ? $userLessonStats->lessons_count : 0) }} {{ trans("Classes") }}</span></div>
+							<div class="span3"><span class="color1">{{ $lessonsCount }} {{ trans("Classes") }}</span></div>
 						</div>
 						<div class="row-fluid Rate-this-tutor message-tutor">
 							<!--<div class="span6"><span class="pull-left">Give your Rating: &nbsp; </span> <input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="remove"/></div>-->
@@ -219,10 +219,10 @@
 
                             <div class="tab-pane fade" id="profile">
                                 <div class="class-timeinfo">
-                                    @if ($userLessonStats)
-                                    {{ trans('Total Classes (as mentor)') }}: {{ $userLessonStats->lessons_count }} &nbsp; &nbsp;   | &nbsp; &nbsp;   {{ trans('Total Mentoring Time') }}: {{ $userLessonStats->total_duration }} hours
+                                    @if ($lessonsCount)
+                                    {{ trans('Total Classes') }}: {{ $lessonsCount }} &nbsp; &nbsp;   | &nbsp; &nbsp;   {{ trans('Total Time') }}: {{ $totalDuration }} hours
                                     @else
-                                    {{ trans('Total Classes (as mentor)') }}: 0 &nbsp; &nbsp;   | &nbsp; &nbsp;   {{ trans('Total Mentoring Time') }}: 0 hours
+                                    {{ trans('Total Classes') }}: 0 &nbsp; &nbsp;   | &nbsp; &nbsp;   {{ trans('Total Time') }}: 0 hours
                                     @endif
                                 </div>
 

@@ -224,20 +224,24 @@ class UserController extends BaseController {
 
         $userStatuses = $model->statuses;
 
-        $userLessonStats = Lesson::where('tutor', $model->id)
-            ->where('is_confirmed', true)
-            ->select(array(
+        $userLessons = Lesson::active()->involvingUser($model)
+            ->where('is_confirmed', true);
+
+        /*    ->select(array(
                 DB::raw('COUNT(lessons.id) as lessons_count'),
                 DB::raw('SUM(duration) as total_duration')
             ))
             ->groupBy('tutor')
-            ->first();
+            ->first(); */
+        $lessonsCount = $userLessons->count();
+        $totalDuration = $userLessons->sum('duration');
 
         return View::make('user.view', array(
                 'model' => $model,
                 'isOwnTutorProfile' => $isOwnTutorProfile,
                 'userStatuses'      => $userStatuses,
-                'userLessonStats'   => $userLessonStats,
+                'lessonsCount'      => $lessonsCount,
+                'totalDuration'     => $totalDuration,
                 'subjects' => explode(",", $model->subject),
             ));
     }
