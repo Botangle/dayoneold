@@ -94,6 +94,11 @@ class Lesson extends MagniloquentContextsPlus {
         return $this->hasMany('LessonPayment');
     }
 
+    public function review()
+    {
+        return $this->hasOne('Review');
+    }
+
     /**
      * Generally we're only interested in active lessons
      * @param $query

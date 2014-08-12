@@ -115,14 +115,13 @@
     </div>
 </div>
 
+
+@section('jsFiles')
 <link rel="stylesheet" type="text/css" href="/css/prettyCheckable.css" />
 <script type="text/javascript" src="/js/prettyCheckable.js"></script>
 
-@section('jsFiles')
-@show
-
 <script type='text/javascript'>
-    jQuery(document).ready(function() {
+    jQuery(document).ready(function($) {
 
         if( $('input:checkbox').length )  {
             $('input:checkbox').prettyCheckable({
@@ -142,5 +141,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
     })();
 </script>
+@show
+
 </body>
 </html>

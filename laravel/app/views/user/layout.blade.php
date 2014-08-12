@@ -30,7 +30,7 @@
             return split(term).pop();
         }
 
-        {{-- @TODO: can we take this out?  seems like we've already got all of this in the header-inner setup --}}
+        {{-- @TODO: can we take this out?  seems like we've already got all of this in the header-inner setup
             jQuery("#UserSubject")
                 // don't navigate away from the field on tab when selecting an item
                 .bind("keydown", function(event) {
@@ -67,7 +67,7 @@
                         this.value = terms.join(", ");
                         return false;
                     }
-                });
+                }); --}}
         });
 </script>
 <!--Wrapper main-content Block Start Here-->
