@@ -47,7 +47,6 @@ class Lesson extends MagniloquentContextsPlus {
      * @var array
      */
     protected $niceNames = array(
-        'lessonDateTime'    => 'Lesson Time',
     );
 
     /**
@@ -57,7 +56,8 @@ class Lesson extends MagniloquentContextsPlus {
         "save" => array(
             'tutor'                     => array('required', 'exists:users,id'),
             'student'                   => array('required', 'exists:users,id'),
-            'lessonDateTime'            => array('required', 'date_format:Y-m-d G:i:s'),
+            'lesson_date'               => array('required', 'date_format:Y-m-d'),
+            'lesson_time'               => array('required', 'date_format:G:i:s'),
             'duration'                  => array('numeric'),
             'subject'                   => array('required'),
             'repet'                     => array('in:0,1,2'), // Same as CONSTs beginning REPEAT_
@@ -76,11 +76,6 @@ class Lesson extends MagniloquentContextsPlus {
     public function setCreatedAtAttribute($value)
     {
         // Do nothing.
-    }
-
-    public function getLessonDateTimeAttribute()
-    {
-        return $this->lesson_date .' '. 'rabbit';//$this->formatLessonTime('G:i:s');
     }
 
     public function studentUser()
@@ -418,14 +413,14 @@ class Lesson extends MagniloquentContextsPlus {
 
     public function getDisplayDurationAttribute()
     {
-        if($this->duration == .5) {
-            $duration = '30 '. trans('minutes');
-        } elseif($this->duration == 1.0) {
-            $duration = '1 ' . trans('hour');
+        $duration = $this->duration / 60;
+        if($duration == .5) {
+            return '30 '. trans('minutes');
+        } elseif($duration == 1.0) {
+            return '1 ' . trans('hour');
         } else {
-            $duration = $this->duration .' ' . trans('hours');
+            return $duration .' ' . trans('hours');
         }
-        return $duration;
     }
 
     /**

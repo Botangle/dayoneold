@@ -180,14 +180,8 @@ jQuery('[data-toggle="modal"]').click(function(e) {
                             jQuery('#modal-flash-wrapper').empty().append(flashError).show();
                             jQuery('#myModal').css('height', jQuery('#myModal .span9').outerHeight());
                         } else {
-                            // Refresh the calendar (by moving next and then back)
-                            jQuery('.button-month-next').click();
-                            jQuery('.button-month-previous').click();
-                            // Clear the form and the form's flash div
-                            jQuery("#lessonForm").trigger('reset');
-                            jQuery('#modal-flash-wrapper').empty().hide();
-                            // Hide the modal
-                            jQuery('#myModal').modal('hide');
+                            // Refresh the page to show the changes made
+                            window.location.reload();
                         }
                     }
                 });
