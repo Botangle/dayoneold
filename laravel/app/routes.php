@@ -135,6 +135,7 @@ Route::get('/subject/search', array(
  * Lessons controller
  */
 Route::model('lesson', 'Lesson');
+Route::model('user', 'User');
 
 Route::get('/lesson/create/{expertId}', array(
         'as'        => 'lesson.create-with-expert',
@@ -147,6 +148,10 @@ Route::get('/lesson/{lesson}/edit', array(
 
 Route::get('/lesson/{lesson}/review', array(
         'uses'      => 'LessonController@getReview',
+    ));
+
+Route::get('/lesson/{lesson}/confirm', array(
+        'uses'      => 'LessonController@getConfirm',
     ));
 
 Route::controller('lesson', 'LessonController', array(

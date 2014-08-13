@@ -13,6 +13,11 @@ class LessonController extends BaseController {
         $this->beforeFilter('ajax', array('only' => array('createWithExpert')));
     }
 
+    /**
+     * Not currently being used, but not removing for now.
+     * @param $expertId
+     * @return \Illuminate\View\View
+     */
     public function createWithExpert($expertId)
     {
         $expert = User::find($expertId);
@@ -25,7 +30,6 @@ class LessonController extends BaseController {
         $model->student = Auth::user()->id;
 
         return View::make('lessons/modalContent', array(
-                'mode'      => 'create',
                 'model'     => $model,
                 'submit'    => 'lesson.create',
                 'subtitle'  => trans('Propose Lesson Meeting'),
@@ -41,6 +45,15 @@ class LessonController extends BaseController {
     {
         $model = new Lesson;
         $model->fill(Input::all());
+
+        /* A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
+         * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i
+         * Unfortunately, using a get mutator doesn't work, since it's not automatically called before the
+         * validation is called. I'm not spending any more time on this for now.
+         * MJL - 2014-08-13
+         */
+        $model->lesson_time = $model->formatLessonTime('G:i:s');
+
         if (!$model->validate()){
             return Response::json(array(
                     'result' => 'failed',
@@ -77,7 +90,6 @@ class LessonController extends BaseController {
         }
 
         return View::make('lessons/modalContent', array(
-                'mode'      => 'edit',
                 'model'     => $lesson,
                 'submit'    => 'lesson.edit',
                 'subtitle'  => trans('Update Lesson Details'),
@@ -90,16 +102,24 @@ class LessonController extends BaseController {
         $model = Lesson::findOrFail(Input::get('id'));
 
         $model->fill(Input::all());
+        /* A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
+         * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i
+         * Unfortunately, using a get mutator doesn't work, since it's not automatically called before the
+         * validation is called. I'm not spending any more time on this for now.
+         * MJL - 2014-08-13
+         */
+        $model->lesson_time = $model->formatLessonTime('G:i:s');
+
         if (!$model->validate()){
             return Response::json(array(
-                    'result' => 'failed',
+                    'result'        => 'failed',
                     'errorMessage'  => trans("The lesson could not be updated."),
-                    'errors' => $model->errors()->all(),
+                    'errors'        => $model->errors()->all(),
                 ));
 
         }
 
-        if ($model->manageChangesThenSave(true)) {
+        if ($model->manageChangesThenSave(false)) {
             return Response::json(array(
                     'result' => 'success',
                 ));
@@ -167,5 +187,30 @@ class LessonController extends BaseController {
                 'errorMessage'  => trans("A problem occurred while saving the review. Please try again."),
                 'errors'        => array(),
             ));
+    }
+
+    /**
+     * Confirms the lesson if the current user is able to do so
+     * @param $lesson
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function getConfirm(Lesson $lesson)
+    {
+        if ($lesson->userCanConfirm(Auth::user())){
+            if ($lesson->manageChangesThenSave(false, true)) {
+                return Redirect::back()
+                    ->with('flash_success', trans("You have confirmed your lesson."));
+            } else {
+                return Redirect::back()
+                    ->with('flash_error', trans("There was a problem confirming your lesson. Please try again."));
+            }
+        }
+        try {
+            return Redirect::back()
+                ->with('flash_error', trans("You are not authorized to confirm this lesson."));
+        } catch (Exception $e){
+            return Redirect::route('user.lessons')
+                ->with('flash_error', trans("You are not authorized to confirm that lesson."));
+        }
     }
 }

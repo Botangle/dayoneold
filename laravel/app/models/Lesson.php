@@ -14,6 +14,11 @@ class Lesson extends MagniloquentContextsPlus {
     const REPEAT_DAILY  = 1;
     const REPEAT_WEEKLY = 2;
 
+    const HISTORY_TYPE_CREATED      = 'created';
+    const HISTORY_TYPE_CHANGE       = 'change';
+    const HISTORY_TYPE_CONFIRMATION = 'confirmation';
+    const HISTORY_TYPE_CANCELLATION = 'cancellation';
+
     /**
      * Adjusting our Laravel created / updated column names to match
      * what we had in Botangle
@@ -40,6 +45,8 @@ class Lesson extends MagniloquentContextsPlus {
         'active',
         'is_confirmed',
     );
+
+    protected $guarded = array('history');
 
     /**
      * Former and Form classes will use these niceNames instead of deriving them from the db column names
@@ -318,15 +325,51 @@ class Lesson extends MagniloquentContextsPlus {
     }
 
     /**
+     * Adds history $eventData of $type to the history attribute.
+     * Note: this data is held on the Lesson model and
+     * the Lesson model MUST BE SAVED to save your history changes.
+     *
+     * @param $type Should be one of the HISTORY_TYPE constants
+     * @param $eventData Could be a string or an array
+     */
+    public function addHistory($type, $eventData)
+    {
+        $history = json_decode($this->history);
+        if (empty($history)){
+            $history = array();
+        }
+        $history[] = array(
+            'type'      => $type,
+            'user_id'   => Auth::user()->id,
+            'username'  => Auth::user()->username, // for readability of the raw history
+            'when'      => (new \DateTime())->format('Y-m-d H:i:s'), // TODO: consider timezone issues
+            'data'      => $eventData,
+        );
+        $this->history = json_encode($history);
+    }
+
+    /**
      * Update the lesson status attributes according to the changes made since the last version of the lesson
      * @param bool $isNew
+     * @param bool $isConfirming
      * @return bool
      */
-    public function manageChangesThenSave($isNew = false)
+    public function manageChangesThenSave($isNew = false, $isConfirming = false)
     {
         if ($isNew){
+            $this->addHistory(self::HISTORY_TYPE_CREATED, null);
             $this->updateStatusesAfterChanges();
             return $this->save();
+
+        } elseif ($isConfirming) {
+            $this->readlessontutor = 1;
+            $this->readlesson = 1;
+            $this->laststatus_student = 1;
+            $this->laststatus_tutor = 1;
+            $this->is_confirmed = true;
+            $this->addHistory(self::HISTORY_TYPE_CONFIRMATION, null);
+            return $this->save();
+
         } else {
             $changesArray = array();
             foreach ($this->getDirty() as $field => $newData)
@@ -341,13 +384,7 @@ class Lesson extends MagniloquentContextsPlus {
                 }
             }
             if (count($changesArray) > 0){
-                $changesArray['changes_by'] = Auth::user()->id;
-                $history = json_decode($this->history);
-                if (empty($history)){
-                    $history = array();
-                }
-                $history[] = $changesArray;
-                $this->history = json_encode($history);
+                $this->addHistory(self::HISTORY_TYPE_CHANGE, $changesArray);
                 $this->updateStatusesAfterChanges();
                 return $this->save();
             }
@@ -392,13 +429,40 @@ class Lesson extends MagniloquentContextsPlus {
     public function formatLessonDate($format)
     {
         $date = DateTime::createFromFormat('Y-m-d', $this->lesson_date);
-        return $date->format($format);
+        if ($date){
+            return $date->format($format);
+        }
+        return null;
     }
 
+    /**
+     * Returns the lesson_time attribute formatted according to $format
+     * @param $format
+     * @return null|string
+     */
     public function formatLessonTime($format)
     {
-        $date = DateTime::createFromFormat('G:i:s', $this->lesson_time);
-        return $date->format($format);
+        /**
+         * A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
+         * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i.
+         * Unfortunately, using a get mutator doesn't work, since it's not automatically called before the
+         * validation is called. So, I'm using this little function to isolate my workaround and
+         * convert between the two formats.
+         * MJL - 2014-08-13
+         */
+        $length = strlen($this->lesson_time);
+        if ($length == 5 || $length == 4){
+            $date = DateTime::createFromFormat('G:i', $this->lesson_time);
+        } elseif ($length == 8 || $length == 7){
+            $date = DateTime::createFromFormat('G:i:s', $this->lesson_time);
+        } else {
+            return null;
+        }
+
+        if ($date){
+            return $date->format($format);
+        }
+        return null;
     }
 
     public function getDurationAttribute($value)

@@ -3,14 +3,16 @@
 </div>
 
 <div class="span2 tutor-name">
+    <p>{{ ucfirst($otherDesc) }}:
     {{ Html::link(url('user', $otherUser->username), $otherUser->username) }}
+    </p>
 </div>
 
 <div class="span1 date">
     {{ $lesson->formatLessonDate('M d') }}
 </div>
 <div class="span1 time">
-    {{ $lesson->lesson_time }}
+    {{ $lesson->formatLessonTime('G:i') }}
 </div>
 <div class="span1 mins">
     {{ $lesson->displayDuration }}

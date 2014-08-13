@@ -21,19 +21,19 @@
         <div class="PageLeft-Block">
             <p class="FontStyle20 color1">{{ trans("Active Lesson Proposals") }}</p>
             @foreach($proposals as $lesson)
-            <div class="Lesson-row active">
+                <?php
+                if ($lesson->userIsTutor(Auth::user())){
+                    $otherUser = $lesson->studentUser;
+                    $otherDesc = 'student';
+                } else {
+                    $otherUser = $lesson->tutorUser;
+                    $otherDesc = 'tutor';
+                }
+                ?>
+            <div class="Lesson-row active {{ $otherDesc }}" id="{{ 'lesson'. $lesson->id }}">
                 <div class="row-fluid">
-                    <?php
-                    if ($lesson->userIsTutor(Auth::user())){
-                        $otherUser = $lesson->studentUser;
-                        $otherDesc = 'student';
-                    } else {
-                        $otherUser = $lesson->tutorUser;
-                        $otherDesc = 'tutor';
-                    }
-                    ?>
 
-                    @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser))
+                    @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser, 'otherDesc' => $otherDesc))
 
                     <div class="span2 mark">
                         {{ Html::link('#', trans('Change'), array(
@@ -44,7 +44,7 @@
 
                     <div class="span2 mark">
                         @if($lesson->userCanConfirm(Auth::user()))
-                            {{ Html::link(url('users/confirm', $lesson->id), trans('Confirm'), array(
+                            {{ Html::link(url('lesson', $lesson->id) . '/confirm', trans('Confirm'), array(
                             'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'
                             )) }}
                         @endif
@@ -57,19 +57,19 @@
         <div class="PageLeft-Block">
             <p class="FontStyle20 color1">{{ trans("Upcoming Lessons") }}</p>
             @foreach($upcomingLessons as $lesson)
-            <div class="Lesson-row active">
+                <?php
+                if ($lesson->tutor == Auth::user()->id){
+                    $otherUser = $lesson->studentUser;
+                    $otherDesc = 'student';
+                } else {
+                    $otherUser = $lesson->tutorUser;
+                    $otherDesc = 'tutor';
+                }
+                ?>
+            <div class="Lesson-row active {{ $otherDesc }}" id="{{ 'lesson'. $lesson->id }}">
                 <div class="row-fluid">
-                    <?php
-                    if ($lesson->tutor == Auth::user()->id){
-                        $otherUser = $lesson->studentUser;
-                        $otherDesc = 'student';
-                    } else {
-                        $otherUser = $lesson->tutorUser;
-                        $otherDesc = 'tutor';
-                    }
-                    ?>
 
-                    @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser))
+                    @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser, 'otherDesc' => $otherDesc))
 
                     @if($lesson->userIsTutor(Auth::user()))
                         <div class="span2 mark">
@@ -103,19 +103,19 @@
             <p class="FontStyle20 color1">{{ trans("Past Lessons") }}</p>
 
             @foreach($pastLessons as $lesson)
-            <div class="Lesson-row active">
+                <?php
+                if ($lesson->tutor == Auth::user()->id){
+                    $otherUser = $lesson->studentUser;
+                    $otherDesc = 'student';
+                } else {
+                    $otherUser = $lesson->tutorUser;
+                    $otherDesc = 'tutor';
+                }
+                ?>
+            <div class="Lesson-row active {{ $otherDesc }}" id="{{ 'lesson'. $lesson->id }}">
                 <div class="row-fluid">
-                    <?php
-                    if ($lesson->tutor == Auth::user()->id){
-                        $otherUser = $lesson->studentUser;
-                        $otherDesc = 'student';
-                    } else {
-                        $otherUser = $lesson->tutorUser;
-                        $otherDesc = 'tutor';
-                    }
-                    ?>
 
-                    @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser))
+                    @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser, 'otherDesc' => $otherDesc))
 
                     <div class="span2 mark lessonrating">
                         @if ($lesson->review)

@@ -17,7 +17,7 @@
     {{ Former::populate($model) }}
 
     {{-- Lesson time requires some special work to stop the additional 00 seconds messing with the validation --}}
-    {{-- Former::populateField('lesson_time', $model->formatLessonTime('G:i')) --}}
+    {{ Former::populateField('lesson_time', $model->formatLessonTime('G:i')) }}
 
     {{ Former::hidden('id') }}
 
@@ -55,7 +55,7 @@
 
             </div>
             {{ Former::hidden('lesson_time')->id('dtp_input3') }}
-            <div class=" input-append date form_time" data-date="" data-date-format="hh:ii:ss" data-link-field="dtp_input3" data-link-format="hh:ii:ss" style="width:33%;">
+            <div class=" input-append date form_time" data-date="" data-date-format="hh:ii" data-link-field="dtp_input3" data-link-format="hh:ii" style="width:33%;">
                 <input size="16" class="textbox2" type="text" value="{{ $model->lesson_time }}" readonly>
                 <span class="add-on" style="height:44px"><i class="icon-remove"></i></span>
                 <span class="add-on" style="height:44px"><i class="icon-th"></i></span>

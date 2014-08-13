@@ -281,17 +281,17 @@
 </div>
 @if (Auth::check())
 <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    @if (Auth::user()->id == $model->id))
-        @include('lessons.addNewModalContent', array(
-        'expert'    => $model,
-        'student'   => null,
-        ))
-    @else
-        @include('lessons.addNewModalContent', array(
-            'expert'    => $model,
-            'student'   => Auth::user(),
-        ))
-    @endif
+    <?php
+    $lesson = new Lesson;
+    $lesson->tutor = $model->id;
+    $lesson->student = ($lesson->userIsTutor(Auth::user()) ? null : Auth::user()->id);
+    ?>
+    @include('lessons.modalContent', array(
+        'model'     => $lesson,
+        'submit'    => 'lesson.create',
+        'subtitle'  => trans('Propose Lesson Meeting'),
+        'title'     => trans('Add New Lesson'),
+    ))
 </div>
 @endif
 @overwrite
