@@ -11,7 +11,7 @@
         "title": "Botangle - Learn Anything, Anywhere, Anytime"
     },
     "Hook": {
-        "bootstraps": "Settings,Comments,Contacts,Nodes,Meta,Menus,Users,Blocks,Taxonomy,FileManager,Wysiwyg,Ckeditor,Categories,Messages,News,Media"
+        "bootstraps": "Settings,Comments,Contacts,Nodes,Meta,Menus,Users,Blocks,Taxonomy,FileManager,Categories,Messages,News,Media"
     },
     "Croogo": {
         "installed": 1,
