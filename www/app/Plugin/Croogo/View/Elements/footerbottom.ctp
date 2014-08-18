@@ -93,18 +93,5 @@ echo $this->Html->css(array(
 		jQuery(".modal-backdrop").remove();
 	}
 });
-
-// Activate fancyBox
-//jQuery("#myAds").fancybox({
-//	beforeLoad: function() {
-//		jQuery('body').append('<div class="modal-backdrop in"></div>');
-//	},
-//	afterClose: function() {
-//		jQuery(".modal-backdrop").remove();
-//	}
-//});
-//
-//// Launch fancyBox on first element
-//jQuery("#myAds").eq(0).trigger('click');
 </script>
 
