@@ -318,7 +318,7 @@ textarea.textarea{ width:80%; height:auto; padding:5px; color:#2b2b2b; font-fami
 
 input.textbox{ width:60%; height:auto; padding:13px 5px; color:#2b2b2b; font-family:Arial, Helvetica, sans-serif; font-size:14px; border:1px solid #e8e7e7; border-left:3px solid #e27807; border-radius:0px; }
 
-input.textbox2{ width:40%; height:auto; padding:13px 5px; color:#2b2b2b; font-family:Arial, Helvetica, sans-serif; font-size:14px; border:1px solid #e8e7e7; border-left:3px solid #e27807; border-radius:0px; }
+input.textbox2{ width:40%; height:auto; padding:11px 5px; color:#2b2b2b; font-family:Arial, Helvetica, sans-serif; font-size:14px; border:1px solid #e8e7e7; border-left:3px solid #e27807; border-radius:0px; }
 
 label.checkbox{ padding:0px; }
 label.checkbox input[type="checkbox"]{ padding-right:15px; }   
