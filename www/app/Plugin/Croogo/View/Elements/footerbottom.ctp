@@ -58,3 +58,40 @@ echo $this->Html->css(array(
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
     })();
 </script>		
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/js/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="/js/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<!-- Modal popup start -->
+<div id="myAds" style="display:none;width:500px;">
+	<img src="/img/logo_intern_for_aday.png">
+			<p style="font-size: 16px">
+				What's it like at a Startup? Hang out with us for a day and find out!
+				You will see what a day in a life of a Founder is by working with a
+				company for a day! There are many opportunities to improve your
+				skills like programming, working as a team, and much more that
+				just can't be taught in a classroom.
+			</p>
+			<div class="pull-right">
+				<a class="btn" href="#" onclick="$.fancybox.close();">Continue to Botangle</a>
+				<a class="btn btn-primary2" href="http://internforaday.co/">Go to intern for a day</a>
+			</div>
+		</div>
+<!-- Modal popup end -->
+
+<script type="text/javascript">
+	$.fancybox.open([
+    {
+        href : '#myAds'
+    }   
+], {
+    beforeLoad: function() {
+		jQuery('body').append('<div class="modal-backdrop in"></div>');
+	},
+	afterClose: function() {
+		jQuery(".modal-backdrop").remove();
+	}
+});
+</script>
+
