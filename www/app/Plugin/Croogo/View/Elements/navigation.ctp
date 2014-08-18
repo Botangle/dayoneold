@@ -118,4 +118,3 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
 </div>
 <?php echo $this->Html->script(array('/croogo/js/cbpAnimatedHeader.min.js','/croogo/js/classie.js','/croogo/js/modernizr.custom.js',)); 
 ?>
-<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
