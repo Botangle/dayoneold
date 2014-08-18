@@ -118,9 +118,13 @@ Route::get('/user/{username}', array(
         'uses'      => 'UserController@getView',
     ));
 
+Route::get('/user/messages/{username?}/{otherUsername?}', array(
+        'as'        => 'user.messages',
+        'uses'      => 'UserController@getMessages',
+    ));
+
 Route::controller('user', 'UserController', array(
         'getBilling'      => 'user.billing',
-        'getMessages'     => 'user.messages',
         'postChangePassword'    => 'user.change-password',
         'postStatus'      => 'user.status',
     ));
