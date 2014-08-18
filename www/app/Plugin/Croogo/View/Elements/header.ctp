@@ -1,7 +1,15 @@
 <?php
 echo $this->Layout->js();
-		echo $this->Html->script(array( '/croogo/js/autocomplete/jquery-1.9.1',
-			'/croogo/js/autocomplete/jquery.ui.core','/croogo/js/autocomplete/jquery.ui.widget','/croogo/js/autocomplete/jquery.ui.position','/croogo/js/autocomplete/jquery.ui.menu','/croogo/js/autocomplete/jquery.ui.autocomplete',
+?>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<?php
+		echo $this->Html->script(array( 
+//			'/croogo/js/autocomplete/jquery-1.9.1',
+			'/croogo/js/autocomplete/jquery.ui.core',
+			'/croogo/js/autocomplete/jquery.ui.widget',
+			'/croogo/js/autocomplete/jquery.ui.position',
+			'/croogo/js/autocomplete/jquery.ui.menu',
+			'/croogo/js/autocomplete/jquery.ui.autocomplete',
 			));
  
  echo $this->Html->css(array(
