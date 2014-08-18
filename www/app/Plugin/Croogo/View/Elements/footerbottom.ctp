@@ -57,7 +57,9 @@ echo $this->Html->css(array(
         wa.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://cdn') + '.luckyorange.com/w.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
     })();
-</script>		
+</script>
+
+<?php if($displayInternForADayIntro) : ?>
 
 <!-- Add fancyBox -->
 <link rel="stylesheet" href="/js/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
@@ -81,7 +83,7 @@ echo $this->Html->css(array(
 <!-- Modal popup end -->
 
 <script type="text/javascript">
-	$.fancybox.open([
+    $.fancybox.open([
     {
         href : '#myAds'
     }   
@@ -94,4 +96,4 @@ echo $this->Html->css(array(
 	}
 });
 </script>
-
+<?php endif; ?>
