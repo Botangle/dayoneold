@@ -1734,7 +1734,7 @@ class UsersController extends PostLessonAddController {
 					} else {
 						$this->redirect(array(
                                 'plugin' => 'users',
-                                'controller' => 'transaction',
+                                'controller' => 'transactions',
                                 'action'     => 'create',
                             ));
 					}
