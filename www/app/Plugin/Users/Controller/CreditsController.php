@@ -95,9 +95,9 @@ class CreditsController extends UsersAppController {
 
         // if we're not setup to handle selling credits, then we don't want to offer it in our UI
         $this->set('enableCreditSales', false);
-        if(Configure::read('Paypal.appId') != '') {
-            $this->set('enableCreditSales', true);
-        }
+//        if(Configure::read('Paypal.appId') != '') {
+//            $this->set('enableCreditSales', true);
+//        }
 
         $this->set('email', $this->Auth->user('email')); // our user's email address so they can send money to Paypal
         $this->set('transactions', $transactions);
