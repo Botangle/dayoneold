@@ -194,11 +194,6 @@ class UserController extends BaseController {
         }
     }
 
-    public function getMessages($username = null, $otherUser = null)
-    {
-
-    }
-
     /**
      * @param $id
      * @return \Illuminate\View\View

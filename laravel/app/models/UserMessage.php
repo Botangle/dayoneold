@@ -1,6 +1,6 @@
 <?php
 
-class UserMessage extends Eloquent {
+class UserMessage extends MagniloquentContextsPlus {
 
     /**
      * The database table used by the model.
@@ -18,35 +18,61 @@ class UserMessage extends Eloquent {
     );
 
     /**
-     * Adjusting our Laravel created / updated column names to match
-     * what we had in Botangle
-     *
-     * @TODO: take this out long-term to keep things more consistent between this and normal Laravel apps
-     * Note: this table doesn't have an UPDATED_AT, so a mutator is in place lower down to prevent that
-     * causing problems.
+     * Disable timestamps
+     * Even though we'd like to use the created_at (set to date field)
+     * However, there is no effective way of disabling updated_at completely. If you prevent
+     * it from being added by having a setUpdatedAt function that does nothing, updated_at still
+     * gets added in later on in Eloquent/Builder::update()
+     * @var bool
      */
-    const CREATED_AT = 'date';
+    public $timestamps = false;
 
     /**
-     * UserMessage doesn't have an updated_at column but it does have a created_at column (add_date)
-     * - see CONST above
-     * This mutator prevents Eloquent from trying to include the updated_at column
-     * in db updates.
-     * @param $value
+     * Validation rules
      */
-    public function setUpdatedAtAttribute($value)
-    {
-        // Do nothing.
-    }
+    public static $rules = array(
+        "save" => array(
+            'sent_from'             => array('required', 'exists:users,id'),
+            'send_to'               => array('required', 'exists:users,id'),
+            'body'                  => array('required'),
+        ),
+        // additional validation rules for the following contexts
+        'update'    => array(),
+        'create'    => array(),
+    );
 
     public function sender()
     {
-        $this->belongsTo('User', 'sent_from');
+        return $this->belongsTo('User', 'sent_from');
     }
 
     public function recipient()
     {
-        $this->belongsTo('User', 'send_to');
+        return $this->belongsTo('User', 'send_to');
+    }
+
+    public function scopeBetween($query, User $user1, User $user2)
+    {
+        $query->where(function($query) use($user1, $user2){
+                $query->where(function($query) use($user1, $user2){
+                        $query->where('sent_from', $user1->id)
+                            ->where('send_to', $user2->id);
+                    })
+                ->orWhere(function($query) use($user1, $user2){
+                            $query->where('sent_from', $user2->id)
+                                ->where('send_to', $user1->id);
+                        });
+            });
+    }
+
+    public function scopeToUser($query, User $user)
+    {
+        $query->where('send_to', $user->id);
+    }
+
+    public function scopeUnread($query)
+    {
+        $query->where('readmessage', false);
     }
 
 }

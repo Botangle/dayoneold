@@ -31,6 +31,7 @@ class CleanupUsermessages extends Migration {
         Schema::table('usermessages', function(Blueprint $table){
                 $table->foreign('send_to')->references('id')->on('users')->onDelete('cascade');
                 $table->foreign('sent_from')->references('id')->on('users')->onDelete('cascade');
+                $table->index('date');
             });
 	}
 
