@@ -62,9 +62,9 @@ echo $this->Form->input(
 </div>
 <?php
 // it's handy to be able to short-circuit things if we're in dev mode
-if(Configure::read('debug') == '2'): ?>
+/*if(Configure::read('debug') == '2'): ?>
 <button type="submit" class="btn btn-primary">Buy Test</button>
-<?php endif; ?>
+<?php endif; */ ?>
 <?php echo $this->Form->end();?>
 
 <script>
