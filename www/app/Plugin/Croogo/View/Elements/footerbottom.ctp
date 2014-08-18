@@ -69,7 +69,7 @@ echo $this->Html->css(array(
 <div id="myAds" style="display:none;width:500px;">
 	<img src="/img/logo_intern_for_aday.png">
 			<p style="font-size: 16px">
-				What's it like at a Startup? Hang out with us for a day and find out!
+                Check out Botangle's First Event!  What's it like at a Startup? Hang out with us for a day and find out!
 				You will see what a day in a life of a Founder is by working with a
 				company for a day! There are many opportunities to improve your
 				skills like programming, working as a team, and much more that
