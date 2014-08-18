@@ -64,5 +64,7 @@
 		echo $this->Blocks->get('scriptBottom');
 		//echo $this->Js->writeBuffer();
 	?>
+
+	<?php echo $this->element('analyticstracking'); ?>
 	</body>
 </html>
