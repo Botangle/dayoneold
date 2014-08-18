@@ -25,8 +25,11 @@
 			'/croogo/css/dev',
 		));
 		echo $this->Layout->js();
+	?>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<?php
 		echo $this->Html->script(array(
-			'/croogo/js/jquery/jquery-1',
+//			'/croogo/js/jquery/jquery-1',
 			'/croogo/js/jquery/bootstrap',
 			));
 		echo $this->Blocks->get('css');
