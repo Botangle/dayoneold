@@ -362,11 +362,7 @@ class Lesson extends MagniloquentContextsPlus {
             return $this->save();
 
         } elseif ($isConfirming) {
-            $this->readlessontutor = 1;
-            $this->readlesson = 1;
-            $this->laststatus_student = 1;
-            $this->laststatus_tutor = 1;
-            $this->is_confirmed = true;
+            $this->confirm(Auth::user());
             $this->addHistory(self::HISTORY_TYPE_CONFIRMATION, null);
             return $this->save();
 
@@ -423,6 +419,28 @@ class Lesson extends MagniloquentContextsPlus {
             $this->readlessontutor = 0;
             $this->laststatus_tutor = 0;
             $this->laststatus_student = 0;
+        }
+        $this->is_confirmed = false;
+    }
+
+    /**
+     * User $user confirms that they have accepted the lesson
+     * @param User $user
+     */
+    public function confirm(User $user)
+    {
+        if ($user->id == $this->tutor){
+            $this->readlessontutor = 1;
+            $this->laststatus_tutor = 1;
+            if ($this->readlesson){
+                $this->is_confirmed = true;
+            }
+        } elseif ($user->id == $this->student){
+            $this->readlesson = 1;
+            $this->laststatus_student = 1;
+            if ($this->readlessontutor){
+                $this->is_confirmed = true;
+            }
         }
     }
 
