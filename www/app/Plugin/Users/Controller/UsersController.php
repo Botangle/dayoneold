@@ -1664,9 +1664,6 @@ class UsersController extends PostLessonAddController {
  * Binds a student's proposed lesson to a tutor's account. Also notifies a student and tutor with messages about their new lesson
  */
 	public function lessons_add() {
-        if(Configure::read('debug') > 0) {
-            $this->_sendDebugEmail('looking at lessons_add prior to checking post');
-        }
 		if (!empty($this->request->data)) {
 
             if(Configure::read('debug') > 0) {
@@ -1723,10 +1720,17 @@ class UsersController extends PostLessonAddController {
 				}
 			}
 
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('in lessons_add, prior to adding a lesson');
+            }
 
-			if ($this->addLesson($lesson, $user_id_to_message, $id, $student_needs_positive_credit_balance)) {
+            if ($this->addLesson($lesson, $user_id_to_message, $id, $student_needs_positive_credit_balance)) {
 
-				// if we need billing info, then we'll need to put our lesson message and session id generation
+                if(Configure::read('debug') > 0) {
+                    $this->_sendDebugEmail('after adding a lesson, prior to thinking about billing');
+                }
+
+                // if we need billing info, then we'll need to put our lesson message and session id generation
 				// on hold and work on the billing stuff instead
 				if ($student_needs_positive_credit_balance) {
 					$this->Session->write('credit_refill_needed', true);
