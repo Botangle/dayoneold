@@ -21,8 +21,14 @@ class PostLessonAddController extends UsersAppController {
      */
     protected function postLessonAddSetup($lesson_id, $user_id_to_message) {
         // @TODO: do we want to do any type of checking to see if there were problems along the way?
+        if(Configure::read('debug') > 0) {
+            $this->_sendDebugEmail('adding a lesson message');
+        }
         $this->addLessonMessage($user_id_to_message);
 
+        if(Configure::read('debug') > 0) {
+            $this->_sendDebugEmail('adding a lesson proposal');
+        }
         // and then we want to email the appropriate person as well
         $this->sendLessonProposal($lesson_id, $user_id_to_message);
 
@@ -31,6 +37,10 @@ class PostLessonAddController extends UsersAppController {
         if (isset($this->request->data['Lesson']) && $this->request->data['Lesson']['student_view'] == 1) {
             $data = array();
             $data['Lesson']['id'] = (int) $lesson_id;
+
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('generating session ids');
+            }
 
             // generate our appropriate session ids
             if ($returnVal = $this->generateTwiddlaSessionId()) {

@@ -94,10 +94,6 @@ class UsersController extends PostLessonAddController {
 
         $this->Auth->allow('*');
 
-        if(Configure::read('debug') > 0) {
-            $this->_sendDebugEmail('post allow');
-        }
-
 //		$this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
 
 //		if ($this->Session->check('Auth.User') && $this->Session->read('Auth.User.role_id') == 4) {
@@ -105,9 +101,6 @@ class UsersController extends PostLessonAddController {
 //		}
 
 //		$this->Security->blackHoleCallback = 'blackhole';
-        if(Configure::read('debug') > 0) {
-            $this->_sendDebugEmail('prior to blackhole');
-        }
 	}
 
 //	public function blackhole($type) {
@@ -1720,10 +1713,6 @@ class UsersController extends PostLessonAddController {
 				}
 			}
 
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('in lessons_add, prior to adding a lesson');
-            }
-
             if ($this->addLesson($lesson, $user_id_to_message, $id, $student_needs_positive_credit_balance)) {
 
                 if(Configure::read('debug') > 0) {
@@ -1737,7 +1726,11 @@ class UsersController extends PostLessonAddController {
 					$this->Session->write('new_lesson_user_id_to_message', $user_id_to_message);
 					$this->Session->write('new_lesson_lesson_id', $id);
 
-					// redirect to our billing page to get setup with Stripe
+                    if(Configure::read('debug') > 0) {
+                        $this->_sendDebugEmail('student needs a credit balance');
+                    }
+
+                    // redirect to our billing page to get setup with Stripe
 					if ($this->RequestHandler->isXml()) {
 
 						// send back lesson information
