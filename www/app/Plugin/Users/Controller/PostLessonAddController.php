@@ -93,12 +93,12 @@ class PostLessonAddController extends UsersAppController {
                 $this->_sendDebugEmail('prepping more lessons message data', print_r($data['Usermessage'], true));
             }
 
-            App::import('Model', 'Users.UserMessage');
+            App::import('Model', 'Users.Usermessage');
             if(Configure::read('debug') > 0) {
                 $this->_sendDebugEmail('post model import');
             }
 
-            $userMessage = new UserMessage;
+            $userMessage = new Usermessage;
             if(Configure::read('debug') > 0) {
                 $this->_sendDebugEmail('reference our model');
             }
