@@ -83,20 +83,21 @@ class PostLessonAddController extends UsersAppController {
     protected function addLessonMessage($user_id_to_message) {
         try {
             $data = array();
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('prepping lessons message data');
-            }
             $data['Usermessage']['sent_from'] = $this->Auth->user('id');
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('prepping more lessons message data');
-            }
             $data['Usermessage']['sent_to'] = $user_id_to_message;
             $data['Usermessage']['readmessage'] = 0;
             $data['Usermessage']['date'] = date('Y-m-d H:i:s');
             $data['Usermessage']['body'] = " Our Lesson is setup now. Please click here to read."; // @TODO: fix the body so it's clickable
             $data['Usermessage']['parent_id'] = 0;
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('prepping more lessons message data', print_r($data['Usermessage'], true));
+            }
 
             App::import('Model', 'Users.UserMessage');
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('post model import');
+            }
+
             $userMessage = new UserMessage;
             $userMessage->save($data);
             $lastId = $userMessage->getLastInsertId();
@@ -250,9 +251,13 @@ class PostLessonAddController extends UsersAppController {
         return 'croogo@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
     }
 
-    protected function _sendDebugEmail($subject) {
+    protected function _sendDebugEmail($subject, $body = null) {
 
-        $error = $subject;
+        if($body == null) {
+            $error = $subject;
+        } else {
+            $error = $body;
+        }
 
         $this->_sendEmail(array(
                 Configure::read('Site.title'),
