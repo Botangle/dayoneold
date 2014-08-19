@@ -77,7 +77,12 @@ class UsersController extends PostLessonAddController {
 		$dsc = $fields->config;
 		$this->databaseName = $dsc['database'];
 
-		parent::beforeFilter();
+        // setup the ability to turn on debug mode on our Amazon instances as we try and work out problems
+        if($this->request->clientIp() == '71.196.169.198') {
+            Configure::write('debug', 2);
+        }
+
+        parent::beforeFilter();
 
 // the below doesn't handle all the actions we need unlocked.  For now, to get the site working again,
 // I'm enabling them all again
