@@ -99,8 +99,18 @@ class PostLessonAddController extends UsersAppController {
             }
 
             $userMessage = new UserMessage;
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('reference our model');
+            }
             $userMessage->save($data);
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('save our model');
+            }
+
             $lastId = $userMessage->getLastInsertId();
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('retrieved our last id');
+            }
 
 // @TODO: what were we planning to do with this line?  parent_id is always hard-coded to zero above ...
 //        if ($this->request->data['Usermessage']['parent_id'] == 0) {
