@@ -52,10 +52,10 @@
                                         <div class="pull-left"><input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="0" value="{{ $user->average_rating }}"/></div>
                                         <div class="search-result-chat pull-right">
                                             <p class="option-pro">
-                                                {{ Html::link(url('user') .'/'. $user->username, '', array('data-toggle' => 'tooltip', 'title' => 'Profile')) }}
+                                                {{ Html::link(route('user.profile', $user->username), '', array('data-toggle' => 'tooltip', 'title' => 'Profile')) }}
                                             </p>
                                             <p class="option-msg">
-                                                {{ Html::link(url('users/messages') .'/'. $user->username, '', array('data-toggle' => 'Message', 'title' => 'Message')) }}
+                                                {{ Html::link(route('user.messages', $user->username), '', array('data-toggle' => 'Message', 'title' => 'Message')) }}
                                             </p>
 
                                         </div>
@@ -63,7 +63,7 @@
                                     <div class="search-result-title">
 
                                         <p class="FontStyle20">
-                                            {{ Html::link(url('user') .'/'. $user->username, $user->fullName, array('title' => $user->username)) }}
+                                            {{ Html::link(route('user.profile', $user->username), $user->fullName, array('title' => $user->username)) }}
                                         </p>
                                         <span>{{ $user->qualification }}</span></div>
                                     <div class="search-result-details">{{ $user->extracurricular_interests }}</div>
