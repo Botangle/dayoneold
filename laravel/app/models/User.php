@@ -377,4 +377,13 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         return $users;
     }
 
+    public function formatLastMessageDateForHumans()
+    {
+        if ($this->last_message){
+            return \Carbon\Carbon::createFromTimeStamp(strtotime($this->last_message))->diffForHumans();
+        } else {
+            return '';
+        }
+    }
+
 }

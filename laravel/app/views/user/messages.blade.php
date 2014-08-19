@@ -19,7 +19,7 @@
                                 <div class="span8 sender-name">
                                     {{ $listUser->fullName }}<br>
                                     <span class="FontStyle11">
-                                        {{ \Carbon\Carbon::createFromTimeStamp(strtotime($listUser->last_message))->diffForHumans() }}
+                                        {{ $listUser->formatLastMessageDateForHumans() }}
                                     </span>
                                 </div>
                             </div>

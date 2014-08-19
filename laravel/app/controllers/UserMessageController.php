@@ -24,9 +24,11 @@ class UserMessageController extends BaseController {
         //  last_message - this will serve as a messaging menu to view message threads with other users
         $userList = Auth::user()->getUsersMessaged();
 
-        if($userList->count() == 0){
+        if($username == null && $userList->count() == 0){
             return View::make('user.messages-none');
+        } else {
         }
+
 
         if ($user->id == Auth::user()->id){
             // Since the user is looking at their own user messages page, we need to decide which
@@ -41,11 +43,21 @@ class UserMessageController extends BaseController {
                     }
                 }
             }
+
+        } elseif (!$userList->find($user->id)){
+            // Since the user is looking at someone else's messages page, check to make that other user
+            //  is in the userList. If they're not, add them to the beginning of the list, so that
+            //  the logged in user can send them a message, even though there's no current message history
+            //  between them
+                $userList->prepend($user);
         }
+
         $messages = UserMessage::between($user, Auth::user())->orderBy('date')->get();
 
-        // Mark any messages sent to Auth::user as read
-        // This is rather crude, but is a quick improvement on the CakePHP Botangle version.
+        // Mark any messages sent to Auth::user as read (would be better to set that after they've actually
+        //  been read.
+        // This is rather crude, but is an improvement on the CakePHP Botangle version.
+        //  TODO: consider finding a better solution to marking messages as read
         foreach($messages as $message){
             if ($message->readmessage){
                 continue;
