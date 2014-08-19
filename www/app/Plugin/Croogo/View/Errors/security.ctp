@@ -9,3 +9,4 @@
 </p>
 <?php endif; ?>
 <?php Configure::write('debug', 0); ?>
+<!--<?php print $this->request->clientIp(); ?> //-->
