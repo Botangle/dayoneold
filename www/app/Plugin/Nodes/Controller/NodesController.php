@@ -31,6 +31,7 @@ class NodesController extends NodesAppController {
  * @access public
  */
 	public $components = array(
+        'Cookie',
 		'Croogo.Recaptcha',
 		'Search.Prg' => array(
 			'presetForm' => array(
@@ -577,7 +578,15 @@ class NodesController extends NodesAppController {
 		}
 		$this->set(compact('nodes'));
 		*/
-		$this->set("users",$this->User->find('all'
+
+        // decide whether to alert folks to the intern for a day program we have
+        $displayInternForADayIntro = ($this->Cookie->check('displayInternForADayIntro')) ? false : true;
+        $this->set('displayInternForADayIntro', $displayInternForADayIntro);
+
+        // if we do, then we need to not bother them again
+        $this->Cookie->write('displayInternForADayIntro', true, false, '1 year');
+
+        $this->set("users",$this->User->find('all'
 		,array(
 			'conditions'=>array('status'=>1,'is_featured'=>1)
 			,'order'=>'rand()'
