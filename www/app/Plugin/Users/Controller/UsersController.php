@@ -78,7 +78,7 @@ class UsersController extends PostLessonAddController {
 		$this->databaseName = $dsc['database'];
 
         // setup the ability to turn on debug mode on our Amazon instances as we try and work out problems
-        if($this->request->clientIp() == '71.196.169.198') {
+        if($this->request->clientIp(false) == '71.196.169.198') {
             Configure::write('debug', 2);
         }
 
