@@ -194,10 +194,6 @@ class UserController extends BaseController {
         }
     }
 
-    public function getMessages()
-    {
-    }
-
     /**
      * @param $id
      * @return \Illuminate\View\View

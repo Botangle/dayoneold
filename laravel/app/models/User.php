@@ -114,6 +114,16 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         return $this->hasMany('Lesson', 'tutor')->where('active', true);
     }
 
+    public function messagesSent()
+    {
+        return $this->hasMany('Message', 'sent_from');
+    }
+
+    public function messagesReceived()
+    {
+        return $this->hasMany('Message', 'send_to');
+    }
+
     /**
      * Scopes our users down to just active users
      *
@@ -168,6 +178,26 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
                     DB::raw('SUM(duration) as total_duration')
                 ))
             ->where('active', 1)
+            ->groupBy('users.id');
+    }
+
+    public function scopeLastMessageSent($query, User $toUser)
+    {
+        $query->leftJoin('usermessages', 'usermessages.sent_from', '=', 'users.id')
+            ->select(array('users.*', DB::raw('usermessages.id as message_id'),
+                    DB::raw('MAX(usermessages.date) as last_message'),
+                ))
+            ->whereRaw('usermessages.send_to = '. $toUser->id)
+            ->groupBy('users.id');
+    }
+
+    public function scopeLastMessageReceived($query, User $fromUser)
+    {
+        $query->leftJoin('usermessages', 'usermessages.send_to', '=', 'users.id')
+            ->select(array('users.*', DB::raw('usermessages.id as message_id'),
+                    DB::raw('MAX(usermessages.date) as last_message'),
+                ))
+            ->whereRaw('usermessages.sent_from = '. $fromUser->id)
             ->groupBy('users.id');
     }
 
@@ -299,6 +329,52 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     public function getLatestStatusAttribute()
     {
         return $this->statuses->first();
+    }
+
+    /**
+     * Lists the users that $this user has sent/received messages with along with the last_message date
+     * @return mixed
+     */
+    public function getUsersMessaged()
+    {
+        // Get the Users who sent a message to this user with the date the last message was sent
+        $receivedFromUsers = User::lastMessageSent($this)->orderBy('last_message', 'desc')->get();
+
+        // Get the Users who received a message from this user with the date the last message was received
+        $sentToUsers = User::lastMessageReceived($this)->orderBy('last_message', 'desc')->get();
+
+        // Merge the arrays to get 1 item per other user containing the latest date that a message was sent
+        //   either to or from this user
+
+        // Identify the users who this user has only sent a message as a basis
+        $users = $sentToUsers->diff($receivedFromUsers);
+
+        // Then add those that have both sent and received recording the last message date
+        foreach($receivedFromUsers as $fromUser){
+            if ($sentToUsers->contains($fromUser->id)){
+                $sentUser = $sentToUsers->find($fromUser->id);
+                if ($sentUser->last_message > $fromUser->last_message){
+                    $users[] = $sentUser;
+                } else {
+                    $users[] = $fromUser;
+                }
+            } else {
+                $users[] = $fromUser;
+
+            }
+        }
+
+        // Then sort the array by the last_message date descending
+        $users->sort(function($a, $b)
+            {
+                $a = $a->last_message;
+                $b = $b->last_message;
+                if ($a === $b) {
+                    return 0;
+                }
+                return ($a < $b) ? 1 : -1;
+            });
+        return $users;
     }
 
 }

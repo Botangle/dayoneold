@@ -113,6 +113,11 @@ Route::get('/user/calendarEvents/{id}', array(
         'uses'      => 'UserController@getCalendarEvents',
     ));
 
+Route::get('/user/messages/{username?}', array(
+        'as'        => 'user.messages',
+        'uses'      => 'UserMessageController@index',
+    ));
+
 Route::get('/user/{username}', array(
         'as'        => 'user.profile',
         'uses'      => 'UserController@getView',
@@ -120,7 +125,6 @@ Route::get('/user/{username}', array(
 
 Route::controller('user', 'UserController', array(
         'getBilling'      => 'user.billing',
-        'getMessages'     => 'user.messages',
         'postChangePassword'    => 'user.change-password',
         'postStatus'      => 'user.status',
     ));
@@ -159,3 +163,13 @@ Route::controller('lesson', 'LessonController', array(
         'postEdit'      => 'lesson.edit',
         'postReview'    => 'lesson.review',
     ));
+
+/**
+ * UserMessage controller
+ */
+
+Route::post('/user-message/create', array(
+        'as'    => 'user-message.create',
+        'uses'  => 'UserMessageController@postCreate',
+    ));
+
