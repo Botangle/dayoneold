@@ -61,6 +61,9 @@ class PostLessonAddController extends UsersAppController {
         if ($this->request->is('ajax')) {
             $this->sendJsonSuccess($message);
         } else {
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('prior to displaying flash message');
+            }
             // otherwise send a flash message so they can see it on page reload
             $this->Session->setFlash($message, 'default', array('class' => 'success'));
             $this->redirect(array(
@@ -96,8 +99,13 @@ class PostLessonAddController extends UsersAppController {
 //        if ($this->request->data['Usermessage']['parent_id'] == 0) {
             $userMessage->query(" UPDATE `usermessages` SET parent_id = '" . $lastId . "' WHERE id = '" . $lastId . "'");
 //        }
+            if(Configure::read('debug') > 0) {
+              $this->_sendDebugEmail('send lesson message');
+            }
         } catch(Exception $e) {
-            $this->_sendDebugEmail($e->getMessage());
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail($e->getMessage());
+            }
         }
     }
 
