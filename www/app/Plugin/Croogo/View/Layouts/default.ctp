@@ -17,8 +17,8 @@
         echo $this->fetch('meta');
 		echo $this->Layout->feed();
 		echo $this->Html->css(array(
-			'/croogo/css/bootstrap',
-			'/croogo/css/bootstrap.min',
+			'/croogo/css/bootstrap-minified',
+			'/croogo/css/bootstrap.min-minified',
 			'/croogo/css/bootstrap-responsive.min',
 			'/croogo/css/global',
 //			'/croogo/css/navbar-fixed-top',
