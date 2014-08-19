@@ -87,11 +87,13 @@ class UsersController extends PostLessonAddController {
 //        $this->Security->unlockedActions = array('search', 'add', 'billing', 'index', 'registration');
 		$this->Security->unlockedActions = array('*');
 
-		$this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
+        $this->Auth->allow('*');
 
-		if ($this->Session->check('Auth.User') && $this->Session->read('Auth.User.role_id') == 4) {
-			$this->checkpayment();
-		}
+//		$this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
+
+//		if ($this->Session->check('Auth.User') && $this->Session->read('Auth.User.role_id') == 4) {
+//			$this->checkpayment();
+//		}
 
 //		$this->Security->blackHoleCallback = 'blackhole';
 	}
