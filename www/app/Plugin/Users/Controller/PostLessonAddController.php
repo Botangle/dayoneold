@@ -22,7 +22,7 @@ class PostLessonAddController extends UsersAppController {
     protected function postLessonAddSetup($lesson_id, $user_id_to_message) {
         // @TODO: do we want to do any type of checking to see if there were problems along the way?
         if(Configure::read('debug') > 0) {
-            $this->_sendDebugEmail('adding a lesson message');
+            $this->_sendDebugEmail('adding a lesson message: ' . $user_id_to_message);
         }
         $this->addLessonMessage($user_id_to_message);
 
@@ -83,7 +83,13 @@ class PostLessonAddController extends UsersAppController {
     protected function addLessonMessage($user_id_to_message) {
         try {
             $data = array();
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('prepping lessons message data');
+            }
             $data['Usermessage']['sent_from'] = $this->Auth->user('id');
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('prepping more lessons message data');
+            }
             $data['Usermessage']['sent_to'] = $user_id_to_message;
             $data['Usermessage']['readmessage'] = 0;
             $data['Usermessage']['date'] = date('Y-m-d H:i:s');
