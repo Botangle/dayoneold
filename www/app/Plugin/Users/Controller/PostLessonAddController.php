@@ -78,23 +78,27 @@ class PostLessonAddController extends UsersAppController {
      * @param integer $user_id_to_message
      */
     protected function addLessonMessage($user_id_to_message) {
-        $data = array();
-        $data['Usermessage']['sent_from'] = $this->Auth->user('id');
-        $data['Usermessage']['sent_to'] = $user_id_to_message;
-        $data['Usermessage']['readmessage'] = 0;
-        $data['Usermessage']['date'] = date('Y-m-d H:i:s');
-        $data['Usermessage']['body'] = " Our Lesson is setup now. Please click here to read."; // @TODO: fix the body so it's clickable
-        $data['Usermessage']['parent_id'] = 0;
+        try {
+            $data = array();
+            $data['Usermessage']['sent_from'] = $this->Auth->user('id');
+            $data['Usermessage']['sent_to'] = $user_id_to_message;
+            $data['Usermessage']['readmessage'] = 0;
+            $data['Usermessage']['date'] = date('Y-m-d H:i:s');
+            $data['Usermessage']['body'] = " Our Lesson is setup now. Please click here to read."; // @TODO: fix the body so it's clickable
+            $data['Usermessage']['parent_id'] = 0;
 
-        App::import('Model', 'Users.UserMessage');
-        $userMessage = new UserMessage;
-        $userMessage->save($data);
-        $lastId = $userMessage->getLastInsertId();
+            App::import('Model', 'Users.UserMessage');
+            $userMessage = new UserMessage;
+            $userMessage->save($data);
+            $lastId = $userMessage->getLastInsertId();
 
 // @TODO: what were we planning to do with this line?  parent_id is always hard-coded to zero above ...
 //        if ($this->request->data['Usermessage']['parent_id'] == 0) {
-        $userMessage->query(" UPDATE `usermessages` SET parent_id = '" . $lastId . "' WHERE id = '" . $lastId . "'");
+            $userMessage->query(" UPDATE `usermessages` SET parent_id = '" . $lastId . "' WHERE id = '" . $lastId . "'");
 //        }
+        } catch(Exception $e) {
+            $this->_sendDebugEmail($e->getMessage());
+        }
     }
 
     /**
