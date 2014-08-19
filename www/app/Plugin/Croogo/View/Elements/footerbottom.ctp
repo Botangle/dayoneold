@@ -59,7 +59,7 @@ echo $this->Html->css(array(
     })();
 </script>
 
-<?php if($displayInternForADayIntro) : ?>
+<?php if(isset($displayInternForADayIntro) && $displayInternForADayIntro) : ?>
 
 <!-- Add fancyBox -->
 <link rel="stylesheet" href="/js/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
