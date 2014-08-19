@@ -542,4 +542,22 @@ class Lesson extends MagniloquentContextsPlus {
         return ($user->id == $this->student);
     }
 
+    /**
+     * Sends a new lesson message to the other user
+     * @return null|UserMessage
+     */
+    public function sendNewLessonMessage()
+    {
+        if ($this->userIsTutor(Auth::user())){
+            $toUser = $this->studentUser;
+        } elseif ($this->userIsStudent(Auth::user())){
+            $toUser = $this->tutorUser;
+        } else {
+            return null;
+        }
+        return UserMessage::send(Auth::user(), $toUser, 'messages.new-lesson', array(
+                    'model' => $this,
+                ));
+    }
+
 }

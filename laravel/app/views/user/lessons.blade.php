@@ -181,6 +181,7 @@ jQuery('[data-toggle="modal"]').click(function(e) {
                             jQuery('#myModal').css('height', jQuery('#myModal .span9').outerHeight());
                         } else {
                             // Refresh the page to show the changes made
+                            window.location.hash = '#lesson'+data.id;
                             window.location.reload();
                         }
                     }

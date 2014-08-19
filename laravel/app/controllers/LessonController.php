@@ -65,8 +65,14 @@ class LessonController extends BaseController {
         // Since the form data has been validated, we just need to switch on the appropriate
         //   revision flags and send a message
         if ($model->manageChangesThenSave(true)) {
+            $message = $model->sendNewLessonMessage();
+            if (count($message->errors()) > 0){
+                // TODO: we should log this error for follow up but the user doesn't necessarily need to know
+
+            }
             return Response::json(array(
-                    'result' => 'success',
+                    'id'        => $model->id,
+                    'result'    => 'success',
                 ));
 
         }
@@ -121,7 +127,8 @@ class LessonController extends BaseController {
 
         if ($model->manageChangesThenSave(false)) {
             return Response::json(array(
-                    'result' => 'success',
+                    'id'        => $model->id,
+                    'result'    => 'success',
                 ));
 
         }
@@ -178,7 +185,8 @@ class LessonController extends BaseController {
 
         if ($review->save()) {
             return Response::json(array(
-                    'result' => 'success',
+                    'id'        => $model->id,
+                    'result'    => 'success',
                 ));
         }
 

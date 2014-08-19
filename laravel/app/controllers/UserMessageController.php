@@ -36,7 +36,7 @@ class UserMessageController extends BaseController {
             foreach($userList as $listUser){
                 $message = UserMessage::find($listUser->message_id);
                 if ($message){
-                    if(!$message->readmessage){
+                    if($message->send_to == Auth::user()->id && !$message->readmessage){
                         $user = $listUser;
                     }
                 }
@@ -44,11 +44,17 @@ class UserMessageController extends BaseController {
         }
         $messages = UserMessage::between($user, Auth::user())->orderBy('date')->get();
 
-        // Set last message to status read
+        // Mark any messages sent to Auth::user as read
         // This is rather crude, but is a quick improvement on the CakePHP Botangle version.
-        $message = $messages->last();
-        $message->readmessage = true;
-        $message->save();
+        foreach($messages as $message){
+            if ($message->readmessage){
+                continue;
+            }
+            if($message->send_to == Auth::user()->id){
+                $message->readmessage = true;
+                $message->save();
+            }
+        }
 
         return View::make('user.messages', array(
                 'messages'      => $messages,

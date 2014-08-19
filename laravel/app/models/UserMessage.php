@@ -75,4 +75,25 @@ class UserMessage extends MagniloquentContextsPlus {
         $query->where('readmessage', false);
     }
 
+    /**
+     * Creates and saves (sends) a new message between $sender and $recipient
+     * @param User $sender
+     * @param User $recipient
+     * @param $viewName
+     * @param array $viewData
+     * @return UserMessage
+     */
+    public static function send(User $sender, User $recipient, $viewName, Array $viewData)
+    {
+        $message = new UserMessage;
+        $message->fill(array(
+                'sent_from'     => $sender->id,
+                'send_to'       => $recipient->id,
+                'body'          => View::make($viewName, $viewData),
+                'date'          => $message->freshTimestampString(),
+            ));
+        $message->save();
+        return $message;
+    }
+
 }

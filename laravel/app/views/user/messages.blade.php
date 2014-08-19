@@ -49,7 +49,7 @@
                                 </p>
 
                                 <p class="msg-content">
-                                    {{{ $message->body }}}</p>
+                                    {{ $message->body }}</p>
 
                                 <p class="msg-time">{{ \Carbon\Carbon::createFromTimeStamp(strtotime($message->date))->diffForHumans() }}</p>
                             @if($message->sent_from != Auth::user()->id)
