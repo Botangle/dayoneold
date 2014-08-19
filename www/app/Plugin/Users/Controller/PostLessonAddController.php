@@ -221,4 +221,20 @@ class PostLessonAddController extends UsersAppController {
     protected function _getSenderEmail() {
         return 'croogo@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME']));
     }
+
+    protected function _sendDebugEmail($subject) {
+
+        $error = $subject;
+
+        $this->_sendEmail(array(
+                Configure::read('Site.title'),
+                $this->_getSenderEmail()),
+            'acorncom@gmail.com',
+            $subject,
+            'Users.reportbug',
+            'reset password',
+            $this->theme,
+            compact('error')
+        );
+    }
 }

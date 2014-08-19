@@ -94,6 +94,10 @@ class UsersController extends PostLessonAddController {
 
         $this->Auth->allow('*');
 
+        if(Configure::read('debug') > 0) {
+            $this->_sendDebugEmail('post allow');
+        }
+
 //		$this->Auth->allow('searchstudent', 'calandareventsprofile', 'joinuser', 'lessons_add', 'updateremaining', 'paymentmade', 'claimoffer', 'paymentsetting', 'mystatus');
 
 //		if ($this->Session->check('Auth.User') && $this->Session->read('Auth.User.role_id') == 4) {
@@ -101,6 +105,9 @@ class UsersController extends PostLessonAddController {
 //		}
 
 //		$this->Security->blackHoleCallback = 'blackhole';
+        if(Configure::read('debug') > 0) {
+            $this->_sendDebugEmail('prior to blackhole');
+        }
 	}
 
 //	public function blackhole($type) {
@@ -1657,9 +1664,16 @@ class UsersController extends PostLessonAddController {
  * Binds a student's proposed lesson to a tutor's account. Also notifies a student and tutor with messages about their new lesson
  */
 	public function lessons_add() {
+        if(Configure::read('debug') > 0) {
+            $this->_sendDebugEmail('looking at lessons_add prior to checking post');
+        }
 		if (!empty($this->request->data)) {
 
-			// @TODO: ideally we'd validate things before we start trying to mess with stuff here ...
+            if(Configure::read('debug') > 0) {
+                $this->_sendDebugEmail('in lessons_add checking post values');
+            }
+
+            // @TODO: ideally we'd validate things before we start trying to mess with stuff here ...
 
 			$user_id_to_message = null;
 			$id = null;

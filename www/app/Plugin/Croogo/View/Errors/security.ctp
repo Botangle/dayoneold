@@ -8,5 +8,11 @@
 	<?php echo __d('croogo', 'Request blackholed due to "%s" violation.', $type); ?>
 </p>
 <?php endif; ?>
-<?php Configure::write('debug', 0); ?>
+<?php
+if(Configure::read('debug') > 0) {
+    $this->_sendDebugEmail('hit the security page');
+} else {
+    Configure::write('debug', 0);
+}
+?>
 <!--<?php print $this->request->clientIp(false); ?> //-->
