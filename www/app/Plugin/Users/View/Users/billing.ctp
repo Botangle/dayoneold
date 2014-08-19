@@ -24,6 +24,7 @@
                 <p class="FontStyle20 color1">
                   <?php echo __("Payment Type:")?>
                 </p>
+                <p>In order for students to sign up for lessons, we'll need you to specify your rates as well.  Please do so here.</p>
               </div>
 							<?php
 								$this->request->data = $this->Session->read("Auth.User");
@@ -70,54 +71,6 @@ $1000</p> </div> </div>
  <div class="row-fluid payment-blocks"> <div class="span5"> &nbsp; </div> <div class="span5">
 <button type="submit" class="btn btn-primary">Withdrawal</button> </div> </div>
  */ ?>
-            </div>
-          </div>
-        </div>
-        <div class="StaticPageRight-Block">
-          <h2 class="page-title">
-            <?php echo __("Payment Setting")?>
-          </h2>
-          <div class="StaticPageRight-Block">
-            <div class="PageLeft-Block">
-              <div class="row-fluid Add-Payment-blocks">
-                <div class="span12">
-                  <p class="FontStyle20 color1">
-                    <?php echo __("Setup Access to a Stripe Account")?>
-                  </p>
-                </div>
-                  <p>To help us both get paid, we work closely with Stripe.  Stripe will let us bill your students and
-                      take our percentage once things work out.  We'll need you to click the button below and either
-                      sign up for a Stripe account or authorize us on an existing account you have.</p>
-
-                  <p>Once that's done, we'll list you as an expert and start organizing lessons for you!</p>
-
-                  <?php if($stripe_setup) : ?>
-                      <img src="/images/stripe-white.png" alt="Connect with Stripe"> <span class="ok-button"><i class="icon-large icon-ok icon-white"></i> &nbsp;Connected</span>
-                  <?php else :
-
-                  // Now we send our tutor off to Stripe to register for a business account.  we work on pre-filling
-                  // as much info for them as possible to make things simpler as they fill things out
-                  // Details on this page: https://stripe.com/docs/connect/reference#get-authorize-request
-                  $authorize_request_body = array(
-                      'response_type'                   => 'code',
-                      'scope'                           => 'read_write',
-                      'client_id'                       => $stripe_client_id,
-                      'stripe_user[email]'              => $User['User']['lname'], // (with the one we already have for them)
-                      'stripe_user[business_type]'      => 'sole_prop', // https://support.stripe.com/questions/sole-proprietor-without-federal-ein
-                      'stripe_user[first_name]'         => $User['User']['name'],
-                      'stripe_user[last_name]'          => $User['User']['lname'],
-                      'stripe_user[physical_product]'   => 'false',
-                      'stripe_user[product_description]'=> 'Tutoring service. I charge after my lesson is completed',
-                      'stripe_user[product_category]'   => 'education',
-                      'stripe_user[average_payment]'    => '50',
-                      'stripe_user[url]'                => 'http://botangle.com'.$this->webroot.'user/'.$User['User']['username'],
-                  );
-                  $url = "https://connect.stripe.com/oauth/authorize" . '?' . http_build_query($authorize_request_body);
-                  ?>
-                  <a href="<?php echo $url; ?>" id="connectstripe"><img src="/images/stripe-blue.png" alt="Connect with Stripe"></a>
-                  <script>$(document).ready(function() { $('#connectstripe').trigger('click'); });</script>
-                  <?php endif; ?>
-              </div>
             </div>
           </div>
         </div>
