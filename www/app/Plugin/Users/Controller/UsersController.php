@@ -1659,10 +1659,6 @@ class UsersController extends PostLessonAddController {
 	public function lessons_add() {
 		if (!empty($this->request->data)) {
 
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('in lessons_add checking post values');
-            }
-
             // @TODO: ideally we'd validate things before we start trying to mess with stuff here ...
 
 			$user_id_to_message = null;
@@ -1715,20 +1711,12 @@ class UsersController extends PostLessonAddController {
 
             if ($this->addLesson($lesson, $user_id_to_message, $id, $student_needs_positive_credit_balance)) {
 
-                if(Configure::read('debug') > 0) {
-                    $this->_sendDebugEmail('after adding a lesson, prior to thinking about billing');
-                }
-
                 // if we need billing info, then we'll need to put our lesson message and session id generation
 				// on hold and work on the billing stuff instead
 				if ($student_needs_positive_credit_balance) {
 					$this->Session->write('credit_refill_needed', true);
 					$this->Session->write('new_lesson_user_id_to_message', $user_id_to_message);
 					$this->Session->write('new_lesson_lesson_id', $id);
-
-                    if(Configure::read('debug') > 0) {
-                        $this->_sendDebugEmail('student needs a credit balance');
-                    }
 
                     // redirect to our billing page to get setup with Stripe
 					if ($this->RequestHandler->isXml()) {
