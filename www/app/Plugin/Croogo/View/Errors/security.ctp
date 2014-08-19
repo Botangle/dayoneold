@@ -10,7 +10,6 @@
 <?php endif; ?>
 <?php
 if(Configure::read('debug') > 0) {
-    $this->controller->_sendDebugEmail('hit the security page');
 } else {
     Configure::write('debug', 0);
 }
