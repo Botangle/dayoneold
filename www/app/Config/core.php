@@ -48,6 +48,9 @@ if(file_exists(__DIR__ . '/core-' . $env . '.php')) {
     // NOTE: we *don't* want to set these variables here, but we need them so new devs
     // can get going without them set.  These *should* be placed in another file (core-dev or core-production)
     // so they aren't a part of our Git repo
+    $mandrillApiKey         = '';
+    $mandrillApiSubaccount  = 'production';
+
     $tokBoxApiKey       = '';
     $tokBoxApiSecret    = '';
 
@@ -90,6 +93,14 @@ if (file_exists(APP . 'Config' . DS . 'croogo.php')) {
             )
         ));
 }
+
+Configure::write('Mandrill', array(
+        'from'          => 'contactus@botangle.com',
+        'fromName'      => 'Botangle',
+        'apiKey'        => (isset($mandrillApiKey) ? $mandrillApiKey : '6yZHPi6pRMW5deO5L3MRcA'),
+        'subaccount'    => (isset($mandrillApiSubaccount) ? $mandrillApiSubaccount : 'production'),
+    ));
+
 
 Configure::write('OpenTokComponent', array(
         'apiKey' => (isset($tokBoxApiKey) ? $tokBoxApiKey : ''),

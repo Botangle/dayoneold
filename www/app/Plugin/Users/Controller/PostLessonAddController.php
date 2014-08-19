@@ -191,7 +191,19 @@ class PostLessonAddController extends UsersAppController {
         $success = false;
 
         try {
-            $email = new CakeEmail();
+            $email = new CakeEmail(array(
+                'transport'     => 'Mandrill.Mandrill',
+                'uri'           => 'https://mandrillapp.com/api/1.0/',
+//                'emailFormat'   => 'both',
+                'from'          => Configure::read('Mandrill.from'),
+                'fromName'      => Configure::read('Mandrill.fromName'),
+                'api_key'       => Configure::read('Mandrill.apiKey'),
+            ));
+            $email->addHeaders(array(
+                'X-Tags' => array('email',),
+                'X-SubAccount' => Configure::read('Mandrill.subaccount'),
+            ));
+
             $email->from($from[1], $from[0]);
             $email->to($to);
             $email->subject($subject);
