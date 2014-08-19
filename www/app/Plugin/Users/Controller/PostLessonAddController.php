@@ -21,14 +21,8 @@ class PostLessonAddController extends UsersAppController {
      */
     protected function postLessonAddSetup($lesson_id, $user_id_to_message) {
         // @TODO: do we want to do any type of checking to see if there were problems along the way?
-        if(Configure::read('debug') > 0) {
-            $this->_sendDebugEmail('adding a lesson message: ' . $user_id_to_message);
-        }
         $this->addLessonMessage($user_id_to_message);
 
-        if(Configure::read('debug') > 0) {
-            $this->_sendDebugEmail('adding a lesson proposal');
-        }
         // and then we want to email the appropriate person as well
         $this->sendLessonProposal($lesson_id, $user_id_to_message);
 
@@ -37,10 +31,6 @@ class PostLessonAddController extends UsersAppController {
         if (isset($this->request->data['Lesson']) && $this->request->data['Lesson']['student_view'] == 1) {
             $data = array();
             $data['Lesson']['id'] = (int) $lesson_id;
-
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('generating session ids');
-            }
 
             // generate our appropriate session ids
             if ($returnVal = $this->generateTwiddlaSessionId()) {
@@ -61,9 +51,6 @@ class PostLessonAddController extends UsersAppController {
         if ($this->request->is('ajax')) {
             $this->sendJsonSuccess($message);
         } else {
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('prior to displaying flash message');
-            }
             // otherwise send a flash message so they can see it on page reload
             $this->Session->setFlash($message, 'default', array('class' => 'success'));
             $this->redirect(array(
@@ -89,40 +76,20 @@ class PostLessonAddController extends UsersAppController {
             $data['Usermessage']['date'] = date('Y-m-d H:i:s');
             $data['Usermessage']['body'] = " Our Lesson is setup now. Please click here to read."; // @TODO: fix the body so it's clickable
             $data['Usermessage']['parent_id'] = 0;
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('prepping more lessons message data', print_r($data['Usermessage'], true));
-            }
 
             App::import('Model', 'Users.Usermessage');
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('post model import');
-            }
 
             $userMessage = new Usermessage;
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('reference our model');
-            }
             $userMessage->save($data);
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('save our model');
-            }
 
             $lastId = $userMessage->getLastInsertId();
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail('retrieved our last id');
-            }
 
 // @TODO: what were we planning to do with this line?  parent_id is always hard-coded to zero above ...
 //        if ($this->request->data['Usermessage']['parent_id'] == 0) {
             $userMessage->query(" UPDATE `usermessages` SET parent_id = '" . $lastId . "' WHERE id = '" . $lastId . "'");
 //        }
-            if(Configure::read('debug') > 0) {
-              $this->_sendDebugEmail('send lesson message');
-            }
         } catch(Exception $e) {
-            if(Configure::read('debug') > 0) {
-                $this->_sendDebugEmail($e->getMessage());
-            }
+            $this->_sendDebugEmail($e->getMessage());
         }
     }
 
