@@ -42,6 +42,11 @@ if($env == "dev") {
     }
 }
 
+// setup the ability to turn on debug mode on our Amazon instances as we try and work out problems
+if($_SERVER['REMOTE_ADDR'] == '71.196.169.198') {
+    Configure::write('debug', 2);
+}
+
 if(file_exists(__DIR__ . '/core-' . $env . '.php')) {
     require(__DIR__ . '/core-'.$env.'.php');
 } else {
