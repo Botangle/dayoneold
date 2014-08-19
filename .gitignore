@@ -21,6 +21,7 @@ www/app/Plugin/Stripe
 www/app/Plugin/Uploader/
 www/app/Plugin/DebugKit
 www/app/Plugin/CsvView
+www/app/Plugin/Mandrill
 
 # Others
 .DS_Store

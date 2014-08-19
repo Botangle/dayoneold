@@ -15,6 +15,7 @@
         "aws/aws-sdk-php": "~2.2",
 		"josegonzalez/cakephp-csvview": "1.2.0",
         "braintree/braintree_php" : "2.28.0",
-        "paypal/adaptivepayments-sdk-php":"dev-namespace-php5.3"
+        "paypal/adaptivepayments-sdk-php":"dev-namespace-php5.3",
+        "a2design-company/mandrill-cakephp-plugin": "dev-master"
     }
 }
