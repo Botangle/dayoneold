@@ -32,7 +32,7 @@
        </div>
        <div class="checkbox span12 mar0">
             <label>
-              <input type="checkbox"><label>Remember me</label>
+              {{ Form::checkbox('remember_me') }}<label>Remember me</label>
             </label>
       </div>
       <div class="span12 mar0">

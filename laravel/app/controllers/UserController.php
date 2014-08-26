@@ -33,56 +33,44 @@ class UserController extends BaseController {
         // or our new view setup
 
         if(Input::has('data.User.username')) {
-            // old setup
-            $rules = array(
-                'data.User.username'      => array('required', 'min:2', 'max:255'),
-                'data.User.password'      => array('required', 'min:6', 'max:255'),
-            );
-
             $username = Input::get('data.User.username');
             $password = Input::get('data.User.password');
         } else {
-            // new setup (no array nesting needed with Laravel)
-            $rules = array(
-                'username'      => array('required', 'min:2', 'max:255'),
-                'password'      => array('required', 'min:6', 'max:255'),
-            );
-
             $username = Input::get('username');
             $password = Input::get('password');
         }
 
-        $validator = Validator::make(Input::all(), $rules);
-        $validationFailed = $validator->fails();
+        if (Input::has('remember_me')){
+            $rememberMe = Input::get('remember_me');
+        } else {
+            $rememberMe = false;
+        }
 
         $user = User::where('username', $username)->first();
         if ($user){
-            $loginSuccess = $user->isPasswordCorrect($password);
-        } else {
-            $loginSuccess = false;
+            $loggedIn = Auth::attempt(array(
+                    'username' => $username,
+                    'password' => $password,
+                ), $rememberMe);
         }
-
-        // @TODO: attempt only logins for active users
-        if ($validationFailed || !$loginSuccess) {
+        if (!$user || !$loggedIn){
             if ($user){
                 Event::fire('user.login-attempt-failed', array($user));
             }
-
 //            if($this->RequestHandler->isXml()) {
 //                return $this->sendXmlError(1, "The password you entered is incorrect");
 //            } else {
 //            }
 
             return Redirect::route('login')
-                ->with('flash_error', 'The password you entered is incorrect.')
-                ->withErrors($validator)
+                ->with('flash_error', trans('Your username or password is incorrect.'))
                 ->withInput();
         }
 
         Event::fire('user.login', array(Auth::user()));
 
-        // @TODO: do we want to send them a welcome back message?
-        return Redirect::intended(URL::route('user.my-account'));
+        return Redirect::intended(URL::route('user.my-account'))
+            ->with('flash_success', trans('Logged in successfully. Welcome back to Botangle.'));
 
             // API: handle our API info and send back info
 //            if($this->RequestHandler->isXml()) {
