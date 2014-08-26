@@ -34,6 +34,19 @@ class MagniloquentContextsPlus extends Magniloquent
     }
 
     /**
+     * Remove a validation context.
+     *
+     * @param string|array $context
+     * @return $this
+     */
+    public function removeContext($context)
+    {
+        if ($key = array_search($context, $this->contexts) !== false){
+            unset($this->contexts[$key]);
+        }
+    }
+
+    /**
      * Check if the current validation has a context.
      *
      * @return boolean

@@ -202,18 +202,6 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     }
 
     /**
-     * Get the password for the user.
-     *
-     * @TODO: replace this hack with a proper use of Bcrypt hashing setup long-term: http://stackoverflow.com/a/23409614/334913
-     *
-     * @return string
-     */
-    public function getAuthPassword()
-    {
-        return Hash::make($this->password);
-    }
-
-    /**
      * Builds a quick getter (useable at $user->picture) that gets the appropriate image
      *
      * @return mixed|string
@@ -267,17 +255,6 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     }
 
     /**
-     * Returns the encrypted version of $password
-     * @param $password
-     * @return string
-     */
-    protected function encryptPassword($password)
-    {
-        $salt = Config::get('auth.cake.salt');
-        return sha1($salt . $password);
-    }
-
-    /**
      * Returns whether the supplied password is correct for the current user
      * @param $password
      * @return bool
@@ -286,7 +263,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     {
         return Auth::attempt(array(
                 'username' => $this->username,
-                'password' => $this->encryptPassword($password)
+                'password' => $password,
             ));
     }
 
@@ -299,8 +276,13 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     public function updatePassword($oldPassword, $newPassword)
     {
         if ($this->isPasswordCorrect($oldPassword)){
-            $this->password = $this->encryptPassword($newPassword);
-            return $this->save();
+            // Only change the password if it has actually been changed
+            //  Note: $this->password is encrypted, $newPassword isn't yet
+            if (!Hash::check($newPassword, $this->password)){
+                // Magniloquent's autoHasher will encrypt the password, so we don't here
+                $this->password = $newPassword;
+                return $this->save();
+            }
         }
         return false;
     }

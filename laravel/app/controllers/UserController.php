@@ -3,7 +3,7 @@
 class UserController extends BaseController {
 
     public function __construct(){
-//        $this->beforeFilter('csrf', array('only' => 'postCreate, postDelete, postEdit, postRegister, postRemind, postVerify, postSetPassword'));
+        $this->beforeFilter('csrf', array('only' => 'postCreate, postDelete, postEdit, postRegister, postRemind, postVerify, postSetPassword'));
         $this->beforeFilter('ajax', array('only' => 'getCalendarEvents'));
 
         $this->beforeFilter('auth', array(
@@ -175,7 +175,7 @@ class UserController extends BaseController {
         // Validate old and new passwords for correct field format
         $rules = array(
             'old_password'      => array('required', 'min:6', 'max:255', 'password_correct:'.$user->id),
-            'new_password'      => array('required', 'min:6', 'max:255', 'confirmed'),
+            'new_password'      => array('required', 'min:6', 'max:100', 'confirmed'),
         );
         $validator = Validator::make(Input::all(), $rules, $messages);
 
@@ -185,9 +185,14 @@ class UserController extends BaseController {
                 ->with('flash_error', trans("Password change failed."));
         }
 
-        if ($user->updatePassword(Input::get('old_password'), Input::get('new_password'))){
+        if (Input::get('old_password') == Input::get('new_password')){
+            return Redirect::route('user.my-account')
+                ->with('flash_error', trans("Your new password must be different from your old password."));
+
+        } elseif ($user->updatePassword(Input::get('old_password'), Input::get('new_password'))){
             return Redirect::route('user.my-account')
                 ->with('flash_success', trans("You have changed your password."));
+
         } else {
             return Redirect::route('user.my-account')
                 ->with('flash_error', trans("There was a problem updating your password."));

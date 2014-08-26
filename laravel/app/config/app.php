@@ -105,7 +105,7 @@ return array(
 		'Illuminate\Database\DatabaseServiceProvider',
 		'Illuminate\Encryption\EncryptionServiceProvider',
 		'Illuminate\Filesystem\FilesystemServiceProvider',
-		'Illuminate\Hashing\HashServiceProvider',
+//		'Illuminate\Hashing\HashServiceProvider', replaced by BotangleHashProvider
 		'Illuminate\Html\HtmlServiceProvider',
 		'Illuminate\Log\LogServiceProvider',
 		'Illuminate\Mail\MailServiceProvider',
@@ -129,6 +129,7 @@ return array(
         'Menu\MenuServiceProvider',
         'Way\Generators\GeneratorsServiceProvider',
         'Former\FormerServiceProvider',
+        'BotangleHashProvider',
 	),
 
 	/*
