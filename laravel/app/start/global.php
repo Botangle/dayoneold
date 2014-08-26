@@ -83,6 +83,18 @@ require app_path().'/filters.php';
 
 /*
 |--------------------------------------------------------------------------
+| Require The Events (Event Handlers) File
+|--------------------------------------------------------------------------
+|
+| Next we will load the events file for the application. This gives us
+| a nice separate location to store our event handlers.
+|
+*/
+
+require app_path().'/events.php';
+
+/*
+|--------------------------------------------------------------------------
 | Macros
 |--------------------------------------------------------------------------
 |

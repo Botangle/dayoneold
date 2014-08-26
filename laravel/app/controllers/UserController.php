@@ -29,8 +29,6 @@ class UserController extends BaseController {
 
     public function postLogin()
     {
-        Event::fire('Controller.User.beforeLogin', $this);
-
         // we need to handle either old ways of passing in data
         // or our new view setup
 
@@ -66,7 +64,9 @@ class UserController extends BaseController {
 
         // @TODO: attempt only logins for active users
         if ($validationFailed || !$loginSuccess) {
-            Event::fire('Controller.User.loginFailure', $this);
+            if ($user){
+                Event::fire('user.login-attempt-failed', array($user));
+            }
 
 //            if($this->RequestHandler->isXml()) {
 //                return $this->sendXmlError(1, "The password you entered is incorrect");
@@ -79,10 +79,7 @@ class UserController extends BaseController {
                 ->withInput();
         }
 
-        Event::fire('Controller.User.loginSuccessful', $this);
-
-        // register that this user is online now
-        Auth::user()->setOnlineStatus(true);
+        Event::fire('user.login', array(Auth::user()));
 
         // @TODO: do we want to send them a welcome back message?
         return Redirect::intended(URL::route('user.my-account'));
@@ -145,6 +142,7 @@ class UserController extends BaseController {
         }*/
 
         if ($user->save(Input::all())) {
+            Event::fire('user.account-updated', array(Auth::user()));
             return Redirect::back()
                 ->withInput(Input::all())
                 ->with('flash_success', trans("Your information has been updated"));
@@ -192,6 +190,7 @@ class UserController extends BaseController {
                 ->with('flash_error', trans("Your new password must be different from your old password."));
 
         } elseif ($user->updatePassword(Input::get('old_password'), Input::get('new_password'))){
+            Event::fire('user.password-change', array(Auth::user()));
             return Redirect::route('user.my-account')
                 ->with('flash_success', trans("You have changed your password."));
 

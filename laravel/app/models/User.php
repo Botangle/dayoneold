@@ -251,16 +251,6 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         return ($this->role_id == 1) ? true : false;
     }
 
-    /**
-     * Whether the specified user is online or not
-     * @param boolean $isOnline
-     */
-    public function setOnlineStatus($isOnline)
-    {
-        $this->is_online = $isOnline;
-        $this->save();
-    }
-
     public function getAverageRatingAttribute()
     {
         return round($this->ratings_average, 0, PHP_ROUND_HALF_DOWN);
@@ -377,6 +367,22 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             return \Carbon\Carbon::createFromTimeStamp(strtotime($this->last_message))->diffForHumans();
         } else {
             return '';
+        }
+    }
+
+    /**
+     * @param $eventType
+     * @return array|\Illuminate\Database\Eloquent\Model|static
+     */
+    public function logEvent($eventType)
+    {
+        $logEntry = UserLog::create(array(
+                'user_id'   => $this->id,
+                'type'      => $eventType,
+                'created'   => $this->freshTimestampString(),
+            ));
+        if (!$logEntry->id){
+            Event::fire('user_log.errors', array($logEntry->errors()));
         }
     }
 
