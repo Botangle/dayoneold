@@ -14,6 +14,15 @@ class PageController extends BaseController {
             ));
     }
 
+    public function getTerms()
+    {
+        return View::make('page.terms')
+            ->nest(
+                'leftPanel',
+                'page.leftpanel'
+            );
+    }
+
     public function getAbout()
     {
         return View::make('page.about')

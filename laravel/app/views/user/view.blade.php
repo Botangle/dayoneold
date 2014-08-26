@@ -17,7 +17,7 @@
 @stop
 
 @section('breadcrumbs')
-{{ Breadcrumbs::renderIfExists('user', $model->full_name) }}
+{{ Breadcrumbs::render('user.profile', $model) }}
 @overwrite
 
 @section('content')

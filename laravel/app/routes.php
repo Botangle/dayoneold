@@ -31,7 +31,14 @@ Route::get('/how-it-works', array(
         'as'        => 'how-it-works',
         'uses'      => 'PageController@getHowItWorks',
     ));
+Route::get('/terms', array(
+        'as'    => 'terms',
+        'uses'  => 'PageController@getTerms',
+    ));
 
+/**
+ * Registration Controller routes
+ */
 Route::get('/registration/student', array(
         'as'    => 'register.student',
         'uses'  => 'RegistrationController@getRegisterStudent',
@@ -48,12 +55,6 @@ Route::post('/registration/tutor', array(
         'as'    => 'register.expert',
         'uses'  => 'RegistrationController@postRegisterExpert',
     ));
-
-Route::get('/terms', array(
-        'as'    => 'terms',
-        'uses'  => 'RegistrationController@getTerms',
-    ));
-
 
 /**
  * Categories controller

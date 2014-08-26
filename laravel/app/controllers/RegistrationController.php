@@ -80,8 +80,4 @@ class RegistrationController extends BaseController {
 
     }
 
-    public function getTerms()
-    {
-        return View::make('registration.terms');
-    }
 }

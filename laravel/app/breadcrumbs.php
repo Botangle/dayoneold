@@ -39,12 +39,6 @@ Breadcrumbs::register('register.expert', function($breadcrumbs) {
         $breadcrumbs->push('Expert Sign Up', route('register.expert'));
     });
 
-Breadcrumbs::register('terms', function($breadcrumbs) {
-        $breadcrumbs->parent('home');
-
-        $breadcrumbs->push('Terms of Use and Privacy Policy', route('terms'));
-    });
-
 Breadcrumbs::register('user.billing', function($breadcrumbs) {
         $breadcrumbs->parent('home');
         $breadcrumbs->push('Billing', route('user.billing'));
@@ -61,20 +55,29 @@ Breadcrumbs::register('user.my-account', function($breadcrumbs) {
         $breadcrumbs->parent('home');
         $breadcrumbs->push('My Account', route('user.my-account'));
     });
-Breadcrumbs::register('user.profile', function($breadcrumbs, $user) {
+Breadcrumbs::register('users.top-chart', function($breadcrumbs) {
         $breadcrumbs->parent('home');
-        $breadcrumbs->push(HTML::entities($user), route('user.profile', array($user)));
+        $breadcrumbs->push('Top Charts', route('users.top-chart'));
+    });
+Breadcrumbs::register('user.profile', function($breadcrumbs, $user) {
+        // For some reason, this is getting called twice, and the second time the $user object
+        //   isn't being passed through but the username instead. So, this is a workaround for now.
+        if(is_object($user)){
+            $breadcrumbs->parent('home');
+            $breadcrumbs->push(HTML::entities($user->fullname), route('user.profile', $user->username));
+        }
     });
 
+
 Breadcrumbs::register('page', function($breadcrumbs, $page) {
-        $breadcrumbs->parent('category', $page->category);
-        $breadcrumbs->push($page->title, route('page', $page->id));
-    });
+    $breadcrumbs->parent('category', $page->category);
+    $breadcrumbs->push($page->title, route('page', $page->id));
+});
 	
 Breadcrumbs::register('news.detail', function($breadcrumbs) {
-        $breadcrumbs->parent('home');
-        $breadcrumbs->push('News', route('news.detail'));
-    });
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('News', route('news.detail'));
+});
 
 Breadcrumbs::register('how-it-works', function($breadcrumbs) {
 	$breadcrumbs->parent('home');
@@ -96,9 +99,7 @@ Breadcrumbs::register('contact', function($breadcrumbs) {
 	$breadcrumbs->push('Contact Us', route('contact'));
 });
 
-Breadcrumbs::register('users.top-chart', function($breadcrumbs) {
-        $breadcrumbs->parent('home');
-
-        $breadcrumbs->push('Top Charts', route('users.top-chart'));
-    });
-
+Breadcrumbs::register('terms', function($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push('Terms of Use and Privacy Policy', route('terms'));
+});
