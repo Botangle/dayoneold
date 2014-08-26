@@ -1,5 +1,6 @@
 <div class="row-fluid">
     {{ Former::textarea('subject')
+    ->id('UserSubject')
     ->addClass('textarea ui-autocomplete-input')
     ->rows(3)
     ->autocomplete('off')

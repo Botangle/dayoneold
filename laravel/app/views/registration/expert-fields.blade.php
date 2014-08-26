@@ -5,6 +5,7 @@
     ->autocomplete('off')
     ->placeholder(trans('Teaching experience'))
     ->label(__('Subject:'))
+    ->id('UserSubject')
     ->required()
     }}
     <p class="help-block field-helper-below">{{ trans("Separate Subjects with commas") }}</p>

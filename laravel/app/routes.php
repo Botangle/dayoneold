@@ -111,6 +111,7 @@ Route::get('/user/my-account', array(
         'as'        => 'user.my-account',
         'uses'      => 'UserController@getMyAccount',
     ));
+Route::post('/user/my-account', 'UserController@postMyAccount');
 
 Route::get('/user/search', array(
         'as'        => 'user.search',

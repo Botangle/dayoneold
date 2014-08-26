@@ -1,5 +1,20 @@
 @extends('registration.layout')
 
+@section('head')
+@parent
+{{HTML::script('js/jqueryui/jquery-1.9.1.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.core.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.widget.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.position.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.menu.js')}}
+{{HTML::script('js/jqueryui/jquery.ui.autocomplete.js')}}
+
+{{HTML::style('css/jqueryui/themes/base/jquery.ui.all.css')}}
+{{HTML::style('css/jqueryui/demos.css')}}
+
+@stop
+
+
 @section('page-content')
     <h2 class="page-title">{{ trans("Botangle Sign Up") }}</h2>
     <div class="row-fluid">
@@ -78,5 +93,6 @@
 
 @section('jsFiles')
 @parent
+{{ Html::script(url('js/subject-autocomplete-multiselect.js')) }}
 {{ Html::script(url('js/password-strength.js')) }}
 @stop
