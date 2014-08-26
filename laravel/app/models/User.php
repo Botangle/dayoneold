@@ -37,8 +37,11 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
      * @var array
      */
     protected $fillable = array(
+        'email',
+        'username',
         'name',
         'lname',
+        'role_id',
         'subject',
         'qualification',
         'teaching_experience',
@@ -51,11 +54,15 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         'link_twitter',
         'link_googleplus',
         'link_thumblr',
+        'password',
+        'password_confirmation',
+        'terms',
     );
 
     protected $niceNames = array(
         'name'  => 'First Name',
         'lname' => 'Last Name',
+        'terms' => 'Terms of Use and Privacy Policy',
     );
 
     /**
@@ -64,12 +71,11 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     public static $rules = array(
         "save" => array(
         ),
-        "change-password" => array(
-
-        ),
         'student-save' => array(
-            'name'                      => array('required|max:50'),
-            'lname'                     => array('required|max:50'),
+            'username'                  => array('required', 'max:60', 'unique:users'),
+            'email'                     => array('required', 'email', 'max:100', 'unique:users'),
+            'name'                      => array('required', 'max:50'),
+            'lname'                     => array('required', 'max:50'),
             'profilepic'                => array('image', 'max:5000'), // 5MB
         ),
         'tutor-save' => array(
@@ -80,6 +86,12 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             'link_twitter'              => array('max:255'),
             'link_googleplus'           => array('max:255'),
             'link_thumblr'              => array('max:255'),
+        ),
+        'registration-save' => array(
+            'terms'                     => array('accepted'),
+        ),
+        'password-save' => array(
+            'password'                  => array('required', 'min:6', 'max:100', 'confirmed'),
         ),
         'update'    => array(),
         'create'    => array(),

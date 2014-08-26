@@ -28,6 +28,23 @@ Breadcrumbs::register('login', function($breadcrumbs) {
         $breadcrumbs->push('Sign In', route('login'));
     });
 
+Breadcrumbs::register('register.student', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+
+        $breadcrumbs->push('Student Sign Up', route('register.student'));
+    });
+Breadcrumbs::register('register.expert', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+
+        $breadcrumbs->push('Expert Sign Up', route('register.expert'));
+    });
+
+Breadcrumbs::register('terms', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+
+        $breadcrumbs->push('Terms of Use and Privacy Policy', route('terms'));
+    });
+
 Breadcrumbs::register('user.billing', function($breadcrumbs) {
         $breadcrumbs->parent('home');
         $breadcrumbs->push('Billing', route('user.billing'));

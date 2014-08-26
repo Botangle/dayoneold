@@ -40,6 +40,20 @@ Route::get('/registration/tutor', array(
         'as'    => 'register.expert',
         'uses'  => 'RegistrationController@getRegisterExpert',
     ));
+Route::post('/registration/student', array(
+        'as'    => 'register.student',
+        'uses'  => 'RegistrationController@postRegisterStudent',
+    ));
+Route::post('/registration/tutor', array(
+        'as'    => 'register.expert',
+        'uses'  => 'RegistrationController@postRegisterExpert',
+    ));
+
+Route::get('/terms', array(
+        'as'    => 'terms',
+        'uses'  => 'RegistrationController@getTerms',
+    ));
+
 
 /**
  * Categories controller
@@ -108,6 +122,21 @@ Route::get('/user/lessons', array(
         'uses'      => 'UserController@getLessons',
     ));
 
+Route::post('/user/change-password', array(
+        'as'        => 'user.change-password',
+        'uses'      => 'UserController@postChangePassword',
+    ));
+
+Route::post('/user/status', array(
+        'as'        => 'user.status',
+        'uses'      => 'UserController@postStatus',
+    ));
+
+Route::get('/user/billing', array(
+        'as'        => 'user.billing',
+        'uses'      => 'UserController@getBilling',
+    ));
+
 Route::get('/user/calendarEvents/{id}', array(
         'as'        => 'user.calendar-events',
         'uses'      => 'UserController@getCalendarEvents',
@@ -121,12 +150,6 @@ Route::get('/user/messages/{username?}', array(
 Route::get('/user/{username}', array(
         'as'        => 'user.profile',
         'uses'      => 'UserController@getView',
-    ));
-
-Route::controller('user', 'UserController', array(
-        'getBilling'      => 'user.billing',
-        'postChangePassword'    => 'user.change-password',
-        'postStatus'      => 'user.status',
     ));
 
 Route::get('/subject/search', array(

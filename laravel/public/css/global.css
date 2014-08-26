@@ -1229,3 +1229,17 @@ a.Social-Boxs-Links:hover {
 a > .Message-row.viewing-message .sender-name {
     color: #333!important;
 }
+
+/* Password strength indicator */
+.password-strength-indicator {
+    margin-top: -20px;
+}
+.password-security {
+    width:269px;
+    height:10px;
+}
+.security {background-image:url(/images/password-security.jpg)}
+.weak{height:10px; width:30px}
+.weak1{height:10px; width:60px}
+.Good{height:10px; width:120px}
+.Strong{height:10px; width:260px}
