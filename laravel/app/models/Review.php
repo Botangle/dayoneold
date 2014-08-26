@@ -65,4 +65,20 @@ class Review extends MagniloquentContextsPlus {
         return $this->belongsTo('User', 'rate_to');
     }
 
+    /**
+     * @param $eventType
+     * @return array|\Illuminate\Database\Eloquent\Model|static
+     */
+    public function logEvent($eventType)
+    {
+        $logEntry = UserLog::create(array(
+                'user_id'           => $this->reviewer->id,
+                'type'              => $eventType,
+                'related_type_id'   => $this->id,
+                'created'           => $this->freshTimestampString(),
+            ));
+        if (!$logEntry->id){
+            Event::fire('user_log.errors', array($logEntry->errors()));
+        }
+    }
 }

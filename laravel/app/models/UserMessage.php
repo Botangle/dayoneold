@@ -96,4 +96,21 @@ class UserMessage extends MagniloquentContextsPlus {
         return $message;
     }
 
+    /**
+     * @param $eventType
+     * @return array|\Illuminate\Database\Eloquent\Model|static
+     */
+    public function logEvent($eventType)
+    {
+        $logEntry = UserLog::create(array(
+                'user_id'           => $this->sender->id,
+                'type'              => $eventType,
+                'related_type_id'   => $this->id,
+                'created'           => $this->freshTimestampString(),
+            ));
+        if (!$logEntry->id){
+            Event::fire('user_log.errors', array($logEntry->errors()));
+        }
+    }
+
 }

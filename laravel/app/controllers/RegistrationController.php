@@ -52,7 +52,13 @@ class RegistrationController extends BaseController {
 
 
         if ($user->save()){
+            if ($user->isTutor()){
+                Event::fire('user.expert-registration', array($user));
+            } else {
+                Event::fire('user.student-registration', array($user));
+            }
             Auth::login($user);
+            Event::fire('user.login', array($user));
             if (Auth::user()->isTutor()){
                 return Redirect::route('user.billing')
                     ->with('flash_success', trans("You have successfully registered an account. Please add in your hourly rate and you will be set."));

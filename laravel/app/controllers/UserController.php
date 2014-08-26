@@ -262,11 +262,14 @@ class UserController extends BaseController {
 
         $profileUrl = 'user/'.$user->username;
 
-        if (UserStatus::create(array(
+        $userStatus = UserStatus::create(array(
                 'created_by_id' => $user->id,
                 'status_text'   => Input::get('status_text'),
                 'status'        => 1,
-            ))){
+            ));
+
+        if ($userStatus->id){
+            Event::fire('user.new-status', array($userStatus));
             return Redirect::to($profileUrl)
                 ->with('flash_success', trans("You have updated your status."));
         } else {

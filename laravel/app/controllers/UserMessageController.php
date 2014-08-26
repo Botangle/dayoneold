@@ -86,6 +86,7 @@ class UserMessageController extends BaseController {
                     'date'      => $message->freshTimestampString(),
                 )));
         if ($message->save()) {
+            Event::fire('user.sent-message', array($message));
             return Redirect::route('user.messages', $recipient->username)
                 ->with('flash_success', trans("You have sent a message."));
 

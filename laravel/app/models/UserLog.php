@@ -16,6 +16,8 @@ class UserLog extends Eloquent {
     protected $fillable = array(
         'user_id',
         'type',
+        'related_type_id',
+        'description',
         'created',
     );
 

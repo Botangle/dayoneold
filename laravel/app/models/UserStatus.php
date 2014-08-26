@@ -18,7 +18,23 @@ class UserStatus extends Eloquent {
 
     public function user()
     {
-        $this->belongsTo('User', 'created_by_id');
+        return $this->belongsTo('User', 'created_by_id');
     }
 
+    /**
+     * @param $eventType
+     * @return array|\Illuminate\Database\Eloquent\Model|static
+     */
+    public function logEvent($eventType)
+    {
+        $logEntry = UserLog::create(array(
+                'user_id'           => $this->user->id,
+                'type'              => $eventType,
+                'related_type_id'   => $this->id,
+                'created'           => $this->freshTimestampString(),
+            ));
+        if (!$logEntry->id){
+            Event::fire('user_log.errors', array($logEntry->errors()));
+        }
+    }
 }
