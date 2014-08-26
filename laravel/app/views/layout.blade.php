@@ -25,7 +25,6 @@
     {{-- @TODO: Let's take this line out and move it to only the pages we need it on --}}
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 
-    <script type="text/javascript" src="/js/cbpAnimatedHeader.min.js"></script>
     <script type="text/javascript" src="/js/classie.js"></script>
     <script type="text/javascript" src="/js/modernizr.custom.js"></script>
 	@show
@@ -141,6 +140,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(wa, s);
     })();
 </script>
+<script type="text/javascript" src="/js/cbpAnimatedHeader.min.js"></script>
 @show
 
 </body>
