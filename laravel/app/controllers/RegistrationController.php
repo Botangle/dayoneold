@@ -52,8 +52,16 @@ class RegistrationController extends BaseController {
 
 
         if ($user->save()){
-            return Redirect::route('user.my-account')
-                ->with('flash_success', trans("You have successfully registered an account! On to find a good tutor! :-)"));
+            Auth::login($user);
+            if (Auth::user()->isTutor()){
+                return Redirect::route('user.billing')
+                    ->with('flash_success', trans("You have successfully registered an account. Please add in your hourly rate and you will be set."));
+
+            } else {
+                return Redirect::route('user.my-account')
+                    ->with('flash_success', trans("You have successfully registered an account! On to find a good tutor! :-)"));
+
+            }
         }
         // Since save failed, we need to pass back the unencrypted password to the form (that may or may
         //  not have been autoHashed by Magniloquent before failing)

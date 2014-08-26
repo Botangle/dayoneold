@@ -14,6 +14,8 @@ class UserController extends BaseController {
 
     public function getBilling()
     {
+        // TODO: complete the billing view
+        return View::make('user.billing');
     }
 
     public function getForgot()
