@@ -3,6 +3,12 @@
 	"description": "The Laravel Framework.",
 	"keywords": ["framework", "laravel"],
 	"license": "MIT",
+    "repositories": [
+        {// Override for vespakoen/menu
+            "type": "vcs",
+            "url": "git://github.com/martynling/menu.git"
+        }
+    ],
 	"require": {
 		"laravel/framework": "4.2.*",
         "machuga/authority-l4": "dev-master",
@@ -11,8 +17,9 @@
 		"coderabbi/virtuoso": "0.*",
 		"davejamesmiller/laravel-breadcrumbs": "~2.2.1",
 		"vespakoen/menu": "dev-master",
-        "magniloquent/magniloquent": "dev-master",
-        "anahkiasen/former": "dev-master"
+        "anahkiasen/former": "dev-master",
+        "league/flysystem": "0.5.*",
+        "aws/aws-sdk-php": "dev-master"
 	},
     "require-dev": {
         "way/generators": "2.*",
