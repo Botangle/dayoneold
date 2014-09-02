@@ -54,6 +54,11 @@ Event::listen('user.account-updated', function($user){
         $user->logEvent('account-updated');
     });
 
+Event::listen('user.profilepic-uploaded', function($user){
+        // Add to User log
+        $user->logEvent('profilepic-uploaded');
+    });
+
 Event::listen('user.expert-registration', function($user){
         // Add to User log
         $user->logEvent('expert-registration');

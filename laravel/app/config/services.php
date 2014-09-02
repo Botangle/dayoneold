@@ -28,4 +28,13 @@ return array(
 		'secret' => '',
 	),
 
+    's3' => array(
+        'accessKey' => '',
+        'secretKey' => '',
+        'bucket'            => 'botangleassets',
+        'region'            => Aws\Common\Enum\Region::US_EAST_1,
+        'url'               => "https://s3.amazonaws.com",
+        'profilepicFolder'  => 'profilepic',
+    ),
+
 );

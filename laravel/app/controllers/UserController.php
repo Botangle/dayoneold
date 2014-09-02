@@ -1,5 +1,10 @@
 <?php
 
+use League\Flysystem\Filesystem;
+use League\Flysystem\Adapter\Local as localAdapter;
+use Aws\S3\S3Client;
+use League\Flysystem\Adapter\AwsS3 as S3Adapter;
+
 class UserController extends BaseController {
 
     public function __construct(){
@@ -109,6 +114,9 @@ class UserController extends BaseController {
         }
         $user = User::findOrFail($userId);
 
+        // Copy the inputs to $inputs for later use if file upload occurs
+        $inputs = Input::all();
+
         // Set the base context (the student account is a subset of the tutor)
         $user->addContext('student-save');
 
@@ -116,23 +124,58 @@ class UserController extends BaseController {
         if ($user->isTutor() || $user->isAdmin()){
             $user->addContext('tutor-save');
         }
-
-        /* TODO: Implement profilepic upload and fetching with Amazon S3
+        // Only validate profilepic if a new file has been uploaded
         if (Input::hasFile('profilepic')){
-            $file = Input::file('file');
-            $filename = $file->getClientOriginalName();
-            $profileDir = url('/upload');
-            if (!$file->move($profileDir, $filename)){
-                return Redirect::route('user.my-account')
-                    ->with('flash_error', trans("Profile Picture could not be saved. Please, try again."));
-            }
-            $user->profilepic = $filename;
-        }*/
+            $user->addContext('profile-pic-upload');
+        }
 
-        if ($user->save(Input::all())) {
+        $user->fill($inputs);
+        if (!$user->validate()){
+            if (isset($inputs['profilepic'])) unset($inputs['profilepic']);
+            return Redirect::route('user.my-account')
+                ->withInput($inputs)
+                ->withErrors($user->errors())
+                ->with('flash_error', trans("Your information could not be updated. Please try again."));
+        }
+
+        /* Profilepic upload to Amazon S3 */
+        if (Input::hasFile('profilepic')){
+            $file = Input::file('profilepic');
+            $filename = $file->getFilename();
+            $local = new Filesystem(new localAdapter($file->getPath()));
+            $remote = new Filesystem(new S3Adapter(
+                S3Client::factory(array(
+                        'key'    => Config::get('services.s3.accessKey'),
+                        'secret' => Config::get('services.s3.secretKey'),
+                    )),
+                Config::get('services.s3.bucket'),
+                Config::get('services.s3.profilepicFolder'),
+                ['region'   => Config::get('services.s3.region')]
+            ));
+
+            if ($local->has($filename)) {
+                $contents = $local->read($filename);
+                $randomFilename = str_random(15).'.'.$file->guessClientExtension();
+                if (!$remote->write($randomFilename, $contents, [
+                        'visibility'    => 'public',
+                    ]))
+                {
+                    return Redirect::route('user.my-account')
+                        ->with('flash_error', trans("Profile Picture could not be uploaded. Please try again."));
+                }
+            }
+            Event::fire('user.profilepic-uploaded', array(Auth::user()));
+            $user->profilepic = Config::get('services.s3.url') .'/'. Config::get('services.s3.bucket') .'/'.
+                Config::get('services.s3.profilepicFolder') . '/'.$randomFilename;
+            // Need to stop it validating the S3 filename, which will fail validation
+            $user->removeContext('profile-pic-upload');
+            // And need to unset $inputs['profilepic'] which can't be serialized for the redirect below
+            unset($inputs['profilepic']);
+        }
+
+        if ($user->save()) {
             Event::fire('user.account-updated', array(Auth::user()));
-            return Redirect::back()
-                ->withInput(Input::all())
+            return Redirect::route('user.my-account')
                 ->with('flash_success', trans("Your information has been updated"));
         } else {
             return Redirect::route('user.my-account')
