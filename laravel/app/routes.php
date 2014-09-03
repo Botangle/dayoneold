@@ -59,9 +59,11 @@ Route::post('/registration/tutor', array(
 /**
  * Categories controller
  */
-Route::controller('categories', 'CategoryController', array(
-        'getIndex' => 'categories.index',
+Route::get('/categories/index', array(
+    'uses' => 'CategoryController@getIndex',
+    'as'    => 'categories.index',
     ));
+Route::post('/categories/index', 'CategoryController@getIndex');
 
 /**
  * Login/logout

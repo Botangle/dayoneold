@@ -14,16 +14,19 @@
         <div class="row-fluid">
             <div class="span12 PageLeft-Block">
                 <div class="search-box">
-                    {{-- echo $this->Form->create('Category', array('class' => 'form-inline form-horizontal', "role" => "form")); --}}
-                    <div class="row-fluid">
-                        <div class="span10"><input name="data[search]" type="text" class="textbox01" placeholder="Search"></div>
-                        <div class="span2">
-                            {{-- echo $this->Form->button(__('Search'), array('type' => 'submit', 'class' => 'btn btn-primary btn-primary2'));
-                            --}}
+                    {{ Form::open([
+                        'class' => 'form-inline form-horizontal',
 
+                    ]) }}
+                    <div class="row-fluid">
+                        <div class="span10">
+                            {{ Form::text('search', '', array('class' => 'textbox01', 'placeholder' => 'Search')) }}
+                        </div>
+                        <div class="span2">
+                            {{ Form::submit(trans('Search'), array('class' => 'btn btn-primary btn-primary2')) }}
                         </div>
                     </div>
-                    {{-- $this->Form->end(); --}}
+                    {{ Form::close() }}
                 </div>
 
                 <div class="row-fluid">
