@@ -8,7 +8,7 @@ class CategoryController extends BaseController {
         if(!empty(Input::get('search'))){
             $categoriesCriteria = $categoriesCriteria->where('name', 'like', '%'. Input::get('search') .'%');
         }
-        $categories = $categoriesCriteria->get();
+        $categories = $categoriesCriteria->orderBy('name', 'asc')->get();
 
         // @TODO: work out the API setup here
         //        if($this->RequestHandler->isXml()) {
