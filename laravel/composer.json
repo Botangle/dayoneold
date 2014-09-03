@@ -20,7 +20,8 @@
         "anahkiasen/former": "dev-master",
         "league/flysystem": "0.5.*",
         "aws/aws-sdk-php": "dev-master",
-        "mjohnson/transit": "dev-master"
+        "mjohnson/transit": "dev-master",
+        "opentok/opentok": "dev-master#e991b877b44431b8dea7bd90287bb4030433e6c5"
 	},
     "require-dev": {
         "way/generators": "2.*",
