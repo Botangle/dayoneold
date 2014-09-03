@@ -2,6 +2,12 @@
 
 class UserMessage extends MagniloquentContextsPlus {
 
+    const LESSON_NEW        = 'messages.new-lesson';
+    const LESSON_CHANGED    = 'messages.changed-lesson';
+    const LESSON_CONFIRMED  = 'messages.confirmed-lesson';
+    const LESSON_REVIEWED   = 'messages.reviewed-lesson';
+    const CUSTOM            = 'messages.custom';
+
     /**
      * The database table used by the model.
      *
@@ -93,23 +99,42 @@ class UserMessage extends MagniloquentContextsPlus {
                 'date'          => $message->freshTimestampString(),
             ));
         $message->save();
+        $recipient->notify($message, $viewName);
         return $message;
     }
 
     /**
      * @param $eventType
+     * @param $description = ''
      * @return array|\Illuminate\Database\Eloquent\Model|static
      */
-    public function logEvent($eventType)
+    public function logEvent($eventType, $description = '')
     {
         $logEntry = UserLog::create(array(
                 'user_id'           => $this->sender->id,
                 'type'              => $eventType,
                 'related_type_id'   => $this->id,
                 'created'           => $this->freshTimestampString(),
+                'description'       => $description,
             ));
         if (!$logEntry->id){
             Event::fire('user_log.errors', array($logEntry->errors()));
+        }
+    }
+
+    public static function getEmailSubjectFromViewName($viewName)
+    {
+        switch($viewName){
+            case self::LESSON_NEW:
+                return trans('Lesson Proposal');
+            case self::LESSON_CHANGED:
+                return trans('Lesson Changed');
+            case self::LESSON_CONFIRMED:
+                return trans('Lesson Confirmed');
+            case self::LESSON_REVIEWED:
+                return trans('Lesson Reviewed');
+            case self::CUSTOM:
+                return trans('You have a message from ') . Auth::user()->fullName;
         }
     }
 

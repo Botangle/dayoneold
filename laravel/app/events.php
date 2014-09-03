@@ -98,3 +98,8 @@ Event::listen('user.sent-message', function($userMessage){
         // Add to User log
         $userMessage->logEvent('sent-message');
     });
+
+Event::listen('user.email-notification-failed', function($userMessage, $error){
+        // Add to User log
+        $userMessage->logEvent('email-notification-failed', $error);
+    });
