@@ -2,13 +2,13 @@
 //get the first name
 $name = Input::get('name');
 $email = Input::get ('email');
-$subject = Input::get ('subject');
+$subject = 'Bug Report: '. Input::get ('subject');
 $message = Input::get ('message');
 $date_time = date("F j, Y, g:i a");
 $userIpAddress = Request::getClientIp();
 ?> 
 
-<p>You have received a new message</p>
+<p>Bug report:</p>
 <br />
 <p>
 Name: <?php echo ($name); ?><br />

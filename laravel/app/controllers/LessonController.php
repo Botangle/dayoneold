@@ -66,7 +66,7 @@ class LessonController extends BaseController {
         //   revision flags and send a message
         if ($model->manageChangesThenSave(true)) {
             Event::fire('user.booked-lesson', array($model));
-            $message = $model->sendLessonMessage('messages.new-lesson');
+            $message = $model->sendLessonMessage(UserMessage::LESSON_NEW);
             if ($message && count($message->errors()) > 0){
                 // TODO: we should log this error for follow up but the user doesn't necessarily need to know
 
@@ -128,7 +128,7 @@ class LessonController extends BaseController {
 
         if ($model->manageChangesThenSave(false)) {
             Event::fire('user.amended-lesson', array($model));
-            $message = $model->sendLessonMessage('messages.changed-lesson');
+            $message = $model->sendLessonMessage(UserMessage::LESSON_CHANGED);
             if ($message && count($message->errors()) > 0){
                 // TODO: we should log this error for follow up but the user doesn't necessarily need to know
 
@@ -192,7 +192,7 @@ class LessonController extends BaseController {
 
         if ($review->save()) {
             Event::fire('user.reviewed-lesson', array($review));
-            $message = $model->sendLessonMessage('messages.reviewed-lesson');
+            $message = $model->sendLessonMessage(UserMessage::LESSON_REVIEWED);
             if ($message && count($message->errors()) > 0){
                 // TODO: we should log this error for follow up but the user doesn't necessarily need to know
 
@@ -220,7 +220,7 @@ class LessonController extends BaseController {
         if ($lesson->userCanConfirm(Auth::user())){
             if ($lesson->manageChangesThenSave(false, true)) {
                 Event::fire('user.confirmed-lesson', array($lesson));
-                $message = $lesson->sendLessonMessage('messages.confirmed-lesson');
+                $message = $lesson->sendLessonMessage(UserMessage::LESSON_CONFIRMED);
                 if ($message && count($message->errors()) > 0){
                     // TODO: we should log this error for follow up but the user doesn't necessarily need to know
 

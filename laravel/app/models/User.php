@@ -406,4 +406,31 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         return 'remember_token';
     }
 
+    /**
+     * Determines whether a notification email should be sent immediately.
+     * This is a stub for a future notifications system
+     * @return bool
+     */
+    public function notifyImmediately()
+    {
+        return true;
+    }
+
+    public function notify(UserMessage $message, $viewName)
+    {
+        $subject = '[Botangle] ' . UserMessage::getEmailSubjectFromViewName($viewName);
+        $user = $this;
+        $viewData = ['messageBody'  => $message->body, 'sender' => $message->sender->fullName];
+        try{
+            Mail::send('emails.message-wrapper', $viewData, function($message) use($user, $subject)
+                {
+                    $message->to($user->email, $user->fullName)->subject($subject);
+                });
+            return true;
+        } catch(Exception $e){
+            Event::fire('user.email-notification-failed', array($message, 'error' => $e->getMessage()));
+            return false;
+        }
+    }
+
 }
