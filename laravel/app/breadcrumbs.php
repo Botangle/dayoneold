@@ -67,7 +67,11 @@ Breadcrumbs::register('user.profile', function($breadcrumbs, $user) {
             $breadcrumbs->push(HTML::entities($user->fullname), route('user.profile', $user->username));
         }
     });
+Breadcrumbs::register('password.remind', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
 
+        $breadcrumbs->push('Forgot Password', route('password.remind'));
+    });
 
 Breadcrumbs::register('page', function($breadcrumbs, $page) {
     $breadcrumbs->parent('category', $page->category);

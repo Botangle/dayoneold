@@ -103,7 +103,7 @@ Route::controller('users', 'UsersController', array(
  * User controller (used for private handling of an individual user account and info)
  * Also used for viewing an individual's profile
  */
-Route::get('/user/forgot', array(
+Route::get('/forgot', array(
         'as'        => 'user.forgot',
         'uses'      => 'UserController@getForgot',
     ));
@@ -198,3 +198,13 @@ Route::post('/user-message/create', array(
         'uses'  => 'UserMessageController@postCreate',
     ));
 
+/**
+ * Password reminders controller
+ */
+Route::get('/password/remind', array(
+        'uses' => 'RemindersController@getRemind',
+        'as' => 'password.remind'
+    ));
+Route::get('password/reset/{token}', 'RemindersController@getReset');
+Route::post('password/reset/{token}', 'RemindersController@postReset');
+Route::controller('password', 'RemindersController');

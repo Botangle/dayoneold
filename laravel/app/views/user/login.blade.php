@@ -36,7 +36,7 @@
             </label>
       </div>
       <div class="span12 mar0">
-          {{ HTML::link(route('user.forgot'), trans("Did you forget your username /password?")) }}
+          {{ HTML::link(action('RemindersController@getRemind'), trans("Did you forget your username /password?")) }}
 
        </div>
         {{ Form::close() }}
