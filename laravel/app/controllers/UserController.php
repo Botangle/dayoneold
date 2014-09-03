@@ -5,6 +5,10 @@ use League\Flysystem\Adapter\Local as localAdapter;
 use Aws\S3\S3Client;
 use League\Flysystem\Adapter\AwsS3 as S3Adapter;
 
+use Transit\Transformer\Image\CropTransformer;
+use Transit\Transformer\Image\ResizeTransformer;
+
+
 class UserController extends BaseController {
 
     public function __construct(){
@@ -140,37 +144,11 @@ class UserController extends BaseController {
 
         /* Profilepic upload to Amazon S3 */
         if (Input::hasFile('profilepic')){
-            $file = Input::file('profilepic');
-            $filename = $file->getFilename();
-            $local = new Filesystem(new localAdapter($file->getPath()));
-            $remote = new Filesystem(new S3Adapter(
-                S3Client::factory(array(
-                        'key'    => Config::get('services.s3.accessKey'),
-                        'secret' => Config::get('services.s3.secretKey'),
-                    )),
-                Config::get('services.s3.bucket'),
-                Config::get('services.s3.profilepicFolder'),
-                ['region'   => Config::get('services.s3.region')]
-            ));
+            $user->profilepic = $this->uploadProfilePicToS3();
 
-            if ($local->has($filename)) {
-                $contents = $local->read($filename);
-                $randomFilename = str_random(15).'.'.$file->guessClientExtension();
-                if (!$remote->write($randomFilename, $contents, [
-                        'visibility'    => 'public',
-                    ]))
-                {
-                    return Redirect::route('user.my-account')
-                        ->with('flash_error', trans("Profile Picture could not be uploaded. Please try again."));
-                }
-            }
-            Event::fire('user.profilepic-uploaded', array(Auth::user()));
-            $user->profilepic = Config::get('services.s3.url') .'/'. Config::get('services.s3.bucket') .'/'.
-                Config::get('services.s3.profilepicFolder') . '/'.$randomFilename;
-            // Need to stop it validating the S3 filename, which will fail validation
+            // Need to stop save validating the S3 filename, which will fail Laravel's image validation.
+            //  Note: the original uploaded file has already passed Laravel's validation above
             $user->removeContext('profile-pic-upload');
-            // And need to unset $inputs['profilepic'] which can't be serialized for the redirect below
-            unset($inputs['profilepic']);
         }
 
         if ($user->save()) {
@@ -182,6 +160,53 @@ class UserController extends BaseController {
                 ->withErrors($user->errors())
                 ->with('flash_error', trans("Your information could not be updated. Please try again."));
         }
+    }
+
+    /**
+     * This uploads the profilepic to S3.
+     * This is a quick and perhaps dirty implementation combining the original Botangle's use of Transit
+     * and the rather nice FlySystem. Transit is only being used for image cropping and resizing
+     * for consistency with the original system.
+     *
+     * @return \Illuminate\Http\RedirectResponse|string
+     */
+    private function uploadProfilePicToS3()
+    {
+        $file = Input::file('profilepic');
+        $extension = $file->guessClientExtension();
+        $tmpPath = $file->getPath();
+        $transitFile = new \Transit\File($file->getPathname());
+        $transitFile = (new CropTransformer(array('width' => 250, 'height' => 250, 'aspect' => true)))->transform($transitFile, true);
+        $transitFile = (new ResizeTransformer(array('width' => 250, 'height' => 250, 'aspect' => true)))->transform($transitFile, true);
+        $transitFilename = basename($transitFile->path());
+        // Need to get the transformed filename
+
+        $local = new Filesystem(new localAdapter($tmpPath));
+        $remote = new Filesystem(new S3Adapter(
+            S3Client::factory(array(
+                    'key'    => Config::get('services.s3.accessKey'),
+                    'secret' => Config::get('services.s3.secretKey'),
+                )),
+            Config::get('services.s3.bucket'),
+            Config::get('services.s3.profilepicFolder'),
+            ['region'   => Config::get('services.s3.region')]
+        ));
+
+        if ($local->has($transitFilename)) {
+            $contents = $local->read($transitFilename);
+            $randomFilename = str_random(15).'.'.$extension;
+            if (!$remote->write($randomFilename, $contents, [
+                    'visibility'    => 'public',
+                ]))
+            {
+                return Redirect::route('user.my-account')
+                    ->with('flash_error', trans("Profile Picture could not be uploaded. Please try again."));
+            }
+        }
+        Event::fire('user.profilepic-uploaded', array(Auth::user()));
+
+        return Config::get('services.s3.url') .'/'. Config::get('services.s3.bucket') .'/'.
+            Config::get('services.s3.profilepicFolder') . '/'.$randomFilename;
     }
 
     public function postChangePassword()

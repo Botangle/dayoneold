@@ -19,7 +19,8 @@
 		"vespakoen/menu": "dev-master",
         "anahkiasen/former": "dev-master",
         "league/flysystem": "0.5.*",
-        "aws/aws-sdk-php": "dev-master"
+        "aws/aws-sdk-php": "dev-master",
+        "mjohnson/transit": "dev-master"
 	},
     "require-dev": {
         "way/generators": "2.*",

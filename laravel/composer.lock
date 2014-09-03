@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5040da10e86ba513525da7b0ef81f24d",
+    "hash": "ace64c6a5464e05a322a90e776f1c7db",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -1285,6 +1285,79 @@
                 "laravel"
             ],
             "time": "2014-08-11 20:02:41"
+        },
+        {
+            "name": "mjohnson/transit",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/milesj/transit.git",
+                "reference": "b8aabc383036e018bccc885cec8859f129120da1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/milesj/transit/zipball/b8aabc383036e018bccc885cec8859f129120da1",
+                "reference": "b8aabc383036e018bccc885cec8859f129120da1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-fileinfo": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "*",
+                "ext-exif": "*",
+                "rackspace/php-opencloud": "*"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Upload files to Amazon S3 and Glacier",
+                "ext-exif": "Extract exif data from images",
+                "ext-gd": "Enable the GD library for image transforming",
+                "rackspace/php-opencloud": "Upload files to RackSpace OpenCloud"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Transit": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Miles Johnson",
+                    "homepage": "http://milesj.me"
+                }
+            ],
+            "description": "A file uploader with support for validation, image transformation and remote transportation.",
+            "homepage": "http://milesj.me/code/php/transit",
+            "keywords": [
+                "application",
+                "archive",
+                "audio",
+                "cloud",
+                "cloudfiles",
+                "exif",
+                "file",
+                "glacier",
+                "image",
+                "importer",
+                "opencloud",
+                "rackspace",
+                "s3",
+                "text",
+                "transformer",
+                "transit",
+                "transporter",
+                "uploader",
+                "validator",
+                "video"
+            ],
+            "time": "2014-08-24 22:50:21"
         },
         {
             "name": "monolog/monolog",
@@ -2937,7 +3010,8 @@
         "codesleeve/asset-pipeline": 20,
         "vespakoen/menu": 20,
         "anahkiasen/former": 20,
-        "aws/aws-sdk-php": 20
+        "aws/aws-sdk-php": 20,
+        "mjohnson/transit": 20
     },
     "platform": [
 
