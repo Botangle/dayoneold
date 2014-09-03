@@ -28,7 +28,9 @@ class RemindersController extends Controller {
 				return Redirect::back()->with('flash_error', Lang::get($response));
 
 			case Password::REMINDER_SENT:
-				return Redirect::back()->with('flash_success', Lang::get($response));
+				return Redirect::back()->with('flash_success',
+                    trans("Password reset email sent. If you do not soon receive this email, please check your junk mail folder. If you still cannot locate the email, please reach out to contactus@botangle.com.")
+                );
 		}
 	}
 
@@ -66,7 +68,7 @@ class RemindersController extends Controller {
             //  out the plain password.
             // So, putting in a workaround here. No need to save if the password hasn't actually been changed
             if (!Hash::check($password, $user->getOriginal('password'))){
-                $user->save();                
+                $user->save();
             }
 		});
 
