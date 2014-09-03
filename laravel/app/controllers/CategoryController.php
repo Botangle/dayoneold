@@ -4,21 +4,19 @@ class CategoryController extends BaseController {
 
     public function getIndex()
     {
-        $categories = Category::active()->where('parent_id', null)->get();
+        $categoriesCriteria = Category::active()->noParent();
+        if(!empty(Input::get('search'))){
+            $categoriesCriteria = $categoriesCriteria->where('name', 'like', '%'. Input::get('search') .'%');
+        }
+        $categories = $categoriesCriteria->get();
 
-//  @TODO: allow searching to find certain categories
-//        if (!empty($this->request->data)) {
-//            $name = $this->request->data['search'];
-//            $cond = array('status' => "1", 'name LIKE ' => "%$name%", 'parent_id' => null);
-//        }
-
-// @TODO: work out the API setup here
-//        if($this->RequestHandler->isXml()) {
-//
-//            $this->helpers[] = 'Categories.UserCount';
-//
-//            $this->set('categories', $c);
-//        }
+        // @TODO: work out the API setup here
+        //        if($this->RequestHandler->isXml()) {
+        //
+        //            $this->helpers[] = 'Categories.UserCount';
+        //
+        //            $this->set('categories', $c);
+        //        }
 
         $results = "";
         $arrayAlphabets = "";
