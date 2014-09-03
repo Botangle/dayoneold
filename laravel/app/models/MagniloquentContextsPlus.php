@@ -41,7 +41,7 @@ class MagniloquentContextsPlus extends Magniloquent
      */
     public function removeContext($context)
     {
-        if ($key = array_search($context, $this->contexts) !== false){
+        if (($key = array_search($context, $this->contexts)) !== false){
             unset($this->contexts[$key]);
         }
     }

@@ -19,7 +19,7 @@
     <div class="StaticPageRight-Block">
         <div class="PageLeft-Block">
             <p class="FontStyle20 color1"><?php echo trans("Update Info") ?></p>
-            {{ Former::open()
+            {{ Former::open_for_files()
             ->method('POST')
             ->class('form-base form-horizontal')
             }}
@@ -38,12 +38,9 @@
             </div>
 
             <div class="row-fluid">
-                <div class="control-group">
-                    {{ Form::label('profilepic', 'Upload Your Pic', array('class' => 'control-label')) }}
-                    <div class="form-group span7 controls">
-                        {{ Form::file('profilepic', array()) }}
-                    </div>
-                </div>
+                {{ Former::file('profilepic')
+                ->label(__('Upload Your Pic'))
+                }}
             </div>
 
             @if ($mode == 'expert')

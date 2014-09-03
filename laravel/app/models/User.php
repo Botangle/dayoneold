@@ -76,7 +76,6 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             'email'                     => array('required', 'email', 'max:100', 'unique:users'),
             'name'                      => array('required', 'max:50'),
             'lname'                     => array('required', 'max:50'),
-            'profilepic'                => array('image', 'max:5000'), // 5MB
         ),
         'tutor-save' => array(
             'subject'                   => array('required'),
@@ -92,6 +91,11 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         ),
         'password-save' => array(
             'password'                  => array('required', 'min:6', 'max:100', 'confirmed'),
+        ),
+        // This should only be validated when a new file is uploaded because
+        // S3 files stored in db records will always fail this validation
+        'profile-pic-upload'    => array(
+            'profilepic'                => array('image', 'max:5000'), // 5MB
         ),
         'update'    => array(),
         'create'    => array(),
@@ -258,6 +262,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
 
     /**
      * Returns whether the supplied password is correct for the current user
+     * TODO: Replace the use of this with Auth::attempt and then remove this, now unnecessary, function
      * @param $password
      * @return bool
      */
