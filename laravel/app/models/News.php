@@ -10,12 +10,23 @@ class News extends Eloquent {
 	protected $table = 'news';
 
     /**
-     * Converts our date attribute to a carbon model so we can do more flexible things with it
-     *
-     * @return \Carbon\Carbon
+     * Dates listed here are automatically mutated to be Carbon date objects - nice!
+     * @var array
      */
-    public function getDateAttribute($value)
+    public $dates = ['date'];
+
+    /**
+     * Substitutes a default image if one doesn't exist for the news article
+     * @param $value
+     * @return string
+     */
+    public function getImageAttribute($value)
     {
-        return Carbon\Carbon::parse($value);
+        // Assuming that full url will be stored for image
+        if ($value){
+            return $value;
+        } else {
+             return url("/images/media-1.jpg");
+        }
     }
 }

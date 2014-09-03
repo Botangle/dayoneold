@@ -77,10 +77,18 @@ Breadcrumbs::register('page', function($breadcrumbs, $page) {
     $breadcrumbs->parent('category', $page->category);
     $breadcrumbs->push($page->title, route('page', $page->id));
 });
-	
-Breadcrumbs::register('news.detail', function($breadcrumbs) {
+
+Breadcrumbs::register('news.index', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+        $breadcrumbs->push('News', route('news.index'));
+    });
+
+Breadcrumbs::register('news.detail', function($breadcrumbs, $news) {
     $breadcrumbs->parent('home');
-    $breadcrumbs->push('News', route('news.detail'));
+    $breadcrumbs->push('News', route('news.index'));
+    if(is_object($news)){
+        $breadcrumbs->push($news->title, route('news.detail'));
+    }
 });
 
 Breadcrumbs::register('how-it-works', function($breadcrumbs) {

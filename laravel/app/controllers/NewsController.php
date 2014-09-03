@@ -4,6 +4,12 @@ class NewsController extends BaseController {
 
     public function getIndex()
     {
+        $articles = News::all();
+        return View::make('news.index', array('articles' => $articles))
+            ->nest(
+                'leftPanel',
+                'page.leftpanel'
+            );
     }
 
     /**
