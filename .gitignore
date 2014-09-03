@@ -7,7 +7,7 @@ composer.phar
 .env.php
 .DS_Store
 Thumbs.db
-
+/laravel/app/config/local/services.php
 
 # Cake App
 Config/database.php
