@@ -85,8 +85,11 @@ Route::group(array('before' => 'auth'), function(){
 /**
  * News controller (used for viewing info about our news items)
  */
-//Route::controller('news', 'NewsController');
 
+Route::get('/news', array(
+        'as'    => 'news.index',
+        'uses'  => 'NewsController@getIndex',
+    ));
 Route::get('/news/detail/{id}', array(
         'as'    => 'news.detail',
         'uses'  => 'NewsController@getDetail',

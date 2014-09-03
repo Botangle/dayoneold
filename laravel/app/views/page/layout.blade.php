@@ -1,11 +1,5 @@
 @extends('layout')
 
-{{--
-echo $this->element("breadcrame",array('breadcrumbs'=>
-        array('Report a Bug'=>'Report a Bug'))
-)
---}}
-
 @section('content')
 <!--Wrapper main-content Block Start Here-->
 <div id="main-content">
