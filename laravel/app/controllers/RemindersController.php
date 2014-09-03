@@ -28,6 +28,10 @@ class RemindersController extends Controller {
 				return Redirect::back()->with('flash_error', Lang::get($response));
 
 			case Password::REMINDER_SENT:
+                $user = User::where('email', Input::get('email'))->first();
+                if ($user){
+                    Event::fire('user.password-reset-request', array($user));
+                }
 				return Redirect::back()->with('flash_success',
                     trans("Password reset email sent. If you do not soon receive this email, please check your junk mail folder. If you still cannot locate the email, please reach out to contactus@botangle.com.")
                 );
@@ -77,9 +81,17 @@ class RemindersController extends Controller {
 			case Password::INVALID_PASSWORD:
 			case Password::INVALID_TOKEN:
 			case Password::INVALID_USER:
-				return Redirect::baflash_ck()->with('error', Lang::get($response));
+                $user = User::where('email', Input::get('email'))->first();
+                if ($user){
+                    Event::fire('user.password-reset-failure', array($user));
+                }
+				return Redirect::back()->with('flash_error', Lang::get($response));
 
 			case Password::PASSWORD_RESET:
+                $user = User::where('email', Input::get('email'))->first();
+                if ($user){
+                    Event::fire('user.password-reset-success', array($user));
+                }
 				return Redirect::route('login')
                     ->with('flash_success', trans('Password reset successfully. Please login with your new password'));
 		}

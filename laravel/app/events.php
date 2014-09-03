@@ -44,6 +44,21 @@ Event::listen('user.login-attempt-failed', function($user){
 /**
  * User events
  */
+Event::listen('user.password-reset-request', function($user){
+        // Add to User log
+        $user->logEvent('password-reset-request');
+    });
+
+Event::listen('user.password-reset-success', function($user){
+        // Add to User log
+        $user->logEvent('password-reset-success');
+    });
+
+Event::listen('user.password-reset-failure', function($user){
+        // Add to User log
+        $user->logEvent('password-reset-failure');
+    });
+
 Event::listen('user.password-change', function($user){
         // Add to User log
         $user->logEvent('password-changed');

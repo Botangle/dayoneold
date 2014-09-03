@@ -1,4 +1,4 @@
-<@extends('email')
+@extends('email')
 <?php
 //get the first name
 $userIpAddress = Request::getClientIp();
