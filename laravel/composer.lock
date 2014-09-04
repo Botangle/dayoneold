@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "f7f6de5b8e2c3c343682511d9ece806e",
+    "hash": "197032bcd5536bbfd8834de6a2c4f4b8",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -1639,12 +1639,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentok/OpenTok-PHP-SDK.git",
-                "reference": "e991b877b44431b8dea7bd90287bb4030433e6c5"
+                "reference": "f52a160037e3a9764eadadca060615a9b45d9f53"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/opentok/OpenTok-PHP-SDK/zipball/f52a160037e3a9764eadadca060615a9b45d9f53",
-                "reference": "e991b877b44431b8dea7bd90287bb4030433e6c5",
+                "reference": "f52a160037e3a9764eadadca060615a9b45d9f53",
                 "shasum": ""
             },
             "require": {
