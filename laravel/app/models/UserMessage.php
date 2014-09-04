@@ -82,25 +82,29 @@ class UserMessage extends MagniloquentContextsPlus {
     }
 
     /**
-     * Creates and saves (sends) a new message between $sender and $recipient
+     * Saves (sends) a new message between $sender and $recipient
      * @param User $sender
      * @param User $recipient
      * @param $viewName
      * @param array $viewData
      * @return UserMessage
      */
-    public static function send(User $sender, User $recipient, $viewName, Array $viewData)
+    public function send(User $sender, User $recipient, $viewName, Array $viewData)
     {
-        $message = new UserMessage;
-        $message->fill(array(
+        $this->fill(array(
                 'sent_from'     => $sender->id,
                 'send_to'       => $recipient->id,
                 'body'          => View::make($viewName, $viewData),
-                'date'          => $message->freshTimestampString(),
+                'date'          => $this->freshTimestampString(),
             ));
-        $message->save();
-        $recipient->notify($message, $viewName);
-        return $message;
+        if ($this->save()){
+            Event::fire('userMessage.sent', array(
+                    'userMessage' => $this, 'recipient' => $recipient, 'type' => $viewName
+                ));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -110,6 +114,7 @@ class UserMessage extends MagniloquentContextsPlus {
      */
     public function logEvent($eventType, $description = '')
     {
+        // TODO Improve by replacing this function with dependency injection of UserMessage to UserLog::new()
         $logEntry = UserLog::create(array(
                 'user_id'           => $this->sender->id,
                 'type'              => $eventType,
@@ -122,7 +127,7 @@ class UserMessage extends MagniloquentContextsPlus {
         }
     }
 
-    public static function getEmailSubjectFromViewName($viewName)
+    public static function getEmailSubjectFromViewName($viewName, $sender)
     {
         switch($viewName){
             case self::LESSON_NEW:
@@ -134,7 +139,7 @@ class UserMessage extends MagniloquentContextsPlus {
             case self::LESSON_REVIEWED:
                 return trans('Lesson Reviewed');
             case self::CUSTOM:
-                return trans('You have a message from ') . Auth::user()->fullName;
+                return trans('You have a message from ') . $sender;
         }
     }
 

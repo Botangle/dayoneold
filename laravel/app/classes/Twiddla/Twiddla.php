@@ -1,26 +1,32 @@
 <?php
 /**
- * TwiddlaComponent.php
+ * Twiddla.php
  *
- * @author: David Baker <dbaker@acorncomputersolutions.com
+ * @author: Martyn Ling <mling@str8-4ward.com>
+ * @adapted from code by David Baker <dbaker@acorncomputersolutions.com
  * Date: 3/27/14
  * Time: 6:55 PM
  */
 
-App::uses('Component', 'Controller');
-class TwiddlaComponent extends Component {
+class Twiddla {
 
     /**
      * Twiddla username
      * @var string
      */
-    public $username;
+    protected $username;
 
     /**
      * Twiddla password
      * @var string
      */
-    public $password;
+    protected $password;
+
+    public function __construct($username, $password)
+    {
+        $this->username = $username;
+        $this->password = $password;
+    }
 
     /**
      * @return mixed
@@ -39,4 +45,4 @@ class TwiddlaComponent extends Component {
         curl_close($ch);
         return $server_output;
     }
-} 
+}

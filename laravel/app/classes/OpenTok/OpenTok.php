@@ -1,33 +1,39 @@
 <?php
 /**
- * OpenTokComponent.php
+ * OpenTok.php
  *
- * @author: David Baker <dbaker@acorncomputersolutions.com
+ * @author: Martyn Ling <mling@str8-4ward.com>
+ * @adapted from code by David Baker <dbaker@acorncomputersolutions.com
  * Date: 3/27/14
  * Time: 5:34 PM
  */
 
-App::uses('Component', 'Controller');
-class OpenTokComponent extends Component {
+class OpenTok {
 
     /**
      * API key from OpenTok
      * @var string
      */
-    public $apiKey;
+    protected $apiKey;
 
     /**
      * API secret from OpenTok
      * @var string
      */
-    public $apiSecret;
+    protected $apiSecret;
 
     /**
-     * A private OpenTokSDK object, please don't adjust it directly
+     * A private OpenTok object, please don't adjust it directly
      *
-     * @var OpenTokSDK
+     * @var OpenTok
      */
     private $_apiObject;
+
+    public function  __construct($key, $secret)
+    {
+        $this->apiKey = $key;
+        $this->apiSecret = $secret;
+    }
 
     public function generateToken($session_id) {
         return $this->getApiObject()->generateToken($session_id);
@@ -44,24 +50,22 @@ class OpenTokComponent extends Component {
         try {
             $session = $this->getApiObject()->createSession();
             return $session->getSessionId();
-        } catch(OpenTokException $e) {
-            CakeLog::critical('Had OpenTok errors: ' . $e->getMessage() . ' Code: ' . $e->getCode());
+        } catch(Exception $e) {
+            Log::critical('OpenTok error', array('message' => $e->getMessage(),'code' => $e->getCode()));
             return false;
         }
-        // @TODO: add some further exception handling here in case other exceptions get thrown
-        // looks like we still need to handle AuthException and RequestException
     }
 
     /**
-     * Handles loading of our OpenTokSDK object so we don't do it repeatedly
-     * @return OpenTokSDK
+     * Handles loading of our OpenTok object so we don't do it repeatedly
+     * @return OpenTok
      */
     private function getApiObject()
     {
         if(!isset($this->_apiObject)) {
-            $this->_apiObject = new OpenTokSDK($this->apiKey, $this->apiSecret);
+            $this->_apiObject = new \OpenTok\OpenTok($this->apiKey, $this->apiSecret);
         }
 
         return $this->_apiObject;
     }
-} 
+}

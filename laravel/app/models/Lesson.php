@@ -542,11 +542,11 @@ class Lesson extends MagniloquentContextsPlus {
         return ($user->id == $this->student);
     }
 
-    public function determineMessageRecipient()
+    public function determineMessageRecipient(User $authUser)
     {
-        if ($this->userIsTutor(Auth::user())){
+        if ($this->userIsTutor($authUser)){
             return $this->studentUser;
-        } elseif ($this->userIsStudent(Auth::user())){
+        } elseif ($this->userIsStudent($authUser)){
             return $this->tutorUser;
         } else {
             return null;
@@ -555,35 +555,81 @@ class Lesson extends MagniloquentContextsPlus {
 
     /**
      * Sends a message to the other user (i.e. the one who isn't the current user)
+     *
      * @param $viewName The name of the view to generate the body of the message combined with $this Lesson
+     * @param User $authUser The authenticated user
      * @return null|UserMessage
      */
-    public function sendLessonMessage($viewName)
+    public function sendLessonMessage($viewName, User $authUser)
     {
-        $recipient = $this->determineMessageRecipient();
+        // TODO A better implementation would be to call UserMessage::send(Lesson $lesson,...)
+        //  where Lesson implements an interface that allows UserMessage to get the data it requires
+        //  instead of this function
+
+        $recipient = $this->determineMessageRecipient($authUser);
         if (!$recipient){
             return null;
         }
-        return UserMessage::send(Auth::user(), $recipient, $viewName, array(
+        $message = new UserMessage;
+        if (!$message->send($authUser, $recipient, $viewName, array(
                     'model' => $this,
-                ));
+                ))){
+            // TODO Log $message->errors()
+
+        }
     }
 
     /**
+     * Note: $authUser is passed in instead of referencing Auth::user() since this might be a queued job initiated
+     * by a CRON task.
      * @param $eventType
+     * @param User $authUser The authenticated user
+     * @param $description = ''
      * @return array|\Illuminate\Database\Eloquent\Model|static
      */
-    public function logEvent($eventType)
+    public function logUserEvent($eventType, User $authUser, $description = '')
     {
+        // TODO Improve by replacing this function with dependency injection of Lesson to UserLog::new()
         $logEntry = UserLog::create(array(
-                'user_id'           => Auth::user()->id,
+                'user_id'           => $authUser->id,
                 'type'              => $eventType,
                 'related_type_id'   => $this->id,
                 'created'           => $this->freshTimestampString(),
+                'description'       => $description,
             ));
         if (!$logEntry->id){
             Event::fire('user_log.errors', array($logEntry->errors()));
         }
     }
 
+    /**
+     * Generate the Twiddla session id for the lesson and store it in the db
+     * @return Lesson
+     */
+    public function generateTwiddlaSessionId()
+    {
+        $twiddla = new Twiddla(Config::get('services.twiddla.username'), Config::get('services.twiddla.password'));
+        $this->twiddlameetingid = $twiddla->getMeetingId();
+        return $this->save();
+    }
+
+    /**
+     * Generate the OpenTok session id for the lesson and store it in the db
+     * @return Lesson
+     */
+    public function generateOpenTokSessionId()
+    {
+        $openTok = new OpenTok(Config::get('services.openTok.apiKey'), Config::get('services.openTok.apiSecret'));
+        $this->opentok_session_id = $openTok->generateSessionId();
+        return $this->save();
+    }
+
+    /**
+     * A stub for a billing check required before Twiddla and OpenTok sessions can be created
+     */
+    public function billingReady()
+    {
+        // @TODO Implement this when billing is implemented
+        return true;
+    }
 }

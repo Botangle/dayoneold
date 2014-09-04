@@ -379,12 +379,13 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
      * @param $eventType
      * @return array|\Illuminate\Database\Eloquent\Model|static
      */
-    public function logEvent($eventType)
+    public function logEvent($eventType, $description = '')
     {
         $logEntry = UserLog::create(array(
                 'user_id'   => $this->id,
                 'type'      => $eventType,
                 'created'   => $this->freshTimestampString(),
+                'description'   => $description,
             ));
         if (!$logEntry->id){
             Event::fire('user_log.errors', array($logEntry->errors()));
@@ -418,7 +419,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
 
     public function notify(UserMessage $message, $viewName)
     {
-        $subject = '[Botangle] ' . UserMessage::getEmailSubjectFromViewName($viewName);
+        $subject = '[Botangle] ' . UserMessage::getEmailSubjectFromViewName($viewName, $message->sender->fullName);
         $user = $this;
         $viewData = ['messageBody'  => $message->body, 'sender' => $message->sender->fullName];
         try{
