@@ -220,4 +220,11 @@ class LessonController extends BaseController {
                 ->with('flash_error', trans("You are not authorized to confirm that lesson."));
         }
     }
+
+    public function getWhiteboard(Lesson $lesson)
+    {
+        return View::make('lessons.whiteboard', array(
+                'model'     => $lesson,
+            ));
+    }
 }

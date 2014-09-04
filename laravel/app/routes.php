@@ -176,6 +176,11 @@ Route::get('/lesson/create/{expertId}', array(
         'uses'      => 'LessonController@createWithExpert',
     ));
 
+Route::get('/lesson/{lesson}/whiteboard', array(
+        'uses'      => 'LessonController@getWhiteboard',
+        'as'        => 'lesson.whiteboard',
+    ));
+
 Route::get('/lesson/{lesson}/edit', array(
        'uses'      => 'LessonController@getEdit',
     ));

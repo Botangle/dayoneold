@@ -24,11 +24,7 @@ class LessonHandler {
 
         // Check that billing has been setup before the lesson sessions are created
         if ($lesson->billingReady()){
-            // Prepare for the lesson by generating the OpenTok and Twiddla session ids
-            // TODO: Consider queueing these for completion by a CRON task because it
-            //  creates a long pause for the person creating the lesson
-            $lesson->generateOpenTokSessionId();
-            $lesson->generateTwiddlaSessionId();
+            $lesson->prepareLessonTools();
         }
     }
 
@@ -48,6 +44,8 @@ class LessonHandler {
 
         $lesson->sendLessonMessage(UserMessage::LESSON_CONFIRMED, $authUser);
 
+        // Just in case the ids weren't assigned at creation (billing would be resolved for confirmation to be possible
+        $lesson->prepareLessonTools();
     }
 
     public function onReview(Lesson $lesson, User $authUser)

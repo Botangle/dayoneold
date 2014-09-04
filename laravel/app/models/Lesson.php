@@ -74,6 +74,8 @@ class Lesson extends MagniloquentContextsPlus {
         'create'    => array(),
     );
 
+    private $_openTokToken;
+
     /**
      * Lesson doesn't have an created_at column but is does have a updated_at column (add_date) - see CONST above
      * This mutator prevents Eloquent from trying to include the created_at column
@@ -603,10 +605,25 @@ class Lesson extends MagniloquentContextsPlus {
     }
 
     /**
-     * Generate the Twiddla session id for the lesson and store it in the db
+     * Prepare for the lesson by generating the OpenTok session and Twiddla meeting ids
+     */
+    public function prepareLessonTools()
+    {
+        // TODO: Consider queueing these for completion by a CRON task because it
+        //  creates a long pause for the person who inadvertently triggered this
+        if (!$this->opentok_session_id){
+            $this->generateOpenTokSessionId();
+        }
+        if (!$this->twiddlameetingid){
+            $this->generateTwiddlaMeetingId();
+        }
+    }
+
+    /**
+     * Generate the Twiddla meeting id for the lesson and store it in the db
      * @return Lesson
      */
-    public function generateTwiddlaSessionId()
+    protected function generateTwiddlaMeetingId()
     {
         $twiddla = new Twiddla(Config::get('services.twiddla.username'), Config::get('services.twiddla.password'));
         $this->twiddlameetingid = $twiddla->getMeetingId();
@@ -617,7 +634,7 @@ class Lesson extends MagniloquentContextsPlus {
      * Generate the OpenTok session id for the lesson and store it in the db
      * @return Lesson
      */
-    public function generateOpenTokSessionId()
+    protected function generateOpenTokSessionId()
     {
         $openTok = new OpenTok(Config::get('services.openTok.apiKey'), Config::get('services.openTok.apiSecret'));
         $this->opentok_session_id = $openTok->generateSessionId();
@@ -631,5 +648,14 @@ class Lesson extends MagniloquentContextsPlus {
     {
         // @TODO Implement this when billing is implemented
         return true;
+    }
+
+    public function getOpenTokTokenAttribute()
+    {
+        if (!isset($this->_openTokToken)){
+            $openTok = new OpenTok(Config::get('services.openTok.apiKey'), Config::get('services.openTok.apiSecret'));
+            $this->_openTokToken = $openTok->generateToken($this->opentok_session_id);
+        }
+        return $this->_openTokToken;
     }
 }
