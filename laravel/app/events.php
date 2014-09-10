@@ -89,25 +89,17 @@ Event::listen('user.new-status', function($userStatus){
         $userStatus->logEvent('new-status');
     });
 
-Event::listen('user.booked-lesson', function($lesson){
-        // Add to User log
-        $lesson->logEvent('booked-lesson');
-    });
+Event::listen('lesson.created', 'LessonHandler@onCreate');
 
-Event::listen('user.amended-lesson', function($lesson){
-        // Add to User log
-        $lesson->logEvent('amended-lesson');
-    });
+Event::listen('lesson.updated', 'LessonHandler@onUpdate');
 
-Event::listen('user.confirmed-lesson', function($lesson){
-        // Add to User log
-        $lesson->logEvent('confirmed-lesson');
-    });
+Event::listen('lesson.confirmed', 'LessonHandler@onConfirm');
 
-Event::listen('user.reviewed-lesson', function($review){
-        // Add to User log
-        $review->logEvent('reviewed-lesson');
-    });
+Event::listen('lesson.reviewed', 'LessonHandler@onReview');
+
+Event::listen('lesson.paid', 'LessonHandler@onPaid');
+
+Event::listen('lesson.payment-failed', 'LessonHandler@onPaymentFailed');
 
 Event::listen('user.sent-message', function($userMessage){
         // Add to User log
@@ -117,4 +109,9 @@ Event::listen('user.sent-message', function($userMessage){
 Event::listen('user.email-notification-failed', function($userMessage, $error){
         // Add to User log
         $userMessage->logEvent('email-notification-failed', $error);
+    });
+
+Event::listen('userMessage.sent', function($userMessage, $recipient, $type){
+        // Notify the recipient that they have a message waiting for them
+        $recipient->notify($userMessage, $type);
     });

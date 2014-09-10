@@ -74,7 +74,7 @@
                     @if($lesson->userIsTutor(Auth::user()))
                         <div class="span2 mark">
                             @if($lesson->lesson_date == date('Y-m-d'))
-                                {{ Html::link(url('users/whiteboarddata', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
+                                {{ Html::link(route('lesson.whiteboard', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
                             @else
                                 {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
                             @endif
@@ -88,7 +88,7 @@
                         </div>
                         <div class="span2 mark">
                             @if($lesson->lesson_date == date('Y-m-d'))
-                            {{ Html::link(url('users/whiteboarddata', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
+                            {{ Html::link(route('lesson.whiteboard', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
                             @else
                             {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
                             @endif
@@ -131,7 +131,7 @@
                     </div>
 
                     <div class="span2 mark">
-                        {{ Html::link(url('users/whiteboarddata', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
+                        {{ Html::link(route('lesson.whiteboard', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
                     </div>
                 </div>
             </div>
@@ -216,7 +216,7 @@ function scroll_if_anchor(href) {
     if(!href) return;
 
     // You could easily calculate this dynamically if you prefer
-    var fromTop = 90;
+    var fromTop = 75;
 
     // If our Href points to a valid, non-empty anchor, and is on the same page (e.g. #foo)
     // Legacy jQuery and IE7 may have issues: http://stackoverflow.com/q/1593174

@@ -31,4 +31,25 @@ class UserRate extends Eloquent {
     {
         return '$';
     }
+
+    /**
+     * Calculates the total amount payable to the tutor for a lesson
+     * @param $totalTime Seconds
+     * @return string
+     */
+    public function calculateTutorTotalAmount($totalTime) {
+        if ($this->price_type == 'permin') {
+            $totalTimeMins = $totalTime / 60;
+            $totalAmount = $totalTimeMins * $this->rate;
+        } else { // per hour
+            $totalTimeHours = ($totalTime / 60) / 60;
+            $totalAmount = $totalTimeHours * $this->rate;
+        }
+
+        // return a formatted decimal to two decimal places with no commas
+        // this will work much better in our DB and with Stripe
+        return sprintf('%0.2f', $totalAmount);
+    }
+
+
 }

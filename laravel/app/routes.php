@@ -176,6 +176,11 @@ Route::get('/lesson/create/{expertId}', array(
         'uses'      => 'LessonController@createWithExpert',
     ));
 
+Route::get('/lesson/{lesson}/whiteboard', array(
+        'uses'      => 'LessonController@getWhiteboard',
+        'as'        => 'lesson.whiteboard',
+    ));
+
 Route::get('/lesson/{lesson}/edit', array(
        'uses'      => 'LessonController@getEdit',
     ));
@@ -186,6 +191,16 @@ Route::get('/lesson/{lesson}/review', array(
 
 Route::get('/lesson/{lesson}/confirm', array(
         'uses'      => 'LessonController@getConfirm',
+    ));
+
+Route::post('/lesson/{lesson}/updatetimer', array(
+        'uses'      => 'LessonController@postUpdateTimer',
+        'as'        => 'lesson.updateTimer'
+    ));
+
+Route::get('/lesson/{lesson}/payment', array(
+        'uses'      => 'LessonController@getPayment',
+        'as'        => 'lesson.payment'
     ));
 
 Route::controller('lesson', 'LessonController', array(

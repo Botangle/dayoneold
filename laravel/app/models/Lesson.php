@@ -74,6 +74,8 @@ class Lesson extends MagniloquentContextsPlus {
         'create'    => array(),
     );
 
+    private $_openTokToken;
+
     /**
      * Lesson doesn't have an created_at column but is does have a updated_at column (add_date) - see CONST above
      * This mutator prevents Eloquent from trying to include the created_at column
@@ -95,9 +97,9 @@ class Lesson extends MagniloquentContextsPlus {
         return $this->belongsTo('User', 'tutor');
     }
 
-    public function payments()
+    public function payment()
     {
-        return $this->hasMany('LessonPayment');
+        return $this->hasOne('LessonPayment');
     }
 
     public function review()
@@ -542,11 +544,11 @@ class Lesson extends MagniloquentContextsPlus {
         return ($user->id == $this->student);
     }
 
-    public function determineMessageRecipient()
+    public function determineMessageRecipient(User $authUser)
     {
-        if ($this->userIsTutor(Auth::user())){
+        if ($this->userIsTutor($authUser)){
             return $this->studentUser;
-        } elseif ($this->userIsStudent(Auth::user())){
+        } elseif ($this->userIsStudent($authUser)){
             return $this->tutorUser;
         } else {
             return null;
@@ -555,35 +557,271 @@ class Lesson extends MagniloquentContextsPlus {
 
     /**
      * Sends a message to the other user (i.e. the one who isn't the current user)
+     *
      * @param $viewName The name of the view to generate the body of the message combined with $this Lesson
+     * @param User $authUser The authenticated user
      * @return null|UserMessage
      */
-    public function sendLessonMessage($viewName)
+    public function sendLessonMessage($viewName, User $authUser)
     {
-        $recipient = $this->determineMessageRecipient();
+        // TODO A better implementation would be to call UserMessage::send(Lesson $lesson,...)
+        //  where Lesson implements an interface that allows UserMessage to get the data it requires
+        //  instead of this function
+
+        $recipient = $this->determineMessageRecipient($authUser);
         if (!$recipient){
             return null;
         }
-        return UserMessage::send(Auth::user(), $recipient, $viewName, array(
+        $message = new UserMessage;
+        if (!$message->send($authUser, $recipient, $viewName, array(
                     'model' => $this,
-                ));
+                ))){
+            // TODO Log $message->errors()
+
+        }
     }
 
     /**
+     * Note: $authUser is passed in instead of referencing Auth::user() since this might be a queued job initiated
+     * by a CRON task.
      * @param $eventType
+     * @param User $authUser The authenticated user
+     * @param $description = ''
      * @return array|\Illuminate\Database\Eloquent\Model|static
      */
-    public function logEvent($eventType)
+    public function logUserEvent($eventType, User $authUser, $description = '')
     {
+        // TODO Improve by replacing this function with dependency injection of Lesson to UserLog::new()
         $logEntry = UserLog::create(array(
-                'user_id'           => Auth::user()->id,
+                'user_id'           => $authUser->id,
                 'type'              => $eventType,
                 'related_type_id'   => $this->id,
                 'created'           => $this->freshTimestampString(),
+                'description'       => $description,
             ));
         if (!$logEntry->id){
             Event::fire('user_log.errors', array($logEntry->errors()));
         }
     }
 
+    /**
+     * Prepare for the lesson by generating the OpenTok session and Twiddla meeting ids
+     */
+    public function prepareLessonTools()
+    {
+        // TODO: Consider queueing these for completion by a CRON task because it
+        //  creates a long pause for the person who inadvertently triggered this
+        if (!$this->opentok_session_id){
+            $this->generateOpenTokSessionId();
+        }
+        if (!$this->twiddlameetingid){
+            $this->generateTwiddlaMeetingId();
+        }
+    }
+
+    /**
+     * Generate the Twiddla meeting id for the lesson and store it in the db
+     * @return Lesson
+     */
+    protected function generateTwiddlaMeetingId()
+    {
+        $twiddla = new Twiddla(Config::get('services.twiddla.username'), Config::get('services.twiddla.password'));
+        $this->twiddlameetingid = $twiddla->getMeetingId();
+        return $this->save();
+    }
+
+    /**
+     * Generate the OpenTok session id for the lesson and store it in the db
+     * @return Lesson
+     */
+    protected function generateOpenTokSessionId()
+    {
+        $openTok = new OpenTok(Config::get('services.openTok.apiKey'), Config::get('services.openTok.apiSecret'));
+        $this->opentok_session_id = $openTok->generateSessionId();
+        return $this->save();
+    }
+
+    /**
+     * A stub for a billing check required before Twiddla and OpenTok sessions can be created
+     */
+    public function billingReady()
+    {
+        // @TODO Implement this when billing is implemented
+        return true;
+    }
+
+    public function getOpenTokTokenAttribute()
+    {
+        if (!isset($this->_openTokToken)){
+            $openTok = new OpenTok(Config::get('services.openTok.apiKey'), Config::get('services.openTok.apiSecret'));
+            $this->_openTokToken = $openTok->generateToken($this->opentok_session_id);
+        }
+        return $this->_openTokToken;
+    }
+
+    /**
+     * Function taken straight from Old Botangle's whiteboard view
+     */
+    private function secondsToTime($seconds)
+    {
+        // extract hours
+        $hours = floor($seconds / (60 * 60));
+
+        // extract minutes
+        $divisor_for_minutes = $seconds % (60 * 60);
+        $minutes = floor($divisor_for_minutes / 60);
+
+        // extract the remaining seconds
+        $divisor_for_seconds = $divisor_for_minutes % 60;
+        $seconds = ceil($divisor_for_seconds);
+
+        // return the final array
+        $obj = array(
+            "h" => (int) $hours,
+            "m" => (int) $minutes,
+            "s" => (int) $seconds,
+        );
+        return $obj;
+    }
+
+    /**
+     * Returns the number of seconds (in hh:mm:ss format) spent in the lesson
+     * @return string|void
+     */
+    public function getWhiteboardTimerAttribute()
+    {
+        // I'm just hacking in the code from the original Botangle that was actually in the view
+        // It's not pretty, but it's not yet my remit to re-write this code
+        $timer = "00:00:00";
+        if($this->userIsStudent(Auth::user())){
+            $timer =  $this->secondsToTime($this->student_lessontaekn_time);
+            $timer = $timer['h'].":".$timer['m'].":".$timer['s'];
+        }else{
+            $timer =  $this->secondsToTime($this->remainingduration);
+            if($timer['h']==0){
+                $timer['h'] = "0".$timer['h'];
+            }else{
+                if(strlen($timer['h'])==1){
+                    $timer['h'] = "0".$timer['h'];
+                }
+            }if($timer['m']==0){
+                $timer['m'] = "0".$timer['m'];
+            }else{
+                if(strlen($timer['m'])==1){
+                    $timer['m'] = "0".$timer['m'];
+                }
+            }if($timer['s']==0){
+                $timer['s'] = "0".$timer['s'];
+            }else{
+                if(strlen($timer['s'])==1){
+                    $timer['s'] = "0".$timer['s'];
+                }
+            }
+            $timer = $timer['h'].":".$timer['m'].":".$timer['s'];
+        }
+        return $timer;
+    }
+
+    /**
+     * Returns the number of seconds remaining for the lesson (from the Expert's perspective)
+     * @return mixed
+     */
+    public function getSecondsRemainingAttribute()
+    {
+        /**
+         * First things first, attribute remainingduration is actually the number of seconds that
+         * the Expert has been in the meeting for the lesson. So, this function returns the time
+         * remaining in seconds
+         */
+        $lessonLength = $this->duration * 60 * 60;
+        return $lessonLength - $this->remainingduration;
+    }
+
+    public function hasFinished()
+    {
+        $lessonLength = $this->duration * 60 * 60;
+        return ($lessonLength <= $this->student_lessontaekn_time);
+    }
+
+    public function getTwiddlaMeetingUrlAttribute()
+    {
+        $twiddlaUrl = Config::get('services.twiddla.apiUrl');
+        $twiddlaUrl .= http_build_query(array(
+                'sessionid'    => $this->twiddlameetingid,
+                'guestname'    => Html::entities(Auth::user()->username),
+                'autostart'    => 1,
+                'exiturl'      => 'https://www.botangle.com', //url('/'),
+            ));
+        return $twiddlaUrl;
+    }
+
+    /**
+     * This mutator encapsulates a workaround to support the old system's concept that a user
+     * is either an expert or a student not both. However, that restriction is no longer enforced
+     * and the role effectively is determined per lesson.
+     * @return int
+     */
+    public function getRoleTypeAttribute()
+    {
+        if ($this->userIsTutor(Auth::user())){
+            return 2;
+        } else {
+            return 4;
+        }
+    }
+
+    /**
+     * This is used to disable the exit lesson button if the lesson payment is complete
+     * Moved this code out of the view... still not the best implementation... but that's my
+     * remit for now
+     */
+    public function getExitDisabledAttribute()
+    {
+        if ($this->payment){
+            if($this->payment->lesson_complete_student){
+                return "disabled='disabled'";
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Only the id realtime is manipulated by the timer. So, it's effectively switching the
+     * timer off if the lesson has been completed.
+     * Moved this code out of the view... still not the best implementation... but that's my
+     * remit for now
+     */
+    public function getCountdownIdAttribute()
+    {
+        if ($this->payment){
+            if($this->payment->lesson_complete_student){
+                return "realtime2";
+            }
+        }
+        return 'realtime';
+    }
+
+    /**
+     * There are separate timers kept for students and experts (seems like an unnecessary complication to me or
+     * a bad solution to the wrong problem)
+     * Anyway, this code has more or less been taken straight from the old botangle without significant change
+     * @param $role
+     * @return int
+     */
+    public function updateTimer($role)
+    {
+        // Admin
+        if ($role == 2) {
+            $this->remainingduration += 60;
+            $totalTime = $this->remainingduration;
+
+        // Student
+        } else if ($role == 4) {
+            $this->student_lessontaekn_time += 60;
+            $totalTime = $this->student_lessontaekn_time;
+        }
+        $this->save();
+
+        return $totalTime;
+    }
 }
