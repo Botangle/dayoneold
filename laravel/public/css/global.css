@@ -1262,3 +1262,14 @@ a > .Message-row.viewing-message .sender-name {
 input[type="file"] {
     display: block;
 }
+
+/* Whiteboard page css that was previously inline */
+#realtime,#realtime2 {color: #F38918;
+    font-family: arial;
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 5px 0;
+    text-align: center;
+}
+

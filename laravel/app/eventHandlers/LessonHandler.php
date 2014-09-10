@@ -56,4 +56,18 @@ class LessonHandler {
         $lesson->sendLessonMessage(UserMessage::LESSON_REVIEWED, $authUser);
 
     }
+
+    public function onPaid(Lesson $lesson, User $authUser)
+    {
+        // Add to User log
+        $lesson->logUserEvent('paid-lesson', $authUser);
+
+    }
+
+    public function onPaymentFailed(Lesson $lesson, User $authUser, $errorMessage)
+    {
+        // Add to User log
+        $lesson->logUserEvent('failed-lesson-payment', $authUser, $errorMessage);
+
+    }
 }

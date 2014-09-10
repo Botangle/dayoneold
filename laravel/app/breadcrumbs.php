@@ -73,6 +73,12 @@ Breadcrumbs::register('password.remind', function($breadcrumbs) {
         $breadcrumbs->push('Forgot Password', route('password.remind'));
     });
 
+Breadcrumbs::register('lesson.whiteboard', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+        $breadcrumbs->push('Lessons', route('user.lessons'));
+        $breadcrumbs->push('Whiteboard', route('lesson.whiteboard'));
+    });
+
 Breadcrumbs::register('page', function($breadcrumbs, $page) {
     $breadcrumbs->parent('category', $page->category);
     $breadcrumbs->push($page->title, route('page', $page->id));

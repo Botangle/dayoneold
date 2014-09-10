@@ -97,6 +97,10 @@ Event::listen('lesson.confirmed', 'LessonHandler@onConfirm');
 
 Event::listen('lesson.reviewed', 'LessonHandler@onReview');
 
+Event::listen('lesson.paid', 'LessonHandler@onPaid');
+
+Event::listen('lesson.payment-failed', 'LessonHandler@onPaymentFailed');
+
 Event::listen('user.sent-message', function($userMessage){
         // Add to User log
         $userMessage->logEvent('sent-message');

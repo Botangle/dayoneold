@@ -193,6 +193,16 @@ Route::get('/lesson/{lesson}/confirm', array(
         'uses'      => 'LessonController@getConfirm',
     ));
 
+Route::post('/lesson/{lesson}/updatetimer', array(
+        'uses'      => 'LessonController@postUpdateTimer',
+        'as'        => 'lesson.updateTimer'
+    ));
+
+Route::get('/lesson/{lesson}/payment', array(
+        'uses'      => 'LessonController@getPayment',
+        'as'        => 'lesson.payment'
+    ));
+
 Route::controller('lesson', 'LessonController', array(
         'postCreate'    => 'lesson.create',
         'postEdit'      => 'lesson.edit',
