@@ -55,10 +55,6 @@ Breadcrumbs::register('user.my-account', function($breadcrumbs) {
         $breadcrumbs->parent('home');
         $breadcrumbs->push('My Account', route('user.my-account'));
     });
-Breadcrumbs::register('users.top-chart', function($breadcrumbs) {
-        $breadcrumbs->parent('home');
-        $breadcrumbs->push('Top Charts', route('users.top-chart'));
-    });
 Breadcrumbs::register('user.profile', function($breadcrumbs, $user) {
         // For some reason, this is getting called twice, and the second time the $user object
         //   isn't being passed through but the username instead. So, this is a workaround for now.
@@ -67,6 +63,16 @@ Breadcrumbs::register('user.profile', function($breadcrumbs, $user) {
             $breadcrumbs->push(HTML::entities($user->fullname), route('user.profile', $user->username));
         }
     });
+
+Breadcrumbs::register('users.top-chart', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+        $breadcrumbs->push('Top Charts', route('users.top-chart'));
+    });
+Breadcrumbs::register('users.search', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+        $breadcrumbs->push('Search', route('users.search'));
+    });
+
 Breadcrumbs::register('password.remind', function($breadcrumbs) {
         $breadcrumbs->parent('home');
 

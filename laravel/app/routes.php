@@ -100,6 +100,11 @@ Route::get('/news/detail/{id}', array(
 /**
  * Users controller (used for public viewing of group user info)
  */
+Route::get('users/search/{searchText?}', array(
+        'uses'  => 'UsersController@getSearch',
+        'as'    => 'users.search',
+    ));
+Route::post('users/search', 'UsersController@postSearch');
 Route::controller('users', 'UsersController', array(
         'getTopChart'   => 'users.topcharts',
     ));

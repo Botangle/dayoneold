@@ -12,12 +12,12 @@
                         |
                         {{ HTML::link(route('logout'), trans('Sign Out'), ['class' => 'signin', 'title' => trans('Sign Out')]) }}
                     </div>
-                    <form method="post" action="/user/search" id="searchuser">
+                    {{ Form::open(array('route' => 'users.search', 'id' => 'searchuser')) }}
                         <div class="Header-search">
                             <input name="searchvalue" id="searchvalue" type="text" style="line-height: 20px" />
                             {{ HTML::image('/img/search-img.jpg', trans('Search'), ['class' => 'submit', 'id' => 'search']) }}
                         </div>
-                    </form>
+                    {{ Form::close() }}
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
                     <p>Join<br>
                         <span>Botangle</span></p>
                 </div>
-                <form method="post" action="/user/search" id="searchuser">
+                {{ Form::open(array('route' => 'users.search', 'id' => 'searchuser')) }}
                     <div class="span3 pull-right">
                         <div class="Header-search">
                             <input name="searchvalue" id="searchvalue" type="text" style="line-height: 20px" />
@@ -40,15 +40,13 @@
                             <!--          <span>Try for 7 days free!</span> -->
                         </div>
                     </div>
-                </form>
+                {{ Form::close() }}
             </div>
         </div>
     </header>
 @endif
 
 <script>
-    var $j = jQuery.noConflict();
-
     jQuery(document).ready(function(){
         jQuery("#search").click(function(){
             jQuery("#searchuser").submit();

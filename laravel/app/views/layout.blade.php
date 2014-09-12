@@ -33,6 +33,15 @@
     $CurrentController = $this->params['controller'];
     $CurrentAction = $this->params['action'];
     --}}
+
+    {{Html::script('js/jqueryui/jquery.ui.core.js')}}
+    {{Html::script('js/jqueryui/jquery.ui.widget.js')}}
+    {{Html::script('js/jqueryui/jquery.ui.position.js')}}
+    {{Html::script('js/jqueryui/jquery.ui.menu.js')}}
+    {{Html::script('js/jqueryui/jquery.ui.autocomplete.js')}}
+
+    {{Html::style('css/jqueryui/themes/base/jquery.ui.all.css')}}
+    {{Html::style('css/jqueryui/demos.css')}}
 </head>
 <body>
 <!--Wrapper Main Nav Block Start Here-->
@@ -116,6 +125,10 @@
 
 
 @section('jsFiles')
+{{ Html::script('js/search-autocomplete.js') }}
+<script>
+    var $ = jQuery.noConflict();
+</script>
 <link rel="stylesheet" type="text/css" href="/css/prettyCheckable.css" />
 <script type="text/javascript" src="/js/prettyCheckable.js"></script>
 

@@ -8,7 +8,6 @@ jQuery(function() {
     jQuery.getJSON(suburl, function(response) {
         datasubject = response;
     })
-
 });
 
 jQuery(function() {
