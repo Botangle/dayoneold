@@ -1,113 +1,18 @@
 @extends('layout')
 
-@section('head')
-@parent
-{{--HTML::script('js/jqueryui/jquery-1.9.1.js')--}}
-{{HTML::script('js/jqueryui/jquery.ui.core.js')}}
-{{HTML::script('js/jqueryui/jquery.ui.widget.js')}}
-{{HTML::script('js/jqueryui/jquery.ui.position.js')}}
-{{HTML::script('js/jqueryui/jquery.ui.menu.js')}}
-{{HTML::script('js/jqueryui/jquery.ui.autocomplete.js')}}
-
-{{HTML::style('css/jqueryui/themes/base/jquery.ui.all.css')}}
-{{HTML::style('css/jqueryui/demos.css')}}
-
-<script>
-    $(function() {
-        $.getJSON("/subject/search", function(response) {
-            data = response;
-
-            $("#searchvalue, #LessonSubject").autocomplete({
-                minLength: 0,
-                source: data,
-                focus: function(event, ui) {
-                    $("#searchvalue").val(ui.item.label);
-                    return false;
-                },
-                select: function(event, ui) {
-                    console.log(ui);
-                    $("#searchvalue").val(ui.item.label);
-                    return false;
-                }
-            })
-                .data("ui-autocomplete")._renderItem = function(ul, item) {
-                return $("<li>")
-                    .append("<a>" + item.label + "</a>")
-                    .appendTo(ul);
-            };
-        });
-    });
-
-    jQuery(function() {
-
-        function split(val) {
-            return val.split(/,\s*/);
-        }
-        function extractLast(term) {
-            return split(term).pop();
-        }
-        var typeid = "";
-        jQuery("#searchvalue2")
-            // don't navigate away from the field on tab when selecting an item
-            .bind("keydown", function(event) {
-                typeid = this.id;
-                if (event.keyCode === jQuery.ui.keyCode.TAB &&
-                    $(this).data("ui-autocomplete").menu.active) {
-                    event.preventDefault();
-                }
-            })
-            .autocomplete({
-                source: function(request, response) {
-
-                    var url = "/subject/search";
-
-                    $.getJSON(url, {
-                        term: extractLast(request.term)
-                    }, response);
-                },
-                search: function() {
-                    // custom minLength
-                    var term = extractLast(this.value);
-                    if (term.length < 2) {
-                        return false;
-                    }
-                },
-                focus: function() {
-                    // prevent value inserted on focus
-                    return false;
-                },
-                select: function(event, ui) {
-                    var terms = split(this.value);
-                    if (typeid == 'LessonTutor') {
-                        jQuery("#" + typeid + "Value").val(ui.item.id);
-                    }
-                    // remove the current input
-                    terms.pop();
-                    // add the selected item
-                    terms.push(ui.item.value);
-                    // add placeholder to get the comma-and-space at the end
-                    terms.push("");
-                    this.value = terms.join(" ");
-                    return false;
-                }
-            });
-    });
-</script>
-@stop
-
 @section('header')
 <header id="Bannerblock">
     <div class="container text-center">
         <h1>What do you need help with?</h1>
         <div class="Searchblock row-fluid">
-            <form method="post" action="/user/search" id="searchuser" class="form-search">
+            {{ Form::open(array('route' => 'users.search', 'id' => 'searchuser', 'class' => 'form-search')) }}
                 <div class="Search-main1">
                     <input name="searchvalue" id="searchvalue" type="text" placeholder="Example: Chemistry, Maths etc" />
                 </div>
                 <div class="Search-main1-btn">
                     <button type="submit" class="btn search-main-btn">Search</button>
                 </div>
-            </form>
+            {{ Form::close() }}
         </div>
         <div class="joinus">
             <div class="title"> Join Us </div>

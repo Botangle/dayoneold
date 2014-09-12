@@ -2,16 +2,6 @@
 
 @section('head')
 @parent
-{{--HTML::script('js/jqueryui/jquery-1.9.1.js')--}}
-{{HTML::script('js/jqueryui/jquery.ui.core.js')}}
-{{HTML::script('js/jqueryui/jquery.ui.widget.js')}}
-{{HTML::script('js/jqueryui/jquery.ui.position.js')}}
-{{HTML::script('js/jqueryui/jquery.ui.menu.js')}}
-{{HTML::script('js/jqueryui/jquery.ui.autocomplete.js')}}
-
-{{HTML::style('css/jqueryui/themes/base/jquery.ui.all.css')}}
-{{HTML::style('css/jqueryui/demos.css')}}
-
 {{HTML::script('js/bootstrap-datetimepicker.js')}}
 {{HTML::style('css/bootstrap-datetimepicker.css')}}
 @stop

@@ -24,4 +24,28 @@ class UsersController extends BaseController {
                 'categories'    => $categories,
             ));
     }
+
+    public function getSearch($searchText = "")
+    {
+        $users = User::active()->tutor();
+        if (!empty($searchText)){
+            $users = $users->where('subject', 'LIKE', '%'. $searchText .'%');
+        }
+
+        // Include average rating from review table in the data and sort by average_rating descending
+        $users = $users->averageRating()->paginate(12);
+
+        return View::make('users.search', array(
+                'users' => $users,
+            ));
+    }
+
+    public function postSearch()
+    {
+        $routeArray = [];
+        if (Input::has('searchvalue')){
+            $routeArray[] = Input::get('searchvalue');
+        }
+        return Redirect::route('users.search', $routeArray);
+    }
 }
