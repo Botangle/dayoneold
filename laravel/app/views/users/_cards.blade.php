@@ -22,12 +22,15 @@
                                         </div>
                                     </div>
                                     <div class="search-result-title">
-
                                         <p class="FontStyle20">
                                             {{ Html::link(route('user.profile', $user->username), $user->fullName, array('title' => $user->username)) }}
                                         </p>
-                                        <span>{{ $user->qualification }}</span></div>
-                                    <div class="search-result-details">{{ $user->extracurricular_interests }}</div>
+                                    </div>
+                                    <div class="search-result-details">
+                                            <span>
+                                                {{ implode("<br><br>", $user->getSummaryCardDetailsArray()) }}
+                                            </span>
+                                    </div>
                                 </div>
 
                                 <?php

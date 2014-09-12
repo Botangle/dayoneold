@@ -436,13 +436,20 @@ input.textbox1{ width:95%; height:auto; padding:13px 5px; color:#2b2b2b; font-fa
 					  box-shadow:#ccc 0px 0 5px ; margin:0px 15px 30px 0px; }
 .search-result-box{ height:365px; background:#fff; padding:20px 15px; border-top:4px solid #e27807; 
 					box-shadow:#ccc 0px 0 5px ; margin:0px 15px 30px 0px; }
-
+.search-result-details{
+    height: 300px;
+    text-overflow: ellipsis;
+    text-align: center;
+    overflow: hidden;
+    top: -30px;
+    position: relative;
+}
 .search-result-img{  height: 117px;
 					 margin-top: -92px; margin-left:auto; margin-right:auto;
 					 width: 117px; } 
 
-.search-result-title{ text-align:center; margin-top: 10px; }
-.search-result-details{ text-align:left; font-size:13px; color:#2b2b2b; line-height:20px; margin-top:10px; height:75px;  }
+.search-result-title{ text-align:center; clear: both; top: -30px; position: relative; }
+/* .search-result-details{ text-align:left; font-size:13px; color:#2b2b2b; line-height:20px; margin-top:10px; height:75px;  } */
 .search-result-options{ clear:both; margin:18px 0 0 0; position: relative; top: -30px; }
 
 .option-pro{ background:url(/images/options.jpg) no-repeat -4px -2px; width:15px; height:15px; display:inline-block; cursor:pointer; margin:0px 2px; -webkit-transition: All 400ms linear; -moz-transition: All 400ms linear; -ms-transition: All 400ms linear; -o-transition: All 400ms linear;	transition: All 400ms linear;  }
@@ -1272,4 +1279,3 @@ input[type="file"] {
     padding: 5px 0;
     text-align: center;
 }
-

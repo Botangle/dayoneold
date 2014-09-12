@@ -434,4 +434,19 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         }
     }
 
+    /**
+     * Puts together the details into an array for the summary card on TopCharts and User Search
+     */
+    public function getSummaryCardDetailsArray()
+    {
+        $details = [];
+        if ($this->qualification){
+            $details[] = e($this->qualification);
+        }
+        if ($this->extracurricular_interests){
+            $details[] = e($this->extracurricular_interests);
+        }
+        return $details;
+    }
+
 }
