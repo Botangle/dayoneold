@@ -120,6 +120,11 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         return $this->hasMany('UserStatus', 'created_by_id')->orderBy('created_at', 'desc');
     }
 
+    public function credit()
+    {
+        return $this->hasOne('UserCredit');
+    }
+
     public function lessonsStudying()
     {
         return $this->hasMany('Lesson', 'student')->where('active', true);
