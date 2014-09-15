@@ -802,6 +802,15 @@ class Lesson extends MagniloquentContextsPlus {
     }
 
     /**
+     * Formats the notes field so that includes line breaks in the email
+     * @return mixed
+     */
+    public function getNotesForEmailAttribute()
+    {
+        return str_replace("\r\n", "<br>", e($this->notes));
+    }
+
+    /**
      * There are separate timers kept for students and experts (seems like an unnecessary complication to me or
      * a bad solution to the wrong problem)
      * Anyway, this code has more or less been taken straight from the old botangle without significant change

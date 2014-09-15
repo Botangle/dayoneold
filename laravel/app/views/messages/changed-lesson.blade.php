@@ -1,4 +1,7 @@
-<p>I've made some changes to the lesson ({{{ $model->subject }}}) with you for {{ $model->formatLessonDate('M d') }}
+<p>I made some changes to the lesson ({{{ $model->subject }}}) with you for {{ $model->formatLessonDate('M d') }}
  at {{ $model->formatLessonTime('G:i') }}.</p>
+
+<p>Notes:<br>
+    {{ $model->notesForEmail }}</p>
 
 <p>{{ Html::link(route('user.lessons','#lesson'.$model->id), 'Click here for more details.') }} </p>
