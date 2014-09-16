@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "197032bcd5536bbfd8834de6a2c4f4b8",
+    "hash": "3a7c3c7db6d8db1a70cb2f4b77e93ea8",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -158,12 +158,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "4f3b905d7d8b5b8b56e0c968cde06fff838131d3"
+                "reference": "d32bfe3db3d7e635209b1e81d26bdb81a7a4def2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4f3b905d7d8b5b8b56e0c968cde06fff838131d3",
-                "reference": "4f3b905d7d8b5b8b56e0c968cde06fff838131d3",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d32bfe3db3d7e635209b1e81d26bdb81a7a4def2",
+                "reference": "d32bfe3db3d7e635209b1e81d26bdb81a7a4def2",
                 "shasum": ""
             },
             "require": {
@@ -217,7 +217,52 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2014-08-26 21:23:50"
+            "time": "2014-09-12 19:56:33"
+        },
+        {
+            "name": "braintree/braintree_php",
+            "version": "2.28.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/braintree/braintree_php.git",
+                "reference": "0c681f9fbb3a09ffd0662286e42a3f1ac8f3bbb6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/braintree/braintree_php/zipball/0c681f9fbb3a09ffd0662286e42a3f1ac8f3bbb6",
+                "reference": "0c681f9fbb3a09ffd0662286e42a3f1ac8f3bbb6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-dom": "*",
+                "ext-hash": "*",
+                "ext-openssl": "*",
+                "ext-simplexml": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.2.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Braintree": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Braintree",
+                    "homepage": "http://www.braintreepayments.com"
+                }
+            ],
+            "description": "Braintree PHP Client Library",
+            "time": "2014-07-09 17:04:54"
         },
         {
             "name": "classpreloader/classpreloader",
@@ -484,16 +529,16 @@
         },
         {
             "name": "davejamesmiller/laravel-breadcrumbs",
-            "version": "2.2.2",
+            "version": "2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/davejamesmiller/laravel-breadcrumbs.git",
-                "reference": "fb4058c9730cfb51fea53c93d26d75a58f23c87a"
+                "reference": "56149e595f27f8dd7fb8e7c6130dc39d49af361b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/davejamesmiller/laravel-breadcrumbs/zipball/fb4058c9730cfb51fea53c93d26d75a58f23c87a",
-                "reference": "fb4058c9730cfb51fea53c93d26d75a58f23c87a",
+                "url": "https://api.github.com/repos/davejamesmiller/laravel-breadcrumbs/zipball/56149e595f27f8dd7fb8e7c6130dc39d49af361b",
+                "reference": "56149e595f27f8dd7fb8e7c6130dc39d49af361b",
                 "shasum": ""
             },
             "require": {
@@ -528,7 +573,7 @@
             "keywords": [
                 "laravel"
             ],
-            "time": "2014-08-03 08:48:52"
+            "time": "2014-09-10 19:17:46"
         },
         {
             "name": "filp/whoops",
@@ -906,16 +951,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v4.2.8",
+            "version": "v4.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "e60ea917ab862254a6db37fa9cb8933138c1e73c"
+                "reference": "14665bc3c38c3ec24a12c904d013a663dc4a1d8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/e60ea917ab862254a6db37fa9cb8933138c1e73c",
-                "reference": "e60ea917ab862254a6db37fa9cb8933138c1e73c",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/14665bc3c38c3ec24a12c904d013a663dc4a1d8f",
+                "reference": "14665bc3c38c3ec24a12c904d013a663dc4a1d8f",
                 "shasum": ""
             },
             "require": {
@@ -1017,7 +1062,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2014-08-05 19:52:17"
+            "time": "2014-09-15 02:45:24"
         },
         {
             "name": "leafo/lessphp",
@@ -1108,16 +1153,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "0.5.5",
+            "version": "0.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "17bb2a0f522f3d325b6406a9db0292bc7484ade5"
+                "reference": "63759ca1f3bb25d52946f684b54fe3821d084215"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/17bb2a0f522f3d325b6406a9db0292bc7484ade5",
-                "reference": "17bb2a0f522f3d325b6406a9db0292bc7484ade5",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/63759ca1f3bb25d52946f684b54fe3821d084215",
+                "reference": "63759ca1f3bb25d52946f684b54fe3821d084215",
                 "shasum": ""
             },
             "require": {
@@ -1125,20 +1170,24 @@
             },
             "require-dev": {
                 "aws/aws-sdk-php": "~2.4",
+                "barracuda/copy": "~1.1.4",
                 "dropbox/dropbox-sdk": "~1.1.1",
-                "league/event": "~0.3",
+                "guzzlehttp/guzzle": "~4.0",
+                "league/event": "~1.0",
                 "league/phpunit-coverage-listener": "~1.1",
-                "mockery/mockery": "~0.9@dev",
+                "mockery/mockery": "~0.9",
                 "phpseclib/phpseclib": "~0.3.5",
                 "phpspec/phpspec": "~2.0",
                 "phpunit/phpunit": "~4.0",
                 "predis/predis": "~1.0",
-                "rackspace/php-opencloud": "~1.9.1",
+                "rackspace/php-opencloud": "~1.10.0",
                 "sabre/dav": "~2.0.2"
             },
             "suggest": {
                 "aws/aws-sdk-php": "Allows you to use AWS S3 storage",
+                "barracuda/copy": "Allows you to use Copy.com storage",
                 "dropbox/dropbox-sdk": "Allows you to use Dropbox storage",
+                "guzzlehttp/guzzle": "Allows you to use http files (reading only)",
                 "league/event": "Required for EventableFilesystem",
                 "phpseclib/phpseclib": "Allows SFTP server storage",
                 "predis/predis": "Allows you to use Predis for caching",
@@ -1148,7 +1197,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.6-dev"
+                    "dev-master": "0.5-dev"
                 }
             },
             "autoload": {
@@ -1180,7 +1229,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2014-08-26 11:05:47"
+            "time": "2014-09-16 06:55:04"
         },
         {
             "name": "machuga/authority",
@@ -1495,16 +1544,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.11.0",
+            "version": "1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "2b60366be6dcb9f9cd3e244ab25eb98eaea99551"
+                "reference": "cde7a00d1410a17fb6d61b993cb017a78be1137c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/2b60366be6dcb9f9cd3e244ab25eb98eaea99551",
-                "reference": "2b60366be6dcb9f9cd3e244ab25eb98eaea99551",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/cde7a00d1410a17fb6d61b993cb017a78be1137c",
+                "reference": "cde7a00d1410a17fb6d61b993cb017a78be1137c",
                 "shasum": ""
             },
             "require": {
@@ -1537,7 +1586,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2014-08-26 03:18:44"
+            "time": "2014-09-10 03:26:33"
         },
         {
             "name": "nikic/php-parser",
@@ -1746,17 +1795,105 @@
             "time": "2014-08-05 08:00:32"
         },
         {
-            "name": "phpseclib/phpseclib",
-            "version": "0.3.7",
+            "name": "paypal/adaptivepayments-sdk-php",
+            "version": "dev-namespace-php5.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "8b8c62f278e363b75ddcacaf5803710232fbd3e4"
+                "url": "https://github.com/paypal/adaptivepayments-sdk-php.git",
+                "reference": "2b3ca64338f6f62b1741bea55f1f0c9d6f3f6964"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/8b8c62f278e363b75ddcacaf5803710232fbd3e4",
-                "reference": "8b8c62f278e363b75ddcacaf5803710232fbd3e4",
+                "url": "https://api.github.com/repos/paypal/adaptivepayments-sdk-php/zipball/2b3ca64338f6f62b1741bea55f1f0c9d6f3f6964",
+                "reference": "2b3ca64338f6f62b1741bea55f1f0c9d6f3f6964",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "paypal/sdk-core-php": "2.4.*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PayPal\\Service": "lib/",
+                    "PayPal\\Types": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "PayPal",
+                    "homepage": "https://github.com/paypal/adaptivepayments-sdk-php/contributors"
+                }
+            ],
+            "description": "PayPal adaptivepayments SDK for PHP",
+            "homepage": "https://developer.paypal.com",
+            "keywords": [
+                "paypal",
+                "php",
+                "sdk"
+            ],
+            "time": "2014-05-22 17:11:29"
+        },
+        {
+            "name": "paypal/sdk-core-php",
+            "version": "v2.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paypal/sdk-core-php.git",
+                "reference": "226d3492f80847f09c99debb4d3220d5e744ddc8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paypal/sdk-core-php/zipball/226d3492f80847f09c99debb4d3220d5e744ddc8",
+                "reference": "226d3492f80847f09c99debb4d3220d5e744ddc8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PayPal": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "PayPal",
+                    "homepage": "https://github.com/paypal/sdk-core-php/contributors"
+                }
+            ],
+            "description": "PayPal Core SDK for PHP",
+            "homepage": "https://github.com/paypal/sdk-core-php",
+            "keywords": [
+                "paypal",
+                "php",
+                "sdk"
+            ],
+            "time": "2013-09-11 14:27:58"
+        },
+        {
+            "name": "phpseclib/phpseclib",
+            "version": "0.3.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpseclib/phpseclib.git",
+                "reference": "5085202f1f37769aae59f9711c423f28159c9b29"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/5085202f1f37769aae59f9711c423f28159c9b29",
+                "reference": "5085202f1f37769aae59f9711c423f28159c9b29",
                 "shasum": ""
             },
             "require": {
@@ -1765,6 +1902,7 @@
             "require-dev": {
                 "phing/phing": "2.7.*",
                 "phpunit/phpunit": "4.0.*",
+                "sami/sami": "1.*",
                 "squizlabs/php_codesniffer": "1.*"
             },
             "suggest": {
@@ -1840,7 +1978,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2014-07-05 16:36:21"
+            "time": "2014-09-13 02:42:45"
         },
         {
             "name": "predis/predis",
@@ -3134,7 +3272,8 @@
         "anahkiasen/former": 20,
         "aws/aws-sdk-php": 20,
         "mjohnson/transit": 20,
-        "opentok/opentok": 20
+        "opentok/opentok": 20,
+        "paypal/adaptivepayments-sdk-php": 20
     },
     "platform": [
 
