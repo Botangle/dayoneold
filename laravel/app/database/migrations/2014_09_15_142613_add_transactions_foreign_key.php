@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserCredits extends Migration {
+class AddTransactionsForeignKey extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreateUserCredits extends Migration {
 	 */
 	public function up()
 	{
-        Schema::table('user_credits', function(Blueprint $table)
+        Schema::table('transactions', function(Blueprint $table)
             {
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             });
@@ -25,8 +25,8 @@ class CreateUserCredits extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('user_credits', function(Blueprint $table){
-                $table->dropForeign('user_credits_user_id_foreign');
+        Schema::table('transactions', function(Blueprint $table){
+                $table->dropForeign('transactions_user_id_foreign');
             });
 	}
 

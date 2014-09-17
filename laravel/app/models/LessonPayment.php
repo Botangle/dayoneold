@@ -43,16 +43,14 @@ class LessonPayment extends Eloquent {
             // TODO: implement this with billing
 //            $transaction = new Transaction;
 //            $results = $transaction->charge((int)$lessonId, (int) $tutorId, (int) $studentId, $amount, $fee);
-            $results = array(
-                'id'    => rand(1, 9999),
-            );
+            $transaction = Transaction::charge($this);
 
             // if we have success billing, we'll note the fact and save things
-            if (is_array($results)) {
+            if ($transaction) {
                 $this->payment_complete = true;
 
-                // @TODO: change from this to just a transaction_id instead ...
-                $this->stripe_charge_id = $results['id'];
+                // @TODO: change from stripe_charge_id to just a transaction_id instead ...
+                $this->stripe_charge_id = $transaction->id;
                 $this->save();
 
                 Event::fire('lesson.paid', array($this->lesson, Auth::user()));

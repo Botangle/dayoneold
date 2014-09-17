@@ -33,4 +33,26 @@ return array(
         'secretKey' => '',
     ),
 
+    'openTok' => array(
+        'apiKey'       => '',
+        'apiSecret'    => '',
+    ),
+
+    'twiddla' => array(
+        'username'  => '',
+        'password'  => '',
+        'apiUrl'       => '',
+    ),
+
+    'paypal' => array(
+        'username'              => '',
+        'password'              => '',
+        'signature'             => '',
+        'endPoint'              => '',
+        'endPointSandbox'       => '',
+        'endPointBetaSandbox'   => '',
+        'version'               => '',
+        'environment'           => '',
+        'encryptionConstant'    => 0,
+    ),
 );
