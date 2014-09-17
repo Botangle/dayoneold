@@ -112,6 +112,11 @@ class Transaction extends MagniloquentContextsPlus {
         return $this->belongsTo('User');
     }
 
+    public function lesson()
+    {
+        return $this->belongsTo('Lesson');
+    }
+
     /**
      * Scopes the transactions for a particular user
      *
@@ -230,6 +235,11 @@ class Transaction extends MagniloquentContextsPlus {
         return $userCredit->save();
     }
 
+    public function generateBraintreeToken()
+    {
+
+    }
+
     public static function charge(LessonPayment $lessonPayment)
     {
         // run everything in a DB transaction to handle rolling changes back if we have payment or other issues
@@ -277,9 +287,11 @@ class Transaction extends MagniloquentContextsPlus {
     }
 
     /**
-     * @return bool|void
+     * @param array $new_attributes
+     * @param bool $forceSave
+     * @return bool
      */
-    public function save()
+    public function save(array $new_attributes = array(), $forceSave = false)
     {
         try {
             if($this->type == 'buy') {

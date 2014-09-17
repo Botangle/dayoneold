@@ -379,6 +379,9 @@
                     $('#modal-flash-wrapper').empty().append(flashError).show();
                     $('#myModal').css('height', $('#myModal .span9').outerHeight());
                 } else {
+                    if (data.redirect){
+                        window.location.href = data.redirect;
+                    }
                     // Refresh the calendar (by moving next and then back)
                     $('.button-month-next').click();
                     $('.button-month-previous').click();

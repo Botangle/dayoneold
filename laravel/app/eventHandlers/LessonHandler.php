@@ -25,6 +25,8 @@ class LessonHandler {
         // Check that billing has been setup before the lesson sessions are created
         if ($lesson->billingReady()){
             $lesson->prepareLessonTools();
+        } else {
+            Session::put('credit_refill_needed', true);
         }
     }
 

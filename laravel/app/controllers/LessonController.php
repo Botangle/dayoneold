@@ -66,9 +66,18 @@ class LessonController extends BaseController {
         //   revision flags and send a message
         if ($model->manageChangesThenSave(true)) {
             Event::fire('lesson.created', array($model, Auth::user()));
+
+            // If credit is needed for the lesson, we'll need to pass back where to buy credit
+            if (Session::get('credit_refill_needed')){
+                $redirectTo = route('transaction.buy');
+            } else {
+                $redirectTo = '';
+            }
+
             return Response::json(array(
                     'id'        => $model->id,
                     'result'    => 'success',
+                    'redirect'  => $redirectTo,
                 ));
 
         }

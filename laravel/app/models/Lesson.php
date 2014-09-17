@@ -642,12 +642,11 @@ class Lesson extends MagniloquentContextsPlus {
     }
 
     /**
-     * A stub for a billing check required before Twiddla and OpenTok sessions can be created
+     * Essentially returns true if the student has a positive credit amount
      */
     public function billingReady()
     {
-        // @TODO Implement this when billing is implemented
-        return true;
+        return ($this->studentUser->credit && $this->studentUser->credit->amount > 0);
     }
 
     public function getOpenTokTokenAttribute()
