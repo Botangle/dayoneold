@@ -23,7 +23,8 @@ return array(
 	),
 
 	'mandrill' => array(
-		'secret' => '',
+        'secret'    => '6yZHPi6pRMW5deO5L3MRcA',
+        'subaccount'   => 'development', // subaccount isn't yet supported in Laravel 4.2
 	),
 
 	'stripe' => array(
