@@ -11,7 +11,7 @@
 
 {{HTML::style('css/jqueryui/themes/base/jquery.ui.all.css')}}
 {{HTML::style('css/jqueryui/demos.css')}}
-
+{{ Html::script('/js/jstz-1.0.4.min.js') }}
 @stop
 
 
@@ -95,4 +95,9 @@
 @parent
 {{ Html::script(url('js/subject-autocomplete-multiselect.js')) }}
 {{ Html::script(url('js/password-strength.js')) }}
+<script>
+    var tz = jstz.determine(); // Determines the time zone of the browser client
+    jQuery('#timezone').val(tz.name());
+</script>
+
 @stop

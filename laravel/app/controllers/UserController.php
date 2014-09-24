@@ -68,6 +68,29 @@ class UserController extends BaseController {
 
         Event::fire('user.login', array(Auth::user()));
 
+        if (Input::get('timezone') != '' && Input::get('timezone') != $user->timezone){
+            switch($user->timezone_update){
+                case User::TIMEZONE_UPDATE_AUTO:
+                    $user->timezone = Input::get('timezone');
+                    $user->save();
+                    break;
+
+                case User::TIMEZONE_UPDATE_ASK:
+                    return View::make('user.timezone-check', array(
+                            'browserTimezone'   => Input::get('timezone'),
+                            'user'              => $user,
+                        ));
+
+                case User::TIMEZONE_UPDATE_NEVER:
+                    if (empty($user->timezone)){
+                        return Redirect::route('user.timezone')
+                            ->with('flash_error', trans("Please confirm that your timezone is correct"));
+                    }
+                    break;
+
+            }
+        }
+
         return Redirect::intended(URL::route('user.my-account'))
             ->with('flash_success', trans('Logged in successfully. Welcome back to Botangle.'));
 
@@ -434,5 +457,17 @@ class UserController extends BaseController {
     public function getForgot()
     {
         return View::make('user.forgot');
+    }
+
+    public function getTimezoneChange()
+    {
+        return View::make('user.timezone', array(
+                'user' => Auth::user(),
+            ));
+    }
+
+    public function postTimezoneChange()
+    {
+
     }
 }

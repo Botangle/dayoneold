@@ -30,3 +30,6 @@
     ->required()
     }}
 </div>
+@include('user.account.timezone-fields', array(
+    'user' => new User,
+))

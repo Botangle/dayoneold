@@ -18,6 +18,13 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     const CREATED_AT = 'created';
     const UPDATED_AT = 'updated';
 
+    /**
+     * Timezone update constants
+     */
+    const TIMEZONE_UPDATE_NEVER = 'never';
+    const TIMEZONE_UPDATE_ASK   = 'ask';
+    const TIMEZONE_UPDATE_AUTO  = 'auto';
+
 	/**
 	 * The database table used by the model.
 	 *
@@ -57,6 +64,8 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         'password',
         'password_confirmation',
         'terms',
+        'timezone',
+        'timezone_update',
     );
 
     protected $niceNames = array(
@@ -76,6 +85,8 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             'email'                     => array('required', 'email', 'max:100', 'unique:users'),
             'name'                      => array('required', 'max:50'),
             'lname'                     => array('required', 'max:50'),
+            'timezone'                  => array('required', 'timezone'),
+            'timezone_updated'          => array('required', 'in:never,ask,auto'),
         ),
         'tutor-save' => array(
             'subject'                   => array('required'),
