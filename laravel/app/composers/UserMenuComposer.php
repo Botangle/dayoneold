@@ -32,6 +32,7 @@ class UserMenuComposer implements Composer
         $menu->add(route('user.messages'), trans('Messages'));
         $menu->add(route('user.lessons'), trans('Lessons'));
         $menu->add(route('user.billing'), trans('Billing'));
+        $menu->add(route('user.credit'), trans('Credits'));
 
         $menu->getItemsByContentType('Menu\Items\Contents\Link')
             ->map(function($item)
@@ -53,6 +54,14 @@ class UserMenuComposer implements Composer
                         $item->getContent()->nest(
                             '<span class="badge pull-right">'.
                             \Lesson::active()->proposals()->unread(\Auth::user())->count()
+                            .'</span>'
+                        );
+                    }
+
+                    if ($item->getContent()->getUrl() == route('user.credit')) {
+                        $item->getContent()->nest(
+                            '<span class="badge pull-right">'.
+                            number_format(\Auth::user()->creditAmount, 2)
                             .'</span>'
                         );
                     }

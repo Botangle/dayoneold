@@ -8,6 +8,7 @@ composer.phar
 .DS_Store
 Thumbs.db
 /laravel/app/config/local/services.php
+/laravel/app/config/packages/bradleyboy/laravel-braintree/local/braintree.php
 
 # Cake App
 Config/database.php
@@ -50,8 +51,7 @@ www/app/Vendor/*
 .idea
 *.~
 1
-*.swp
 /laravel/_ide_helper.php
 
 # Bash scripts
- scripts/*
+scripts/*

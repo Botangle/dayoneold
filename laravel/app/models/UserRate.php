@@ -1,14 +1,41 @@
 <?php
 
-class UserRate extends Eloquent {
+class UserRate extends MagniloquentContextsPlus {
 
     const RATE_PER_MINUTE   = 'permin';
     const RATE_PER_HOUR     = 'perhour';
 
+    public $timestamps = false;
+
+    public $currency = '$';
+
+    /**
+     * What POST values we'll even take with massive assignment
+     * @var array
+     */
+    protected $fillable = array(
+        'userid',
+        'price_type',
+        'rate',
+    );
+
+    /**
+     * Validation rules
+     */
+    public static $rules = array(
+        "save" => array(
+            'userid'         => array('required', 'exists:users,id'),
+            'price_type'     => array('in:permin,perhour'),
+            'rate'           => array('required', 'numeric'),
+        ),
+        'create'    => array(),
+        'update'    => array(),
+    );
+
 
     public function user()
     {
-        $this->belongsTo('User');
+        $this->belongsTo('User', 'userid');
     }
 
     public function getFormattedRateAttribute()
@@ -19,17 +46,7 @@ class UserRate extends Eloquent {
             $type = trans('per hour');
         }
         $rate = $this->rate .' '. $type;
-        return self::getCurrency() . $rate;
-    }
-
-    /**
-     * Just thinking ahead to the time when we might want to support additional currencies. This enables
-     * us to remove hardwired currencies from views and other models.
-     * @return string
-     */
-    public static function getCurrency()
-    {
-        return '$';
+        return $this->currency . $rate;
     }
 
     /**

@@ -2,6 +2,16 @@
 
 class Transaction extends MagniloquentContextsPlus {
 
+    const BUY = 'buy';
+    CONST SELL = 'sell';
+    CONST TRANSFER = 'transfer';
+
+    public $typeNamesWhenCompleted = array(
+        self::BUY => 'Bought',
+        self::SELL => 'Sold',
+        self::TRANSFER => 'Transferred',
+    );
+
     /**
      * Disable timestamps
      * Even though we'd like to use the created_at (set to created field)
@@ -24,15 +34,17 @@ class Transaction extends MagniloquentContextsPlus {
      */
     private $_cachedUser24HoursTotal;
 
-    public $paypal_email_address;
-
-    public $nonce;
-
     /**
      * TransactionHandler may add payment errors to this array
      * @var array
      */
     public $validationErrors = [];
+
+    protected $niceNames = [
+        'userTotal' => 'sum of all transactions',
+        'user24HoursTotal'  => 'number of credits sold in a 24 hour period',
+        'userCreditAmount'   => 'recorded credit amount',
+    ];
 
     /**
      * What POST values we'll even take with massive assignment
@@ -45,6 +57,11 @@ class Transaction extends MagniloquentContextsPlus {
         'transaction_key',
         'lesson_id',
         'created',
+        'nonce',
+        'paypal_email_address',
+        'userTotal',
+        'user24HoursTotal',
+        'userCreditAmount',
     );
 
     /**
@@ -52,20 +69,41 @@ class Transaction extends MagniloquentContextsPlus {
      */
     public static $rules = array(
         "save" => array(
-            'user_id'                   => array('required', 'exists:users'),
+            'user_id'                   => array('required', 'exists:users,id'),
             'type'                      => array('in:buy,sell,transfer'),
-            'transaction_key'           => array('required', 'alpha_num'),
+            'transaction_key'           => array('alpha_num'),
         ),
+        'create'    => array(),
+        'update'    => array(),
     );
+
+    /**
+     * User relationship
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo('User');
+    }
+
+    /**
+     * Lesson relationship
+     * Note: not every transaction is related to a lesson
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function lesson()
+    {
+        return $this->belongsTo('Lesson');
+    }
 
     protected function addConditionalRules($validator)
     {
-        // If type is transaction, lesson_id is required and must exist
-        // TODO: investigate how type ever gets set to transaction (seems like it doesn't according to validation
-        //    of type above).
-        $validator->sometimes('lesson_id', 'required|exists:lessons', function($input)
+        // If type is transfer, lesson_id is required and must exist
+        // Replaces validateLessonIdIfATransaction from old system
+        //  (which was wrongly only working if type == transaction that never happened)
+        $validator->sometimes('lesson_id', 'required|exists:lessons,id', function($input)
             {
-                return $input->type == 'transaction';
+                return $input->type == 'transfer';
             });
 
         // Replaces ValidateIntegerIfABuy from old system
@@ -88,7 +126,7 @@ class Transaction extends MagniloquentContextsPlus {
 
         // Replaces validateUserHasThatAmountToSell from old system
         //  Essentially, user credits should equal the userTotal
-        $validator->sometimes('userTotal', 'required|equals:'.$this->user->credit->amount, function($input)
+        $validator->sometimes('userTotal', 'required|same:userCreditAmount', function($input)
             {
                 return $input->type == 'sell';
             });
@@ -105,16 +143,6 @@ class Transaction extends MagniloquentContextsPlus {
             {
                 return $input->type == 'sell';
             });
-    }
-
-    public function user()
-    {
-        return $this->belongsTo('User');
-    }
-
-    public function lesson()
-    {
-        return $this->belongsTo('Lesson');
     }
 
     /**
@@ -146,7 +174,7 @@ class Transaction extends MagniloquentContextsPlus {
     function getUserTotalAttribute()
     {
         if (!$this->_cachedUserTotalAmount){
-            $this->_cachedUserTotalAmount = Transaction::forUser($this->user_id)->sum('amount');
+            $this->_cachedUserTotalAmount = Transaction::forUser($this->user)->sum('amount');
         }
         return $this->_cachedUserTotalAmount;
     }
@@ -160,7 +188,7 @@ class Transaction extends MagniloquentContextsPlus {
     function getUser24HoursTotalAttribute()
     {
         if (!$this->_cachedUser24HoursTotal){
-            $this->_cachedUser24HoursTotal = Transaction::forUser($this->user_id)->last24Hours()->sum('amount')
+            $this->_cachedUser24HoursTotal = Transaction::forUser($this->user)->last24Hours()->sum('amount')
                                             + $this->amount;
         }
         return $this->_cachedUser24HoursTotal;
@@ -225,19 +253,15 @@ class Transaction extends MagniloquentContextsPlus {
     {
         if ($this->user->credit){
             $userCredit = $this->user->credit;
-            $userCredit->amount = Transaction::forUser($this->user_id)->sum('amount');
+            $userCredit->amount = Transaction::forUser($this->user)->sum('amount');
         } else {
-            $userCredit = UserCredit::create([
+            $userCredit = new UserCredit;
+            $userCredit->fill([
                     'user_id'   => $this->user_id,
-                    'amount'    => Transaction::forUser($this->user_id)->sum('amount'),
+                    'amount'    => Transaction::forUser($this->user)->sum('amount'),
                 ]);
         }
         return $userCredit->save();
-    }
-
-    public function generateBraintreeToken()
-    {
-
     }
 
     public static function charge(LessonPayment $lessonPayment)
@@ -252,6 +276,7 @@ class Transaction extends MagniloquentContextsPlus {
                     'amount'    => (0 - $lessonPayment->payment_amount),
                     'lesson_id' => $lessonPayment->lesson_id,
                     'type'      => 'transfer',
+                    'transaction_key'   => '0',
                 ]);
             // Save student transaction and update userCredit
             if (!$studentTransaction->addTransaction()){
@@ -259,10 +284,14 @@ class Transaction extends MagniloquentContextsPlus {
                 Log::error("Failed to save student transaction.");
                 return false;
             }
+            // The transaction_key isn't really important in this case
+            // but the id value is more reassuring to users than a 0.
+            $studentTransaction->transaction_key = $studentTransaction->id;
+            $studentTransaction->save();
 
             $expertTransaction = new Transaction;
             $expertTransaction->fill([
-                    'user_id'           => $lessonPayment->student_id,
+                    'user_id'           => $lessonPayment->tutor_id,
                     'amount'            => ($lessonPayment->payment_amount - $lessonPayment->fee),
                     'lesson_id'         => $lessonPayment->lesson_id,
                     'type'              => 'transfer',
@@ -296,8 +325,15 @@ class Transaction extends MagniloquentContextsPlus {
         try {
             if($this->type == 'buy') {
                 Event::fire('transaction.purchase', array($this));
+                // Nonce isn't actually a table column, so we need to remove that from attributes before saving
+                unset($this->attributes['nonce']);
+
             } elseif($this->type == 'sell') {
                 Event::fire('transaction.sale', array($this));
+                // paypal_email_address isn't actually a table column, so we need to remove that
+                //  from attributes before saving
+                unset($this->attributes['paypal_email_address']);
+
             }
         } catch(Exception $e){
             Log::error('Transaction::save failed.');
@@ -308,4 +344,40 @@ class Transaction extends MagniloquentContextsPlus {
         }
         return parent::save();
     }
+
+    public function getTypeDisplayAttribute()
+    {
+        return $this->typeNamesWhenCompleted[$this->type];
+    }
+
+    public function getUserCreditAmountAttribute()
+    {
+        return $this->user->creditAmount;
+    }
+
+    public static function generateBraintreeToken()
+    {
+        // sandbox or production
+        Braintree_Configuration::environment(Config::get('services.braintree.mode'));
+
+        // set other items as well
+        Braintree_Configuration::merchantId(Config::get('services.braintree.merchantId'));
+        Braintree_Configuration::publicKey(Config::get('services.braintree.publicKey'));
+
+        // set the Braintree private key
+        $key = Config::get('services.braintree.privateKey');
+        if (!$key) {
+            throw new Exception('Braintree private key is not set.');
+        }
+        Braintree_Configuration::privateKey($key);
+        return Braintree_ClientToken::generate();
+    }
+
+    public function removeAttribute($attributeName)
+    {
+        if(isset($this->attributes[$attributeName])){
+            unset($this->attributes[$attributeName]);
+        }
+    }
+
 }

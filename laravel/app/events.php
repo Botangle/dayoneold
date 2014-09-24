@@ -123,5 +123,6 @@ Transaction::creating(function(Transaction $transaction){
         $transaction->created = $transaction->freshTimestampString();
     });
 
+Event::listen('transaction.test', 'TransactionHandler@onTest');
 Event::listen('transaction.purchase', 'TransactionHandler@onPurchase');
 Event::listen('transaction.sale', 'TransactionHandler@onSale');

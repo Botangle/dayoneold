@@ -65,4 +65,20 @@ class LessonPayment extends Eloquent {
         // @TODO: should we have an auto-retry system setup here?
 
     }
+
+    /**
+     * Get mutator that returns the payment amount formatted as a currency with a currency symbol
+     */
+    public function getAmountAttribute()
+    {
+        return $this->lesson->userRate->currency . number_format($this->payment_amount, 2);
+    }
+
+    /**
+     * Get mutator that returns the payment amount formatted as a currency with a currency symbol
+     */
+    public function getAmountMinusFeeAttribute()
+    {
+        return $this->lesson->userRate->currency . number_format($this->payment_amount - $this->fee, 2);
+    }
 }

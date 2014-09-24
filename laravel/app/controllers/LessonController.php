@@ -68,7 +68,7 @@ class LessonController extends BaseController {
             Event::fire('lesson.created', array($model, Auth::user()));
 
             // If credit is needed for the lesson, we'll need to pass back where to buy credit
-            if (Session::get('credit_refill_needed')){
+            if (Session::has('credit_refill_needed')){
                 $redirectTo = route('transaction.buy');
             } else {
                 $redirectTo = '';
@@ -237,7 +237,12 @@ class LessonController extends BaseController {
                 $lesson->prepareLessonTools();
             }
         } else {
-            // TODO: decide what should be done if billing isn't ready
+            return Redirect::route('transaction.buy')
+                ->with(
+                    'flash_error',
+                    trans("You need ". $lesson->estimatedCost() ." credits to pay to be able to pay for your lesson.<br>
+                    Please topup your credit."
+                    ));
         }
 
         return View::make('lessons.whiteboard', array(
@@ -285,15 +290,13 @@ class LessonController extends BaseController {
         if (!$lessonComplete) {
 
             // update our lesson timer depending on our role
-            // we do this for both parties on a regular basis to keep folks honest
-            // TODO: investigate potential for timers to get out of sync with each other, which could really
-            //  cause problems down the line
+            // we do this for both parties on a regular basis
             $totalTime = $lesson->updateTimer($role);
 
             // retrieve our user rate and hang on to it so we can re-use it in a bit
             // @TODO: long-term, we want to be pulling this user rate from the Lesson
             // where we keep it to prevent tutors from raising rates after the lesson gets scheduled
-            $userRate = UserRate::where('userid', $lesson->tutor)->first();
+            $userRate = $lesson->userRate;
 
             // figure out the payment amount
             $lessonPayment->payment_amount = $userRate->calculateTutorTotalAmount($totalTime);
@@ -342,6 +345,9 @@ class LessonController extends BaseController {
 
     public function getPayment(Lesson $lesson)
     {
-
+        return View::make('lessons.payment', array(
+                'lesson'    => $lesson,
+                'isStudent' => $lesson->userIsStudent(Auth::user()),
+            ));
     }
 }

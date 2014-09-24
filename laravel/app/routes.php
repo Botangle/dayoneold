@@ -149,9 +149,11 @@ Route::get('/user/billing', array(
         'uses'      => 'UserController@getBilling',
     ));
 
+Route::post('/user/billing', 'UserController@postRateChange');
+
 Route::get('/user/credit', array(
         'as'        => 'user.credit',
-        'uses'      => 'UserController@getCredit',
+        'uses'      => 'UserCreditController@getIndex',
     ));
 
 Route::get('/user/calendarEvents/{id}', array(
@@ -238,6 +240,14 @@ Route::post('/transaction/buy', 'TransactionController@postBuy');
 Route::post('/transaction/sell', array(
         'as'    => 'transaction.sell',
         'uses'  =>'TransactionController@postSell',
+    ));
+
+/**
+ * UserCredit controller
+ */
+Route::get('/user/credits', array(
+        'as'        => 'credits.index',
+        'uses'      => 'UserCreditController@getIndex',
     ));
 
 /**

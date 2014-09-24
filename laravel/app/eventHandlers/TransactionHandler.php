@@ -34,6 +34,7 @@ class TransactionHandler {
             // now let's try to submit for settlement, as we've provided the goods that we wanted to provide (our credits)
             $result = Braintree_Transaction::submitForSettlement($result->transaction->id);
             if($result->success) {
+                Log::info('Braintree transaction success: '. json_encode($result));
                 return true;
             } else {
                 Log::error("Braintree::submitForSettlement failed. Response data: ". json_encode($result));
@@ -41,7 +42,10 @@ class TransactionHandler {
             }
         } else {
             // otherwise, stop everything
-            $transaction->errors()->add('user_id', 'Purchase failed. Please try again or contact support.');
+            $transaction->errors()->add('user_id', 'Purchase failed. Please try again or contact support. Details below:');
+            $code = $result->transaction->processorResponseCode;
+            $message = $result->transaction->processorResponseText;
+            $transaction->errors()->add('user_id', "Error: $code $message");
             Log::error("Braintree::sale failed. Response data: ". json_encode($result));
             return false;
         }

@@ -22,7 +22,7 @@
         "aws/aws-sdk-php": "dev-master",
         "mjohnson/transit": "dev-master",
         "opentok/opentok": "dev-master",
-        "braintree/braintree_php" : "2.28.0",
+        "bradleyboy/laravel-braintree": "dev-master",
         "paypal/adaptivepayments-sdk-php":"dev-namespace-php5.3"
 	},
     "require-dev": {

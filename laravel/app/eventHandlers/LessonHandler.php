@@ -27,6 +27,7 @@ class LessonHandler {
             $lesson->prepareLessonTools();
         } else {
             Session::put('credit_refill_needed', true);
+            Session::put('new_lesson_id', $lesson->id);
         }
     }
 

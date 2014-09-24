@@ -642,11 +642,25 @@ class Lesson extends MagniloquentContextsPlus {
     }
 
     /**
-     * Essentially returns true if the student has a positive credit amount
+     * Returns true if the student has enough credit to pay for this lesson
      */
     public function billingReady()
     {
-        return ($this->studentUser->credit && $this->studentUser->credit->amount > 0);
+        return ($this->studentUser->creditAmount >= $this->estimatedCost());
+    }
+
+    /**
+     * @return float|mixed
+     */
+    public function estimatedCost()
+    {
+        // Note: duration is returned by a get mutator as minutes
+        $rate = $this->userRate;
+        if ($rate->price_type == UserRate::RATE_PER_MINUTE){
+            return $this->duration * $rate->rate;
+        } else {
+            return $this->duration / 60 * $rate->rate ;
+        }
     }
 
     public function getOpenTokTokenAttribute()
@@ -831,5 +845,15 @@ class Lesson extends MagniloquentContextsPlus {
         $this->save();
 
         return $totalTime;
+    }
+
+    /**
+     * Returns the UserRate for the lesson
+     */
+    public function getUserRateAttribute()
+    {
+        // TODO: change this so that Lesson Rate is stored in the lesson at creation
+        //  with a fallback to use the user rate if there isn't a rate on the lesson itself
+        return $this->tutorUser->getActiveUserRateObject();
     }
 }

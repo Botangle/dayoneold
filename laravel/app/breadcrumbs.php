@@ -85,6 +85,24 @@ Breadcrumbs::register('lesson.whiteboard', function($breadcrumbs) {
         $breadcrumbs->push('Whiteboard', route('lesson.whiteboard'));
     });
 
+Breadcrumbs::register('transaction.buy', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+        if (Auth::user()){
+            $user = Auth::user();
+            $breadcrumbs->push(HTML::entities($user->fullname), route('user.profile', $user->username));
+        }
+        $breadcrumbs->push('Buy Credit', route('transaction.buy'));
+    });
+
+Breadcrumbs::register('credit.index', function($breadcrumbs) {
+        $breadcrumbs->parent('home');
+        if (Auth::user()){
+            $user = Auth::user();
+            $breadcrumbs->push(HTML::entities($user->fullname), route('user.profile', $user->username));
+        }
+        $breadcrumbs->push('Credits', route('credit.index'));
+    });
+
 Breadcrumbs::register('page', function($breadcrumbs, $page) {
     $breadcrumbs->parent('category', $page->category);
     $breadcrumbs->push($page->title, route('page', $page->id));
