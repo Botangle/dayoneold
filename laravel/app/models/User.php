@@ -112,12 +112,22 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
 
     public function rates()
     {
-        return $this->hasMany('UserRate', 'userid');
+        return $this->hasMany('UserRate', 'userid')->orderBy('id', 'desc');
     }
 
     public function statuses()
     {
         return $this->hasMany('UserStatus', 'created_by_id')->orderBy('created_at', 'desc');
+    }
+
+    public function credit()
+    {
+        return $this->hasOne('UserCredit');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany('Transaction');
     }
 
     public function lessonsStudying()
@@ -301,13 +311,19 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
      */
     public function getActiveRateAttribute()
     {
+        $rate = $this->getActiveUserRateObject();
+        return $rate->formattedRate;
+    }
+
+    /**
+     * @return UserRate
+     */
+    public function getActiveUserRateObject()
+    {
         if (count($this->rates) > 0){
-            // select the first rate...(like old system)
-            $rate = $this->rates->first();
-            $formattedRate =  $rate->formattedRate;
-            return $formattedRate;
+            return $this->rates->first();
         } else {
-            return UserRate::getCurrency() . 0;
+            return new UserRate;
         }
     }
 
@@ -447,6 +463,18 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             $details[] = e($this->extracurricular_interests);
         }
         return $details;
+    }
+
+    /**
+     * Get mutator to shortcut getting the credit amount from related UserCredit object (if it exists)
+     */
+    public function getCreditAmountAttribute()
+    {
+        if ($this->credit){
+            return $this->credit->amount;
+        } else {
+            return 0;
+        }
     }
 
 }

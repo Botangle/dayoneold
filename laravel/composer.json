@@ -21,7 +21,9 @@
         "league/flysystem": "0.5.*",
         "aws/aws-sdk-php": "dev-master",
         "mjohnson/transit": "dev-master",
-        "opentok/opentok": "dev-master"
+        "opentok/opentok": "dev-master",
+        "bradleyboy/laravel-braintree": "dev-master",
+        "paypal/adaptivepayments-sdk-php":"dev-namespace-php5.3"
 	},
     "require-dev": {
         "way/generators": "2.*",

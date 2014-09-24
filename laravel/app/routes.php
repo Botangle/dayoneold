@@ -149,6 +149,13 @@ Route::get('/user/billing', array(
         'uses'      => 'UserController@getBilling',
     ));
 
+Route::post('/user/billing', 'UserController@postRateChange');
+
+Route::get('/user/credit', array(
+        'as'        => 'user.credit',
+        'uses'      => 'UserCreditController@getIndex',
+    ));
+
 Route::get('/user/calendarEvents/{id}', array(
         'as'        => 'user.calendar-events',
         'uses'      => 'UserController@getCalendarEvents',
@@ -217,10 +224,30 @@ Route::controller('lesson', 'LessonController', array(
 /**
  * UserMessage controller
  */
-
 Route::post('/user-message/create', array(
         'as'    => 'user-message.create',
         'uses'  => 'UserMessageController@postCreate',
+    ));
+
+/**
+ * Transaction controller
+ */
+Route::get('/transaction/buy', array(
+        'as'        => 'transaction.buy',
+        'uses'      => 'TransactionController@getBuy',
+    ));
+Route::post('/transaction/buy', 'TransactionController@postBuy');
+Route::post('/transaction/sell', array(
+        'as'    => 'transaction.sell',
+        'uses'  =>'TransactionController@postSell',
+    ));
+
+/**
+ * UserCredit controller
+ */
+Route::get('/user/credits', array(
+        'as'        => 'credits.index',
+        'uses'      => 'UserCreditController@getIndex',
     ));
 
 /**

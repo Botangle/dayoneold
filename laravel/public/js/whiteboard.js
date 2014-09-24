@@ -25,7 +25,7 @@ function exitLesson(lessonId, roleType){
                 },
                 function(data,v){
                     clearInterval(timer);
-                    location.href= (BotangleBasePath+'lesson/'+lessonId+'/payment/?role=student');
+                    location.href= (BotangleBasePath+'lesson/'+lessonId+'/payment');
                     return false;
                 }
             );
@@ -46,7 +46,7 @@ function exitLesson(lessonId, roleType){
                 function(data,v){
                     clearInterval(timer);
 
-                    location.href = (BotangleBasePath+'lesson/'+lessonId+'/payment/?role=tutor');
+                    location.href = (BotangleBasePath+'lesson/'+lessonId+'/payment');
                     return false;
                 }
             );
@@ -97,10 +97,10 @@ function count(lessonId, roleType){
                 if(response.lessonComplete == 1){
                     if(roleType == 4){
                         alert("Your expert has finished the lesson. Redirecting you to the payment page now ...");
-                        location.href= (BotangleBasePath+'lesson/'+lessonId+'/payment/?role=student');
+                        location.href= (BotangleBasePath+'lesson/'+lessonId+'/payment');
                     } else {
                         alert("Your student has finished the lesson. Redirecting you to the payment page now ...");
-                        location.href= (BotangleBasePath+'lesson/'+lessonId+'/payment/?role=tutor');
+                        location.href= (BotangleBasePath+'lesson/'+lessonId+'/payment');
                     }
                     clearInterval(timer);
                     return false;

@@ -21,12 +21,6 @@ class UserController extends BaseController {
 
     }
 
-    public function getBilling()
-    {
-        // TODO: complete the billing view
-        return View::make('user.billing');
-    }
-
     public function getLogin()
     {
         return View::make('user.login');
@@ -393,9 +387,36 @@ class UserController extends BaseController {
         return Response::json($daysArray);
     }
 
-    public function search()
+    public function getBilling()
     {
+        return View::make('user.billing', array(
+                'user'  => Auth::user(),
+                'rate'  => Auth::user()->getActiveUserRateObject(),
+            ));
+    }
 
+    public function postRateChange()
+    {
+        $inputs = Input::all();
+        $user = User::findOrFail($inputs['userid']);
+        $previousRate = UserRate::find($inputs['current_rate_id']);
+
+        // Only create a new UserRate if the rate has been changed (or there's no previous rate)
+        if (!$previousRate || ($previousRate->rate != $inputs['rate'] || $previousRate->type != $inputs['price_type'])){
+            $userRate = new UserRate;
+            $userRate->fill($inputs);
+
+            if ($userRate->save()){
+                return Redirect::back()
+                    ->with('flash_success', trans('You have successfully updated your rate.'));
+            } else {
+                return Redirect::back()
+                    ->with('flash_error', trans('Unable to save rate changes'))
+                    ->withErrors($userRate->errors())
+                    ->withInput();
+            }
+
+        }
     }
 
     public function getLessons()
@@ -413,107 +434,5 @@ class UserController extends BaseController {
     public function getForgot()
     {
         return View::make('user.forgot');
-    }
-
-    public function postForgot()
-    {
-        try {
-            $user = Sentry::findUserByLogin(Input::get('email'));
-        } catch (Cartalyst\Sentry\Users\UserNotFoundException $e){
-            return Redirect::back()
-                ->withInput(Input::all())
-                ->with('flash_error', trans('User not found.'));
-        }
-
-        $email = $user->email;
-        $emailViewData = array(
-            'resetCode'         => $user->getResetPasswordCode(),
-        );
-
-        // Send an email with a link that incorporates the reset code.
-        try{
-            Mail::send('emails.auth.reset-password', $emailViewData, function($message) use ($email){
-                    $message->to($email)
-                        ->subject(trans('ModernIcons - Password Reset'));
-                });
-        } catch(Exception $e){
-            return Redirect::back()
-                ->withInput(Input::all())
-                ->with('flash_error', trans("There was a problem sending the password reset to") ." ". $email);
-        }
-
-        return Redirect::back()
-            ->with('flash_success', trans("You have been sent an email with instructions on how to reset your password."));
-    }
-
-    public function getPasswordReset($resetCode)
-    {
-        try {
-            $user = Sentry::findUserByResetPasswordCode($resetCode);
-        } catch (Cartalyst\Sentry\Users\UserNotFoundException $e){
-            // The provided password reset code is Invalid
-            return Redirect::action('LoginController@getForgot')
-                ->with('flash_error', trans("Reset code invalid."));
-        }
-
-        // Check if the reset password code is valid
-        if ($user->checkResetPasswordCode($resetCode)){
-
-            // Display a form for resetting their password
-            return View::make('login.reset', array(
-                    'resetCode' => $resetCode,
-                ));
-        }
-        else
-        {
-            // The provided password reset code is Invalid
-            return Redirect::action('LoginController@getForgot')
-                ->with('flash_error', trans("Reset code invalid."));
-        }
-
-    }
-
-    public function postPasswordReset()
-    {
-        // TODO: determine best location for this validator extension
-        Validator::extend('password_strong', function($attribute, $value, $parameters ){
-                return User::isPasswordStrong($value);
-            });
-        // Build the custom messages array.
-        $messages = array(
-            'password_strong' => trans('The :attribute must contain at least 8 characters. 1 must be a capital letter and 1 a non-alphanumeric character.'),
-            'confirmed'        => trans('New Password and Confirm Password did not match.'),
-        );
-
-        // Validate old and new passwords for correct field format
-        $rules = array(
-            'new_password'      => array('required', 'min:8', 'max:255', 'confirmed', 'password_strong'),
-        );
-        $validator = Validator::make(Input::all(), $rules, $messages);
-
-        if ($validator->fails()){
-            return Redirect::back()
-                ->with('flash_error', trans('Password reset failed'))
-                ->withErrors($validator);
-        }
-
-        // Attempt to reset the user password
-        try {
-            $user = Sentry::findUserByResetPasswordCode(Input::get('resetCode'));
-        } catch (Cartalyst\Sentry\Users\UserNotFoundException $e){
-            // The provided password reset code is Invalid
-            return Redirect::action('LoginController@getForgot')
-                ->with('flash_error', trans("Reset code invalid."));
-        }
-        if ($user->attemptResetPassword(Input::get('resetCode'), Input::get('new_password'))){
-            Sentry::login($user);
-            return Redirect::route('dashboard')
-                ->with('flash_success', trans('Password reset successfully'));
-
-        } else {
-            // Password reset failed
-            return Redirect::back()
-                ->with('flash_error', trans('Password reset failed'));
-        }
     }
 }

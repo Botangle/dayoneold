@@ -642,12 +642,25 @@ class Lesson extends MagniloquentContextsPlus {
     }
 
     /**
-     * A stub for a billing check required before Twiddla and OpenTok sessions can be created
+     * Returns true if the student has enough credit to pay for this lesson
      */
     public function billingReady()
     {
-        // @TODO Implement this when billing is implemented
-        return true;
+        return ($this->studentUser->creditAmount >= $this->estimatedCost());
+    }
+
+    /**
+     * @return float|mixed
+     */
+    public function estimatedCost()
+    {
+        // Note: duration is returned by a get mutator as minutes
+        $rate = $this->userRate;
+        if ($rate->price_type == UserRate::RATE_PER_MINUTE){
+            return $this->duration * $rate->rate;
+        } else {
+            return $this->duration / 60 * $rate->rate ;
+        }
     }
 
     public function getOpenTokTokenAttribute()
@@ -832,5 +845,15 @@ class Lesson extends MagniloquentContextsPlus {
         $this->save();
 
         return $totalTime;
+    }
+
+    /**
+     * Returns the UserRate for the lesson
+     */
+    public function getUserRateAttribute()
+    {
+        // TODO: change this so that Lesson Rate is stored in the lesson at creation
+        //  with a fallback to use the user rate if there isn't a rate on the lesson itself
+        return $this->tutorUser->getActiveUserRateObject();
     }
 }

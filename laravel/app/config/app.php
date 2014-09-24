@@ -130,6 +130,7 @@ return array(
         'Way\Generators\GeneratorsServiceProvider',
         'Former\FormerServiceProvider',
         'BotangleHashProvider',
+        'Bradleyboy\Laravel\BraintreeServiceProvider',
 	),
 
 	/*

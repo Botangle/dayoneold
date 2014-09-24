@@ -115,3 +115,14 @@ Event::listen('userMessage.sent', function($userMessage, $recipient, $type){
         // Notify the recipient that they have a message waiting for them
         $recipient->notify($userMessage, $type);
     });
+
+/**
+ * Transaction events
+ */
+Transaction::creating(function(Transaction $transaction){
+        $transaction->created = $transaction->freshTimestampString();
+    });
+
+Event::listen('transaction.test', 'TransactionHandler@onTest');
+Event::listen('transaction.purchase', 'TransactionHandler@onPurchase');
+Event::listen('transaction.sale', 'TransactionHandler@onSale');
