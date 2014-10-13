@@ -1150,3 +1150,8 @@ a.Social-Boxs-Links:hover {
 .price-area span {
     font-weight: bold;
 }
+
+/* Intern for a Day tweaks */
+.navbar-default a.I4aD {
+    background: url('/img/btn_i4ad.png') no-repeat 50% 19px;
+}

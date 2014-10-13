@@ -1,5 +1,5 @@
 <?php 
-$homecls = $howitworksClass = $categoriescls = $topchart = $aboutclas=$reportbug =$logincls= $myaccountcls = $topheadclass="";
+$homecls = $howitworksClass = $categoriescls = $topchart = $aboutclas =$logincls= $myaccountcls = $topheadclass="";
 /*
 if($this->Session->read('Auth.User.id')){ 
 	if(($this->Session->read('Auth.User.role_id')==2) && ($this->Session->read('Auth.User.claim_status')==0))
@@ -29,8 +29,6 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
 	$aboutclas = "active";
 }else if($this->params['controller']=='users' && $this->params['action']=='login'){
 	$logincls = "active";
-}else if($this->params['controller']=='nodes' && $this->params['action']=='reportbug'){
-	$reportbug = "active";
 }else if($this->params['controller']=='users' && $this->params['action']=='index'){
 	$myaccountcls = "active";
 }
@@ -107,9 +105,9 @@ if($this->params['controller']=='nodes' && $this->params['action']=='promoted'){
 		?>
 		 </li>
          <li><?php echo $this->Html->link(
-    __('Report a Bug'),
-    '/reportbug',
-    array('class' => 'Report_Bug '.$reportbug.'', 'title' =>  __('Report a Bug'))
+    __('Intern for a Day'),
+    'http://www.internforaday.co',
+    array('class' => 'I4aD', 'title' =>  __('Intern for a Day'), 'target' => '_blank')
 );?> </li>
       </ul>
     </div>
