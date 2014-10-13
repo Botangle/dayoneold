@@ -1155,3 +1155,23 @@ a.Social-Boxs-Links:hover {
 .navbar-default a.I4aD {
     background: url('/img/btn_i4ad.png') no-repeat 50% 19px;
 }
+
+.I4aD .text img {
+    width: 100px;
+    height: 101px;
+    border: 0;
+    margin: 0 1em .25em 0;
+    float: left;
+}
+.I4aD .text .title1 {
+    margin-bottom: .5em;
+    line-height: 1.5em;
+}
+
+.I4aD .text .btn {
+    width: 100%;
+    background-color: #6C3;
+}
+.I4aD .text .btn:hover {
+    background-color: #51a351;
+}
