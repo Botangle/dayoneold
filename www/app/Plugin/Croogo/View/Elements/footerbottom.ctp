@@ -77,7 +77,7 @@ echo $this->Html->css(array(
 			</p>
 			<div class="pull-right">
 				<a class="btn" href="#" onclick="$.fancybox.close();">Continue to Botangle</a>
-				<a class="btn btn-primary2" href="http://internforaday.co/">Go to intern for a day</a>
+				<a class="btn btn-primary2" href="http://internforaday.co/">Go to "Intern for a Day"</a>
 			</div>
 		</div>
 <!-- Modal popup end -->
