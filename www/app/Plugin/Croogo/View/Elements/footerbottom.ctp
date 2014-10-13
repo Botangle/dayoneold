@@ -67,8 +67,8 @@ echo $this->Html->css(array(
 
 <!-- Modal popup start -->
 <div id="myAds" style="display:none;width:500px;">
-	<img src="/img/logo_intern_for_aday.png">
-			<p style="font-size: 16px">
+	<img src="/img/logo_intern_for_a_day.png">
+			<p style="font-size: 16px; margin: 1em 0;">
                 Check out Botangle's First Event!  What's it like at a Startup? Hang out with us for a day and find out!
 				You will see what a day in a life of a Founder is by working with a
 				company for a day! There are many opportunities to improve your
