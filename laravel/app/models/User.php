@@ -86,7 +86,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             'name'                      => array('required', 'max:50'),
             'lname'                     => array('required', 'max:50'),
             'timezone'                  => array('required', 'timezone'),
-            'timezone_updated'          => array('required', 'in:never,ask,auto'),
+            'timezone_update'           => array('required', 'in:never,ask,auto'),
         ),
         'tutor-save' => array(
             'subject'                   => array('required'),
@@ -488,4 +488,20 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         }
     }
 
+    public function getTimezoneCountryAttribute()
+    {
+        if($this->timezone){
+            $tz = new DateTimeZone($this->timezone);
+            return $tz->getLocation()['country_code'];
+        } else {
+            return '';
+        }
+    }
+
+    public static function getTimezoneOptions()
+    {
+        $timezones = DateTimeZone::listIdentifiers();
+        // We want the key and value to be the same
+        return array_combine($timezones, $timezones);
+    }
 }

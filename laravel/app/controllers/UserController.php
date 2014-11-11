@@ -468,6 +468,23 @@ class UserController extends BaseController {
 
     public function postTimezoneChange()
     {
-
+        $user = Auth::user();
+        $timezone = Input::get('timezone');
+        try {
+            new DateTimeZone($timezone);
+        } catch(Exception $e){
+            return Redirect::back()
+                ->with('flash_error', $e->getMessage());
+        }
+        $user->timezone = $timezone;
+        if (Input::has('timezone_update')){
+            $user->timezone_update = Input::get('timezone_update');
+        }
+        $user->save();
+        if (Input::has('ChangeTimezone')){
+            return Redirect::route('user.timezone');
+        } else {
+            return Redirect::intended(URL::route('user.my-account'));
+        }
     }
 }

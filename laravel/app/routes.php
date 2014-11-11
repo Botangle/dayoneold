@@ -170,7 +170,6 @@ Route::get('/user/timezone', array(
         'as'    => 'user.timezone',
         'uses'  => 'UserController@getTimezoneChange',
     ));
-
 Route::post('/user/timezone', 'UserController@postTimezoneChange');
 
 Route::get('/user/{username}', array(

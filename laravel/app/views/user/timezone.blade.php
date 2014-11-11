@@ -12,7 +12,7 @@
         <p class="FontStyle20 color1">{{ trans("Change Timezone") }}</p>
 
         {{ Former::open()
-            ->action('UserController@postTimezoneChange')
+            ->url(action('UserController@postTimezoneChange'))
             ->class('form-horizontal')
         }}
 
@@ -26,7 +26,7 @@
             {{ Former::actions(
             Former::submit(trans('Change Timezone'))
             ->addClass('btn btn-primary')
-            ->name('change_timezone')
+            ->name('change')
             )->addClass('control-group')
             }}
         </div>

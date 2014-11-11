@@ -17,7 +17,7 @@ class UserAddTimezone extends Migration {
             });
 		Schema::table('users', function(Blueprint $table){
                 $table->string('timezone');
-                $table->string('timezone_update', 10)->default('ask');
+                $table->string('timezone_update', 10)->default('auto'); // ask, never, auto
             });
 	}
 
