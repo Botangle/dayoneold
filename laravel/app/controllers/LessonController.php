@@ -46,14 +46,6 @@ class LessonController extends BaseController {
         $model = new Lesson;
         $model->fill(Input::all());
 
-        /* A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
-         * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i
-         * Unfortunately, using a get mutator doesn't work, since it's not automatically called before the
-         * validation is called. I'm not spending any more time on this for now.
-         * MJL - 2014-08-13
-         *
-        $model->lesson_time = $model->formatLessonTime('G:i:s');
-        */
         $model->setLessonAtFromInputs(Input::get('lesson_date'), Input::get('lesson_time'));
 
         if (!$model->validate()){
@@ -125,14 +117,7 @@ class LessonController extends BaseController {
         $model = Lesson::findOrFail(Input::get('id'));
 
         $model->fill(Input::all());
-        /* A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
-         * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i
-         * Unfortunately, using a get mutator doesn't work, since it's not automatically called before the
-         * validation is called. I'm not spending any more time on this for now.
-         * MJL - 2014-08-13
-         *
-        $model->lesson_time = $model->formatLessonTime('G:i:s');
-        */
+
         $model->setLessonAtFromInputs(Input::get('lesson_date'), Input::get('lesson_time'));
 
         if (!$model->validate()){

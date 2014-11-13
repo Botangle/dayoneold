@@ -41,8 +41,6 @@ class Lesson extends MagniloquentContextsPlus {
         'tutor',
         'student',
         'lesson_at',
-        'lesson_date',
-        'lesson_time',
         'duration',
         'subject',
         'repet',
@@ -69,8 +67,6 @@ class Lesson extends MagniloquentContextsPlus {
             'tutor'                     => array('required', 'exists:users,id'),
             'student'                   => array('required', 'exists:users,id'),
             'lesson_at'                 => array('required', 'date_format:Y-m-d G:i:s'),
-/*            'lesson_date'               => array('required', 'date_format:Y-m-d'),
-            'lesson_time'               => array('required', 'date_format:G:i:s'), */
             'duration'                  => array('numeric'),
             'subject'                   => array('required'),
             'repet'                     => array('in:0,1,2'), // Same as CONSTs beginning REPEAT_
@@ -495,28 +491,6 @@ class Lesson extends MagniloquentContextsPlus {
     public function formatLessonTime($format, User $forUser = null)
     {
         return $this->formattedLessonAt($format, $forUser);
-        /**
-         * A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
-         * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i.
-         * Unfortunately, using a get mutator doesn't work, since it's not automatically called before the
-         * validation is called. So, I'm using this little function to isolate my workaround and
-         * convert between the two formats.
-         * MJL - 2014-08-13
-         *
-        $length = strlen($this->lesson_time);
-        if ($length == 5 || $length == 4){
-            $date = DateTime::createFromFormat('G:i', $this->lesson_time);
-        } elseif ($length == 8 || $length == 7){
-            $date = DateTime::createFromFormat('G:i:s', $this->lesson_time);
-        } else {
-            return null;
-        }
-
-        if ($date){
-            return $date->format($format);
-        }
-        return null;
-        */
     }
 
     public function setLessonAtFromInputs($lessonDate, $lessonTime)
