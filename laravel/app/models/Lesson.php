@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 class Lesson extends MagniloquentContextsPlus {
 
     const ROLE_STUDENT = 'student';
@@ -29,6 +31,8 @@ class Lesson extends MagniloquentContextsPlus {
      */
     const UPDATED_AT = 'add_date';
 
+    public $dates = ['lesson_at'];
+
     /**
      * What POST values we'll even take with massive assignment
      * @var array
@@ -36,6 +40,7 @@ class Lesson extends MagniloquentContextsPlus {
     protected $fillable = array(
         'tutor',
         'student',
+        'lesson_at',
         'lesson_date',
         'lesson_time',
         'duration',
@@ -63,8 +68,9 @@ class Lesson extends MagniloquentContextsPlus {
         "save" => array(
             'tutor'                     => array('required', 'exists:users,id'),
             'student'                   => array('required', 'exists:users,id'),
-            'lesson_date'               => array('required', 'date_format:Y-m-d'),
-            'lesson_time'               => array('required', 'date_format:G:i:s'),
+            'lesson_at'                 => array('required', 'date_format:Y-m-d G:i:s'),
+/*            'lesson_date'               => array('required', 'date_format:Y-m-d'),
+            'lesson_time'               => array('required', 'date_format:G:i:s'), */
             'duration'                  => array('numeric'),
             'subject'                   => array('required'),
             'repet'                     => array('in:0,1,2'), // Same as CONSTs beginning REPEAT_
@@ -344,7 +350,7 @@ class Lesson extends MagniloquentContextsPlus {
             'type'      => $type,
             'user_id'   => Auth::user()->id,
             'username'  => Auth::user()->username, // for readability of the raw history
-            'when'      => (new \DateTime())->format('Y-m-d H:i:s'), // TODO: consider timezone issues
+            'when'      => (new \DateTime())->format('Y-m-d H:i:s'),
             'data'      => $eventData,
         );
         $this->history = json_encode($history);
@@ -446,22 +452,33 @@ class Lesson extends MagniloquentContextsPlus {
         }
     }
 
+    /**
+     * Returns the lesson_at attribute formatted according to $format and the user's timezone
+     * @param $format
+     * @return null|string
+     */
+    public function formattedLessonAt($format)
+    {
+        if ($this->lesson_at){
+            return $this->lesson_at->timezone(Auth::user()->timezone)->format($format);
+        } else {
+            return null;
+        }
+    }
+
     public function formatLessonDate($format)
     {
-        $date = DateTime::createFromFormat('Y-m-d', $this->lesson_date);
-        if ($date){
-            return $date->format($format);
-        }
-        return null;
+        return $this->formattedLessonAt($format);
     }
 
     /**
-     * Returns the lesson_time attribute formatted according to $format
+     * Returns the lesson_time attribute formatted according to $format and the user's timezone
      * @param $format
      * @return null|string
      */
     public function formatLessonTime($format)
     {
+        return $this->formattedLessonAt($format);
         /**
          * A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
          * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i.
@@ -469,7 +486,7 @@ class Lesson extends MagniloquentContextsPlus {
          * validation is called. So, I'm using this little function to isolate my workaround and
          * convert between the two formats.
          * MJL - 2014-08-13
-         */
+         *
         $length = strlen($this->lesson_time);
         if ($length == 5 || $length == 4){
             $date = DateTime::createFromFormat('G:i', $this->lesson_time);
@@ -483,6 +500,19 @@ class Lesson extends MagniloquentContextsPlus {
             return $date->format($format);
         }
         return null;
+        */
+    }
+
+    public function setLessonAtFromInputs($lessonDate, $lessonTime)
+    {
+        // The date/time are provided in the user's timezone
+        $lessonInUserTimezone = Carbon::createFromFormat(
+            "Y-m-d G:i",
+            $lessonDate .' '. $lessonTime,
+            Auth::user()->timezone
+        );
+        // lesson_at should always be UTC
+        $this->lesson_at = $lessonInUserTimezone->timezone('UTC');
     }
 
     public function getDurationAttribute($value)
@@ -856,4 +886,5 @@ class Lesson extends MagniloquentContextsPlus {
         //  with a fallback to use the user rate if there isn't a rate on the lesson itself
         return $this->tutorUser->getActiveUserRateObject();
     }
+
 }

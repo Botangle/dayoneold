@@ -504,4 +504,23 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         // We want the key and value to be the same
         return array_combine($timezones, $timezones);
     }
+
+    public function getTimezoneForHumans()
+    {
+        if($this->timezone){
+            $tz = new DateTimeZone($this->timezone);
+            $loc = $tz->getLocation();
+            $tzName = $tz->getName();
+            $tzHuman = '';
+            if ($loc['comments']) {
+                return $loc['comments'] . " ($tzName)";
+            } else {
+                return $tzName;
+            }
+        } else {
+            return '';
+        }
+
+    }
+
 }

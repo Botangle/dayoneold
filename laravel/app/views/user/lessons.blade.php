@@ -8,6 +8,7 @@
 
 @section('page-content')
     <div class="StaticPageRight-Block">
+        <p><strong>All times shown in your timezone: {{ Auth::user()->getTimezoneForHumans() }} ({{ HTML::link(route('user.timezone'), 'change timezone') }})</strong></p>
         <div class="PageLeft-Block">
             <p class="FontStyle20 color1">{{ trans("Active Lesson Proposals") }}</p>
             @foreach($proposals as $lesson)

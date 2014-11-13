@@ -16,12 +16,17 @@
 
     {{ Former::populate($model) }}
 
-    {{-- Lesson time requires some special work to stop the additional 00 seconds messing with the validation --}}
-    {{ Former::populateField('lesson_time', $model->formatLessonTime('G:i')) }}
+    {{-- Lesson date/time requires some special work to stop the additional 00 seconds messing with the validation
+         and to display in the user's timezone
+    --}}
+    {{ Former::populateField('lesson_time', $model->formattedLessonAt('G:i')) }}
+    {{ Former::populateField('lesson_date', $model->formattedLessonAt('Y-m-d')) }}
 
     {{ Former::hidden('id') }}
 
     {{ Former::hidden('tutor') }}
+
+    {{ Former::hidden('other_timezone', $otherUser->timezone) }}
 
     @if ($model->student != null)
         {{ Former::hidden('student') }}
@@ -34,7 +39,7 @@
         ->addClass('textbox')
         ->placeholder(trans('Expert'))
         ->label(__('Expert:'))
-        ->value($model->tutorUser->username)
+        ->value($model->tutorUser->fullName)
         ->disabled()
         }}
     </div>
@@ -61,6 +66,10 @@
                 <span class="add-on" style="height:44px"><i class="icon-th"></i></span>
 
             </div>
+            <p>Time shown in your timezone: {{ Auth::user()->getTimezoneForHumans() }} ({{ HTML::link(route('user.timezone'), 'change timezone') }})</p>
+            @if(Auth::user()->timezone != $otherUser->timezone)
+            <p><em>Note: {{ $otherUser->fullName }}'s timezone: {{ $otherUser->getTimezoneForHumans() }}</em></p>
+            @endif
         </div>
     </div>
 
