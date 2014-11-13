@@ -16,7 +16,7 @@ class UserAddTimezone extends Migration {
                 $table->dropColumn('timezone');
             });
 		Schema::table('users', function(Blueprint $table){
-                $table->string('timezone');
+                $table->string('timezone')->default('UTC');
                 $table->string('timezone_update', 10)->default('auto'); // ask, never, auto
             });
 	}
@@ -28,7 +28,9 @@ class UserAddTimezone extends Migration {
 	 */
 	public function down()
 	{
-		//
+        Schema::table('users', function(Blueprint $table){
+                $table->dropColumn('timezone_update');
+            });
 	}
 
 }

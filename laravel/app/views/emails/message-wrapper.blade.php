@@ -9,4 +9,6 @@ $userIpAddress = Request::getClientIp();
 
 
 <p>{{{ $sender }}}</p>
+
+<p>{{ $recipient->checkTimezoneWarning() }}</p>
 @stop

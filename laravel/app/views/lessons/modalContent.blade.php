@@ -26,7 +26,8 @@
 
     {{ Former::hidden('tutor') }}
 
-    {{ Former::hidden('other_timezone', $otherUser->timezone) }}
+
+    {{ Former::hidden('other_timezone', $otherUser ? $otherUser->timezone : '') }}
 
     @if ($model->student != null)
         {{ Former::hidden('student') }}
@@ -67,7 +68,7 @@
 
             </div>
             <p>Time shown in your timezone: {{ Auth::user()->getTimezoneForHumans() }} ({{ HTML::link(route('user.timezone'), 'change timezone') }})</p>
-            @if(Auth::user()->timezone != $otherUser->timezone)
+            @if($otherUser && Auth::user()->timezone != $otherUser->timezone)
             <p><em>Note: {{ $otherUser->fullName }}'s timezone: {{ $otherUser->getTimezoneForHumans() }}</em></p>
             @endif
         </div>

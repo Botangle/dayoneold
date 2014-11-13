@@ -204,7 +204,7 @@ class LessonController extends BaseController {
         }
 
         if ($review->save()) {
-            Event::fire('lesson.reviewed', array($review, Auth::user()));
+            Event::fire('lesson.reviewed', array($model, Auth::user()));
             return Response::json(array(
                     'id'        => $model->id,
                     'result'    => 'success',

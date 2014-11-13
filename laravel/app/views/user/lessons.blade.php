@@ -21,14 +21,14 @@
                     $otherDesc = 'tutor';
                 }
                 ?>
-            <div class="Lesson-row active {{ $otherDesc }}" id="{{ 'lesson'. $lesson->id }}">
+            <div class="Lesson-row {{ $otherDesc }}" id="{{ 'lesson'. $lesson->id }}">
                 <div class="row-fluid">
 
                     @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser, 'otherDesc' => $otherDesc))
 
                     <div class="span2 mark">
                         {{ Html::link('#', trans('Change'), array(
-                            'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal",
+                            'class'=>'btn btn-primary btn-primary3','data-toggle'=>"modal",
                             'data-url' => url('lesson', $lesson->id).'/edit'
                         )) }}
                     </div>
@@ -36,7 +36,7 @@
                     <div class="span2 mark">
                         @if($lesson->userCanConfirm(Auth::user()))
                             {{ Html::link(url('lesson', $lesson->id) . '/confirm', trans('Confirm'), array(
-                            'class'=>'btn btn-primary btn-primary3','style'=>'width:125px'
+                            'class'=>'btn btn-primary btn-primary3'
                             )) }}
                         @endif
                     </div>
@@ -57,7 +57,7 @@
                     $otherDesc = 'tutor';
                 }
                 ?>
-            <div class="Lesson-row active {{ $otherDesc }}" id="{{ 'lesson'. $lesson->id }}">
+            <div class="Lesson-row {{ $otherDesc }}" id="{{ 'lesson'. $lesson->id }}">
                 <div class="row-fluid">
 
                     @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser, 'otherDesc' => $otherDesc))
@@ -73,7 +73,7 @@
                     @else
                         <div class="span2 mark">
                             {{ Html::link('#', trans('Change'), array(
-                            'class'=>'btn btn-primary btn-primary3','style'=>'width:125px','data-toggle'=>"modal",
+                            'class'=>'btn btn-primary btn-primary3','data-toggle'=>"modal",
                             'data-url' => url('lesson', $lesson->id).'/edit'
                             )) }}
                         </div>
@@ -103,7 +103,7 @@
                     $otherDesc = 'tutor';
                 }
                 ?>
-            <div class="Lesson-row active {{ $otherDesc }}" id="{{ 'lesson'. $lesson->id }}">
+            <div class="Lesson-row {{ $otherDesc }}" id="{{ 'lesson'. $lesson->id }}">
                 <div class="row-fluid">
 
                     @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser, 'otherDesc' => $otherDesc))
@@ -114,8 +114,7 @@
                         @elseif ($lesson->userIsStudent(Auth::user()))
                             {{ Html::link('#', trans('Review'), array(
                                 'class'=>'btn btn-primary btn-primary3 reviews',
-                                'data-url'=> url('lesson',$lesson->id) . '/review', 
-                                'style'=>'width:125px', 
+                                'data-url'=> url('lesson',$lesson->id) . '/review',
                                 'data-toggle'=>"modal"
                             )) }}
                         @endif
@@ -217,6 +216,7 @@ function scroll_if_anchor(href) {
         // Older browsers without pushState might flicker here, as they momentarily
         // jump to the wrong position (IE < 10)
         if($target.length) {
+            $target.addClass('active');
             $('html, body').animate({ scrollTop: $target.offset().top - fromTop });
             if(history && "pushState" in history) {
                 history.pushState({}, document.title, window.location.pathname + href);

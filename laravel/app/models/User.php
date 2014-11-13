@@ -448,7 +448,11 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     {
         $subject = '[Botangle] ' . UserMessage::getEmailSubjectFromViewName($viewName, $message->sender->fullName);
         $user = $this;
-        $viewData = ['messageBody'  => $message->body, 'sender' => $message->sender->fullName];
+        $viewData = [
+            'messageBody'  => $message->body,
+            'sender' => $message->sender->fullName,
+            'recipient' => $message->recipient
+        ];
         try{
             Mail::send('emails.message-wrapper', $viewData, function($message) use($user, $subject)
                 {
@@ -510,8 +514,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         if($this->timezone){
             $tz = new DateTimeZone($this->timezone);
             $loc = $tz->getLocation();
-            $tzName = $tz->getName();
-            $tzHuman = '';
+            $tzName = str_replace("_", " ", $tz->getName());
             if ($loc['comments']) {
                 return $loc['comments'] . " ($tzName)";
             } else {
@@ -523,4 +526,13 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
 
     }
 
+    public function checkTimezoneWarning()
+    {
+        if ($this->timezone == 'UTC'){
+            return Lang::get('app.timezone-warning', [
+                    'loginRoute' => route('login'),
+                    'timezone'      => $this->getTimezoneForHumans(),
+                ]);
+        }
+    }
 }

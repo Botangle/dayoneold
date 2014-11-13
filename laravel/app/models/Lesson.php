@@ -455,30 +455,46 @@ class Lesson extends MagniloquentContextsPlus {
     /**
      * Returns the lesson_at attribute formatted according to $format and the user's timezone
      * @param $format
+     * @param User $forUser The User object for the person who will be viewing the dates (so the time
+     *                 should be switched to their timezone
      * @return null|string
      */
-    public function formattedLessonAt($format)
+    public function formattedLessonAt($format, User $forUser = null)
     {
         if ($this->lesson_at){
-            return $this->lesson_at->timezone(Auth::user()->timezone)->format($format);
+            if (!$forUser){
+                $forUser = Auth::user();
+            }
+            return $this->lesson_at->timezone($forUser->timezone)->format($format);
         } else {
             return null;
         }
     }
 
-    public function formatLessonDate($format)
+    /**
+     * TODO: replace uses of this function with formattedLessonAt, then remove this function
+     * Returns the date part of the lesson_at attribute formatted according to $format and the user's timezone
+     * @param $format
+     * @param User $forUser The User object for the person who will be viewing the dates (so the time
+     *                 should be switched to their timezone
+     * @return null|string
+     */
+    public function formatLessonDate($format, User $forUser = null)
     {
-        return $this->formattedLessonAt($format);
+        return $this->formattedLessonAt($format, $forUser);
     }
 
     /**
-     * Returns the lesson_time attribute formatted according to $format and the user's timezone
+     * TODO: replace uses of this function with formattedLessonAt, then remove this function
+     * Returns the time part of the lesson_at attribute formatted according to $format and the user's timezone
      * @param $format
+     * @param User $forUser The User object for the person who will be viewing the dates (so the time
+     *                 should be switched to their timezone
      * @return null|string
      */
-    public function formatLessonTime($format)
+    public function formatLessonTime($format, User $forUser = null)
     {
-        return $this->formattedLessonAt($format);
+        return $this->formattedLessonAt($format, $forUser);
         /**
          * A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
          * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i.
@@ -604,7 +620,8 @@ class Lesson extends MagniloquentContextsPlus {
         }
         $message = new UserMessage;
         if (!$message->send($authUser, $recipient, $viewName, array(
-                    'model' => $this,
+                    'model'     => $this,
+                    'recipient' => $recipient,
                 ))){
             // TODO Log $message->errors()
 
