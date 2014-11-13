@@ -12,10 +12,6 @@ class Lesson extends MagniloquentContextsPlus {
     const EVENT_COLOR_TUTOR = '#CF6F07';
     const EVENT_COLOR_MIXED = '#F38918';
 
-    const REPEAT_NONE   = 0;
-    const REPEAT_DAILY  = 1;
-    const REPEAT_WEEKLY = 2;
-
     const HISTORY_TYPE_CREATED      = 'created';
     const HISTORY_TYPE_CHANGE       = 'change';
     const HISTORY_TYPE_CONFIRMATION = 'confirmation';
@@ -43,7 +39,6 @@ class Lesson extends MagniloquentContextsPlus {
         'lesson_at',
         'duration',
         'subject',
-        'repet',
         'notes',
         'active',
         'is_confirmed',
@@ -69,7 +64,6 @@ class Lesson extends MagniloquentContextsPlus {
             'lesson_at'                 => array('required', 'date_format:Y-m-d G:i:s'),
             'duration'                  => array('numeric'),
             'subject'                   => array('required'),
-            'repet'                     => array('in:0,1,2'), // Same as CONSTs beginning REPEAT_
         ),
         // additional validation rules for the following contexts
         'update'    => array(),
@@ -298,34 +292,6 @@ class Lesson extends MagniloquentContextsPlus {
             $options[$i*30] = $text;
         }
         return $options;
-    }
-
-    public static function getRepetitionOptions()
-    {
-        return array(
-            self::REPEAT_NONE       => trans('Single lesson'),
-            self::REPEAT_DAILY      => trans('Daily'),
-            self::REPEAT_WEEKLY     => trans('Weekly'),
-        );
-        /**
-         * According to https://github.com/Anahkiasen/former/wiki/Features#checkboxes-and-radios
-         * this ought to work. It doesn't though - perhaps it will in a later version.
-         *
-        return array(
-            'label' => array(
-                'name'      => trans('Single lesson'),
-                'value'     => self::REPEAT_NONE,
-            ),
-            'label' => array(
-                'name'      => trans('Daily'),
-                'value'     => self::REPEAT_DAILY,
-            ),
-            'label' => array(
-                'name'      => trans('Weekly'),
-                'value'     => self::REPEAT_WEEKLY,
-            ),
-        );
-        */
     }
 
     /**
