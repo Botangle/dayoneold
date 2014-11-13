@@ -1277,3 +1277,6 @@ input[type="file"] {
     padding: 5px 0;
     text-align: center;
 }
+input[type=radio]{
+    margin: -1px 5px 0 0;
+}

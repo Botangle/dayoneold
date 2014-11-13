@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 class Lesson extends MagniloquentContextsPlus {
 
     const ROLE_STUDENT = 'student';
@@ -29,6 +31,8 @@ class Lesson extends MagniloquentContextsPlus {
      */
     const UPDATED_AT = 'add_date';
 
+    public $dates = ['lesson_at'];
+
     /**
      * What POST values we'll even take with massive assignment
      * @var array
@@ -36,8 +40,7 @@ class Lesson extends MagniloquentContextsPlus {
     protected $fillable = array(
         'tutor',
         'student',
-        'lesson_date',
-        'lesson_time',
+        'lesson_at',
         'duration',
         'subject',
         'repet',
@@ -63,8 +66,7 @@ class Lesson extends MagniloquentContextsPlus {
         "save" => array(
             'tutor'                     => array('required', 'exists:users,id'),
             'student'                   => array('required', 'exists:users,id'),
-            'lesson_date'               => array('required', 'date_format:Y-m-d'),
-            'lesson_time'               => array('required', 'date_format:G:i:s'),
+            'lesson_at'                 => array('required', 'date_format:Y-m-d G:i:s'),
             'duration'                  => array('numeric'),
             'subject'                   => array('required'),
             'repet'                     => array('in:0,1,2'), // Same as CONSTs beginning REPEAT_
@@ -344,7 +346,7 @@ class Lesson extends MagniloquentContextsPlus {
             'type'      => $type,
             'user_id'   => Auth::user()->id,
             'username'  => Auth::user()->username, // for readability of the raw history
-            'when'      => (new \DateTime())->format('Y-m-d H:i:s'), // TODO: consider timezone issues
+            'when'      => (new \DateTime())->format('Y-m-d H:i:s'),
             'data'      => $eventData,
         );
         $this->history = json_encode($history);
@@ -446,43 +448,61 @@ class Lesson extends MagniloquentContextsPlus {
         }
     }
 
-    public function formatLessonDate($format)
-    {
-        $date = DateTime::createFromFormat('Y-m-d', $this->lesson_date);
-        if ($date){
-            return $date->format($format);
-        }
-        return null;
-    }
-
     /**
-     * Returns the lesson_time attribute formatted according to $format
+     * Returns the lesson_at attribute formatted according to $format and the user's timezone
      * @param $format
+     * @param User $forUser The User object for the person who will be viewing the dates (so the time
+     *                 should be switched to their timezone
      * @return null|string
      */
-    public function formatLessonTime($format)
+    public function formattedLessonAt($format, User $forUser = null)
     {
-        /**
-         * A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
-         * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i.
-         * Unfortunately, using a get mutator doesn't work, since it's not automatically called before the
-         * validation is called. So, I'm using this little function to isolate my workaround and
-         * convert between the two formats.
-         * MJL - 2014-08-13
-         */
-        $length = strlen($this->lesson_time);
-        if ($length == 5 || $length == 4){
-            $date = DateTime::createFromFormat('G:i', $this->lesson_time);
-        } elseif ($length == 8 || $length == 7){
-            $date = DateTime::createFromFormat('G:i:s', $this->lesson_time);
+        if ($this->lesson_at){
+            if (!$forUser){
+                $forUser = Auth::user();
+            }
+            return $this->lesson_at->timezone($forUser->timezone)->format($format);
         } else {
             return null;
         }
+    }
 
-        if ($date){
-            return $date->format($format);
-        }
-        return null;
+    /**
+     * TODO: replace uses of this function with formattedLessonAt, then remove this function
+     * Returns the date part of the lesson_at attribute formatted according to $format and the user's timezone
+     * @param $format
+     * @param User $forUser The User object for the person who will be viewing the dates (so the time
+     *                 should be switched to their timezone
+     * @return null|string
+     */
+    public function formatLessonDate($format, User $forUser = null)
+    {
+        return $this->formattedLessonAt($format, $forUser);
+    }
+
+    /**
+     * TODO: replace uses of this function with formattedLessonAt, then remove this function
+     * Returns the time part of the lesson_at attribute formatted according to $format and the user's timezone
+     * @param $format
+     * @param User $forUser The User object for the person who will be viewing the dates (so the time
+     *                 should be switched to their timezone
+     * @return null|string
+     */
+    public function formatLessonTime($format, User $forUser = null)
+    {
+        return $this->formattedLessonAt($format, $forUser);
+    }
+
+    public function setLessonAtFromInputs($lessonDate, $lessonTime)
+    {
+        // The date/time are provided in the user's timezone
+        $lessonInUserTimezone = Carbon::createFromFormat(
+            "Y-m-d G:i",
+            $lessonDate .' '. $lessonTime,
+            Auth::user()->timezone
+        );
+        // lesson_at should always be UTC
+        $this->lesson_at = $lessonInUserTimezone->timezone('UTC');
     }
 
     public function getDurationAttribute($value)
@@ -574,7 +594,8 @@ class Lesson extends MagniloquentContextsPlus {
         }
         $message = new UserMessage;
         if (!$message->send($authUser, $recipient, $viewName, array(
-                    'model' => $this,
+                    'model'     => $this,
+                    'recipient' => $recipient,
                 ))){
             // TODO Log $message->errors()
 
@@ -856,4 +877,5 @@ class Lesson extends MagniloquentContextsPlus {
         //  with a fallback to use the user rate if there isn't a rate on the lesson itself
         return $this->tutorUser->getActiveUserRateObject();
     }
+
 }

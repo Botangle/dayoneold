@@ -1,5 +1,10 @@
 @extends('layout')
 
+@section('header')
+@parent
+{{ Html::script('/js/jstz-1.0.4.min.js') }}
+@stop
+
 <!--Wrapper main-content Block Start Here-->
 @section('content')
 <div id="main-content">
@@ -39,6 +44,7 @@
           {{ HTML::link(action('RemindersController@getRemind'), trans("Did you forget your username /password?")) }}
 
        </div>
+        {{ Form::hidden('timezone', '', array('id' => 'timezone')) }}
         {{ Form::close() }}
 
         </div>
@@ -58,3 +64,11 @@
 </div>
 <!--Wrapper main-content Block End Here-->
 @overwrite
+
+@section('jsFiles')
+@parent
+<script>
+    var tz = jstz.determine(); // Determines the time zone of the browser client
+    jQuery('#timezone').val(tz.name());
+</script>
+@stop

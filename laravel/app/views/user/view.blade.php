@@ -274,10 +274,21 @@
     <?php
     $lesson = new Lesson;
     $lesson->tutor = $model->id;
-    $lesson->student = ($lesson->userIsTutor(Auth::user()) ? null : Auth::user()->id);
+    if ($lesson->userIsTutor(Auth::user())){
+        $lesson->student = null;
+        $otherUser = $lesson->studentUser;
+        $otherDesc = 'student';
+    } else {
+        $lesson->student = Auth::user()->id;
+        $otherUser = $lesson->tutorUser;
+        $otherDesc = 'tutor';
+    }
+
     ?>
     @include('lessons.modalContent', array(
         'model'     => $lesson,
+        'otherUser' => $otherUser,
+        'otherDesc' => $otherDesc,
         'submit'    => 'lesson.create',
         'subtitle'  => trans('Propose Lesson Meeting'),
         'title'     => trans('Add New Lesson'),

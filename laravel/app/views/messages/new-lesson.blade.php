@@ -1,5 +1,6 @@
-<p>I booked a lesson ({{{ $model->subject }}}) with you for {{ $model->formatLessonDate('M d') }}
- at {{ $model->formatLessonTime('G:i') }}.</p>
+<p>I booked a lesson ({{{ $model->subject }}}) with you for {{ $model->formattedLessonAt('M d', $recipient) }}
+ at {{ $model->formattedLessonAt('G:i', $recipient) }}<br>
+ Timezone: {{ $recipient->getTimezoneForHumans() }}.</p>
 
 <p>Notes:<br>
     {{ $model->notesForEmail }}</p>

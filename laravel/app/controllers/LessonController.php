@@ -46,13 +46,7 @@ class LessonController extends BaseController {
         $model = new Lesson;
         $model->fill(Input::all());
 
-        /* A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
-         * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i
-         * Unfortunately, using a get mutator doesn't work, since it's not automatically called before the
-         * validation is called. I'm not spending any more time on this for now.
-         * MJL - 2014-08-13
-         */
-        $model->lesson_time = $model->formatLessonTime('G:i:s');
+        $model->setLessonAtFromInputs(Input::get('lesson_date'), Input::get('lesson_time'));
 
         if (!$model->validate()){
             return Response::json(array(
@@ -100,8 +94,18 @@ class LessonController extends BaseController {
             App::abort('403', trans('Unauthorized access to lesson'));
         }
 
+        if ($lesson->userIsTutor(Auth::user())){
+            $otherUser = $lesson->studentUser;
+            $otherDesc = 'student';
+        } else {
+            $otherUser = $lesson->tutorUser;
+            $otherDesc = 'tutor';
+        }
+
         return View::make('lessons/modalContent', array(
                 'model'     => $lesson,
+                'otherUser' => $otherUser,
+                'otherDesc' => $otherDesc,
                 'submit'    => 'lesson.edit',
                 'subtitle'  => trans('Update Lesson Details'),
                 'title'     => trans('Edit Lesson'),
@@ -113,13 +117,8 @@ class LessonController extends BaseController {
         $model = Lesson::findOrFail(Input::get('id'));
 
         $model->fill(Input::all());
-        /* A little hack because the validation of lesson_time must be G:i:s, so that a freshly retrieved
-         * lesson from the db passes validation. However, data coming from the datetimepicker is just G:i
-         * Unfortunately, using a get mutator doesn't work, since it's not automatically called before the
-         * validation is called. I'm not spending any more time on this for now.
-         * MJL - 2014-08-13
-         */
-        $model->lesson_time = $model->formatLessonTime('G:i:s');
+
+        $model->setLessonAtFromInputs(Input::get('lesson_date'), Input::get('lesson_time'));
 
         if (!$model->validate()){
             return Response::json(array(
@@ -190,7 +189,7 @@ class LessonController extends BaseController {
         }
 
         if ($review->save()) {
-            Event::fire('lesson.reviewed', array($review, Auth::user()));
+            Event::fire('lesson.reviewed', array($model, Auth::user()));
             return Response::json(array(
                     'id'        => $model->id,
                     'result'    => 'success',

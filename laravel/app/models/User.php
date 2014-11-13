@@ -18,6 +18,13 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     const CREATED_AT = 'created';
     const UPDATED_AT = 'updated';
 
+    /**
+     * Timezone update constants
+     */
+    const TIMEZONE_UPDATE_NEVER = 'never';
+    const TIMEZONE_UPDATE_ASK   = 'ask';
+    const TIMEZONE_UPDATE_AUTO  = 'auto';
+
 	/**
 	 * The database table used by the model.
 	 *
@@ -57,6 +64,8 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         'password',
         'password_confirmation',
         'terms',
+        'timezone',
+        'timezone_update',
     );
 
     protected $niceNames = array(
@@ -76,6 +85,8 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             'email'                     => array('required', 'email', 'max:100', 'unique:users'),
             'name'                      => array('required', 'max:50'),
             'lname'                     => array('required', 'max:50'),
+            'timezone'                  => array('required', 'timezone'),
+            'timezone_update'           => array('required', 'in:never,ask,auto'),
         ),
         'tutor-save' => array(
             'subject'                   => array('required'),
@@ -437,7 +448,11 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     {
         $subject = '[Botangle] ' . UserMessage::getEmailSubjectFromViewName($viewName, $message->sender->fullName);
         $user = $this;
-        $viewData = ['messageBody'  => $message->body, 'sender' => $message->sender->fullName];
+        $viewData = [
+            'messageBody'  => $message->body,
+            'sender' => $message->sender->fullName,
+            'recipient' => $message->recipient
+        ];
         try{
             Mail::send('emails.message-wrapper', $viewData, function($message) use($user, $subject)
                 {
@@ -477,4 +492,47 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         }
     }
 
+    public function getTimezoneCountryAttribute()
+    {
+        if($this->timezone){
+            $tz = new DateTimeZone($this->timezone);
+            return $tz->getLocation()['country_code'];
+        } else {
+            return '';
+        }
+    }
+
+    public static function getTimezoneOptions()
+    {
+        $timezones = DateTimeZone::listIdentifiers();
+        // We want the key and value to be the same
+        return array_combine($timezones, $timezones);
+    }
+
+    public function getTimezoneForHumans()
+    {
+        if($this->timezone){
+            $tz = new DateTimeZone($this->timezone);
+            $loc = $tz->getLocation();
+            $tzName = str_replace("_", " ", $tz->getName());
+            if ($loc['comments']) {
+                return $loc['comments'] . " ($tzName)";
+            } else {
+                return $tzName;
+            }
+        } else {
+            return '';
+        }
+
+    }
+
+    public function checkTimezoneWarning()
+    {
+        if ($this->timezone == 'UTC'){
+            return Lang::get('app.timezone-warning', [
+                    'loginRoute' => route('login'),
+                    'timezone'      => $this->getTimezoneForHumans(),
+                ]);
+        }
+    }
 }
