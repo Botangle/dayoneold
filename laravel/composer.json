@@ -4,7 +4,7 @@
 	"keywords": ["framework", "laravel"],
 	"license": "MIT",
     "repositories": [
-        {// Override for vespakoen/menu
+        {
             "type": "vcs",
             "url": "git://github.com/martynling/menu.git"
         }
