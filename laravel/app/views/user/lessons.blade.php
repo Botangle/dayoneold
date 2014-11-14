@@ -62,29 +62,19 @@
 
                     @include('user.lesson.partial-fields', array('lesson' => $lesson, 'otherUser' => $otherUser, 'otherDesc' => $otherDesc))
 
-                    @if($lesson->userIsTutor(Auth::user()))
-                        <div class="span2 mark">
-                            @if(!$lesson->isBeforeStartableTime(15))
-                                {{ Html::link(route('lesson.whiteboard', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
-                            @else
-                                {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
-                            @endif
-                        </div>
-                    @else
-                        <div class="span2 mark">
-                            {{ Html::link('#', trans('Change'), array(
-                            'class'=>'btn btn-primary btn-primary3','data-toggle'=>"modal",
-                            'data-url' => url('lesson', $lesson->id).'/edit'
-                            )) }}
-                        </div>
-                        <div class="span2 mark">
-                            @if(!$lesson->isBeforeStartableTime(15))
-                            {{ Html::link(route('lesson.whiteboard', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
-                            @else
-                            {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
-                            @endif
-                        </div>
-                    @endif
+                    <div class="span2 mark">
+                        {{ Html::link('#', trans('Change'), array(
+                        'class'=>'btn btn-primary btn-primary3','data-toggle'=>"modal",
+                        'data-url' => url('lesson', $lesson->id).'/edit'
+                        )) }}
+                    </div>
+                    <div class="span2 mark">
+                        @if(!$lesson->isBeforeStartableTime(15))
+                        {{ Html::link(route('lesson.whiteboard', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
+                        @else
+                        {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
+                        @endif
+                    </div>
                 </div>
             </div>
             @endforeach
