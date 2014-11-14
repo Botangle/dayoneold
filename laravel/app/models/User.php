@@ -332,6 +332,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     public function getActiveUserRateObject()
     {
         if (count($this->rates) > 0){
+            // Rates relation is sorted in descending order so the first rate is the currently set rate
             return $this->rates->first();
         } else {
             return new UserRate;

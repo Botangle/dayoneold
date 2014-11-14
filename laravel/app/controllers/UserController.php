@@ -7,7 +7,7 @@ use League\Flysystem\Adapter\AwsS3 as S3Adapter;
 
 use Transit\Transformer\Image\CropTransformer;
 use Transit\Transformer\Image\ResizeTransformer;
-
+use Carbon\Carbon;
 
 class UserController extends BaseController {
 
@@ -360,12 +360,8 @@ class UserController extends BaseController {
         $month = (int) Input::get('mes');
         $year = (int) Input::get('ano');
 
-        $startDate = new DateTime();
-        $startDate->setDate($year, $month, 1);
-        $startDate->setTime(0, 0, 0);
-        $endDate = new DateTime();
-        $endDate->setDate($year, $month+1, 1);
-        $endDate->setTime(0, 0, 0);
+        $startDate = Carbon::createFromDate($year, $month, 1, Auth::user()->timezone);
+        $endDate = Carbon::createFromDate($year, $month+1, 1, Auth::user()->timezone);
 
         // Get lessons where the passed in user is either the tutor or the student
         $lessons = Lesson::active()
@@ -373,10 +369,9 @@ class UserController extends BaseController {
                 $query->where('tutor', $user->id)
                     ->orWhere('student', $user->id);
             })
-            ->where('lesson_date', '>=', $startDate)
-            ->where('lesson_date', '<', $endDate)
-            ->orderBy('lesson_date', 'asc')
-            ->orderBy('lesson_time', 'asc')
+            ->where('lesson_at', '>=', $startDate)
+            ->where('lesson_at', '<', $endDate)
+            ->orderBy('lesson_at', 'asc')
             ->get();
 
         // Show all lessons (student and mentor) for $user but only show details where
@@ -385,12 +380,11 @@ class UserController extends BaseController {
         $daysArray = array();
         $calendarDate = null;
         foreach($lessons as $lesson){
-            if ($calendarDate != $lesson->lesson_date){
-                $calendarDate = $lesson->lesson_date;
+            if ($calendarDate != $lesson->lesson_at->format('Y-m-d')){
+                $calendarDate = $lesson->lesson_at->format('Y-m-d');
                 $dayType = $lesson->getDayType($user->id, $loggedInUserId);
-                $lessonDate = DateTime::createFromFormat('Y-m-d', $lesson->lesson_date);
                 $day = array();
-                $day['date']    = $lessonDate->format('j/n/Y'); // d/m/Y doesn't work with bic_calendar
+                $day['date']    = $lesson->lesson_at->format('j/n/Y'); // d/m/Y doesn't work with bic_calendar
                 $day['title']   = $lesson->getCalendarEventTitle($loggedInUserId, $user->id);
                 $day['link']    = "#";
                 $day['color']   = Lesson::getCalendarEventColor($dayType);
@@ -446,11 +440,11 @@ class UserController extends BaseController {
     {
         return View::make('user.lessons', array(
                 'proposals' => Lesson::active()->proposals()->involvingUser(Auth::user())
-                        ->orderBy('lesson_date')->orderBy('lesson_time')->get(),
+                        ->orderBy('lesson_at')->get(),
                 'upcomingLessons'  => Lesson::active()->upcoming()->involvingUser(Auth::user())
-                        ->orderBy('lesson_date')->orderBy('lesson_time')->get(),
+                        ->orderBy('lesson_at')->get(),
                 'pastLessons'  => Lesson::active()->past()->involvingUser(Auth::user())
-                        ->orderBy('lesson_date', 'desc')->orderBy('lesson_time', 'desc')->get(),
+                        ->orderBy('lesson_at', 'desc')->get(),
             ));
     }
 

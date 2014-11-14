@@ -64,7 +64,7 @@
 
                     @if($lesson->userIsTutor(Auth::user()))
                         <div class="span2 mark">
-                            @if($lesson->lesson_date == date('Y-m-d'))
+                            @if(!$lesson->isBeforeStartableTime(15))
                                 {{ Html::link(route('lesson.whiteboard', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
                             @else
                                 {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
@@ -78,7 +78,7 @@
                             )) }}
                         </div>
                         <div class="span2 mark">
-                            @if($lesson->lesson_date == date('Y-m-d'))
+                            @if(!$lesson->isBeforeStartableTime(15))
                             {{ Html::link(route('lesson.whiteboard', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
                             @else
                             {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
