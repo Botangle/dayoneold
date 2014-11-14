@@ -1,8 +1,5 @@
-<p>I confirmed a lesson ({{{ $model->subject }}}) with you for {{ $model->formattedLessonAt('M d', $recipient) }}
- at {{ $model->formattedLessonAt('G:i', $recipient) }}<br>
-    Timezone: {{ $recipient->getTimezoneForHumans() }}.</p>
+<p>I've confirmed our lesson:</p>
 
-<p>Notes:<br>
-    {{ $model->notesForEmail }}</p>
+@include('_partials.lesson-stacked', ['lesson' => $model, 'recipient' => $recipient])
 
 <p>{{ Html::link(route('user.lessons','#lesson'.$model->id), 'Click here for more details.') }} </p>

@@ -47,6 +47,7 @@ class LessonController extends BaseController {
         $model->fill(Input::all());
 
         $model->setLessonAtFromInputs(Input::get('lesson_date'), Input::get('lesson_time'));
+        $model->setRateFromTutor();
 
         if (!$model->validate()){
             return Response::json(array(

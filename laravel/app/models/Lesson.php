@@ -38,6 +38,8 @@ class Lesson extends MagniloquentContextsPlus {
         'student',
         'lesson_at',
         'duration',
+        'rate',
+        'rate_type',
         'subject',
         'notes',
         'active',
@@ -62,6 +64,8 @@ class Lesson extends MagniloquentContextsPlus {
             'tutor'                     => array('required', 'exists:users,id'),
             'student'                   => array('required', 'exists:users,id'),
             'lesson_at'                 => array('required', 'date_format:Y-m-d G:i:s'),
+            'rate'                      => ['required', 'numeric'],
+            'rate_type'                 => ['required', 'in:permin,perhour'],
             'duration'                  => array('numeric'),
             'subject'                   => array('required'),
         ),
@@ -154,7 +158,7 @@ class Lesson extends MagniloquentContextsPlus {
     public function scopeProposals($query)
     {
         $query->where('is_confirmed', false)
-            ->where('lesson_date', '>=', date('Y-m-d'));
+            ->where('lesson_at', '>=', Carbon::now()->format('Y-m-d G:i:s'));
     }
 
     /**
@@ -164,7 +168,7 @@ class Lesson extends MagniloquentContextsPlus {
     public function scopeUpcoming($query)
     {
         $query->where('is_confirmed', true)
-            ->where('lesson_date', '>=', date('Y-m-d'));
+            ->where('lesson_at', '>=', Carbon::now()->format('Y-m-d G:i:s'));
     }
 
     /**
@@ -174,7 +178,7 @@ class Lesson extends MagniloquentContextsPlus {
     public function scopePast($query)
     {
         $query->where('is_confirmed', true)
-            ->where('lesson_date', '<', date('Y-m-d'));
+            ->where('lesson_at', '<', Carbon::now()->format('Y-m-d G:i:s'));
     }
 
     /**
@@ -189,7 +193,8 @@ class Lesson extends MagniloquentContextsPlus {
     {
         // Since subject and username are user entered, HTML encode them since they'll be directly output
         //   to a 3rd party js plugin that may not encode the text
-        $lessonTime = DateTime::createFromFormat('H:i:s', $this->lesson_time)->format('g:i A');
+        $loggedInUser = User::find($loggedInUserId);
+        $lessonTime = $this->lesson_at->timezone($loggedInUser->timezone)->format('g:i A');
 
         if ($this->studentUser->id == $loggedInUserId){
             $title = e($this->subject);
@@ -491,6 +496,14 @@ class Lesson extends MagniloquentContextsPlus {
         } else {
             return $duration .' ' . trans('hours');
         }
+    }
+
+    public function getDisplayRateAttribute()
+    {
+        return Lang::get('app.rate-text', [
+                'rate' => $this->rate,
+                'rateType' => Lang::get('app.rate-type-text-'. $this->rate_type),
+            ]);
     }
 
     /**
@@ -844,4 +857,40 @@ class Lesson extends MagniloquentContextsPlus {
         return $this->tutorUser->getActiveUserRateObject();
     }
 
+    /**
+     * Sets the Lesson's rate based upon the Tutor's latest rate
+     */
+    public function setRateFromTutor()
+    {
+        $userRate = $this->tutorUser->getActiveUserRateObject();
+        if ($userRate->rate){
+            $this->rate = $userRate->rate;
+            $this->rate_type = $userRate->price_type;
+        } else {
+            $this->rate = 0;
+            $this->rate_type = UserRate::RATE_PER_HOUR;
+        }
+        return $this->save();
+    }
+
+    /**
+     * Determines whether the lesson can be started or not
+     * If it is more than $flex minutes before or after the end of the lesson, return false
+     * @param $flex
+     * @return bool
+     */
+    public function canBeStarted($flex = 0)
+    {
+        return (!$this->isBeforeStartableTime($flex) && !$this->isAfterEndTime($flex));
+    }
+
+    public function isBeforeStartableTime($flex = 0)
+    {
+        return ($this->lesson_at->subMinutes($flex) > Carbon::now());
+    }
+
+    public function isAfterEndTime($flex = 0)
+    {
+        return ($this->lesson_at->addMinutes($this->duration + $flex) > Carbon::now());
+    }
 }
