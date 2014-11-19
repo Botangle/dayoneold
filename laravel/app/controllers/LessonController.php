@@ -294,8 +294,6 @@ class LessonController extends BaseController {
             $totalTime = $lesson->updateTimer($role);
 
             // retrieve our user rate and hang on to it so we can re-use it in a bit
-            // @TODO: long-term, we want to be pulling this user rate from the Lesson
-            // where we keep it to prevent tutors from raising rates after the lesson gets scheduled
             $userRate = $lesson->userRate;
 
             // figure out the payment amount

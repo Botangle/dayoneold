@@ -646,7 +646,7 @@ class Lesson extends MagniloquentContextsPlus {
      */
     public function billingReady()
     {
-        return ($this->studentUser->creditAmount >= $this->estimatedCost());
+        return ($this->userIsTutor(Auth::user()) || $this->studentUser->creditAmount >= $this->estimatedCost());
     }
 
     /**
@@ -707,31 +707,11 @@ class Lesson extends MagniloquentContextsPlus {
         // It's not pretty, but it's not yet my remit to re-write this code
         $timer = "00:00:00";
         if($this->userIsStudent(Auth::user())){
-            $timer =  $this->secondsToTime($this->student_lessontaekn_time);
-            $timer = $timer['h'].":".$timer['m'].":".$timer['s'];
+            $timerArray =  $this->secondsToTime($this->student_lessontaekn_time);
         }else{
-            $timer =  $this->secondsToTime($this->remainingduration);
-            if($timer['h']==0){
-                $timer['h'] = "0".$timer['h'];
-            }else{
-                if(strlen($timer['h'])==1){
-                    $timer['h'] = "0".$timer['h'];
-                }
-            }if($timer['m']==0){
-                $timer['m'] = "0".$timer['m'];
-            }else{
-                if(strlen($timer['m'])==1){
-                    $timer['m'] = "0".$timer['m'];
-                }
-            }if($timer['s']==0){
-                $timer['s'] = "0".$timer['s'];
-            }else{
-                if(strlen($timer['s'])==1){
-                    $timer['s'] = "0".$timer['s'];
-                }
-            }
-            $timer = $timer['h'].":".$timer['m'].":".$timer['s'];
+            $timerArray =  $this->secondsToTime($this->remainingduration);
         }
+        $timer = sprintf("%02d:%02d:%02d", $timerArray['h'], $timerArray['m'], $timerArray['s']);
         return $timer;
     }
 
@@ -852,9 +832,12 @@ class Lesson extends MagniloquentContextsPlus {
      */
     public function getUserRateAttribute()
     {
-        // TODO: change this so that Lesson Rate is stored in the lesson at creation
-        //  with a fallback to use the user rate if there isn't a rate on the lesson itself
-        return $this->tutorUser->getActiveUserRateObject();
+        // Rather than use a related UserRate object, the user rate attributes are stored in Lesson
+        // So, we create (but don't store) a new UserRate, set the attributes and return it
+        $userRate = new UserRate;
+        $userRate->rate = $this->rate;
+        $userRate->price_type = $this->rate_type;
+        return $userRate;
     }
 
     /**
