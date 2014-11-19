@@ -2,7 +2,7 @@
     {{ Former::text('email')
     ->addClass('textbox')
     ->placeholder(trans('Email Address'))
-    ->label(__('Email Address:'))
+    ->label(trans('Email Address:'))
     ->required()
     }}
 </div>
@@ -10,7 +10,7 @@
     {{ Former::text('username')
     ->addClass('textbox')
     ->placeholder(trans('Username'))
-    ->label(__('Username:'))
+    ->label(trans('Username:'))
     ->required()
     }}
 </div>
@@ -18,7 +18,7 @@
     {{ Former::text('name')
     ->addClass('textbox')
     ->placeholder(trans('First Name'))
-    ->label(__('First Name:'))
+    ->label(trans('First Name:'))
     ->required()
     }}
 </div>
@@ -26,7 +26,7 @@
     {{ Former::text('lname')
     ->addClass('textbox')
     ->placeholder(trans('Last Name'))
-    ->label(__('Last Name:'))
+    ->label(trans('Last Name:'))
     ->required()
     }}
 </div>

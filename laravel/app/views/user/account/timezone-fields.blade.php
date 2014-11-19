@@ -2,7 +2,7 @@
     {{-- Former::text('timezone_country')
     ->addClass('textbox')
     ->placeholder(trans('Country'))
-    ->label(__('Country:'))
+    ->label(trans('Country:'))
     ->required()
     --}}
 
@@ -10,7 +10,7 @@
     ->options(User::getTimezoneOptions())
     ->addClass('select')
     ->placeholder(trans('Timezone'))
-    ->label(__('Timezone:'))
+    ->label(trans('Timezone:'))
     ->id('timezone')
     ->required()
     }}

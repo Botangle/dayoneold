@@ -39,7 +39,7 @@
         {{ Former::text('expert_name')
         ->addClass('textbox')
         ->placeholder(trans('Expert'))
-        ->label(__('Expert:'))
+        ->label(trans('Expert:'))
         ->value($model->tutorUser->fullName)
         ->disabled()
         }}
@@ -79,7 +79,7 @@
     ->options(Lesson::getDurationOptions())
     ->placeholder(trans('-- Please choose --'))
     ->id('Lessonduration')
-    ->label(__('Duration:'))
+    ->label(trans('Duration:'))
     ->required()
     }}
 
@@ -87,7 +87,7 @@
     {{ Former::text('subject')
     ->placeholder(trans('Subject'))
     ->addClass('textbox')
-    ->label(__('Subject:'))
+    ->label(trans('Subject:'))
     ->id('LessonSubject')
     ->required()
     }}
@@ -96,7 +96,7 @@
     {{ Former::textarea('notes')
     ->placeholder(trans('Type Your Note'))
     ->addClass('textarea')
-    ->label(__('Note:'))
+    ->label(trans('Note:'))
     }}
 
     {{ Former::actions(

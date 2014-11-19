@@ -25,7 +25,7 @@
 
             <div class="row-fluid">
                 {{ Former::file('profilepic')
-                ->label(__('Upload Your Pic'))
+                ->label(trans('Upload Your Pic'))
                 }}
             </div>
 

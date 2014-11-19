@@ -45,7 +45,7 @@
                         ->id('UserPassword')
                         ->type('password')
                         ->placeholder(trans('Password'))
-                        ->label(__('Password:'))
+                        ->label(trans('Password:'))
                         ->required()
                     }}
                     <div class="controls password-strength-indicator">
@@ -59,7 +59,7 @@
                         ->addClass('textbox')
                         ->type('password')
                         ->placeholder(trans('Confirm Password'))
-                        ->label(__('Confirm Password:'))
+                        ->label(trans('Confirm Password:'))
                         ->required()
                     }}
 

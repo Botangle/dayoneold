@@ -103,14 +103,14 @@
                     <li><a href="#" title="Sitemap">Sitemap</a></li>
                     <li>
                     echo $this->Html->link(
-                        __('Terms of use'), '/terms'
-                        , array('class' => ' active', 'title' => __('Terms of use'))
+                        trans('Terms of use'), '/terms'
+                        , array('class' => ' active', 'title' => trans('Terms of use'))
                     );
 					</li>
 					<li>
                     echo $this->Html->link(
-                        __('Privacy Policy'), '/privacy'
-                        , array('class' => ' active', 'title' => __('Privacy Policy'))
+                        trans('Privacy Policy'), '/privacy'
+                        , array('class' => ' active', 'title' => trans('Privacy Policy'))
                     );
 					</li>
                     --}}
