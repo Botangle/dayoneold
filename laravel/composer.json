@@ -23,7 +23,8 @@
         "mjohnson/transit": "dev-master",
         "opentok/opentok": "dev-master",
         "bradleyboy/laravel-braintree": "dev-master",
-        "paypal/adaptivepayments-sdk-php":"dev-namespace-php5.3"
+        "paypal/adaptivepayments-sdk-php":"dev-namespace-php5.3",
+        "doctrine/dbal": "dev-master"
 	},
     "require-dev": {
         "way/generators": "2.*",
