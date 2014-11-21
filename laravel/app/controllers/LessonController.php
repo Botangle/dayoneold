@@ -267,6 +267,17 @@ class LessonController extends BaseController {
         // Check to see if the other user is still present and update sync_status if necessary
         $lesson->checkOtherUserPresence();
 
+        // Handle situation where a user chooses to finish (get/make payment) for an unpaid lesson when
+        //   the lesson is no longer in progress and hasn't been finished
+        if (Input::get('status') == Lesson::SYNC_STATUS_FINISHED &&
+            !$lesson->isPaid() &&
+            ($status != Lesson::SYNC_STATUS_ACTIVE && $status != Lesson::SYNC_STATUS_FINISHED)
+        ){
+            if ($lesson->handleDelayedPayment()){
+                $status = Lesson::SYNC_STATUS_FINISHED;
+            }
+        }
+
         switch($status){
             case Lesson::SYNC_STATUS_WAITING:
                 if ($lesson->syncInitiated()){
@@ -320,19 +331,7 @@ class LessonController extends BaseController {
                 }
                 // If the lesson has finished
                 if ($lesson->syncFinished(Input::get('status'))){
-                    $lesson->payment->lesson_complete_tutor = true;
-                    $lesson->payment->lesson_complete_student = true;
-                    if (!$lesson->payment->save()){
-                        Log::alert(sprintf(
-                                'Error saving lesson payment changes for lesson payment id %s : %s',
-                                $lesson->payment->id,
-                                $lesson->payment->errors()->toJSON()
-                            ));
-                        throw new Exception("There was a problem updating lesson payment.");
-                    }
-                    if (!$lesson->payment->payment_complete) {
-                        $lesson->payment->charge();
-                    }
+                    $lesson->finishAndPay();
                 } else {
                     $responseArray = [
                         'newPrice'          => $lesson->getNextPriceIncrement(),

@@ -29,6 +29,10 @@ class LessonsSyncFields extends Migration {
                 // How many seconds each person has had to wait for the other since the official lesson start time
                 $table->integer('student_seconds_wait');
                 $table->integer('tutor_seconds_wait');
+
+                // Drop the old redundant fields
+                $table->dropColumn('remainingduration');
+                $table->dropColumn('student_lessontaekn_time');
             });
 	}
 
@@ -47,6 +51,9 @@ class LessonsSyncFields extends Migration {
                 $table->dropColumn('synced_start_at');
                 $table->dropColumn('student_seconds_wait');
                 $table->dropColumn('tutor_seconds_wait');
+
+                $table->integer('remainingduration');
+                $table->integer('student_lessontaekn_time');
             });
 	}
 

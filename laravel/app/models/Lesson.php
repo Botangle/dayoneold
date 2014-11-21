@@ -1013,4 +1013,33 @@ class Lesson extends MagniloquentContextsPlus {
         }
         return false;
     }
+
+    public function finishAndPay()
+    {
+        $this->payment->lesson_complete_tutor = true;
+        $this->payment->lesson_complete_student = true;
+        if (!$this->payment->save()){
+            Log::alert(sprintf(
+                    'Error saving lesson payment changes for lesson payment id %s : %s',
+                    $this->payment->id,
+                    $this->payment->errors()->toJSON()
+                ));
+            throw new Exception("There was a problem updating lesson payment.");
+        }
+        if (!$this->payment->payment_complete) {
+            $this->payment->charge();
+        }
+    }
+
+    public function handleDelayedPayment()
+    {
+        if ($this->seconds_used > 0){
+            $this->updatePaymentDue();
+            $this->finishAndPay();
+            $this->sync_status = self::SYNC_STATUS_FINISHED;
+            $this->save();
+            return true;
+        }
+        return false;
+    }
 }
