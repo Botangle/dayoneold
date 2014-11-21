@@ -729,13 +729,13 @@ class Lesson extends MagniloquentContextsPlus {
      */
     public function getSecondsRemainingAttribute()
     {
-        $lessonLength = $this->duration * 60 * 60;
+        $lessonLength = $this->duration * 60;
         return $lessonLength - $this->seconds_used;
     }
 
     public function hasFinished()
     {
-        $lessonLength = $this->duration * 60 * 60;
+        $lessonLength = $this->duration * 60;
         return ($lessonLength <= $this->seconds_used);
     }
 
