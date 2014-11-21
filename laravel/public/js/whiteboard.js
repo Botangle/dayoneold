@@ -3,13 +3,11 @@
  * Moved the code out of the original whiteboard view and then parameterized existing functions
  */
 
-function startCount(lessonId, roleType){
-    timer = setInterval(function() { count(lessonId, roleType); },1000);
+function startCount(lessonId, roleType, syncFrequency){
+    timer = setInterval(function() { count(lessonId, roleType, syncFrequency); },1000);
 }
 
 function exitLesson(lessonId, roleType){
-
-    updatetime = 0;
 
     if(roleType==4){
         var r = window.confirm("Thanks, we'll pay your expert from your credit balance now.  Your receipt will be on the next page.");
@@ -19,13 +17,18 @@ function exitLesson(lessonId, roleType){
                 BotangleBasePath+"lesson/"+lessonId+"/updatetimer",
                 {
                     _token: jQuery("input[name=_token]").val(),
-                    time: 1,
                     roleType: roleType,
-                    completeLesson: 1
+                    secondsUsed: jQuery("#secondsUsed").val(),
+                    status: "finished"
                 },
                 function(data,v){
+                    var response = data;
                     clearInterval(timer);
-                    location.href= (BotangleBasePath+'lesson/'+lessonId+'/payment');
+                    if (response.status == 'finished'){
+                        location.href = (BotangleBasePath+'lesson/'+lessonId+'/payment');
+                    } else {
+                        location.href= (BotangleBasePath+'user/lessons');
+                    }
                     return false;
                 }
             );
@@ -39,14 +42,18 @@ function exitLesson(lessonId, roleType){
                 BotangleBasePath+"lesson/"+lessonId+"/updatetimer",
                 {
                     _token: jQuery("input[name=_token]").val(),
-                    time: 1,
                     roleType: roleType,
-                    completeLesson: 1
+                    secondsUsed: jQuery("#secondsUsed").val(),
+                    status: "finished"
                 },
                 function(data,v){
+                    var response = data;
                     clearInterval(timer);
-
-                    location.href = (BotangleBasePath+'lesson/'+lessonId+'/payment');
+                    if (response.status == 'finished'){
+                        location.href = (BotangleBasePath+'lesson/'+lessonId+'/payment');
+                    } else {
+                        location.href= (BotangleBasePath+'user/lessons');
+                    }
                     return false;
                 }
             );
@@ -54,43 +61,45 @@ function exitLesson(lessonId, roleType){
     }
 }
 
-function count(lessonId, roleType){
+function count(lessonId, roleType, syncFrequency){
 
-    if( jQuery("#realtime").text()== jQuery("#max").text()){
+    var sync_status = jQuery("#status").val();
+    if (sync_status == 'finished'){
         clearInterval(timer);
         return false;
     }
-    var time_shown = jQuery("#realtime").text();
-    var time_chunks = time_shown.split(":");
-    var hour, mins, secs,updatetime;
 
-    hour=Number(time_chunks[0]);
-    mins=Number(time_chunks[1]);
-    secs=Number(time_chunks[2]);
-    updatetime=Number(time_chunks[2]);
-    secs++;
-    updatetime++;
-    if (secs==60){
-        secs = 0;
-        mins=mins + 1;
-        }
-    if (mins==60){
-        mins=0;
-        hour=hour + 1;
-        }
-    if (hour==13){
-        hour=1;
-        }
+    var absTime = jQuery("#absTime").val();
+    jQuery("#absTime").val(++absTime);
 
-    // Update the db every minute with how much time has been spent in the lesson
-    if(updatetime%60==0){
-        updatetime = 0;
+    switch(sync_status){
+        case 'syncing':
+            decrementCountdown();
+            break;
+        case 'starting':
+            decrementCountdown();
+            // If the countdown has ended
+            if (jQuery("#countdown").val() == 0){
+                jQuery("#status").val('active');
+            }
+            break;
+        case 'active':
+            var seconds_used = jQuery("#secondsUsed").val();
+            jQuery("#secondsUsed").val(++seconds_used)
+            jQuery("#realtime").text(formattedTimeFromSecs(seconds_used));
+            break;
+    }
+
+    // Contact the server every syncFrequency to either sync the start (or restart) of the lesson
+    //  or update the db with the lesson time used up
+    if(absTime % syncFrequency == 0){
         jQuery.post(
             BotangleBasePath+"lesson/"+lessonId+"/updatetimer",
             {
                 _token: jQuery("input[name=_token]").val(),
-                time: 1,
-                roleType: roleType
+                roleType: roleType,
+                secondsUsed: jQuery("#secondsUsed").val(),
+                status: jQuery("#status").val()
             },
             function(data,v){
                 var response = data;
@@ -107,17 +116,85 @@ function count(lessonId, roleType){
                 } else {
                     jQuery('.price-area').show();
                     jQuery('.price-area span').html(response.newPrice);
+                    var prev_status = jQuery("#status").val();
+                    jQuery("#status").val(response.status);
+                    switch(response.status){
+                        case 'syncing':
+                        case 'starting':
+                            jQuery("#countdown").val(response.countdown);
+                        case 'waiting':
+                            if (prev_status == 'active'){
+                                // Sync the displayed lesson time with the last recorded db value
+                                // Note: only the student usually updates the lesson time
+                                jQuery("#secondsUsed").val(response.totalTime)
+                                jQuery("#realtime").text(formattedTimeFromSecs(response.totalTime))
+                            }
+                    }
                 }
             }
-        );
+        ).fail(function() {
+                jQuery("#status").val('connection-problem');
+            });
     }
-    jQuery("#realtime").text(plz(hour) +":" + plz(mins) + ":" + plz(secs));
+
+    updateStatusDisplay(syncFrequency);
 }
 
-function plz(digit){
-    var zpad = digit + '';
+function decrementCountdown(){
+    var countdown = jQuery("#countdown").val();
+    if (countdown > 0){
+        jQuery("#countdown").val(--countdown);
+    }
+}
+
+function updateStatusDisplay(syncFrequency){
+    // TODO Manipulate the classes on the div to provide enhanced presentation
+    switch(jQuery("#status").val()){
+        case 'waiting':
+            jQuery("#sync-status").removeClass().addClass('alert alert-danger');
+            jQuery("#sync-status").text('Waiting for other user...');
+            break;
+        case 'syncing':
+            var countdown = jQuery("#countdown").val();
+            jQuery("#sync-status").removeClass().addClass('alert alert-info');
+            jQuery("#sync-status").text('Connecting (estimated start in ' + jQuery("#countdown").val() + ' seconds)');
+            break;
+        case 'starting':
+            countdown = jQuery("#countdown").val();
+            if (countdown > 1){
+                var secondsText = countdown + ' seconds';
+            } else {
+                secondsText = countdown + ' second';
+            }
+            jQuery("#sync-status").removeClass().addClass('alert alert-info');
+            jQuery("#sync-status").text('Starting in ' + secondsText);
+            break;
+        case 'active':
+            jQuery("#sync-status").removeClass().addClass('alert alert-success');
+            jQuery("#sync-status").text('In Progress');
+            break;
+        case 'finished':
+            jQuery("#sync-status").removeClass().addClass('alert alert-success');
+            jQuery("#sync-status").text('Finished');
+            break;
+        case 'connection-problem':
+            jQuery("#sync-status").removeClass().addClass('alert alert-danger');
+            jQuery("#sync-status").text("Connection problem. Retrying...");
+    }
+}
+
+function formattedTimeFromSecs(totalSecs){
+    var hours = parseInt( totalSecs / 3600 );
+    var minutes = parseInt( totalSecs / 60 ) % 60;
+    var seconds = totalSecs % 60;
+
+    return zeroPad(hours) +":" + zeroPad(minutes) + ":" + zeroPad(seconds);
+}
+
+function zeroPad(digit){
+    var zpad = digit;
     if (digit < 10) {
-    zpad = "0" + zpad;
+        zpad = "0" + digit;
     }
     return zpad;
 }

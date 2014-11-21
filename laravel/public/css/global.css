@@ -1280,3 +1280,6 @@ input[type="file"] {
 input[type=radio]{
     margin: -1px 5px 0 0;
 }
+#sync-status {
+    font-weight: bold;
+}

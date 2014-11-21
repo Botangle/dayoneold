@@ -69,7 +69,7 @@
                         )) }}
                     </div>
                     <div class="span2 mark">
-                        @if(!$lesson->isBeforeStartableTime(15))
+                        @if(!$lesson->isBeforeStartableTime(30))
                         {{ Html::link(route('lesson.whiteboard', $lesson->id), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3')) }}
                         @else
                         {{ Html::link(url('#'), trans('Go to Lesson'), array('class' => 'btn btn-primary btn-primary3', 'disabled' => 'disabled')) }}
