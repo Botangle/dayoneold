@@ -20,8 +20,9 @@ class LessonsSyncFields extends Migration {
                 $table->dateTime('student_last_present_at');
                 $table->dateTime('tutor_last_present_at');
 
-                // This field (combined with the two above) is used to negotiate the synced start time
+                // These fields (combined with the two above) are used to negotiate the synced start time
                 // (or restart time if the lesson is interrupted for any reason)
+                $table->string('sync_status', 30)->default('waiting');
                 $table->dateTime('synced_start_at');
 
                 // These fields are just collecting interest info, which may be useful later e.g. for handling no-shows
@@ -42,6 +43,7 @@ class LessonsSyncFields extends Migration {
                 $table->dropColumn('seconds_used');
                 $table->dropColumn('student_last_present_at');
                 $table->dropColumn('tutor_last_present_at');
+                $table->dropColumn('sync_status');
                 $table->dropColumn('synced_start_at');
                 $table->dropColumn('student_seconds_wait');
                 $table->dropColumn('tutor_seconds_wait');

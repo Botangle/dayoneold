@@ -17,6 +17,18 @@ class Lesson extends MagniloquentContextsPlus {
     const HISTORY_TYPE_CONFIRMATION = 'confirmation';
     const HISTORY_TYPE_CANCELLATION = 'cancellation';
 
+    // Frequency (in seconds) of how often browser contacts server while in (or waiting for) a lesson
+    const SYNC_FREQUENCY    = 10;
+
+    // Delay (in seconds) to wait in order for synchronization to succeed with the other user who ought to be present
+    const SYNC_DELAY    = 12;
+
+    const SYNC_STATUS_WAITING   = 'waiting';
+    const SYNC_STATUS_SYNCING   = 'syncing';
+    const SYNC_STATUS_STARTING  = 'starting';
+    const SYNC_STATUS_ACTIVE    = 'active';
+    const SYNC_STATUS_FINISHED  = 'finished';
+
     /**
      * Adjusting our Laravel created / updated column names to match
      * what we had in Botangle
@@ -27,7 +39,12 @@ class Lesson extends MagniloquentContextsPlus {
      */
     const UPDATED_AT = 'add_date';
 
-    public $dates = ['lesson_at'];
+    public $dates = [
+        'lesson_at',
+        'student_last_present_at',
+        'tutor_last_present_at',
+        'synced_start_at'
+    ];
 
     /**
      * What POST values we'll even take with massive assignment
@@ -703,16 +720,7 @@ class Lesson extends MagniloquentContextsPlus {
      */
     public function getWhiteboardTimerAttribute()
     {
-        // I'm just hacking in the code from the original Botangle that was actually in the view
-        // It's not pretty, but it's not yet my remit to re-write this code
-        $timer = "00:00:00";
-        if($this->userIsStudent(Auth::user())){
-            $timerArray =  $this->secondsToTime($this->student_lessontaekn_time);
-        }else{
-            $timerArray =  $this->secondsToTime($this->remainingduration);
-        }
-        $timer = sprintf("%02d:%02d:%02d", $timerArray['h'], $timerArray['m'], $timerArray['s']);
-        return $timer;
+        return gmdate("H:i:s", $this->seconds_used);
     }
 
     /**
@@ -875,5 +883,155 @@ class Lesson extends MagniloquentContextsPlus {
     public function isAfterEndTime($flex = 0)
     {
         return ($this->lesson_at->addMinutes($this->duration + $flex) > Carbon::now());
+    }
+
+    public function otherUserPresent()
+    {
+        if ($this->userIsTutor(Auth::user())){
+            $otherUserLastPresent = $this->student_last_present_at;
+        } else {
+            $otherUserLastPresent = $this->tutor_last_present_at;
+        }
+        $minimumActiveTime = Carbon::now()->subSeconds(self::SYNC_DELAY);
+        return ($otherUserLastPresent->gte($minimumActiveTime));
+    }
+
+    public function checkOtherUserPresence()
+    {
+        // If the lesson is in progress (active) or trying to sync but the other user has gone missing
+        if (($this->sync_status == self::SYNC_STATUS_ACTIVE
+            || $this->sync_status == self::SYNC_STATUS_SYNCING
+                    || $this->sync_status == self::SYNC_STATUS_STARTING)
+            && !$this->otherUserPresent()
+        ){
+            // Set the status back to waiting
+            $this->sync_status = self::SYNC_STATUS_WAITING;
+            $this->save();
+        }
+    }
+
+    public function syncInitiated()
+    {
+        if ($this->otherUserPresent()){
+            $this->synced_start_at = Carbon::now()->addSeconds(self::SYNC_DELAY);
+            $this->sync_status = self::SYNC_STATUS_SYNCING;
+            return $this->save();
+        }
+        return false;
+    }
+
+    public function syncStarting()
+    {
+        if ($this->otherUserPresent()){
+            $this->sync_status = self::SYNC_STATUS_STARTING;
+        } else {
+            $this->sync_status = self::SYNC_STATUS_WAITING;
+        }
+        return $this->save();
+    }
+
+    public function syncActivate($inputStatus)
+    {
+        if ($inputStatus == self::SYNC_STATUS_ACTIVE){
+            $this->sync_status = Lesson::SYNC_STATUS_ACTIVE;
+            return $this->save();
+        }
+        return false;
+    }
+
+    public function syncFinished($inputStatus)
+    {
+        if ($inputStatus == self::SYNC_STATUS_FINISHED){
+            $this->sync_status = self::SYNC_STATUS_FINISHED;
+            return $this->save();
+        }
+        return false;
+    }
+
+    public function updateAttendance(User $user)
+    {
+        if ($this->userIsTutor($user)){
+            $this->tutor_last_present_at = Carbon::now();
+        } else {
+            $this->student_last_present_at = Carbon::now();
+        }
+        // If the user is being kept waiting while the lesson should be in progress
+        if ($this->sync_status == self::SYNC_STATUS_WAITING && $this->isLessonTimeNow()){
+            // Keep a record of how long they're being kept waiting
+            if ($this->userIsTutor($user)){
+                $this->tutor_seconds_wait += self::SYNC_FREQUENCY;
+            } else {
+                $this->student_seconds_wait += self::SYNC_FREQUENCY;
+            }
+        }
+        return $this->save();
+    }
+
+    public function updateSecondsUsed($newValue, $finished = false)
+    {
+        if ($this->userIsStudent(Auth::user()) || $finished){
+            $success = false;
+            // NewValue has to be >= seconds used and mustn't be a jump of greater than 3 sync frequencies otherwise
+            //  there's either a bug or something suspicious is going on
+            if ($newValue >= ($this->seconds_used - self::SYNC_FREQUENCY) && $newValue < ($this->seconds_used + (self::SYNC_FREQUENCY * 3))){
+                $this->seconds_used = $newValue;
+                $success = $this->save();
+            }
+            if (!$success){
+                Log::alert(sprintf(
+                        'Error saving seconds_used value of %s for lesson id %s : %s',
+                        $newValue,
+                        $this->id,
+                        $this->errors()->toJSON()
+                    ));
+                throw new Exception("There was a problem updating lesson time used.");
+            }
+        }
+        return true;
+    }
+
+    public function isLessonTimeNow()
+    {
+        return (
+            $this->lesson_at->lte(Carbon::now())
+                && $this->lesson_at->addMinutes($this->duration)->gt(Carbon::now())
+        );
+    }
+
+    public function getPayment()
+    {
+        if (!$this->payment){
+            $lessonPayment = LessonPayment::create(array(
+                    'lesson_id'         => $this->id,
+                    'student_id'        => $this->student,
+                    'tutor_id'          => $this->tutor,
+                    'payment_complete'  => 0,
+                ));
+        } else {
+            $lessonPayment = $this->payment;
+        }
+        return $lessonPayment;
+    }
+
+    public function updatePaymentDue()
+    {
+        $lessonPayment = $this->getPayment();
+        $lessonPayment->payment_amount = $this->getCurrentPaymentDue();
+        $lessonPayment->save();
+    }
+
+    public function getNextPriceIncrement()
+    {
+        return $this->userRate->calculateTutorTotalAmount($this->seconds_used + self::SYNC_FREQUENCY);
+    }
+
+    public function getCurrentPaymentDue()
+    {
+        return $this->userRate->calculateTutorTotalAmount($this->seconds_used);
+    }
+
+    public function getSyncCountdown()
+    {
+        return $this->synced_start_at->diffInSeconds(Carbon::now());
     }
 }

@@ -63,7 +63,7 @@
 <script>
     var timer = "";
     jQuery(document).ready (function () {
-        startCount({{ $model->id }}, {{ $model->roleType }});
+        startCount({{ $model->id }}, {{ $model->roleType }}, {{ Lesson::SYNC_FREQUENCY }});
     });
 </script>
 @stop

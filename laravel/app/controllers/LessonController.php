@@ -244,6 +244,8 @@ class LessonController extends BaseController {
                     Please topup your credit."
                     ));
         }
+        // Check to see if the other user is still present and update sync_status if necessary
+        $lesson->checkOtherUserPresence();
 
         return View::make('lessons.whiteboard', array(
                 'model'     => $lesson,
@@ -257,88 +259,103 @@ class LessonController extends BaseController {
      */
     public function postUpdateTimer(Lesson $lesson)
     {
-        $totalTime = 0;
-        $lessonComplete = false;
-        $userRate = null;
+        $lesson->updateAttendance(Auth::user());
 
-        $pleaseCompleteLesson = false;
-        if (Input::has('completeLesson') && Input::get('completeLesson')){
-            $pleaseCompleteLesson = true;
+        // Store the current status, so that we process the data passed through according to this status
+        $status = $lesson->sync_status;
+
+        // Check to see if the other user is still present and update sync_status if necessary
+        $lesson->checkOtherUserPresence();
+
+        switch($status){
+            case Lesson::SYNC_STATUS_WAITING:
+                if ($lesson->syncInitiated()){
+                    $responseArray = [
+                        'countdown'         => $lesson->getSyncCountdown(),
+                        'lessonComplete'    => false,
+                        'newPrice'          => $lesson->getCurrentPaymentDue(),
+                        'status'            => $lesson->sync_status,
+                        'totalTime'         => $lesson->seconds_used,
+                    ];
+                } else {
+                    $responseArray = [
+                        'newPrice'          => $lesson->getCurrentPaymentDue(),
+                        'lessonComplete'    => false,
+                        'status'            => $lesson->sync_status,
+                        'totalTime'         => $lesson->seconds_used,
+                    ];
+                }
+                break;
+            case Lesson::SYNC_STATUS_SYNCING:
+                $lesson->syncStarting();
+                $responseArray = [
+                    'countdown'         => $lesson->getSyncCountdown(),
+                    'lessonComplete'    => false,
+                    'newPrice'          => $lesson->getCurrentPaymentDue(),
+                    'status'            => $lesson->sync_status,
+                    'totalTime'         => $lesson->seconds_used,
+                ];
+                break;
+            case Lesson::SYNC_STATUS_STARTING:
+                if (!$lesson->syncActivate(Input::get('status'))){
+                    $lesson->syncStarting();
+                    $responseArray = [
+                        'countdown'         => $lesson->getSyncCountdown(),
+                        'lessonComplete'    => false,
+                        'newPrice'          => $lesson->getCurrentPaymentDue(),
+                        'status'            => $lesson->sync_status,
+                        'totalTime'         => $lesson->seconds_used,
+                    ];
+                    break;
+                }
+                // We want the activated lesson to continue through and be processed as now active,
+                // so no break here
+
+            case Lesson::SYNC_STATUS_ACTIVE:
+                if ($lesson->updateSecondsUsed(
+                    (int) Input::get('secondsUsed'),
+                    Input::get('status') == Lesson::SYNC_STATUS_FINISHED
+                )) {
+                    $lesson->updatePaymentDue();
+                }
+                // If the lesson has finished
+                if ($lesson->syncFinished(Input::get('status'))){
+                    $lesson->payment->lesson_complete_tutor = true;
+                    $lesson->payment->lesson_complete_student = true;
+                    if (!$lesson->payment->save()){
+                        Log::alert(sprintf(
+                                'Error saving lesson payment changes for lesson payment id %s : %s',
+                                $lesson->payment->id,
+                                $lesson->payment->errors()->toJSON()
+                            ));
+                        throw new Exception("There was a problem updating lesson payment.");
+                    }
+                    if (!$lesson->payment->payment_complete) {
+                        $lesson->payment->charge();
+                    }
+                } else {
+                    $responseArray = [
+                        'newPrice'          => $lesson->getNextPriceIncrement(),
+                        'lessonComplete'    => $lesson->payment->lesson_complete_student,
+                        'status'            => $lesson->sync_status,
+                        'totalTime'         => $lesson->seconds_used,
+                    ];
+                    break;
+                }
+            case Lesson::SYNC_STATUS_FINISHED:
+                // This would only be accessed by the second user to exit the lesson, so all the processing
+                //  ought to have been completed by the other user
+                $responseArray = [
+                    'newPrice'          => $lesson->payment->payment_amount,
+                    'lessonComplete'    => $lesson->payment->lesson_complete_student,
+                    'status'            => $lesson->sync_status,
+                    'totalTime'         => $lesson->seconds_used,
+                ];
+                break;
+
         }
+        return Response::json($responseArray);
 
-        $role = (int) Input::get('roleType');
-        if ($role != 2 && $role != 4) {
-            throw new Exception("Sorry, things aren't working.");
-        }
-
-        if (!$lesson->payment){
-            $lessonPayment = LessonPayment::create(array(
-                'lesson_id'         => $lesson->id,
-                'student_id'        => $lesson->student,
-                'tutor_id'          => $lesson->tutor,
-                'payment_complete'  => 0,
-            ));
-        } else {
-            $lessonPayment = $lesson->payment;
-        }
-
-        if ($lessonPayment->lesson_complete_tutor && $lessonPayment->lesson_complete_student) {
-            $lessonComplete = true;
-        }
-
-        // if our lesson payment is not complete, then we've got a bunch of things we want to do
-        if (!$lessonComplete) {
-
-            // update our lesson timer depending on our role
-            // we do this for both parties on a regular basis
-            $totalTime = $lesson->updateTimer($role);
-
-            // retrieve our user rate and hang on to it so we can re-use it in a bit
-            $userRate = $lesson->userRate;
-
-            // figure out the payment amount
-            $lessonPayment->payment_amount = $userRate->calculateTutorTotalAmount($totalTime);
-
-            // if someone wants to end the lesson, then we want to record that
-            if ($pleaseCompleteLesson) {
-                $lessonPayment->lesson_complete_tutor = true;
-                $lessonPayment->lesson_complete_student = true;
-            }
-            if (!$lessonPayment->save()){
-                Log::alert(sprintf(
-                        'Error saving lesson payment changes for lesson payment id %s : %s',
-                        $lessonPayment->id,
-                        $lessonPayment->errors()->toJSON()
-                    ));
-            }
-
-            // then, if our payment isn't complete yet, then let's bill for it
-            // we don't leave this outside for fear of having race conditions between the student and the tutor
-            // we'd really like the first person to ask for this to be completed to be the one who calculates totals
-            // theoretically, if the second person makes it past the lesson payment query above before the first person
-            // charges things here, we could end up with a double-billing ... :-/
-            if ($pleaseCompleteLesson && !$lessonPayment->payment_complete) {
-                $lessonPayment->charge();
-            }
-        }
-
-        /**
-         * response sent back is JSON
-         * - specifically, we're interested in lesson_complete_student on the frontend to notify the student if the lesson is over)
-         *      we'll then notify the student about what is going on
-         */
-        if ($lessonComplete) {
-            // @TODO: we want to send back different information requesting that this person get sent to the receipt page
-            return Response::json(array('lessonComplete' => 1));
-
-        } else {
-            // we want to show them the updated information
-            return Response::json(array(
-                    'newPrice' => $userRate->calculateTutorTotalAmount($totalTime + 60),
-                    'lessonComplete' => $lessonPayment->lesson_complete_student,
-                    'totalTime' => $totalTime,
-                ));
-        }
     }
 
     public function getPayment(Lesson $lesson)
