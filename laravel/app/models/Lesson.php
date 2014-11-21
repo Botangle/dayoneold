@@ -724,24 +724,19 @@ class Lesson extends MagniloquentContextsPlus {
     }
 
     /**
-     * Returns the number of seconds remaining for the lesson (from the Expert's perspective)
+     * Returns the number of seconds remaining for the lesson
      * @return mixed
      */
     public function getSecondsRemainingAttribute()
     {
-        /**
-         * First things first, attribute remainingduration is actually the number of seconds that
-         * the Expert has been in the meeting for the lesson. So, this function returns the time
-         * remaining in seconds
-         */
         $lessonLength = $this->duration * 60 * 60;
-        return $lessonLength - $this->remainingduration;
+        return $lessonLength - $this->seconds_used;
     }
 
     public function hasFinished()
     {
         $lessonLength = $this->duration * 60 * 60;
-        return ($lessonLength <= $this->student_lessontaekn_time);
+        return ($lessonLength <= $this->seconds_used);
     }
 
     public function getTwiddlaMeetingUrlAttribute()
@@ -809,30 +804,6 @@ class Lesson extends MagniloquentContextsPlus {
     public function getNotesForEmailAttribute()
     {
         return str_replace("\r\n", "<br>", e($this->notes));
-    }
-
-    /**
-     * There are separate timers kept for students and experts (seems like an unnecessary complication to me or
-     * a bad solution to the wrong problem)
-     * Anyway, this code has more or less been taken straight from the old botangle without significant change
-     * @param $role
-     * @return int
-     */
-    public function updateTimer($role)
-    {
-        // Admin
-        if ($role == 2) {
-            $this->remainingduration += 60;
-            $totalTime = $this->remainingduration;
-
-        // Student
-        } else if ($role == 4) {
-            $this->student_lessontaekn_time += 60;
-            $totalTime = $this->student_lessontaekn_time;
-        }
-        $this->save();
-
-        return $totalTime;
     }
 
     /**
@@ -1033,5 +1004,13 @@ class Lesson extends MagniloquentContextsPlus {
     public function getSyncCountdown()
     {
         return $this->synced_start_at->diffInSeconds(Carbon::now());
+    }
+
+    public function isPaid()
+    {
+        if ($this->payment){
+            return $this->payment->payment_complete;
+        }
+        return false;
     }
 }

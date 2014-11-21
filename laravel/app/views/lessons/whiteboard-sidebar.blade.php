@@ -1,5 +1,6 @@
 <div class="span3 LeftMenu-Block">
 
+@if ($model->sync_status != Lesson::SYNC_STATUS_FINISHED)
     @include('lessons.whiteboard-video', array('model' => $model))
 
     {{ Form::hidden('status', $model->sync_status, ['id' => 'status']) }}
@@ -26,5 +27,6 @@
     @if($model->roleType == 4)
         <div class="price-area" style="display: none">You will pay $<span></span> when you finish.</div>
     @endif
+@endif
 
 </div>

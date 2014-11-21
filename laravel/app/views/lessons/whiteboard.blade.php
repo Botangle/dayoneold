@@ -29,12 +29,15 @@
                                 </div>
 
                                 <input type="hidden" name="roletype" id="roletype" value="{{ $model->roleType }}" />
-                                @if ($model->secondsRemaining <= 0)
-                                    {{ Form::open(array(
-                                            'url' => route('lesson.payment', $model->id). '/?role='. $model->userIsTutor(Auth::user()) ? 'tutor' : 'student'
-                                    )) }}
-                                    {{ Form::submit('Make Payment') }}
-                                    {{ Form::close() }}
+                                @if (
+                                    ($model->secondsRemaining <= 0 || $model->sync_status == Lesson::SYNC_STATUS_FINISHED)
+                                    && !$model->isPaid()
+                                )
+                                    {{ Html::link(
+                                        route('lesson.payment', $model->id),
+                                        trans('Make Payment'),
+                                        array('class' => "btn btn-primary")
+                                    ) }}
                                 @else
                                     <iframe src="{{ $model->twiddlaMeetingUrl }}" frameborder="0" width="787" height="600" style="border:solid 1px #555;"></iframe>
                                 @endif
