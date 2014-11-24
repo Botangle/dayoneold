@@ -64,6 +64,12 @@ Route::get('/categories/index', array(
     ));
 Route::post('/categories/index', 'CategoryController@getIndex');
 
+Route::post('/categories/request', [
+        'uses'  => 'CategoryController@postRequestNew',
+        'as'    => 'categories.requestNew',
+    ]);
+
+
 /**
  * Login/logout
  */

@@ -32,4 +32,22 @@ class CategoryController extends BaseController {
                 'categories' => $results,
             ));
     }
+
+    public function postRequestNew()
+    {
+        try{
+            Mail::send('emails.category-request', Input::all(), function($message)
+                {
+                    $message->to(Config::get('mail.from.address'), Config::get('mail.from.name'))
+                        ->subject('Request for new categories');
+                });
+            $responseArray = ['result' => 'success'];
+        } catch(Exception $e){
+            $responseArray = [
+                'result' => 'failed',
+                'errorMessage' => 'There was a problem logging your request: '. $e->getMessage(),
+            ];
+        }
+        return Response::json($responseArray);
+    }
 }

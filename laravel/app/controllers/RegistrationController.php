@@ -47,9 +47,9 @@ class RegistrationController extends BaseController {
         } else {
             $inputs['role_id'] = 4;
         }
-
+        $inputs['subject'] = implode(", ", $inputs['subject']);
+        $inputs['status'] = true;
         $user->fill($inputs);
-
 
         if ($user->save()){
             if ($user->isTutor()){

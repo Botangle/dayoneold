@@ -1,14 +1,20 @@
+@section('head')
+@parent
+{{ HTML::style('/js/select2/select2.css') }}
+@stop
+
 <div class="row-fluid">
-    {{ Former::textarea('subject')
-    ->id('UserSubject')
-    ->addClass('textarea ui-autocomplete-input')
-    ->rows(3)
-    ->autocomplete('off')
-    ->placeholder(trans('Teaching experience'))
-    ->label(trans('Subject:'))
-    ->required()
-    }}
-    <p class="help-block field-helper-below">{{ trans("Separate Subjects with commas") }}</p>
+    <div class="control-group">
+        {{ Form::label('subject', trans("Subjects:"), array('class' => 'control-label')) }}
+        <div class="controls">
+            {{ Form::select(
+                'subject[]',
+                Category::getSelect2List(),
+                Input::old('subject', $user->getSubjectsArray()),
+                array('multiple','id'=>'UserSubject2','placeholder'=>'Choose subjects', 'class' => 'textbox')
+            ) }}
+        </div>
+    </div>
 </div>
 
 @include('user.account.core-fields')
@@ -86,3 +92,13 @@
     ->label(trans('Thumblr Link:'))
     }}
 </div>
+
+@section('jsFiles')
+@parent
+{{ HTML::script('/js/select2/select2.min.js') }}
+@stop
+
+@section('jqueryReady')
+@parent
+jQuery('#UserSubject2').select2();
+@stop

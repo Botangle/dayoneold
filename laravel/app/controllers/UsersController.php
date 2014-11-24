@@ -4,7 +4,6 @@ class UsersController extends BaseController {
 
     public function getTopChart($categoryId = null)
     {
-        // TODO: Will need to sort descending based on average review rating and any filters
         $users = User::active()->tutor();
         if ($categoryId){
             $category = Category::findOrFail($categoryId);

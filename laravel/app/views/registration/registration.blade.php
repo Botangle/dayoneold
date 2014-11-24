@@ -93,7 +93,6 @@
 
 @section('jsFiles')
 @parent
-{{ HTML::script(url('js/subject-autocomplete-multiselect.js')) }}
 {{ HTML::script(url('js/password-strength.js')) }}
 {{ HTML::script(url('js/username-unique.js')) }}
 <script>

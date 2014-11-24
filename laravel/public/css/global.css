@@ -1289,3 +1289,10 @@ input[type=radio]{
     font-weight: bold;
 }
 
+.select2-container.textbox,
+select {
+    border-left: 3px solid #e27807;
+    border-radius: 0px!important;
+    min-width: 220px;
+}
+
