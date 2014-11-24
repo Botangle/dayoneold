@@ -4,6 +4,8 @@
 @parent
 {{HTML::script('js/bootstrap-datetimepicker.js')}}
 {{HTML::style('css/bootstrap-datetimepicker.css')}}
+{{HTML::style('js/hopscotch/css/hopscotch.min.css')}}
+
 @stop
 
 @section('breadcrumbs')
@@ -311,6 +313,8 @@
     $ = jQuery.noConflict();
 </script>
 {{ Html::script('/js/calendar/bic_calendar.js', array('type' => "text/javascript")) }}
+{{ HTML::script('/js/hopscotch/js/hopscotch.min.js') }}
+{{ HTML::script('/js/welcome-tour.js') }}
 @stop
 
 @section('jqueryReady')

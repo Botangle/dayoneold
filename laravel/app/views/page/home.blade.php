@@ -1,5 +1,10 @@
 @extends('layout')
 
+@section('head')
+@parent
+{{HTML::style('js/hopscotch/css/hopscotch.min.css')}}
+@stop
+
 @section('header')
 <header id="Bannerblock">
     <div class="container text-center">
@@ -132,3 +137,9 @@
 </div>
 @endif
 @overwrite
+
+@section('jsFiles')
+@parent
+{{ HTML::script('/js/hopscotch/js/hopscotch.min.js') }}
+{{ HTML::script('/js/welcome-tour.js') }}
+@stop
