@@ -53,5 +53,4 @@
 
 @section('jsFiles')
 @parent
-{{-- Html::script(url('js/subject-autocomplete-multiselect.js')) --}}
 @stop
