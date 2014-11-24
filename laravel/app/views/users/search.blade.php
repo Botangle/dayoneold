@@ -1,5 +1,10 @@
 @extends('layout')
 
+@section('head')
+@parent
+{{HTML::style('js/hopscotch/css/hopscotch.min.css')}}
+@stop
+
 @section('content')
 <!--Wrapper HomeServices Block Start Here-->
 
@@ -45,5 +50,7 @@
 @section('jsFiles')
 @parent
 <script type="text/javascript" src="/js/bootstrap-rating-input.min.js"></script>
+{{ HTML::script('/js/hopscotch/js/hopscotch.min.js') }}
+{{ HTML::script('/js/welcome-tour.js') }}
 @stop
 
