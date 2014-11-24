@@ -5,7 +5,6 @@
 {{HTML::script('js/bootstrap-datetimepicker.js')}}
 {{HTML::style('css/bootstrap-datetimepicker.css')}}
 {{HTML::style('js/hopscotch/css/hopscotch.min.css')}}
-
 @stop
 
 @section('breadcrumbs')

@@ -30,7 +30,7 @@
             </div>
 
             @if ($mode == 'expert')
-                @include('user.account.expert-fields')
+                @include('user.account.expert-fields', ['user' => $user])
             @elseif ($mode == 'student')
                 @include('user.account.student-fields')
             @endif
@@ -53,5 +53,5 @@
 
 @section('jsFiles')
 @parent
-{{ Html::script(url('js/subject-autocomplete-multiselect.js')) }}
+{{-- Html::script(url('js/subject-autocomplete-multiselect.js')) --}}
 @stop

@@ -193,7 +193,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
 
     public function scopeTutor($query)
     {
-        $query->where('role_id', 2);
+        $query->where('subject', '!=', '');
     }
 
     public function scopeAverageRating($query)
@@ -535,5 +535,17 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
                     'timezone'      => $this->getTimezoneForHumans(),
                 ]);
         }
+    }
+
+    public function getSubjectsArray()
+    {
+        $categories = explode(", ", $this->subject);
+        foreach ($categories as $item) {
+            $itemName = strip_tags($item);
+            if ($itemName){
+                $result[$itemName] = $itemName;
+            }
+        }
+        return $result;
     }
 }

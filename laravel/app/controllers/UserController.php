@@ -149,11 +149,13 @@ class UserController extends BaseController {
             $user->addContext('profile-pic-upload');
         }
 
+        $inputs['subject'] = implode(", ", $inputs['subject']);
         $user->fill($inputs);
+
         if (!$user->validate()){
             if (isset($inputs['profilepic'])) unset($inputs['profilepic']);
             return Redirect::route('user.my-account')
-                ->withInput($inputs)
+                ->withInput(Input::all())
                 ->withErrors($user->errors())
                 ->with('flash_error', trans("Your information could not be updated. Please try again."));
         }
@@ -173,6 +175,7 @@ class UserController extends BaseController {
                 ->with('flash_success', trans("Your information has been updated"));
         } else {
             return Redirect::route('user.my-account')
+                ->withInput(Input::all())
                 ->withErrors($user->errors())
                 ->with('flash_error', trans("Your information could not be updated. Please try again."));
         }

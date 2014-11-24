@@ -83,12 +83,11 @@
     ->required()
     }}
 
-    {{-- subject - autocomplete required --}}
-    {{ Former::text('subject')
-    ->placeholder(trans('Subject'))
-    ->addClass('textbox')
-    ->label(trans('Subject:'))
+    {{ Former::select('subject')
+    ->options($model->tutorUser->getSubjectsArray())
+    ->placeholder(trans('-- Please choose --'))
     ->id('LessonSubject')
+    ->label(trans('Subject:'))
     ->required()
     }}
 
@@ -141,12 +140,5 @@
         minView: 0,
         maxView: 1,
         forceParse: 0
-    });
-
-    jQuery(function() {
-        var availableCategories = {{ json_encode(Category::getList()) }};
-        jQuery( "#LessonSubject" ).autocomplete({
-            source: availableCategories
-        });
     });
 </script>

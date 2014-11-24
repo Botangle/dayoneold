@@ -60,4 +60,19 @@ class Category extends Eloquent {
         return $result;
     }
 
+    /**
+     * Returns a list of categories (e.g. for AutoComplete use)
+     * @return array
+     */
+    public static function getSelect2List()
+    {
+        $categories = Category::active()->where('parent_id', null)->orderBy('name')->get(array('id', 'name'));
+
+        $result = array();
+
+        foreach ($categories as $item) {
+            $result[strip_tags($item->name)] = strip_tags($item->name);
+        }
+        return $result;
+    }
 }
