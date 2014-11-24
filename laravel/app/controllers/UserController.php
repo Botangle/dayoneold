@@ -12,11 +12,14 @@ use Carbon\Carbon;
 class UserController extends BaseController {
 
     public function __construct(){
-        $this->beforeFilter('csrf', array('only' => 'postCreate, postDelete, postEdit, postRegister, postRemind, postVerify, postSetPassword'));
-        $this->beforeFilter('ajax', array('only' => 'getCalendarEvents'));
+        $this->beforeFilter('csrf', array(
+                'only' => 'postCreate, postDelete, postEdit, postRegister, postRemind, postVerify, postSetPassword,
+                postValidateUsername'
+            ));
+        $this->beforeFilter('ajax', array('only' => 'getCalendarEvents, postValidateUsername'));
 
         $this->beforeFilter('auth', array(
-                'except' => array('getLogin', 'postLogin', 'search', 'getForgot', 'getView')
+                'except' => array('getLogin', 'postLogin', 'search', 'getForgot', 'getView', 'postValidateUsername')
             ));
 
     }
@@ -325,7 +328,7 @@ class UserController extends BaseController {
     {
         $userId = Input::get('id');
         if (Auth::user()->id != $userId){
-            App::abort('404', "You are not authorized to update another user's status.");
+            App::abort('401', "You are not authorized to update another user's status.");
         }
         $user = User::findOrFail($userId);
 
@@ -480,5 +483,25 @@ class UserController extends BaseController {
         } else {
             return Redirect::intended(URL::route('user.my-account'));
         }
+    }
+
+    public function postValidateUsername()
+    {
+        if (!Input::has('username')){
+            return App::abort('400', 'Username missing');
+        }
+        $user = User::where('username', Input::get('username'))->first();
+        if ($user){
+            $responseArray = [
+                'text'  => 'Username not available. Try another',
+                'class' => 'alert alert-danger',
+            ];
+        } else {
+            $responseArray = [
+                'text'  => 'Username available',
+                'class' => 'alert alert-info',
+            ];
+        }
+        return Response::json($responseArray);
     }
 }

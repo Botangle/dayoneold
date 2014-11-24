@@ -160,6 +160,11 @@ Route::get('/user/calendarEvents/{id}', array(
         'uses'      => 'UserController@getCalendarEvents',
     ));
 
+Route::post('/user/validateUsername', array(
+        'as'        => 'user.validate-username',
+        'uses'      => 'UserController@postValidateUsername',
+    ));
+
 Route::get('/user/messages/{username?}', array(
         'as'        => 'user.messages',
         'uses'      => 'UserMessageController@index',
