@@ -93,11 +93,14 @@
 
 @section('jsFiles')
 @parent
-{{ Html::script(url('js/subject-autocomplete-multiselect.js')) }}
-{{ Html::script(url('js/password-strength.js')) }}
+{{ HTML::script(url('js/subject-autocomplete-multiselect.js')) }}
+{{ HTML::script(url('js/password-strength.js')) }}
+{{ HTML::script(url('js/username-unique.js')) }}
 <script>
     var tz = jstz.determine(); // Determines the time zone of the browser client
     jQuery('#timezone').val(tz.name());
 </script>
-
+<script>
+    var BotangleBasePath = "{{ url('/') }}/";
+</script>
 @stop

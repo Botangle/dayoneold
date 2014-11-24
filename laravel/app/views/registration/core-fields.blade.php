@@ -11,8 +11,13 @@
     ->addClass('textbox')
     ->placeholder(trans('Username'))
     ->label(trans('Username:'))
+    ->id('username')
     ->required()
     }}
+</div>
+<div class="controls username-availability-indicator">
+    <div id="username-result">
+    </div>
 </div>
 <div class="row-fluid">
     {{ Former::text('name')
