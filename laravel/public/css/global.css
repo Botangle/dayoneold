@@ -1249,6 +1249,11 @@ a > .Message-row.viewing-message .sender-name {
 .Good{height:10px; width:120px}
 .Strong{height:10px; width:260px}
 
+/* Username uniqueness */
+.username-availability-indicator {
+    width: 360px;
+}
+
 /* File stuff extracted from various views */
 .fileinput-exists .fileinput-new, .fileinput-new .fileinput-exists {
     display: none;
@@ -1283,3 +1288,4 @@ input[type=radio]{
 #sync-status {
     font-weight: bold;
 }
+

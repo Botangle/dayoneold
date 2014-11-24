@@ -14,9 +14,9 @@
     ->id('username')
     ->required()
     }}
-</div>
-<div class="controls username-availability-indicator">
-    <div id="username-result">
+    <div class="controls username-availability-indicator">
+        <div id="username-result">
+        </div>
     </div>
 </div>
 <div class="row-fluid">
