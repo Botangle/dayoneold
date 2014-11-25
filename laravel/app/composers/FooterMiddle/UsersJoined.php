@@ -14,7 +14,10 @@ class UsersJoined implements Composer
 {
     public function compose($view)
     {
-        // @TODO: add caching here
-        $view->with('usersJoined', \User::active()->count());
+        if (!\Cache::has('users-joined')){
+            $userCount = \User::active()->count();
+            \Cache::forever('users-joined', $userCount);
+        }
+        $view->with('usersJoined', \Cache::get('users-joined'));
     }
 }

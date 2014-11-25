@@ -13,7 +13,7 @@
  * Authentication related events
  */
 Event::listen('auth.logout', function($user){
-
+        Cache::forget('users-online');
         // register that this user is online now
         $user->is_online = false;
         $user->save();
@@ -26,6 +26,7 @@ Event::listen('auth.logout', function($user){
  * Note: using user.login since auth.login seems to fire all over the place from Laravel
  */
 Event::listen('user.login', function($user){
+        Cache::forget('users-online');
         // register that this user is online now
         $user->is_online = true;
         $user->save();
@@ -75,11 +76,13 @@ Event::listen('user.profilepic-uploaded', function($user){
     });
 
 Event::listen('user.expert-registration', function($user){
+        Cache::forget('users-joined');
         // Add to User log
         $user->logEvent('expert-registration');
     });
 
 Event::listen('user.student-registration', function($user){
+        Cache::forget('users-joined');
         // Add to User log
         $user->logEvent('student-registration');
     });

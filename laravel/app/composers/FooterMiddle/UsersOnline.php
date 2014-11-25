@@ -14,7 +14,10 @@ class UsersOnline implements Composer
 {
     public function compose($view)
     {
-        // @TODO: add caching here
-        $view->with('usersOnline', \User::active()->online()->count());
+        if (!\Cache::has('users-online')){
+            $userCount = \User::active()->online()->count();
+            \Cache::forever('users-online', $userCount);
+        }
+        $view->with('usersOnline', \Cache::get('users-online'));
     }
 }
