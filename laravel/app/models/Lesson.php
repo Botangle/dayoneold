@@ -61,6 +61,7 @@ class Lesson extends MagniloquentContextsPlus {
         'notes',
         'active',
         'is_confirmed',
+        'created',
     );
 
     protected $guarded = array('history');
@@ -175,7 +176,7 @@ class Lesson extends MagniloquentContextsPlus {
     public function scopeProposals($query)
     {
         $query->where('is_confirmed', false)
-            ->where('lesson_at', '>=', Carbon::now()->format('Y-m-d G:i:s'));
+            ->where('ends_at', '>=', Carbon::now()->format('Y-m-d G:i:s'));
     }
 
     /**
@@ -185,7 +186,7 @@ class Lesson extends MagniloquentContextsPlus {
     public function scopeUpcoming($query)
     {
         $query->where('is_confirmed', true)
-            ->where('lesson_at', '>=', Carbon::now()->format('Y-m-d G:i:s'));
+            ->where('ends_at', '>=', Carbon::now()->format('Y-m-d G:i:s'));
     }
 
     /**
