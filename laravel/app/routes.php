@@ -203,7 +203,6 @@ Route::get('/lesson/create/{user}', array(
         'as'        => 'lesson.create',
         'uses'      => 'LessonController@getCreate',
     ));
-//Route::post('/lesson/create', 'LessonController@postCreate');
 Route::get('/lesson/{lesson}/whiteboard', array(
         'uses'      => 'LessonController@getWhiteboard',
         'as'        => 'lesson.whiteboard',
