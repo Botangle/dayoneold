@@ -19,8 +19,11 @@ class NewsFinder implements Composer
 
     private function getMyData()
     {
-        // @TODO: add caching here
-        return \News::where('status', 1)->limit(3)->orderBy('date', 'DESC')->get();
+        if (!\Cache::has('latest-news')){
+            $news = \News::where('status', 1)->limit(3)->orderBy('date', 'DESC')->get();
+            \Cache::put('latest-news', $news, 10080);
+        }
+        return \Cache::get('latest-news');
     }
 
 }
