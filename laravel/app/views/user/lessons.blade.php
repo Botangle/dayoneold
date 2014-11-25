@@ -170,11 +170,15 @@ jQuery('[data-toggle="modal"]').click(function(e) {
                             flashError += '</ul></div>';
                             jQuery('.modal-flash-wrapper').empty().append(flashError).show();
                             jQuery('#myModal').css('height', jQuery('#myModal .span9').outerHeight());
+                            $("#loading-div-background").hide();
                         } else {
                             // Refresh the page to show the changes made
                             window.location.hash = '#lesson'+data.id;
                             window.location.reload();
                         }
+                    },
+
+                    error: function(){
                         $("#loading-div-background").hide();
                     }
                 });

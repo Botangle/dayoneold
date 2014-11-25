@@ -400,6 +400,7 @@
                 } else {
                     if (data.redirect){
                         window.location.href = data.redirect;
+                        return false;
                     }
                     // Refresh the calendar (by moving next and then back)
                     $('.button-month-next').click();
@@ -410,6 +411,10 @@
                     // Hide the modal
                     $('#myModal').modal('hide');
                 }
+                $("#loading-div-background").hide();
+            },
+
+            error: function(){
                 $("#loading-div-background").hide();
             }
         });
