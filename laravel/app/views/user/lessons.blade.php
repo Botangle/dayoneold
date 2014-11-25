@@ -128,6 +128,8 @@
 
         </div>
     </div>
+    @include('_partials.loading', ['title' => 'Adding Lesson'])
+
 @stop
 
 @section('jsFiles')
@@ -150,6 +152,8 @@ jQuery('[data-toggle="modal"]').click(function(e) {
 
             jQuery('#myModal form[data-async]').on('submit', function(event) {
                 var $form = jQuery(this);
+                $("#loading-div-background").show();
+                $("#loading-div-background").css({ opacity: 0.9 });
 
                 jQuery.ajax({
                     type: $form.attr('method'),
@@ -171,6 +175,7 @@ jQuery('[data-toggle="modal"]').click(function(e) {
                             window.location.hash = '#lesson'+data.id;
                             window.location.reload();
                         }
+                        $("#loading-div-background").hide();
                     }
                 });
                 event.preventDefault();

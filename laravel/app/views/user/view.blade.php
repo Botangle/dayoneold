@@ -296,6 +296,9 @@
     ))
 </div>
 @endif
+
+@include('_partials.loading', ['title' => 'Adding Lesson'])
+
 @overwrite
 
 @section('jsFiles')
@@ -376,6 +379,8 @@
 
     $('form[data-async]').on('submit', function(event) {
         var $form = $(this);
+        $("#loading-div-background").show();
+        $("#loading-div-background").css({ opacity: 0.9 });
 
         $.ajax({
             type: $form.attr('method'),
@@ -405,6 +410,7 @@
                     // Hide the modal
                     $('#myModal').modal('hide');
                 }
+                $("#loading-div-background").hide();
             }
         });
         event.preventDefault();
