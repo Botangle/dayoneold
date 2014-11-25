@@ -71,15 +71,15 @@
             <div class=" input-append date form_date" data-date="" data-date-format="dd MM yyyy" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd" style="width:47%;">
 
                 <input size="16" type="text" value="{{ $model->formattedLessonAt('d F Y') }}" readonly class="textbox2" style="width:57%" />
-                <span class="add-on" style="height:44px"><i class="icon-remove"></i></span>
-                <span class="add-on" style="height:44px"><i class="icon-th"></i></span>
+                <span class="add-on"><i class="icon-remove"></i></span>
+                <span class="add-on"><i class="icon-th"></i></span>
 
             </div>
             {{ Former::hidden('lesson_time')->id('dtp_input3') }}
             <div class=" input-append date form_time" data-date="" data-date-format="hh:ii" data-link-field="dtp_input3" data-link-format="hh:ii" style="width:33%;">
                 <input size="16" class="textbox2" type="text" value="{{ $model->formattedLessonAt('G:i') }}" readonly>
-                <span class="add-on" style="height:44px"><i class="icon-remove"></i></span>
-                <span class="add-on" style="height:44px"><i class="icon-th"></i></span>
+                <span class="add-on"><i class="icon-remove"></i></span>
+                <span class="add-on"><i class="icon-th"></i></span>
 
             </div>
             <p>Time shown in your timezone: {{ Auth::user()->getTimezoneForHumans() }} ({{ HTML::link(route('user.timezone'), 'change timezone') }})</p>

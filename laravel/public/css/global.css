@@ -1303,3 +1303,7 @@ select {
 #lesson-header-block p {
     padding-top: 10px;
 }
+
+.input-append.date span.add-on {
+    height:48px;
+}
