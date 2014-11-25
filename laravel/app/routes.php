@@ -199,11 +199,11 @@ Route::get('/subject/search', array(
 Route::model('lesson', 'Lesson');
 Route::model('user', 'User');
 
-Route::get('/lesson/create/{expertId}', array(
-        'as'        => 'lesson.create-with-expert',
-        'uses'      => 'LessonController@createWithExpert',
+Route::get('/lesson/create/{user}', array(
+        'as'        => 'lesson.create',
+        'uses'      => 'LessonController@getCreate',
     ));
-
+//Route::post('/lesson/create', 'LessonController@postCreate');
 Route::get('/lesson/{lesson}/whiteboard', array(
         'uses'      => 'LessonController@getWhiteboard',
         'as'        => 'lesson.whiteboard',

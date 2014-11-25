@@ -15,22 +15,30 @@ class LessonController extends BaseController {
 
     /**
      * Not currently being used, but not removing for now.
-     * @param $expertId
+     * @param User $tutor
      * @return \Illuminate\View\View
      */
-    public function createWithExpert($expertId)
+    public function getCreate(User $tutor)
     {
-        $expert = User::find($expertId);
-        if (!$expert){
-            App::abort('404', trans('Invalid value passed for Expert'));
+        $lesson = new Lesson;
+        $lesson->tutor = $tutor->id;
+        if (Auth::user()->id != $tutor->id){
         }
 
-        $model = new Lesson;
-        $model->tutor = $expert->id;
-        $model->student = Auth::user()->id;
+        if ($lesson->userIsTutor(Auth::user())){
+            $lesson->student = null;
+            $otherUser = null;
+            $otherDesc = 'student';
+        } else {
+            $lesson->student = Auth::user()->id;
+            $otherUser = $lesson->tutorUser;
+            $otherDesc = 'tutor';
+        }
 
         return View::make('lessons/modalContent', array(
-                'model'     => $model,
+                'model'     => $lesson,
+                'otherUser' => $otherUser,
+                'otherDesc' => $otherDesc,
                 'submit'    => 'lesson.create',
                 'subtitle'  => trans('Propose Lesson Meeting'),
                 'title'     => trans('Add New Lesson'),

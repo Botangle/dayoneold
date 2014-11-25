@@ -238,6 +238,13 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             ->groupBy('users.id');
     }
 
+    public function scopeHasTutor($query, User $tutor)
+    {
+        $query->whereHas('lessonsStudying', function($query) use($tutor){
+                $query->where('tutor', '=', $tutor->id);
+            });
+    }
+
     /**
      * Builds a quick getter (useable at $user->picture) that gets the appropriate image
      *
@@ -547,5 +554,15 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             }
         }
         return $result;
+    }
+
+    public function getStudents()
+    {
+        $users = User::hasTutor($this)->get();
+        $list = [];
+        foreach($users as $user){
+            $list[$user->id] = $user->fullName;
+        }
+        return $list;
     }
 }

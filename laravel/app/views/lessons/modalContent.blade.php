@@ -2,7 +2,7 @@
     <h2 class="page-title">{{ $title }}</h2>
     <p class="FontStyle20 color1">{{ $subtitle }}</p>
 
-    <div id="modal-flash-wrapper" class="alert alert-error">
+    <div class="modal-flash-wrapper alert alert-error">
 
     </div>
 
@@ -29,12 +29,6 @@
 
     {{ Former::hidden('other_timezone', $otherUser ? $otherUser->timezone : '') }}
 
-    @if ($model->student != null)
-        {{ Former::hidden('student') }}
-    @else
-        {{-- I guess we'd need to allow the expert to select one of their existing students  --}}
-    @endif
-
     <div class="row-fluid">
         {{ Former::text('expert_name')
         ->addClass('textbox')
@@ -43,6 +37,27 @@
         ->value($model->tutorUser->fullName)
         ->disabled()
         }}
+    </div>
+
+    <div class="row-fluid">
+    @if ($model->student != null)
+        {{ Former::hidden('student') }}
+        {{ Former::text('expert_name')
+            ->addClass('textbox')
+            ->placeholder(trans('Student'))
+            ->label(trans('Student:'))
+            ->value($model->studentUser->fullName)
+            ->disabled()
+        }}
+    @else
+        {{-- Allow the user to select from their previous students  --}}
+        {{ Former::select('student')
+            ->options($model->tutorUser->getStudents())
+            ->placeholder(trans('Choose from existing students...'))
+            ->label(trans('Student:'))
+            ->required()
+        }}
+    @endif
     </div>
 
     {{-- date and time fields --}}
