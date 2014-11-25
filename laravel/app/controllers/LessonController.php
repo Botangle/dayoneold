@@ -14,7 +14,6 @@ class LessonController extends BaseController {
     }
 
     /**
-     * Not currently being used, but not removing for now.
      * @param User $tutor
      * @return \Illuminate\View\View
      */
