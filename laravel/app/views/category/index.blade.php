@@ -39,7 +39,7 @@
                         <ul>
                             @foreach ($categoryOptions as $item)
                             @foreach ($item as $id => $name)
-                            <li><a href="/users/topchart/$id">{{{ $name }}}</a></li>
+                            <li><a href="{{ route('users.topcharts', $id) }}">{{{ $name }}}</a></li>
                             @endforeach
                             @endforeach
                         </ul>
