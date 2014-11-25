@@ -390,7 +390,7 @@
                         flashError += '<li>'+ v +'</li>';
                     });
                     flashError += '</ul></div>';
-                    $('#modal-flash-wrapper').empty().append(flashError).show();
+                    $('.modal-flash-wrapper').empty().append(flashError).show();
                     $('#myModal').css('height', $('#myModal .span9').outerHeight());
                 } else {
                     if (data.redirect){
@@ -401,7 +401,7 @@
                     $('.button-month-previous').click();
                     // Clear the form and the form's flash div
                     $("#lessonForm").trigger('reset');
-                    $('#modal-flash-wrapper').empty().hide();
+                    $('.modal-flash-wrapper').empty().hide();
                     // Hide the modal
                     $('#myModal').modal('hide');
                 }

@@ -8,7 +8,15 @@
 
 @section('page-content')
     <div class="StaticPageRight-Block">
-        <p><strong>All times shown in your timezone: {{ Auth::user()->getTimezoneForHumans() }} ({{ HTML::link(route('user.timezone'), 'change timezone') }})</strong></p>
+        <div id="lesson-header-block">
+            <div class="pull-right">
+                {{ HTML::link('#', trans('Add New Lesson'), [
+                    'class' => 'btn btn-primary btn-small', 'id' => 'addNewLesson',
+                    'data-toggle' => 'modal', 'data-url' => route('lesson.create', Auth::user()->id),
+                ]) }}
+            </div>
+            <p><strong>All times shown in your timezone: {{ Auth::user()->getTimezoneForHumans() }} ({{ HTML::link(route('user.timezone'), 'change timezone') }})</strong></p>
+        </div>
         <div class="PageLeft-Block">
             <p class="FontStyle20 color1">{{ trans("Active Lesson Proposals") }}</p>
             @foreach($proposals as $lesson)
@@ -120,7 +128,6 @@
 
         </div>
     </div>
-
 @stop
 
 @section('jsFiles')
@@ -141,7 +148,7 @@ jQuery('[data-toggle="modal"]').click(function(e) {
                 height: jQuery('#myModal .span9').outerHeight()
             });
 
-            jQuery('form[data-async]').on('submit', function(event) {
+            jQuery('#myModal form[data-async]').on('submit', function(event) {
                 var $form = jQuery(this);
 
                 jQuery.ajax({
@@ -157,7 +164,7 @@ jQuery('[data-toggle="modal"]').click(function(e) {
                                 flashError += '<li>'+ v +'</li>';
                             });
                             flashError += '</ul></div>';
-                            jQuery('#modal-flash-wrapper').empty().append(flashError).show();
+                            jQuery('.modal-flash-wrapper').empty().append(flashError).show();
                             jQuery('#myModal').css('height', jQuery('#myModal .span9').outerHeight());
                         } else {
                             // Refresh the page to show the changes made

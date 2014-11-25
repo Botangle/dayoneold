@@ -1289,10 +1289,17 @@ input[type=radio]{
     font-weight: bold;
 }
 
-.select2-container.textbox,
-select {
+.select2-container.textbox {
     border-left: 3px solid #e27807;
     border-radius: 0px!important;
     min-width: 220px;
 }
+select {
+    border-left: 3px solid #e27807;
+    border-radius: 0px!important;
+    width: auto;
+}
 
+#lesson-header-block p {
+    padding-top: 10px;
+}
