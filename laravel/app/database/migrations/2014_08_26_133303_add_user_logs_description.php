@@ -19,6 +19,38 @@ class AddUserLogsDescription extends Migration {
 
                 $table->index('type');
                 $table->index('created');
+            });
+
+        /** Need to fix the data for adding the foreign key */
+        // Adding an unknown user so that user_logs that have referential integrity problems can be
+        //   attached to this unknown user.
+        $user = User::where('email', 'deleted@botangle.com')->first();
+        if (!$user){
+            $user = User::create(array(
+                    'email'     => 'deleted@botangle.com',
+                    'username'  => 'deleteduser',
+                    'name'      => 'Deleted',
+                    'lname'     => 'User',
+                ));
+        }
+        $userId = $user->id;
+
+        /**
+         * Some user_logs reference users who have been deleted, so we need to set those to the
+         * unknown user so that we can add the foreign key
+         */
+        DB::update("UPDATE user_logs ul
+            SET ul.user_id = $userId
+            WHERE
+                ul.id IN (
+                    SELECT * FROM( SELECT ul2.id
+                        FROM user_logs ul2
+                        LEFT JOIN users u ON ul2.user_id = u.id
+                        WHERE u.id is null ) tmp
+                )
+        ");
+
+        Schema::table('user_logs', function(Blueprint $table){
                 $table->foreign('user_id')->references('id')->on('users');
             });
 	}

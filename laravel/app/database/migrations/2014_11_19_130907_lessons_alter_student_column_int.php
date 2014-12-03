@@ -17,12 +17,13 @@ class LessonsAlterStudentColumnInt extends Migration {
                 $table->renameColumn('tutor', 'tutor_old');
         });
         Schema::table('lessons', function(Blueprint $table){
-                $table->integer('tutor')->unsigned()->index()->after('created');
+                $table->integer('tutor')->after('created');
             });
 
         DB::update("UPDATE lessons SET tutor=tutor_old");
 
         Schema::table('lessons', function(Blueprint $table){
+                $table->foreign('tutor')->references('id')->on('users');
                 $table->dropColumn('tutor_old');
             });
 	}
