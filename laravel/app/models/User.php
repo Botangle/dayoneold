@@ -66,6 +66,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         'terms',
         'timezone',
         'timezone_update',
+        'status',
     );
 
     protected $niceNames = array(
