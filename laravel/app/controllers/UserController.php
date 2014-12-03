@@ -183,6 +183,7 @@ class UserController extends BaseController {
     }
 
     /**
+     * TODO: resolve having duplicate functions in UserController and RegistrationController
      * This uploads the profilepic to S3.
      * This is a quick and perhaps dirty implementation combining the original Botangle's use of Transit
      * and the rather nice FlySystem. Transit is only being used for image cropping and resizing

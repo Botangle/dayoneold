@@ -23,7 +23,7 @@
                 <div class="PageLeft-Block">
                     <p class="FontStyle20"><?php echo trans("Create your Botangle Account") ?></p>
                     <p>{{ trans('It only takes a few minutes to register with Botangle and you get amazing features! Fill out the information below!') }}</p>
-                    {{ Former::open()
+                    {{ Former::open_for_files()
                     ->method('POST')
                     ->route($route)
                     ->class('form-base form-horizontal')
