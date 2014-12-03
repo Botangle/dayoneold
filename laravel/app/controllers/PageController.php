@@ -51,7 +51,7 @@ class PageController extends BaseController {
 		$rules = array (
 			'name' => 'required',
 			'email' => 'required|email',
-			'subject' => 'required|min:25',
+			'subject' => 'required|min:5',
 			'message' => 'required|min:25',
 		);
 
@@ -76,7 +76,10 @@ class PageController extends BaseController {
             );
 
 		}else{
-			return Redirect::to('/contact')->withErrors($validator)->withInput();
+			return Redirect::back()
+                ->with('flash_error', trans("There was a problem with your message:"))
+                ->withErrors($validator)
+                ->withInput($data);
 		}
 	}
 
@@ -96,7 +99,7 @@ class PageController extends BaseController {
 		$rules = array (
 			'name' => 'required',
 			'email' => 'required|email',
-			'subject' => 'required|min:25',
+			'subject' => 'required|min:5',
 			'message' => 'required|min:25',
 		);
 
@@ -121,7 +124,10 @@ class PageController extends BaseController {
             );
 
 		}else{
-			return Redirect::to('/reportbug')->withErrors($validator)->withInput();
+			return Redirect::back()
+                ->with('flash_error', trans("There was a problem with your message:"))
+                ->withErrors($validator)
+                ->withInput($data);
 		}
 	}
 	

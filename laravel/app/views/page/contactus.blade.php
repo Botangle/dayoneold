@@ -8,9 +8,6 @@
 <div class="PageLeft-Block">
 	<p class="FontStyle20 text-center">Send us a Quick Message!</p>
 	<form class="form-inline form-horizontal" role="form" action="/contact"  method="post">
-		@foreach($errors->all('
-			:message
-			') as $message) {{ $message }} @endforeach
 
 		<div class="row-fluid">
 			<div class="form-group span6 ">
