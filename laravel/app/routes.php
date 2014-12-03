@@ -82,7 +82,7 @@ Route::post('/login', array(
     ));
 
 Route::group(array('before' => 'auth'), function(){
-        Route::get('logout', array('http', 'as' => 'logout', function(){
+        Route::get('/logout', array('as' => 'logout', function(){
                 Auth::logout();
                 return Redirect::home()
                     ->with('flash_notice', 'You are successfully logged out.');
@@ -105,11 +105,11 @@ Route::get('/news/detail/{id}', array(
 /**
  * Users controller (used for public viewing of group user info)
  */
-Route::get('users/search/{searchText?}', array(
+Route::get('/users/search/{searchText?}', array(
         'uses'  => 'UsersController@getSearch',
         'as'    => 'users.search',
     ));
-Route::post('users/search', 'UsersController@postSearch');
+Route::post('/users/search', 'UsersController@postSearch');
 Route::controller('users', 'UsersController', array(
         'getTopChart'   => 'users.topcharts',
     ));
@@ -272,6 +272,6 @@ Route::get('/password/remind', array(
         'uses' => 'RemindersController@getRemind',
         'as' => 'password.remind'
     ));
-Route::get('password/reset/{token}', 'RemindersController@getReset');
-Route::post('password/reset/{token}', 'RemindersController@postReset');
+Route::get('/password/reset/{token}', 'RemindersController@getReset');
+Route::post('/password/reset/{token}', 'RemindersController@postReset');
 Route::controller('password', 'RemindersController');
