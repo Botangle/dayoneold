@@ -336,7 +336,7 @@ class Transaction extends MagniloquentContextsPlus {
 
             }
         } catch(Exception $e){
-            Log::error('Transaction::save failed: '. $e->getMessage());
+            Log::error('Transaction::save failed: '. $e->getMessage() . ' Transaction:' . $this->toJson());
             return false;
         }
         if ($this->errors()->count() > 0){
