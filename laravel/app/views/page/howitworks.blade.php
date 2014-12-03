@@ -28,7 +28,7 @@
 
 					<div class="row-fluid ">
 						<div class="span3">
-							<a class="" href="/register">
+							<a class="" href="{{ route('register.student') }}">
 								<div class="box box-register">
 									<p class="FontStyle22">Register with Botangle</p>
 									<img src="/images/joing-botangle.jpg" width="110" height="110">
@@ -38,7 +38,7 @@
 						</div>
 
 						<div class="span3">
-							<a class="" href="/categories">
+							<a class="" href="{{ route('categories.index') }}">
 								<div class="box box-find-tutor">
 									<p class="FontStyle22">Find Experts Easily</p>
 									<img src="/images/find-tutor-img.jpg" width="110" height="110">
@@ -48,7 +48,7 @@
 						</div>
 
 						<div class="span3">
-							<a class="" href="/register">
+							<a class="" href="{{ route('register.student') }}">
 								<div class="box box-tools">
 									<p class="FontStyle22">Learning Tools</p>
 									<img src="/images/tools-img.jpg" width="110" height="110">
@@ -58,7 +58,7 @@
 						</div>
 
 						<div class="span3">
-							<a class="" href="/categories">
+							<a class="" href="{{ route('categories.index') }}">
 								<div class="box box-rate-tutor">
 									<p class="FontStyle22">Rate your Expert!</p>
 									<img src="/images/rate-tutorimg.jpg" width="110" height="110">
