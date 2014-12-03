@@ -148,8 +148,9 @@ class UserController extends BaseController {
         if (Input::hasFile('profilepic')){
             $user->addContext('profile-pic-upload');
         }
-
-        $inputs['subject'] = implode(", ", $inputs['subject']);
+        if (isset($inputs['subject'])){
+            $inputs['subject'] = implode(", ", $inputs['subject']);
+        }
         $user->fill($inputs);
 
         if (!$user->validate()){
