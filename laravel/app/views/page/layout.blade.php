@@ -20,7 +20,7 @@
         </div>
         <!-- @end .row -->
 
-
+        @include('_partials.get-in-touch')
 
 
     </div>
