@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => null, 'name' => null),
+	'from' => array('address' => 'contactus@botangle.com', 'name' => 'Botangle'),
 
 	/*
 	|--------------------------------------------------------------------------

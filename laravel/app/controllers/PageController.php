@@ -61,10 +61,7 @@ class PageController extends BaseController {
 
 		Mail::send('emails.contact', $data, function($message) use ($data)
 		{
-
-		$message->from($data['email'] , $data['name']);
-		$message->to(Config::get('site.email'))->subject($data['subject']);
-
+    		$message->to(Config::get('site.email'))->subject($data['subject']);
 		});
 
 		Session::flash('flash_success', 'Your email successfully sent to our admin.');
@@ -109,10 +106,7 @@ class PageController extends BaseController {
 
 		Mail::send('emails.reportbug', $data, function($message) use ($data)
 		{
-
-		$message->from($data['email'] , $data['name']);
-		$message->to(Config::get('site.email'))->subject($data['subject']);
-
+    		$message->to(Config::get('site.email'))->subject($data['subject']);
 		});
 
 		Session::flash('flash_success', 'Thanks for submitting your bug report!');
