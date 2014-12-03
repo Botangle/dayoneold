@@ -6,7 +6,10 @@ class PageController extends BaseController {
 
     public function getIndex()
     {
-        $featuredUsers = User::featured()->get();
+        if (!Cache::has('featured-users')){
+            Cache::put('featured-users', User::featured()->get(), 1440);
+        }
+        $featuredUsers = Cache::get('featured-users');
 
         $this->layout = 'layout';
         return View::make('page.home', array(
