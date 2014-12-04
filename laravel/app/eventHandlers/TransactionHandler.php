@@ -27,27 +27,8 @@ class TransactionHandler {
                         'email'         => $transaction->user->email,
                     ),
                 ));
-        } catch(Braintree_Exception_Authorization $e){
-            $transaction->errors()->add('user_id', 'Gateway error. Please try again or contact support.');
-            $message = $e->getMessage();
-            $transaction->errors()->add('user_id', "Error: $message");
-            Log::error("Braintree::sale failed. Braintree_Exception_Authorization: $message");
-            return false;
-        } catch(Braintree_Exception_Unexpected $e){
-            $transaction->errors()->add('user_id', 'Gateway error. Please try again or contact support.');
-            $message = $e->getMessage();
-            Log::error("Braintree::sale failed. Error: $message");
-            return false;
-        } catch(Braintree_Exception_Authentication $e){
-            return $this->logBraintreeError($transaction, get_class($e));
-        } catch(Braintree_Exception_NotFound $e){
-            return $this->logBraintreeError($transaction, get_class($e));
-        } catch(Braintree_Exception_UpgradeRequired $e){
-            return $this->logBraintreeError($transaction, get_class($e));
-        } catch(Braintree_Exception_ServerError $e){
-            return $this->logBraintreeError($transaction, get_class($e));
-        } catch(Braintree_Exception_DownForMaintenance $e){
-            return $this->logBraintreeError($transaction, get_class($e));
+        } catch(Exception $e){
+            return $this->logBraintreeError($transaction, get_class($e), $e->getMessage);
         }
 
         // update the transaction_key of our $event->subject() with the info we get back from Braintree
@@ -165,10 +146,10 @@ class TransactionHandler {
         return false;
     }
 
-    protected function logBraintreeError($transaction, $type)
+    protected function logBraintreeError($transaction, $type, $message = '')
     {
         $transaction->errors()->add('user_id', 'Gateway error. Please try again or contact support.');
-        Log::error("Braintree::sale failed. Braintree_Exception: $type");
+        Log::error("Braintree::sale failed. $type\n$message");
         return false;
     }
 }
