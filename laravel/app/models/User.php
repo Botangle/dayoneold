@@ -548,6 +548,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
     public function getSubjectsArray()
     {
         $categories = explode(", ", $this->subject);
+        $result = [];
         foreach ($categories as $item) {
             $itemName = strip_tags($item);
             if ($itemName){
