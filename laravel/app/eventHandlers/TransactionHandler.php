@@ -28,7 +28,7 @@ class TransactionHandler {
                     ),
                 ));
         } catch(Exception $e){
-            return $this->logBraintreeError($transaction, get_class($e), $e->getMessage);
+            return $this->logBraintreeError($transaction, get_class($e), $e->getMessage());
         }
 
         // update the transaction_key of our $event->subject() with the info we get back from Braintree
