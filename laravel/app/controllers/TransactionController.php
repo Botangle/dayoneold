@@ -46,7 +46,7 @@ class TransactionController extends BaseController {
 
             $amount     = (int)$transaction->amount;
             $successMsg = trans("You have purchased {$amount} Botangle credits successfully");
-            $errorMsg   = trans("We had problems making that purchase.  Please try again.");
+            $errorMsg   = trans("We had problems making that purchase.  Please try again or contact support.");
 
             if($transaction->addBuy()) {
 
