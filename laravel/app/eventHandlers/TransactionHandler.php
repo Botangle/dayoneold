@@ -17,15 +17,24 @@ class TransactionHandler {
      */
     public function onPurchase(Transaction $transaction)
     {
-        $result = Braintree_Transaction::sale(array(
-                'amount'                => $transaction->amount,
-                'paymentMethodNonce'    => $transaction->nonce,
-                'customer' => array(
-                    'firstName'     => $transaction->user->name, // argh, I'm going to be so glad when we can clean this up :-(
-                    'lastName'      => $transaction->user->lname,
-                    'email'         => $transaction->user->email,
-                ),
-            ));
+        try {
+            $result = Braintree_Transaction::sale(array(
+                    'amount'                => $transaction->amount,
+                    'paymentMethodNonce'    => $transaction->nonce,
+                    'customer' => array(
+                        'firstName'     => $transaction->user->name, // argh, I'm going to be so glad when we can clean this up :-(
+                        'lastName'      => $transaction->user->lname,
+                        'email'         => $transaction->user->email,
+                    ),
+                ));
+        } catch(Braintree_Exception $e){
+            $transaction->errors()->add('user_id', 'Purchase failed. Please try again or contact support. Details below:');
+            $code = $e->getCode();
+            $message = $e->getMessage();
+            $transaction->errors()->add('user_id', "Error: $code $message");
+            Log::error("Braintree::sale failed. Error: $code $message");
+            return false;
+        }
 
         // update the transaction_key of our $event->subject() with the info we get back from Braintree
         if($result->success) {
