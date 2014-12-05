@@ -17,9 +17,11 @@ class TransactionController extends BaseController {
 
     public function getBuy()
     {
+        $token = Transaction::generateBraintreeToken();
+        Log::info("Braintree token: $token");
         return View::make('transaction.buy', array(
                 'refillNeeded'  => Session::has('credit_refill_needed'),
-                'token' => Transaction::generateBraintreeToken(),
+                'token' => $token,
             ));
 
     }
@@ -34,7 +36,9 @@ class TransactionController extends BaseController {
         // adjust our payment nonce if we're in debugging mode so we can
         // make purchases without really triggering a Braintree purchase
         if(Config::get('app.debug')) {
-            $inputs['nonce'] = Braintree_Test_Nonces::$paypalOneTimePayment;
+            $nonce = Braintree_Test_Nonces::$paypalOneTimePayment;
+            $inputs['nonce'] = $nonce;
+            Log::info("Braintree nonce: $nonce");
         }
 
         $transaction = new Transaction;
