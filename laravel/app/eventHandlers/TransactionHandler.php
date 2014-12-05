@@ -17,16 +17,18 @@ class TransactionHandler {
      */
     public function onPurchase(Transaction $transaction)
     {
+        $transactionDetails = array(
+            'amount'                => $transaction->amount,
+            'paymentMethodNonce'    => $transaction->nonce,
+            'customer' => array(
+                'firstName'     => $transaction->user->name, // argh, I'm going to be so glad when we can clean this up :-(
+                'lastName'      => $transaction->user->lname,
+                'email'         => $transaction->user->email,
+            ),
+        );
+        Log::info("Braintree Transaction details: ". json_encode($transactionDetails));
         try {
-            $result = Braintree_Transaction::sale(array(
-                    'amount'                => $transaction->amount,
-                    'paymentMethodNonce'    => $transaction->nonce,
-                    'customer' => array(
-                        'firstName'     => $transaction->user->name, // argh, I'm going to be so glad when we can clean this up :-(
-                        'lastName'      => $transaction->user->lname,
-                        'email'         => $transaction->user->email,
-                    ),
-                ));
+            $result = Braintree_Transaction::sale($transactionDetails);
         } catch(Exception $e){
             return $this->logBraintreeError($transaction, get_class($e), $e->getMessage());
         }
