@@ -33,26 +33,21 @@ class TransactionHandler {
         // dev server, the config is being forgotten/reset. It works fine on local dev.
         // So, to remove this launch blocking bug, we'll set the config again.
         Transaction::setBraintreeConfig();
-        Log::info("Braintree Config: ". json_encode([
-                    Braintree_Configuration::environment(),
-                    Braintree_Configuration::merchantId(),
-                    Braintree_Configuration::publicKey(),
-                    Braintree_Configuration::privateKey(),
-                ]));
         try {
             $result = Braintree_Transaction::sale($transactionDetails);
         } catch(Exception $e){
             return $this->logBraintreeError($transaction, get_class($e), $e->getMessage());
         }
 
-        // update the transaction_key of our $event->subject() with the info we get back from Braintree
+        // update the transaction_key of our Transaction with the info we get back from Braintree
         if($result->success) {
+            Log::info('Braintree_Transaction::sale success');
             $transaction->transaction_key = $result->transaction->id;
 
-            // now let's try to submit for settlement, as we've provided the goods that we wanted to provide (our credits)
+            // now let's try to submit for settlement, as we've provided the goods that we want to provide (our credits)
             $result = Braintree_Transaction::submitForSettlement($result->transaction->id);
             if($result->success) {
-                Log::info('Braintree transaction success: '. json_encode($result));
+                Log::info('Braintree_Transaction::submitForSettlement success');
                 return true;
             } else {
                 Log::error("Braintree::submitForSettlement failed. Response data: ". json_encode($result));

@@ -358,12 +358,6 @@ class Transaction extends MagniloquentContextsPlus {
     public static function generateBraintreeToken()
     {
         self::setBraintreeConfig();
-        Log::info("Braintree Config before client token: ". json_encode([
-                    Braintree_Configuration::environment(),
-                    Braintree_Configuration::merchantId(),
-                    Braintree_Configuration::publicKey(),
-                    Braintree_Configuration::privateKey(),
-                ]));
         return Braintree_ClientToken::generate();
     }
 
@@ -371,12 +365,10 @@ class Transaction extends MagniloquentContextsPlus {
     {
         // sandbox or production
         Braintree_Configuration::environment(Config::get('services.braintree.mode'));
-        Log::info("Braintree Mode: ". Config::get('services.braintree.mode'));
 
         // set other items as well
         Braintree_Configuration::merchantId(Config::get('services.braintree.merchantId'));
         Braintree_Configuration::publicKey(Config::get('services.braintree.publicKey'));
-        Log::info("Braintree MerchantId: ". Config::get('services.braintree.merchantId'));
 
         // set the Braintree private key
         $key = Config::get('services.braintree.privateKey');
