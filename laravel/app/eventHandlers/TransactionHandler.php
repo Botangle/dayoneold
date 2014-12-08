@@ -26,7 +26,7 @@ class TransactionHandler {
                 'email'         => $transaction->user->email,
             ),
         );
-        Log::info("Braintree Transaction details: ". json_encode($transactionDetails));
+        Log::info("Braintree payment attempt: ". json_encode($transactionDetails));
 
         // TODO: INVESTIGATE
         // The config has already been set when creating the client token, but for some reason on the
@@ -41,7 +41,7 @@ class TransactionHandler {
 
         // update the transaction_key of our Transaction with the info we get back from Braintree
         if($result->success) {
-            Log::info('Braintree_Transaction::sale success');
+            Log::info('Braintree_Transaction::sale success (Botangle transaction id: '. $transaction->id .')');
             $transaction->transaction_key = $result->transaction->id;
 
             // now let's try to submit for settlement, as we've provided the goods that we want to provide (our credits)
