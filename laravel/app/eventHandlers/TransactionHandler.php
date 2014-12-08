@@ -41,7 +41,7 @@ class TransactionHandler {
 
         // update the transaction_key of our Transaction with the info we get back from Braintree
         if($result->success) {
-            Log::info('Braintree_Transaction::sale success (Botangle transaction id: '. $transaction->id .')');
+            Log::info('Braintree_Transaction::sale success (id: '. $result->transaction->id .')');
             $transaction->transaction_key = $result->transaction->id;
 
             // now let's try to submit for settlement, as we've provided the goods that we want to provide (our credits)
