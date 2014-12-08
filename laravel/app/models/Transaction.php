@@ -357,6 +357,18 @@ class Transaction extends MagniloquentContextsPlus {
 
     public static function generateBraintreeToken()
     {
+        self::setBraintreeConfig();
+        Log::info("Braintree Config before client token: ". json_encode([
+                    Braintree_Configuration::environment(),
+                    Braintree_Configuration::merchantId(),
+                    Braintree_Configuration::publicKey(),
+                    Braintree_Configuration::privateKey(),
+                ]));
+        return Braintree_ClientToken::generate();
+    }
+
+    public static function setBraintreeConfig()
+    {
         // sandbox or production
         Braintree_Configuration::environment(Config::get('services.braintree.mode'));
         Log::info("Braintree Mode: ". Config::get('services.braintree.mode'));
@@ -372,13 +384,6 @@ class Transaction extends MagniloquentContextsPlus {
             throw new Exception('Braintree private key is not set.');
         }
         Braintree_Configuration::privateKey($key);
-        Log::info("Braintree Config before client token: ". json_encode([
-                    Braintree_Configuration::environment(),
-                    Braintree_Configuration::merchantId(),
-                    Braintree_Configuration::publicKey(),
-                    Braintree_Configuration::privateKey(),
-                ]));
-        return Braintree_ClientToken::generate();
     }
 
     public function removeAttribute($attributeName)

@@ -27,6 +27,12 @@ class TransactionHandler {
             ),
         );
         Log::info("Braintree Transaction details: ". json_encode($transactionDetails));
+
+        // TODO: INVESTIGATE
+        // The config has already been set when creating the client token, but for some reason on the
+        // dev server, the config is being forgotten/reset. It works fine on local dev.
+        // So, to remove this launch blocking bug, we'll set the config again.
+        Transaction::setBraintreeConfig();
         Log::info("Braintree Config: ". json_encode([
                     Braintree_Configuration::environment(),
                     Braintree_Configuration::merchantId(),
