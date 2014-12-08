@@ -372,6 +372,12 @@ class Transaction extends MagniloquentContextsPlus {
             throw new Exception('Braintree private key is not set.');
         }
         Braintree_Configuration::privateKey($key);
+        Log::info("Braintree Config before client token: ". json_encode([
+                    Braintree_Configuration::environment(),
+                    Braintree_Configuration::merchantId(),
+                    Braintree_Configuration::publicKey(),
+                    Braintree_Configuration::privateKey(),
+                ]));
         return Braintree_ClientToken::generate();
     }
 
