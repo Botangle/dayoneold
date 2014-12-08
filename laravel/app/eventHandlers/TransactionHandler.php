@@ -27,6 +27,12 @@ class TransactionHandler {
             ),
         );
         Log::info("Braintree Transaction details: ". json_encode($transactionDetails));
+        Log::info("Braintree Config: ". json_encode([
+                    Braintree_Configuration::environment(),
+                    Braintree_Configuration::merchantId(),
+                    Braintree_Configuration::publicKey(),
+                    Braintree_Configuration::privateKey(),
+                ]));
         try {
             $result = Braintree_Transaction::sale($transactionDetails);
         } catch(Exception $e){
