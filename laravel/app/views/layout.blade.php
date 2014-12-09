@@ -98,22 +98,6 @@
             <div class="span4 fotter-left"> &copy; {{ date('Y'); }}. All right reserved. botangle.com </div>
             <div class="span5 fotter-right pull-right">
                 <ul class="nav nav-pills pull-right">
-                    {{--
-                    <li><a href="#" title="Blog">Blog</a></li>
-                    <li><a href="#" title="Sitemap">Sitemap</a></li>
-                    <li>
-                    echo $this->Html->link(
-                        trans('Terms of use'), '/terms'
-                        , array('class' => ' active', 'title' => trans('Terms of use'))
-                    );
-					</li>
-					<li>
-                    echo $this->Html->link(
-                        trans('Privacy Policy'), '/privacy'
-                        , array('class' => ' active', 'title' => trans('Privacy Policy'))
-                    );
-					</li>
-                    --}}
                 </ul>
             </div>
         </div>

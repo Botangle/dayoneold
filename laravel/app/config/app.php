@@ -15,6 +15,18 @@ return array(
 
 	'debug' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | System Admins
+    |--------------------------------------------------------------------------
+    |
+    | Define the system admins who should receive email notifications of system errors
+    |
+    */
+    'admins' => [
+        'mling@str8-4ward.com',
+    ],
+
 	/*
 	|--------------------------------------------------------------------------
 	| Application URL

@@ -48,11 +48,55 @@ Log::useDailyFiles(storage_path().'/logs/'.$logFile);
 | shown, which includes a detailed stack trace during debug.
 |
 */
-
 App::error(function(Exception $exception, $code)
-{
-	Log::error($exception);
-});
+    {
+        switch($code){
+            case 401:
+            case 403:
+                Log::error($exception);
+                return Response::view('error.unauthorized', [], $code);
+        }
+
+        $emailViewData = [
+            'exception' => $exception,
+            'vars'      => get_defined_vars(),
+        ];
+
+        // If we're not in debug mode, send details of the error to all the system admins
+        if (!Config::get('app.debug')){
+            foreach(Config::get('app.admins') as $adminEmail){
+                Mail::send('emails.error', $emailViewData, function($message) use($adminEmail){
+                        $message->to($adminEmail)
+                            ->subject('Botangle Error');
+                    });
+            }
+        }
+
+        Log::error($exception);
+
+        if (!Config::get('app.debug')){
+            return Response::view('error.fatal', [], 500);
+        }
+    });
+
+App::missing(function($exception)
+    {
+        Log::error($exception);
+        return Response::view('error.missing', [], 404);
+    });
+
+App::error(function(Illuminate\Database\Eloquent\ModelNotFoundException $exception, $code)
+    {
+        Log::error($exception);
+        return Response::view('error.missing', [], 404);
+    });
+
+App::error(function(\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $exception)
+    {
+        Log::error($exception);
+        return Response::view('error.unauthorized', [], 405);
+    });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -67,7 +111,7 @@ App::error(function(Exception $exception, $code)
 
 App::down(function()
 {
-	return Response::make("Be right back!", 503);
+    return Response::view('error.maintenance', [], 503);
 });
 
 /*
