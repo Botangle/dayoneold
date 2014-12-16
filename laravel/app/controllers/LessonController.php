@@ -246,7 +246,7 @@ class LessonController extends BaseController {
     public function getWhiteboard(Lesson $lesson)
     {
         if ($lesson->billingReady()){
-            if (!$lesson->opentok_session_id){
+            if (!$lesson->opentok_session_id || !$lesson->twiddlameetingid){
                 $lesson->prepareLessonTools();
             }
         } else {
