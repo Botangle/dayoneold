@@ -76,7 +76,7 @@ function exitLesson(roletype){
 	updatetime = 0;
 
     if(roletype==4){
-        var r = window.confirm("Thanks, we'll pay your expert from your credit balance now.  Your receipt will be on the next page.");
+        var r = window.confirm("Thanks, we're charging your credit card on file now.  Your receipt will be on the next page.");
         if(r){
             jQuery("#exitlesson").attr('disabled','disabled');
             jQuery.post(

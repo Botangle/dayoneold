@@ -30,12 +30,8 @@ echo $this->element("breadcrame", array('breadcrumbs'=>
 
                 <p>Payment details:</p>
                 <p>
-                    <?php if($role == 'student'): ?>
                     <b>Amount: $<?php echo h(number_format($lessonPayment['LessonPayment']['payment_amount'], 2)) ?></b><br>
-                    <?php else: ?>
-                    <b>Amount: $<?php echo h(number_format($lessonPayment['LessonPayment']['payment_amount'] - $lessonPayment['LessonPayment']['fee'], 2)) ?></b> - your payment minus our fee<br>
-                    <?php endif; ?>
-                    Charge ID: <?php echo h($lessonPayment['LessonPayment']['stripe_charge_id']) ?><br>
+                    Stripe Charge ID: <?php echo h($lessonPayment['LessonPayment']['stripe_charge_id']) ?><br>
                 </p>
 
                 <p>Please do let us know if you have any questions.</p>

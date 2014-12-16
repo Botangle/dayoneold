@@ -4,68 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "18dbcbd71dc5d2cbf5b6110d7c484882",
+    "hash": "fba4637dca6d9030c0f4f225116e341e",
     "packages": [
         {
-            "name": "a2design-company/mandrill-cakephp-plugin",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/a2design-company/Mandrill-CakePHP-plugin.git",
-                "reference": "2c754d26ef44f17f8b2a5297f817a6a579103c0b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/a2design-company/Mandrill-CakePHP-plugin/zipball/2c754d26ef44f17f8b2a5297f817a6a579103c0b",
-                "reference": "2c754d26ef44f17f8b2a5297f817a6a579103c0b",
-                "shasum": ""
-            },
-            "require": {
-                "composer/installers": "*",
-                "lib-curl": "*",
-                "php": ">=5.3.0"
-            },
-            "type": "cakephp-plugin",
-            "extra": {
-                "installer-name": "Mandrill"
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "MrMYSTIC",
-                    "homepage": "https://github.com/MrMYSTIC",
-                    "role": "Author"
-                },
-                {
-                    "name": "A2 Design",
-                    "homepage": "https://github.com/a2design-company",
-                    "role": "Author"
-                }
-            ],
-            "description": "Mandrill CakePHP plugin",
-            "homepage": "https://github.com/a2design-company/Mandrill-CakePHP-plugin",
-            "keywords": [
-                "api",
-                "cakephp",
-                "mandrill"
-            ],
-            "time": "2014-08-04 03:06:51"
-        },
-        {
             "name": "aws/aws-sdk-php",
-            "version": "2.6.10",
+            "version": "2.6.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "11b56a0fc4b0e00c09d088cf31a64710653b46bc"
+                "reference": "96886d56c54c1052f6c0c5f067278ad2e4d33314"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/11b56a0fc4b0e00c09d088cf31a64710653b46bc",
-                "reference": "11b56a0fc4b0e00c09d088cf31a64710653b46bc",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/96886d56c54c1052f6c0c5f067278ad2e4d33314",
+                "reference": "96886d56c54c1052f6c0c5f067278ad2e4d33314",
                 "shasum": ""
             },
             "require": {
@@ -120,52 +72,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2014-07-02 20:42:09"
-        },
-        {
-            "name": "braintree/braintree_php",
-            "version": "2.28.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/braintree/braintree_php.git",
-                "reference": "0c681f9fbb3a09ffd0662286e42a3f1ac8f3bbb6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/braintree/braintree_php/zipball/0c681f9fbb3a09ffd0662286e42a3f1ac8f3bbb6",
-                "reference": "0c681f9fbb3a09ffd0662286e42a3f1ac8f3bbb6",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-dom": "*",
-                "ext-hash": "*",
-                "ext-openssl": "*",
-                "ext-simplexml": "*",
-                "ext-xmlwriter": "*",
-                "php": ">=5.2.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Braintree": "lib"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Braintree",
-                    "homepage": "http://www.braintreepayments.com"
-                }
-            ],
-            "description": "Braintree PHP Client Library",
-            "time": "2014-07-09 17:04:54"
+            "time": "2014-06-20 17:52:24"
         },
         {
             "name": "burzum/cakephp-imagine-plugin",
@@ -258,25 +165,24 @@
         },
         {
             "name": "composer/installers",
-            "version": "v1.0.15",
+            "version": "v1.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/installers.git",
-                "reference": "8e6a72a78f6cfd537fde3350720dfdc9ae3c5621"
+                "reference": "4127333b03e8b4c08d081958548aae5419d1a2fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/installers/zipball/8e6a72a78f6cfd537fde3350720dfdc9ae3c5621",
-                "reference": "8e6a72a78f6cfd537fde3350720dfdc9ae3c5621",
+                "url": "https://api.github.com/repos/composer/installers/zipball/4127333b03e8b4c08d081958548aae5419d1a2fa",
+                "reference": "4127333b03e8b4c08d081958548aae5419d1a2fa",
                 "shasum": ""
             },
             "replace": {
-                "roundcube/plugin-installer": "*",
                 "shama/baton": "*"
             },
             "require-dev": {
                 "composer/composer": "1.0.*@dev",
-                "phpunit/phpunit": "4.1.*"
+                "phpunit/phpunit": "3.7.*"
             },
             "type": "composer-installer",
             "extra": {
@@ -306,14 +212,12 @@
             "homepage": "http://composer.github.com/installers/",
             "keywords": [
                 "Craft",
-                "Dolibarr",
                 "Hurad",
                 "MODX Evo",
                 "OXID",
                 "WolfCMS",
                 "agl",
                 "annotatecms",
-                "bitrix",
                 "cakephp",
                 "codeigniter",
                 "concrete5",
@@ -330,11 +234,9 @@
                 "mako",
                 "mediawiki",
                 "modulework",
-                "moodle",
                 "phpbb",
                 "piwik",
                 "ppi",
-                "roundcube",
                 "shopware",
                 "silverstripe",
                 "symfony",
@@ -343,7 +245,7 @@
                 "zend",
                 "zikula"
             ],
-            "time": "2014-06-23 16:25:28"
+            "time": "2014-02-24 04:21:34"
         },
         {
             "name": "guzzle/guzzle",
@@ -439,16 +341,16 @@
         },
         {
             "name": "imagine/imagine",
-            "version": "v0.6.1",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche123/Imagine.git",
-                "reference": "725279fd560faa1c7012a80b427b31d7f08f36ff"
+                "reference": "f64ec666baaa800edcbf237db41121a569230709"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/725279fd560faa1c7012a80b427b31d7f08f36ff",
-                "reference": "725279fd560faa1c7012a80b427b31d7f08f36ff",
+                "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/f64ec666baaa800edcbf237db41121a569230709",
+                "reference": "f64ec666baaa800edcbf237db41121a569230709",
                 "shasum": ""
             },
             "require": {
@@ -463,11 +365,6 @@
                 "ext-imagick": "to use the Imagick implementation"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-develop": "0.6-dev"
-                }
-            },
             "autoload": {
                 "psr-0": {
                     "Imagine": "lib/"
@@ -492,75 +389,7 @@
                 "image manipulation",
                 "image processing"
             ],
-            "time": "2014-06-16 20:53:48"
-        },
-        {
-            "name": "josegonzalez/cakephp-csvview",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/josegonzalez/cakephp-csvview.git",
-                "reference": "08f43b397240c46b58706caae0c8c58ba09fcbda"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/josegonzalez/cakephp-csvview/zipball/08f43b397240c46b58706caae0c8c58ba09fcbda",
-                "reference": "08f43b397240c46b58706caae0c8c58ba09fcbda",
-                "shasum": ""
-            },
-            "require": {
-                "composer/installers": "*"
-            },
-            "type": "cakephp-plugin",
-            "extra": {
-                "installer-name": "CsvView"
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "ADmad",
-                    "homepage": "https://github.com/admad",
-                    "role": "Contributor"
-                },
-                {
-                    "name": "Jose Diaz-Gonzalez",
-                    "email": "dotenv@josegonzalez.com",
-                    "homepage": "http://josediazgonzalez.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Mark Scherer",
-                    "homepage": "https://github.com/dereuromark",
-                    "role": "Contributor"
-                },
-                {
-                    "name": "Joshua Paling",
-                    "homepage": "https://github.com/joshuapaling",
-                    "role": "Contributor"
-                },
-                {
-                    "name": "Gaurish Sharma",
-                    "homepage": "https://github.com/gaurish",
-                    "role": "Contributor"
-                },
-                {
-                    "name": "Gregory Gaskill",
-                    "homepage": "https://github.com/chronon",
-                    "role": "Contributor"
-                }
-            ],
-            "description": "A CSV View class for CakePHP 2.x",
-            "homepage": "http://github.com/josegonzalez/cakephp-csvview",
-            "keywords": [
-                "cakephp",
-                "csv",
-                "export",
-                "view"
-            ],
-            "time": "2014-03-20 19:05:55"
+            "time": "2013-07-10 17:25:36"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -799,94 +628,6 @@
             "time": "2013-09-27 17:39:06"
         },
         {
-            "name": "paypal/adaptivepayments-sdk-php",
-            "version": "dev-namespace-php5.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/paypal/adaptivepayments-sdk-php.git",
-                "reference": "2b3ca64338f6f62b1741bea55f1f0c9d6f3f6964"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/paypal/adaptivepayments-sdk-php/zipball/2b3ca64338f6f62b1741bea55f1f0c9d6f3f6964",
-                "reference": "2b3ca64338f6f62b1741bea55f1f0c9d6f3f6964",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "paypal/sdk-core-php": "2.4.*",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "PayPal\\Service": "lib/",
-                    "PayPal\\Types": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache2"
-            ],
-            "authors": [
-                {
-                    "name": "PayPal",
-                    "homepage": "https://github.com/paypal/adaptivepayments-sdk-php/contributors"
-                }
-            ],
-            "description": "PayPal adaptivepayments SDK for PHP",
-            "homepage": "https://developer.paypal.com",
-            "keywords": [
-                "paypal",
-                "php",
-                "sdk"
-            ],
-            "time": "2014-05-22 17:11:29"
-        },
-        {
-            "name": "paypal/sdk-core-php",
-            "version": "v2.4.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/paypal/sdk-core-php.git",
-                "reference": "226d3492f80847f09c99debb4d3220d5e744ddc8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/paypal/sdk-core-php/zipball/226d3492f80847f09c99debb4d3220d5e744ddc8",
-                "reference": "226d3492f80847f09c99debb4d3220d5e744ddc8",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "PayPal": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache2"
-            ],
-            "authors": [
-                {
-                    "name": "PayPal",
-                    "homepage": "https://github.com/paypal/sdk-core-php/contributors"
-                }
-            ],
-            "description": "PayPal Core SDK for PHP",
-            "homepage": "https://github.com/paypal/sdk-core-php",
-            "keywords": [
-                "paypal",
-                "php",
-                "sdk"
-            ],
-            "time": "2013-09-11 14:27:58"
-        },
-        {
             "name": "stripe/stripe-php",
             "version": "v1.11.0",
             "source": {
@@ -933,60 +674,6 @@
                 "stripe"
             ],
             "time": "2014-01-30 01:00:33"
-        },
-        {
-            "name": "swiftmailer/swiftmailer",
-            "version": "v5.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "2b9af56cc676c338d52fca4c657e5bdff73bb7af"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/2b9af56cc676c338d52fca4c657e5bdff73bb7af",
-                "reference": "2b9af56cc676c338d52fca4c657e5bdff73bb7af",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.4"
-            },
-            "require-dev": {
-                "mockery/mockery": "~0.9.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.2-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "lib/swift_required.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
-                    "name": "Chris Corbyn"
-                }
-            ],
-            "description": "Swiftmailer, free feature-rich PHP mailer",
-            "homepage": "http://swiftmailer.org",
-            "keywords": [
-                "mail",
-                "mailer"
-            ],
-            "time": "2014-06-13 11:44:54"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1057,9 +744,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "opentok/opentok": 20,
-        "chronon/stripe": 20,
-        "paypal/adaptivepayments-sdk-php": 20,
-        "a2design-company/mandrill-cakephp-plugin": 20
+        "chronon/stripe": 20
     },
     "platform": {
         "php": ">=5.4.0"

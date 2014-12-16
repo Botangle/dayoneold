@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 # Some info on how to adjust this file: http://garylarizza.com/blog/2013/02/01/repeatable-puppet-development-with-vagrant/
 
-hostname = "app.botangle.dev"
+hostname = "new.botangle.dev"
 
 VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -27,7 +27,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Network
-  config.vm.network :private_network, ip: "192.168.200.20"
+  config.vm.network :private_network, ip: "192.168.200.21"
   config.vm.hostname                    = hostname
 
   config.hostmanager.enabled            = true
@@ -36,7 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.include_offline    = true
 
   # Synced folders
-  config.vm.synced_folder "www", "/var/www", mount_options: ['dmode=777', 'fmode=777']
+  config.vm.synced_folder "laravel", "/var/www", mount_options: ['dmode=777', 'fmode=777']
   # config.vm.synced_folder "htdocs", "/var/www/magento", nfs: true,
   #                                   mount_options: ["nolock", "async"],
   #                                   bsd__nfs_options: ["alldirs","async","nolock"]
@@ -59,7 +59,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         "db_password"       => "botangle",
         "db_name"           => "botangle",
         "db_name_tests"     => "botangle_tests",
-        "document_root"     => "/var/www",
+        "document_root"     => "/var/www/public",
         "logs_dir"          => "/var/www/logs",
     }
   end

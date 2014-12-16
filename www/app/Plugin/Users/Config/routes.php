@@ -1,18 +1,5 @@
 <?php
 
-/* Credits system */
-CroogoRouter::connect('/credits', array(
-        'plugin' => 'users',
-        'controller' => 'credits',
-        'action' => 'index')
-);
-CroogoRouter::connect('/transactions/create', array(
-        'plugin' => 'users',
-        'controller' => 'transactions',
-        'action' => 'create')
-);
-
-
 // Users
 CroogoRouter::connect('/registration/:type', array('plugin' => 'users', 'controller' => 'users', 'action' => 'registration'), array('pass' => array('type')));
 CroogoRouter::connect('/register', array('plugin' => 'users', 'controller' => 'users', 'action' => 'add'));

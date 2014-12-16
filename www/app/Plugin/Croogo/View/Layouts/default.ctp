@@ -17,19 +17,16 @@
         echo $this->fetch('meta');
 		echo $this->Layout->feed();
 		echo $this->Html->css(array(
-			'/croogo/css/bootstrap-minified',
-			'/croogo/css/bootstrap.min-minified',
+			'/croogo/css/bootstrap',
+			'/croogo/css/bootstrap.min',
 			'/croogo/css/bootstrap-responsive.min',
 			'/croogo/css/global',
 //			'/croogo/css/navbar-fixed-top',
 			'/croogo/css/dev',
 		));
 		echo $this->Layout->js();
-	?>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<?php
 		echo $this->Html->script(array(
-//			'/croogo/js/jquery/jquery-1',
+			'/croogo/js/jquery/jquery-1',
 			'/croogo/js/jquery/bootstrap',
 			));
 		echo $this->Blocks->get('css');
@@ -64,10 +61,8 @@
 
 <?php echo $this->element('footerbottom'); ?>
 	<?php
-		echo $this->Blocks->get('scriptBottom');
+		//echo $this->Blocks->get('scriptBottom');
 		//echo $this->Js->writeBuffer();
 	?>
-
-	<?php echo $this->element('analyticstracking'); ?>
 	</body>
 </html>

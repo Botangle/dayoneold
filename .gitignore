@@ -1,4 +1,16 @@
-# App
+# Laravel Files
+/laravel/bootstrap/compiled.php
+/laravel/vendor
+/laravel/logs
+composer.phar
+.env.*.php
+.env.php
+.DS_Store
+Thumbs.db
+/laravel/app/config/local/services.php
+/laravel/app/config/packages/bradleyboy/laravel-braintree/local/braintree.php
+
+# Cake App
 Config/database.php
 Vendor/Simpletest/
 View/Themed/
@@ -19,12 +31,8 @@ www/app/Config/*-production.php
 # Leave out Plugin files loaded in by Composer
 www/app/Plugin/Stripe
 www/app/Plugin/Uploader/
-www/app/Plugin/DebugKit
-www/app/Plugin/CsvView
-www/app/Plugin/Mandrill
 
 # Others
-.DS_Store
 ./Plugin/*
 !./Plugin/Acl
 !./Plugin/Extensions
@@ -43,17 +51,7 @@ www/app/Vendor/*
 .idea
 *.~
 1
-*.swp
+/laravel/_ide_helper.php
 
 # Bash scripts
- scripts/*
-
-# Mobileapp
-www/app/webroot/mobileapp
-
-
-Imagine
-
-private
-
-nbproject
+scripts/*

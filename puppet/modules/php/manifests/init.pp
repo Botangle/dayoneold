@@ -42,14 +42,21 @@ class php () {
         "php5-mcrypt",
         "php5-tidy",
         "php5-readline",
-        "php5-xdebug",
+        "php5-xdebug"
     ]
     package { $modules :
         ensure  => latest,
         require => [ Package['php5'], Class['server'], Package['apache2'], Package['mysql-server'] ],
     }
 
-    # APC
+    exec { "php5enmod":
+        path    => "/usr/bin:/usr/sbin",
+        command => "sudo php5enmod mcrypt",
+        require => [ Package['php5'], Class['server'], Package['apache2'], Package['mysql-server'] ],
+        notify => Service['apache2'],
+    }
+
+# APC
     # package { 'php-apc':
     #     ensure  => latest,
     #     require => Package['php5'],

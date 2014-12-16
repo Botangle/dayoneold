@@ -1,4 +1,4 @@
-# Vagrantfile & Puppet manifests for Botangle / CakePHP
+# Vagrantfile & Puppet manifests for Botangle / Laravel
 
 ## Software requirements
 
@@ -18,31 +18,25 @@ Once the first two items are installed, then install `vagrant-hostmanager` as fo
 ## Getting started
 
 - In the Terminal / console, type `vagrant up`.  This will build a VM for you with our settings applied
-- Once done, type `vagrant ssh` and then `cd /var/www/app/Config`
-- Run `cp database-dev.php database.php` to copy over our Botangle / Vagrant DB settings
-- Move up a folder (`cd ..`)
+- Once done, type `vagrant ssh` and then `cd /var/www`
 - Run `composer.phar install`, which will load up all our various libraries
-- Run `Console/cake Migrations.migration run`
-- Run `Console/cake Migrations.migration run -p Users`
-- Run `Console/cake schema create sessions` to build a sessions table to be used in the DB.  Answer yes both times.
+- Run `./artisan migrate --env=local`
 
-You should be able to access your Botangle setup now in a web browser: [http://app.botangle.dev](http://app.botangle.dev)
-
-There are various API keys and settings you will need to add to your `app/Config/core-dev.php` file.  Please ask one of
-the other developers for those, we don't want to be committing them to the repo ...
+You should be able to access your Botangle setup now in a web browser: [http://new.botangle.dev](http://new.botangle.dev)
 
 Note: we use migrations (see above) heavily as we make changes to the DB, so if you haven't used them before, please
 spend a bit of time learning how they work.
 
+Note: if you can't get xdebug to connect with PHPStorm (or whichever IDE you're using), ensure that port 9000 of the
+firewall on your own computer is open.
+
 ## To start sending in code
 Please see the Contributing.md file
 
-## Other things to know
-There is a backend to the system ([http://app.botangle.dev/snapez](http://app.botangle.dev/snapez)).  You can get in with
-the following credentials:
+## Artisan additions
+We've added the following additional tools to `artisan` to make our lives easier.
 
-User: admin
-Password: 123456
+- Generators ([https://github.com/JeffreyWay/Laravel-4-Generators](https://github.com/JeffreyWay/Laravel-4-Generators))
 
 ## MySQL
 
@@ -52,7 +46,7 @@ With the information below you can connect to the MySQL server running on the vi
 
 ## Default information
 
-* SSH Host: 192.168.200.20 (`192.168.200.1` is your machine)
+* SSH Host: 192.168.200.21 (`192.168.200.1` is your machine)
 * SSH User: vagrant
 * SSH Pass: vagrant
 * SSH Port: 2222 (default by vagrant)
@@ -62,17 +56,16 @@ With the information below you can connect to the MySQL server running on the vi
 * MySQL Pass: botangle
 * MySQL DB:   botangle
 
-### Import database
+### Database setup
 
-If file exists `database.sql.gz` in the main directory (where the Vagrantfile is), puppet will import the database during the first `up`.
+The `database.sql.gz` in the laravel/dbdump directory is loaded into the `botangle` on first `up`.  If you need to rebuild your
+db and start over, delete the entire db and do a `vagrant provision` and it will be rebuilt for you.
 
 ## Virtualhost
 
-Per default the variable `YII_DEBUG` is set to true for this Apache setup, but will be false automatically on deploy.
+The virtualhost is set on the `laravel/public` directory.
 
-The virtualhost is set on the `htdocs` directory.
-
-## Mails
+## Mail
 
 [MailCatcher][mailcatcher] is installed and configured into the `/etc/php5/apache2/php.ini` file.
 
@@ -80,26 +73,24 @@ The virtualhost is set on the `htdocs` directory.
 
 If mailcatcher is stopped: all emails are lost.
 
-If mailcatcher is started: **all emails are catched**.
+If mailcatcher is started: **all emails are caught**.
 
 If you want to start MailCatcher, simply run this command (with vagrant user) : `mailcatcher --ip 0.0.0.0`
 
-Then go to : http://app.botangle.dev:1080
+Then go to : http://new.botangle.dev:1080
 
-If you need to stop the mailcatcher daemon : Clic on "Quit" on the top right corner of the MailCatcher Web UI.
+If you need to stop the mailcatcher daemon : Click on "Quit" on the top right corner of the MailCatcher Web UI.
 
 ## Running Migrations for CakePHP
 Inside of the vagrant machine (you can use `vagrant ssh` to get in) in the app folder (`/var/www/app`), run this command:
 
-```Console/cake Migrations.migration run```
-
-More details available here: https://github.com/CakeDC/migrations/blob/2.1/readme.md
+```./artisan migrate --env=local```
 
 ## Packages
 
 Are installed:
 
-* apache-mpm-itk (with yii2 virtualhost)
+* apache-mpm-itk (with virtualhost)
 * mysql-server (with custom my.cnf)
 * mysql-client
 * php5 (and the following modules)
@@ -161,48 +152,3 @@ Are installed:
 * mailcatcher (gem)
 
 [mailcatcher]: http://mailcatcher.me
-
-## Credit
-Giving credit where credit is due.  Almost all of the hard work on this was done here:
-https://github.com/monsieurbiz/vagrant-magento
-
-## CakePHP info
-
-[![CakePHP](http://cakephp.org/img/cake-logo.png)](http://www.cakephp.org)
-
-CakePHP is a rapid development framework for PHP which uses commonly known design patterns like Active Record, Association Data Mapping, Front Controller and MVC.
-Our primary goal is to provide a structured framework that enables PHP users at all levels to rapidly develop robust web applications, without any loss to flexibility.
-
-Some Handy Links
-----------------
-
-[CakePHP](http://www.cakephp.org) - The rapid development PHP framework
-
-[CookBook](http://book.cakephp.org) - THE CakePHP user documentation; start learning here!
-
-[API](http://api.cakephp.org) - A reference to CakePHP's classes
-
-[Plugins](http://plugins.cakephp.org/) - A repository of extensions to the framework
-
-[The Bakery](http://bakery.cakephp.org) - Tips, tutorials and articles
-
-[Community Center](http://community.cakephp.org) - A source for everything community related
-
-[Training](http://training.cakephp.org) - Join a live session and get skilled with the framework
-
-[CakeFest](http://cakefest.org) - Don't miss our annual CakePHP conference
-
-[Cake Software Foundation](http://cakefoundation.org) - Promoting development related to CakePHP
-
-Get Support!
-------------
-
-[#cakephp](http://webchat.freenode.net/?channels=#cakephp) on irc.freenode.net - Come chat with us, we have cake
-
-[Google Group](https://groups.google.com/group/cake-php) - Community mailing list and forum
-
-[GitHub Issues](https://github.com/cakephp/cakephp/issues) - Got issues? Please tell us!
-
-[![Bake Status](https://secure.travis-ci.org/cakephp/cakephp.png?branch=master)](http://travis-ci.org/cakephp/cakephp)
-
-![Cake Power](https://raw.github.com/cakephp/cakephp/master/lib/Cake/Console/Templates/skel/webroot/img/cake.power.gif)

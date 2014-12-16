@@ -30,10 +30,6 @@ CroogoRouter::connect('/how-it-works', array(
         'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
         'type' => 'page', 'slug' => 'how-it-works'
     ));
-CroogoRouter::connect('/policies', array(
-        'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
-        'type' => 'page', 'slug' => 'policies'
-    ));
 CroogoRouter::connect('/about', array(
 	'plugin' => 'nodes', 'controller' => 'nodes', 'action' => 'view',
 	'type' => 'page', 'slug' => 'about'

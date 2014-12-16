@@ -1,0 +1,1 @@
+@include('registration.core-fields')

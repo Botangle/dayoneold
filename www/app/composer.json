@@ -12,10 +12,6 @@
         "chronon/stripe": "dev-master",
         "burzum/cakephp-imagine-plugin": "1.0.5",
         "mjohnson/uploader": "4.5.4",
-        "aws/aws-sdk-php": "~2.2",
-		"josegonzalez/cakephp-csvview": "1.2.0",
-        "braintree/braintree_php" : "2.28.0",
-        "paypal/adaptivepayments-sdk-php":"dev-namespace-php5.3",
-        "a2design-company/mandrill-cakephp-plugin": "dev-master"
+        "aws/aws-sdk-php": "~2.2"
     }
 }
