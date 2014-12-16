@@ -664,7 +664,11 @@ class Lesson extends MagniloquentContextsPlus {
      */
     public function billingReady()
     {
-        return ($this->userIsTutor(Auth::user()) || $this->studentUser->creditAmount >= $this->estimatedCost());
+        if ($this->isPaid()){
+            return true;
+        } else {
+            return ($this->userIsTutor(Auth::user()) || $this->studentUser->creditAmount >= $this->estimatedCost());
+        }
     }
 
     /**
