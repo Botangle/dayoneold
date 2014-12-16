@@ -11,5 +11,6 @@
     # Handle Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_URI} !^/tmp/php5.sock/*
     RewriteRule ^ index.php [L]
 </IfModule>
