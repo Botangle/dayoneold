@@ -14,6 +14,9 @@ Thumbs.db
 /laravel/app/config/services.php
 /laravel/app/config/database.php
 
+# Removing a troublesome file that's blocking the upgrade to Laravel
+www/app/Plugin/Users/Controller/TransactionsController.php
+
 # Cake App
 Config/database.php
 Vendor/Simpletest/
