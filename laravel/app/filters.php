@@ -13,9 +13,6 @@
 
 App::before(function($request)
 {
-    if( (Request::header('x-forwarded-proto') <> 'https') && !App::environment('local')) {
-        return Redirect::secure(Request::path());
-    }
 });
 
 
@@ -91,6 +88,8 @@ Route::filter('csrf', function()
 	}
 });
 
+// set the current IP (REMOTE_ADDR) as a trusted proxy (all requests come via our load balancer)
+Request::setTrustedProxies( [ $request->getClientIp() ] );
 Route::filter('secure', function () {
         if (! Request::secure()) {
             return Redirect::secure(
