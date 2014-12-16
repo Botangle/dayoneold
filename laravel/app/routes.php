@@ -35,6 +35,13 @@ Route::get('/terms', array(
         'uses'  => 'PageController@getTerms',
     ));
 
+Route::get('/tests/lbTest', array(
+        'as' => 'lbTest',
+        'uses' => 'TestsController@lbTest',
+    ));
+
+
+
 /**
  * Registration Controller routes
  */
