@@ -25,6 +25,7 @@ return array(
     */
     'admins' => [
         'mling@str8-4ward.com',
+        'jsashi@wakedocuments.com',
     ],
 
 	/*
