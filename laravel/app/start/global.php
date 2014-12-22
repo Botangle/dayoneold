@@ -50,10 +50,10 @@ Log::useDailyFiles(storage_path().'/logs/'.$logFile);
 */
 App::error(function(Exception $exception, $code)
     {
+        Log::error($exception);
         switch($code){
             case 401:
             case 403:
-                Log::error($exception);
                 return Response::view('error.unauthorized', [], $code);
         }
 
@@ -71,8 +71,6 @@ App::error(function(Exception $exception, $code)
                     });
             }
         }
-
-        Log::error($exception);
 
         if (!Config::get('app.debug')){
             return Response::view('error.fatal', [], 500);
