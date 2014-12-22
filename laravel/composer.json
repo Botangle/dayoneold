@@ -25,7 +25,8 @@
         "bradleyboy/laravel-braintree": "dev-master",
         "paypal/adaptivepayments-sdk-php":"dev-namespace-php5.3",
         "doctrine/dbal": "dev-master",
-        "guzzlehttp/guzzle": "~4.0"
+        "guzzlehttp/guzzle": "~4.0",
+        "fideloper/proxy" : "~2.0"
 	},
     "require-dev": {
         "way/generators": "2.*",
