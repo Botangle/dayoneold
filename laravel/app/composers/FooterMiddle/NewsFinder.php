@@ -21,7 +21,7 @@ class NewsFinder implements Composer
     {
         if (!\Cache::has('latest-news')){
             $news = \News::where('status', 1)->limit(3)->orderBy('date', 'DESC')->get();
-            \Cache::put('latest-news', $news, 10080);
+            \Cache::put('latest-news', $news, 1440);
         }
         return \Cache::get('latest-news');
     }
