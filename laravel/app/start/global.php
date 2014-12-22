@@ -59,7 +59,7 @@ App::error(function(Exception $exception, $code)
 
         $emailViewData = [
             'exception' => $exception,
-            'vars'      => get_defined_vars(),
+//            'vars'      => get_defined_vars(),
         ];
 
         // If we're not in debug mode, send details of the error to all the system admins
