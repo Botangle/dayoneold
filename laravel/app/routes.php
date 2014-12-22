@@ -138,9 +138,9 @@ Route::get('/user/my-account', array(
     ));
 Route::post('/user/my-account', 'UserController@postMyAccount');
 
-Route::get('/user/search', array(
+Route::get('/user/search/{searchText?}', array(
         'as'        => 'user.search',
-        'uses'      => 'UserController@search',
+        'uses'      => 'UsersController@getSearch',
     ));
 
 Route::get('/user/lessons', array(

@@ -19,7 +19,7 @@ class UserController extends BaseController {
         $this->beforeFilter('ajax', array('only' => 'getCalendarEvents, postValidateUsername'));
 
         $this->beforeFilter('auth', array(
-                'except' => array('getLogin', 'postLogin', 'search', 'getForgot', 'getView', 'postValidateUsername')
+                'except' => array('getLogin', 'postLogin', 'getForgot', 'getView', 'postValidateUsername')
             ));
 
     }
