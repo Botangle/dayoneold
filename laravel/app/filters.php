@@ -89,10 +89,13 @@ Route::filter('csrf', function()
 });
 
 Route::filter('secure', function () {
-        if (! Request::secure()) {
-            return Redirect::secure(
-                Request::path(),
-                in_array(Request::getMethod(), ['POST', 'PUT', 'DELETE']) ? 307 : 302
-            );
+        $path = Request::path();
+        if ($path !== 'tests/lbTest'){
+            if (! Request::secure()) {
+                return Redirect::secure(
+                    $path,
+                    in_array(Request::getMethod(), ['POST', 'PUT', 'DELETE']) ? 307 : 302
+                );
+            }
         }
     });
