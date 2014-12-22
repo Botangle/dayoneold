@@ -65,10 +65,14 @@ App::error(function(Exception $exception, $code)
         // If we're not in debug mode, send details of the error to all the system admins
         if (!Config::get('app.debug')){
             foreach(Config::get('app.admins') as $adminEmail){
-                Mail::send('emails.error', $emailViewData, function($message) use($adminEmail){
-                        $message->to($adminEmail)
-                            ->subject('Botangle Error');
-                    });
+                try {
+                    Mail::send('emails.error', $emailViewData, function($message) use($adminEmail){
+                            $message->to($adminEmail)
+                                ->subject('Botangle Error');
+                        });
+                } catch(Exception $e){
+                    Log::error($exception);
+                }
             }
         }
 
