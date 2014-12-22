@@ -87,3 +87,13 @@ Route::filter('csrf', function()
 		throw new Illuminate\Session\TokenMismatchException;
 	}
 });
+
+// set the current IP (REMOTE_ADDR) as a trusted proxy (all requests come via our load balancer)
+Route::filter('secure', function () {
+        if (! Request::secure()) {
+            return Redirect::secure(
+                Request::path(),
+                in_array(Request::getMethod(), ['POST', 'PUT', 'DELETE']) ? 307 : 302
+            );
+        }
+    });
