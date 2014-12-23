@@ -90,12 +90,14 @@ App::missing(function($exception)
 App::error(function(Illuminate\Database\Eloquent\ModelNotFoundException $exception, $code)
     {
         Log::error($exception);
+        Log::error('Missing page: '. Request::path());
         return Response::view('error.missing', [], 404);
     });
 
 App::error(function(\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $exception)
     {
         Log::error($exception);
+        Log::error('Missing page: '. Request::path());
         return Response::view('error.unauthorized', [], 405);
     });
 
