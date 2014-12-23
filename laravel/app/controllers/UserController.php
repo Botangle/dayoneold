@@ -286,12 +286,12 @@ class UserController extends BaseController {
         //TODO: verify that users can't add a purely numeric username otherwise this is a bug
         if (is_numeric($id)) {
             $model = User::where('id', $id)->averageRating()->first();
-            if (!$model){
-                App::abort('404', 'You are not authorized to view this page.');
-            }
         }
         else {
             $model = User::where('username' , '=', $id)->averageRating()->first();
+        }
+        if (!$model){
+            App::abort('404');
         }
 
         $activeUser = Auth::user();
