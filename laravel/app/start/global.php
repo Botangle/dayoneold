@@ -83,7 +83,7 @@ App::error(function(Exception $exception, $code)
 
 App::missing(function($exception)
     {
-        Log::error($exception);
+        Log::error('Missing page: '. Request::path());
         return Response::view('error.missing', [], 404);
     });
 
