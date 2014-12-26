@@ -81,6 +81,9 @@ class RegistrationController extends BaseController {
             // Need to stop save validating the S3 filename, which will fail Laravel's image validation.
             //  Note: the original uploaded file has already passed Laravel's validation above
             $user->removeContext('profile-pic-upload');
+        } else {
+            // Added to prevent attempts to save a null value under certain circumstances
+            $user->profilepic = '';
         }
 
         if ($user->save()){
