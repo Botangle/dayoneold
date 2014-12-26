@@ -127,11 +127,6 @@ Route::controller('users', 'UsersController', array(
  * User controller (used for private handling of an individual user account and info)
  * Also used for viewing an individual's profile
  */
-Route::get('/forgot', array(
-        'as'        => 'user.forgot',
-        'uses'      => 'UserController@getForgot',
-    ));
-
 Route::get('/user/my-account', array(
         'as'        => 'user.my-account',
         'uses'      => 'UserController@getMyAccount',

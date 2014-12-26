@@ -456,11 +456,6 @@ class UserController extends BaseController {
             ));
     }
 
-    public function getForgot()
-    {
-        return View::make('user.forgot');
-    }
-
     public function getTimezoneChange()
     {
         return View::make('user.timezone', array(
