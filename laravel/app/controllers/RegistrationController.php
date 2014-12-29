@@ -70,7 +70,7 @@ class RegistrationController extends BaseController {
             if (isset($inputs['profilepic'])) unset($inputs['profilepic']);
             return Redirect::back()
                 ->withErrors($user->errors())
-                ->withInput(Input::all())
+                ->withInput($inputs)
                 ->with('flash_error', trans("Please correct the following errors and try again:"));
         }
 
@@ -108,9 +108,12 @@ class RegistrationController extends BaseController {
         //  not have been autoHashed by Magniloquent before failing)
         $user->password = $inputs['password'];
 
+        // Profile pic needs to be cleared if there's a failure saving
+        if (isset($inputs['profilepic'])) unset($inputs['profilepic']);
+
         return Redirect::back()
             ->withErrors($user->errors())
-            ->withInput(Input::all())
+            ->withInput($inputs)
             ->with('flash_error', trans("Please correct the following errors and try again:"));
 
     }
