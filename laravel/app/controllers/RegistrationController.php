@@ -68,6 +68,7 @@ class RegistrationController extends BaseController {
 
         if (!$user->validate()){
             if (isset($inputs['profilepic'])) unset($inputs['profilepic']);
+            $inputs['subject'] = explode(", ", $inputs['subject']);
             return Redirect::back()
                 ->withErrors($user->errors())
                 ->withInput($inputs)
