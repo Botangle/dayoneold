@@ -55,11 +55,16 @@ class TransactionHandler {
             }
         } else {
             // otherwise, stop everything
-            $transaction->errors()->add('user_id', 'Purchase failed. Please try again or contact support. Details below:');
-            $code = $result->transaction->processorResponseCode;
-            $message = $result->transaction->processorResponseText;
-            $transaction->errors()->add('user_id', "Error: $code $message");
             Log::error("Braintree::sale failed. Response data: ". json_encode($result));
+            $transaction->errors()->add('user_id', 'Purchase failed. Please try again or contact support. Details below:');
+            if ($result->transaction){
+                $code = $result->transaction->processorResponseCode;
+                $message = $result->transaction->processorResponseText;
+            } else {
+                $code = '';
+                $message = 'Payment gateway error';
+            }
+            $transaction->errors()->add('user_id', "Error: $code $message");
             return false;
         }
     }
