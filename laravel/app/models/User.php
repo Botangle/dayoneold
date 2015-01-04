@@ -194,7 +194,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
 
     public function scopeTutor($query)
     {
-        $query->where('subject', '!=', '');
+        $query->where('role_id', 2);
     }
 
     public function scopeAverageRating($query)
