@@ -72,6 +72,7 @@ class Lesson extends MagniloquentContextsPlus {
      * @var array
      */
     protected $niceNames = array(
+        'lesson_at' => 'Lesson Time',
     );
 
     /**
@@ -485,13 +486,18 @@ class Lesson extends MagniloquentContextsPlus {
     public function setLessonAtFromInputs($lessonDate, $lessonTime)
     {
         // The date/time are provided in the user's timezone
-        $lessonInUserTimezone = Carbon::createFromFormat(
-            "Y-m-d G:i",
-            $lessonDate .' '. $lessonTime,
-            Auth::user()->timezone
-        );
+        try {
+            $lessonInUserTimezone = Carbon::createFromFormat(
+                "Y-m-d G:i",
+                $lessonDate .' '. $lessonTime,
+                Auth::user()->timezone
+            );
+        } catch(Exception $e){
+            return false;
+        }
         // lesson_at should always be UTC
         $this->lesson_at = $lessonInUserTimezone->timezone('UTC');
+        return true;
     }
 
     public function getDurationAttribute($value)

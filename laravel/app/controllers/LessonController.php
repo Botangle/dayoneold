@@ -53,9 +53,10 @@ class LessonController extends BaseController {
         $model = new Lesson;
         $model->fill(Input::all());
 
-        $model->setLessonAtFromInputs(Input::get('lesson_date'), Input::get('lesson_time'));
-        // Set the ends_at datetime from lesson_at and duration
-        $model->ends_at = $model->lesson_at->addMinutes($model->duration);
+        if ($model->setLessonAtFromInputs(Input::get('lesson_date'), Input::get('lesson_time'))){
+            // Set the ends_at datetime from lesson_at and duration
+            $model->ends_at = $model->lesson_at->addMinutes($model->duration);
+        }
 
         $model->created = Auth::user()->id;
         $model->setRateFromTutor();
