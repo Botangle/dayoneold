@@ -90,7 +90,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             'timezone_update'           => array('required', 'in:never,ask,auto'),
         ),
         'tutor-save' => array(
-            'subject'                   => array('required'),
+            'subject'                   => array('required', 'max:1000'),
             'university'                => array('max:255'),
             'other_experience'          => array('max:255'),
             'link_fb'                   => array('max:255'),
