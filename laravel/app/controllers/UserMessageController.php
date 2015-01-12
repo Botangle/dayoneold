@@ -24,7 +24,7 @@ class UserMessageController extends BaseController {
         //  last_message - this will serve as a messaging menu to view message threads with other users
         $userList = Auth::user()->getUsersMessaged();
 
-        if($username == null && $userList->count() == 0){
+        if(($username == null || $username == Auth::user()->username) && $userList->count() == 0){
             return View::make('user.messages-none');
         } else {
         }
