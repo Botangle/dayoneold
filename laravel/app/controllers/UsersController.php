@@ -13,7 +13,7 @@ class UsersController extends BaseController {
         }
 
         // Sort by average_rating descending
-        $topListed = $users->averageRating()->paginate(9);
+        $topListed = $users->averageRating()->orderBy('id')->paginate(9);
 
         // TODO: Reconsider use of noParent - existing system only uses root categories
         $categories = Category::active()->noParent()->orderBy('name')->get();
