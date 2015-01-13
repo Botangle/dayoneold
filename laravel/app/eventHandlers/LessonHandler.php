@@ -56,6 +56,9 @@ class LessonHandler {
         // Add to User log
         $lesson->logUserEvent('reviewed-lesson', $authUser);
 
+        // Recalculate the reviewed user's average rating and review count
+        $lesson->tutorUser->recalculateRatings();
+
         $lesson->sendLessonMessage(UserMessage::LESSON_REVIEWED, $authUser);
 
     }

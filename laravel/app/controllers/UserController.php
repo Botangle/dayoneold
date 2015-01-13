@@ -285,10 +285,10 @@ class UserController extends BaseController {
     {
         //TODO: verify that users can't add a purely numeric username otherwise this is a bug
         if (is_numeric($id)) {
-            $model = User::where('id', $id)->averageRating()->first();
+            $model = User::where('id', $id)->first();
         }
         else {
-            $model = User::where('username' , '=', $id)->averageRating()->first();
+            $model = User::where('username' , '=', $id)->first();
         }
         if (!$model){
             App::abort('404');
@@ -306,12 +306,6 @@ class UserController extends BaseController {
         $userLessons = Lesson::active()->involvingUser($model)
             ->where('is_confirmed', true);
 
-        /*    ->select(array(
-                DB::raw('COUNT(lessons.id) as lessons_count'),
-                DB::raw('SUM(duration) as total_duration')
-            ))
-            ->groupBy('tutor')
-            ->first(); */
         $lessonsCount = $userLessons->count();
         $totalDuration = $userLessons->sum('duration');
 

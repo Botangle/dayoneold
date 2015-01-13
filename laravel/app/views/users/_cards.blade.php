@@ -10,7 +10,7 @@
                                         </a>
                                     </div>
                                     <div class="search-result-options">
-                                        <div class="pull-left"><input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="0" value="{{ $user->average_rating }}"/></div>
+                                        <div class="pull-left"><input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="0" value="{{ $user->rating_stars }}"/></div>
                                         <div class="search-result-chat pull-right">
                                             <p class="option-pro">
                                                 {{ Html::link(route('user.profile', $user->username), '', array('data-toggle' => 'tooltip', 'title' => 'Profile')) }}

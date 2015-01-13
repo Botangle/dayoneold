@@ -12,7 +12,7 @@ class UsersController extends BaseController {
             $users = $users->where('subject', 'LIKE', '%'. $category->name .'%');
         }
 
-        // Include average rating from review table in the data and sort by average_rating descending
+        // Sort by average_rating descending
         $topListed = $users->averageRating()->paginate(9);
 
         // TODO: Reconsider use of noParent - existing system only uses root categories
@@ -31,7 +31,7 @@ class UsersController extends BaseController {
             $users = $users->where('subject', 'LIKE', '%'. $searchText .'%');
         }
 
-        // Include average rating from review table in the data and sort by average_rating descending
+        // Sort by average_rating descending
         $users = $users->averageRating()->paginate(12);
 
         return View::make('users.search', array(

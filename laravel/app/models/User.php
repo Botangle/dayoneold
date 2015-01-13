@@ -199,13 +199,7 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
 
     public function scopeAverageRating($query)
     {
-        $query->leftJoin('reviews', 'reviews.rate_to', '=', 'users.id')
-            ->select(array('users.*',
-                    DB::raw('COUNT(reviews.id) as review_count'),
-                    DB::raw('AVG(rating) as ratings_average')
-                ))
-            ->groupBy('users.id')
-            ->orderBy('ratings_average', 'DESC');
+        $query->orderBy('average_rating', 'DESC');
     }
 
     public function scopeLessonsSummary($query)
@@ -284,9 +278,9 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         return ($this->role_id == 1) ? true : false;
     }
 
-    public function getAverageRatingAttribute()
+    public function getRatingStarsAttribute()
     {
-        return round($this->ratings_average, 0, PHP_ROUND_HALF_DOWN);
+        return round($this->average_rating, 0, PHP_ROUND_HALF_DOWN);
     }
 
     /**
@@ -566,5 +560,13 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
             $list[$user->id] = $user->fullName;
         }
         return $list;
+    }
+
+    public function recalculateRatings()
+    {
+        $reviews = $this->reviews;
+        $this->review_count = $reviews->count();
+        $this->average_rating = $reviews->sum('rating') / $this->review_count;
+        return $this->save();
     }
 }

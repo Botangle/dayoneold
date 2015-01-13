@@ -52,7 +52,7 @@
 							@endforeach
 						</p>
 						<div class="row-fluid">
-							<div class="span6"><span class="pull-left">Botangle Star: &nbsp; </span> <input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="0" value="{{ $model->average_rating }}"/></div>
+							<div class="span6"><span class="pull-left">Botangle Star: &nbsp; </span> <input type="number" name="your_awesome_parameter" id="some_id" class="rating" data-clearable="0" value="{{ $model->rating_stars }}"/></div>
 							<div class="span3"><span class="color1">{{ $model->review_count }} {{ trans("Reviews") }}</span></div>
 							<div class="span3"><span class="color1">{{ $lessonsCount }} {{ trans("Classes") }}</span></div>
 						</div>
