@@ -39,9 +39,19 @@ class Category extends Eloquent {
         $query->where('parent_id', '=', NULL);
     }
 
+    public function getUserCountCacheName()
+    {
+        return 'category-user-count-'.$this->id;
+    }
+
     public function getUserCount()
     {
-        return User::where('subject', 'LIKE', '%'. $this->name .'%')->count();
+        $cacheName = $this->getUserCountCacheName();
+        if (!Cache::has($cacheName)){
+            $userCount = User::where('subject', 'LIKE', '%'. $this->name .'%')->count();
+            Cache::forever($cacheName, $userCount);
+        }
+        return Cache::get($cacheName);
     }
 
     /**
@@ -74,5 +84,33 @@ class Category extends Eloquent {
             $result[strip_tags($item->name)] = strip_tags($item->name);
         }
         return $result;
+    }
+
+    public static function resetUserCountCaches(array $oldList, array $newList = [])
+    {
+        // Reset the cache for a category which has been removed from a user's subject list
+        foreach($oldList as $categoryName){
+            if (!in_array($categoryName, $newList)){
+                $category = Category::where('name', $categoryName)->first();
+                if ($category){
+                    $category->resetUserCountCache();
+                }
+            }
+        }
+
+        // Reset the cache for a category which has been added to a user's subject list
+        foreach($newList as $categoryName){
+            if (!in_array($categoryName, $oldList)){
+                $category = Category::where('name', $categoryName)->first();
+                if ($category){
+                    $category->resetUserCountCache();
+                }
+            }
+        }
+    }
+
+    public function resetUserCountCache()
+    {
+        Cache::forget($this->getUserCountCacheName());
     }
 }

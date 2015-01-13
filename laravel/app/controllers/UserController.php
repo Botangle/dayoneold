@@ -149,7 +149,10 @@ class UserController extends BaseController {
             $user->addContext('profile-pic-upload');
         }
         if (isset($inputs['subject'])){
+            Category::resetUserCountCaches(explode(", ", $user->subject), $inputs['subject']);
             $inputs['subject'] = implode(", ", $inputs['subject']);
+        } else {
+            Category::resetUserCountCaches(explode(", ", $user->subject), []);
         }
         $user->fill($inputs);
 

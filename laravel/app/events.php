@@ -77,6 +77,7 @@ Event::listen('user.profilepic-uploaded', function($user){
 
 Event::listen('user.expert-registration', function($user){
         Cache::forget('users-joined');
+        Category::resetUserCountCaches([], explode(", ", $user->subject));
         // Add to User log
         $user->logEvent('expert-registration');
     });
