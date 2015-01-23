@@ -159,14 +159,22 @@ class UserController extends BaseController {
         if (!$user->validate()){
             if (isset($inputs['profilepic'])) unset($inputs['profilepic']);
             return Redirect::route('user.my-account')
-                ->withInput(Input::all())
+                ->withInput($inputs)
                 ->withErrors($user->errors())
                 ->with('flash_error', trans("Your information could not be updated. Please try again."));
         }
 
         /* Profilepic upload to Amazon S3 */
         if (Input::hasFile('profilepic')){
-            $user->profilepic = $this->uploadProfilePicToS3();
+            try {
+                $user->profilepic = $this->uploadProfilePicToS3();
+            } catch (Exception $e){
+                Log::error($e);
+                unset($inputs['profilepic']);
+                return Redirect::route('user.my-account')
+                    ->withInput($inputs)
+                    ->with('flash_error', trans("There was a problem with your Profile Picture. Please try again."));
+            }
 
             // Need to stop save validating the S3 filename, which will fail Laravel's image validation.
             //  Note: the original uploaded file has already passed Laravel's validation above
