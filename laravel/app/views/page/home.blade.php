@@ -3,6 +3,7 @@
 @section('head')
 @parent
 {{HTML::style('js/hopscotch/css/hopscotch.min.css')}}
+<script src="//load.sumome.com/" data-sumo-site-id="2a51f2f5b868bc45c334915a961ea81e69cb264c8cc6d4025e852a6cdaa59de4" async></script>
 @stop
 
 @section('header')
