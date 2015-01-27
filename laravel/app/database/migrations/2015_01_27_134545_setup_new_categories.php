@@ -13,7 +13,7 @@ class SetupNewCategories extends Migration {
 	public function up()
 	{
         // Make a backup of the categories table
-        DB::update("CREATE TABLE old_categories LIKE categories;");
+/*        DB::update("CREATE TABLE old_categories LIKE categories;");
         DB::update("INSERT old_categories SELECT * FROM categories;");
 
         // Make a backup of the users table
@@ -72,7 +72,7 @@ class SetupNewCategories extends Migration {
         }
 
         // Flush the entire cache to clear all the categories cache
-        Cache::flush();
+        Cache::flush(); */
 	}
 
 	/**
@@ -82,12 +82,12 @@ class SetupNewCategories extends Migration {
 	 */
 	public function down()
 	{
-        DB::update("DELETE FROM categories;");
+/*        DB::update("DELETE FROM categories;");
 
         // Move the old categories back to the categories table and drop the backup
         DB::update("INSERT categories SELECT * FROM old_categories;");
         Schema::drop('old_categories');
-
+*/
         // Copy the old user subject back
         DB::update("UPDATE users u INNER JOIN old_users ou ON u.id = ou.id SET u.subject = ou.subject;");
 
