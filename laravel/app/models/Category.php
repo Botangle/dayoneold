@@ -9,6 +9,13 @@ class Category extends Eloquent {
 	 */
 	protected $table = 'categories';
 
+    public $fillable = [
+        'name',
+        'status',
+    ];
+
+    public $timestamps = false;
+
     public function parent()
     {
         return $this->belongsTo('Category', 'parent_id');
