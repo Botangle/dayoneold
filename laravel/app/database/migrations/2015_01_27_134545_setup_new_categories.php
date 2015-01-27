@@ -88,6 +88,9 @@ class SetupNewCategories extends Migration {
         DB::update("INSERT categories SELECT * FROM old_categories;");
         Schema::drop('old_categories');
 
+        // Copy the old user subject back
+        DB::update("UPDATE users u INNER JOIN old_users ou ON u.id = ou.id SET u.subject = ou.subject;");
+
         // Flush the entire cache to clear all the categories cache
         Cache::flush();
 	}
