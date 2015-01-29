@@ -13,7 +13,7 @@ class SetupNewCategories extends Migration {
 	public function up()
 	{
         // Make a backup of the categories table
-/*        DB::update("CREATE TABLE old_categories LIKE categories;");
+        DB::update("CREATE TABLE old_categories LIKE categories;");
         DB::update("INSERT old_categories SELECT * FROM categories;");
 
         // Make a backup of the users table
@@ -26,29 +26,12 @@ class SetupNewCategories extends Migration {
 
         // Populate it with the new categories data
         $newCats = [
-            'Programming',
             'Node.JS',
             'Ruby On Rails',
             'HTML/CSS',
             'Swift',
             'Java',
             'Python',
-            'Marketing',
-            'Digital Marketing',
-            'Growth Hacking',
-            'Product Marketing',
-            'SEO',
-            'Social Media Marketing',
-            'Advertising',
-            'Non-Digital Marketing',
-            'Design',
-            'Mobile Design',
-            'Graphic Design',
-            'UI',
-            'Motion Design',
-            'Web Design',
-            'iOS Design',
-            'Android Design',
         ];
         foreach ($newCats as $cat){
             Category::create([
@@ -72,7 +55,7 @@ class SetupNewCategories extends Migration {
         }
 
         // Flush the entire cache to clear all the categories cache
-        Cache::flush(); */
+        Cache::flush();
 	}
 
 	/**
@@ -82,7 +65,7 @@ class SetupNewCategories extends Migration {
 	 */
 	public function down()
 	{
-/*        DB::update("DELETE FROM categories;");
+        DB::update("DELETE FROM categories;");
 
         // Move the old categories back to the categories table and drop the backup
         DB::update("INSERT categories SELECT * FROM old_categories;");
@@ -93,7 +76,6 @@ class SetupNewCategories extends Migration {
 
         // Flush the entire cache to clear all the categories cache
         Cache::flush();
-*/
 	}
 
 }
