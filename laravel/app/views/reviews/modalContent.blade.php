@@ -28,6 +28,7 @@
                     ->type('number')
                     ->label('')
                     ->div(false)
+                    ->value(5)
                 }}
             </div>
         </div>
