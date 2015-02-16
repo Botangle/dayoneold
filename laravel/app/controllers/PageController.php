@@ -66,7 +66,7 @@ class PageController extends BaseController {
                 $message->to(Config::get('site.email'))->subject($data['subject']);
             });
 
-            Session::flash('flash_success', 'Your email successfully sent to our admin.');
+            Session::flash('flash_success', 'Your email was successfully sent, thanks!');
 		
             return View::make('page.contactus')
                        ->nest(
