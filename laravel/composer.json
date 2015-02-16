@@ -26,8 +26,7 @@
         "paypal/adaptivepayments-sdk-php":"dev-namespace-php5.3",
         "doctrine/dbal": "dev-master",
         "guzzlehttp/guzzle": "~4.0",
-        "fideloper/proxy" : "~2.0",
-		"msurguy/honeypot": "dev-master#6e7c590240ac0dc1e95c80a65349dfe48e42be09"
+        "fideloper/proxy" : "~2.0"
 	},
     "require-dev": {
         "way/generators": "2.*",
