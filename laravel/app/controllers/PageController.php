@@ -114,20 +114,20 @@ class PageController extends BaseController {
 
 		if ($validator -> passes()){
 
-		Mail::send('emails.reportbug', $data, function($message) use ($data)
-		{
-    		$message->to(Config::get('site.email'))->subject($data['subject']);
-		});
+            Mail::send('emails.reportbug', $data, function($message) use ($data)
+            {
+                $message->to(Config::get('site.email'))->subject($data['subject']);
+            });
 
-		Session::flash('flash_success', 'Thanks for submitting your bug report!');
-		
-		return View::make('page.reportbug')
-            ->nest(
-                'leftPanel',
-                'page.leftpanel'
-            );
+            Session::flash('flash_success', 'Thanks for submitting your bug report!');
 
-		}else{
+            return View::make('page.reportbug')
+                       ->nest(
+                           'leftPanel',
+                           'page.leftpanel'
+                       );
+
+        } else {
 			return Redirect::back()
                 ->with('flash_error', trans("There was a problem with your message:"))
                 ->withErrors($validator)
