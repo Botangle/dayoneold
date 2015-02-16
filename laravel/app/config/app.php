@@ -145,6 +145,7 @@ return array(
         'BotangleHashProvider',
         'Bradleyboy\Laravel\BraintreeServiceProvider',
         'Fideloper\Proxy\ProxyServiceProvider',
+        'Msurguy\Honeypot\HoneypotServiceProvider',
 	),
 
 	/*

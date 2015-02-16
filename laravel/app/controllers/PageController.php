@@ -53,26 +53,36 @@ class PageController extends BaseController {
 			'email' => 'required|email',
 			'subject' => 'required|min:5',
 			'message' => 'required|min:25',
+            'super_important'       => 'honeypot',
+            'super_important_time'  => 'required|honeytime:5', // 5 = 5 seconds, faster than that = spambot
 		);
 
 		$validator = Validator::make ($data, $rules);
 
 		if ($validator -> passes()){
 
-		Mail::send('emails.contact', $data, function($message) use ($data)
-		{
-    		$message->to(Config::get('site.email'))->subject($data['subject']);
-		});
+            Mail::send('emails.contact', $data, function($message) use ($data)
+            {
+                $message->to(Config::get('site.email'))->subject($data['subject']);
+            });
 
-		Session::flash('flash_success', 'Your email successfully sent to our admin.');
+            Session::flash('flash_success', 'Your email successfully sent to our admin.');
 		
-		return View::make('page.contactus')
-            ->nest(
-                'leftPanel',
-                'page.leftpanel'
-            );
+            return View::make('page.contactus')
+                       ->nest(
+                           'leftPanel',
+                           'page.leftpanel'
+                       );
+		} elseif($validator->errors()->has('super_important') || $validator->has('super_important')) {
+            // this is a spam bot, caught with our honeypot, we're going to pretend to work with this message without doing anything with it
+            Session::flash('flash_success', 'Your email was successfully handled.');
 
-		}else{
+            return View::make('page.contactus')
+                       ->nest(
+                           'leftPanel',
+                           'page.leftpanel'
+                       );
+        } else {
 			return Redirect::back()
                 ->with('flash_error', trans("There was a problem with your message:"))
                 ->withErrors($validator)
@@ -98,26 +108,36 @@ class PageController extends BaseController {
 			'email' => 'required|email',
 			'subject' => 'required|min:5',
 			'message' => 'required|min:25',
+            'super_important'       => 'honeypot',
+            'super_important_time'  => 'required|honeytime:5', // 5 = 5 seconds, faster than that = spambot
 		);
 
 		$validator = Validator::make ($data, $rules);
 
 		if ($validator -> passes()){
 
-		Mail::send('emails.reportbug', $data, function($message) use ($data)
-		{
-    		$message->to(Config::get('site.email'))->subject($data['subject']);
-		});
+            Mail::send('emails.reportbug', $data, function($message) use ($data)
+            {
+                $message->to(Config::get('site.email'))->subject($data['subject']);
+            });
 
-		Session::flash('flash_success', 'Thanks for submitting your bug report!');
-		
-		return View::make('page.reportbug')
-            ->nest(
-                'leftPanel',
-                'page.leftpanel'
-            );
+            Session::flash('flash_success', 'Thanks for submitting your bug report!');
 
-		}else{
+            return View::make('page.reportbug')
+                       ->nest(
+                           'leftPanel',
+                           'page.leftpanel'
+                       );
+        } elseif($validator->errors()->has('super_important') || $validator->has('super_important')) {
+            // this is a spam bot, caught with our honeypot, we're going to pretend to work with this message without doing anything with it
+            Session::flash('flash_success', 'Your email was successfully handled.');
+
+            return View::make('page.reportbug')
+                       ->nest(
+                           'leftPanel',
+                           'page.leftpanel'
+                       );
+        } else {
 			return Redirect::back()
                 ->with('flash_error', trans("There was a problem with your message:"))
                 ->withErrors($validator)
