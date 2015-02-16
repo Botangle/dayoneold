@@ -59,20 +59,19 @@ class PageController extends BaseController {
 
 		if ($validator -> passes()){
 
-		Mail::send('emails.contact', $data, function($message) use ($data)
-		{
-    		$message->to(Config::get('site.email'))->subject($data['subject']);
-		});
+            Mail::send('emails.contact', $data, function($message) use ($data)
+            {
+                $message->to(Config::get('site.email'))->subject($data['subject']);
+            });
 
-		Session::flash('flash_success', 'Your email successfully sent to our admin.');
+            Session::flash('flash_success', 'Your email successfully sent to our admin.');
 		
-		return View::make('page.contactus')
-            ->nest(
-                'leftPanel',
-                'page.leftpanel'
-            );
-
-		}else{
+            return View::make('page.contactus')
+                       ->nest(
+                           'leftPanel',
+                           'page.leftpanel'
+                       );
+        } else {
 			return Redirect::back()
                 ->with('flash_error', trans("There was a problem with your message:"))
                 ->withErrors($validator)
