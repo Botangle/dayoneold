@@ -73,7 +73,7 @@ class PageController extends BaseController {
                            'leftPanel',
                            'page.leftpanel'
                        );
-		} elseif($validator->errors()->has('super_important') || $validator->has('super_important')) {
+		} elseif($validator->errors()->has('super_important') || $validator->errors()->has('super_important')) {
             // this is a spam bot, caught with our honeypot, we're going to pretend to work with this message without doing anything with it
             Session::flash('flash_success', 'Your email was successfully handled.');
 
@@ -128,7 +128,7 @@ class PageController extends BaseController {
                            'leftPanel',
                            'page.leftpanel'
                        );
-        } elseif($validator->errors()->has('super_important') || $validator->has('super_important')) {
+        } elseif($validator->errors()->has('super_important') || $validator->errors()->has('super_important')) {
             // this is a spam bot, caught with our honeypot, we're going to pretend to work with this message without doing anything with it
             Session::flash('flash_success', 'Your email was successfully handled.');
 
