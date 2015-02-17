@@ -7,6 +7,8 @@
 @section('content')
 <div class="PageLeft-Block">
 	<form class="form-inline form-horizontal" role="form" action="/reportbug"  method="post">
+	    {{ Form::honeypot('super_important', 'super_important_time') }}
+
 		<div class="row-fluid">
 
 			<div class="form-group span6 ">
