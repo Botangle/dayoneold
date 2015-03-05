@@ -162,7 +162,12 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         return $this->hasMany('Message', 'send_to');
     }
 
-    /**
+	public function role()
+	{
+		return $this->belongsTo('Role');
+	}
+
+	/**
      * Scopes our users down to just active users
      *
      * @param $query
