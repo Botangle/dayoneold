@@ -9,6 +9,8 @@
 	<p class="FontStyle20 text-center">Send us a Quick Message!</p>
 	<form class="form-inline form-horizontal" role="form" action="/contact"  method="post">
 
+	    {{ Form::honeypot('super_important', 'super_important_time') }}
+
 		<div class="row-fluid">
 			<div class="form-group span6 ">
 				<label class="sr-only" for="your_name">{{{ trans('Your Name') }}}</label>
