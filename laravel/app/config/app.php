@@ -146,6 +146,9 @@ return array(
         'Bradleyboy\Laravel\BraintreeServiceProvider',
         'Fideloper\Proxy\ProxyServiceProvider',
         'Msurguy\Honeypot\HoneypotServiceProvider',
+
+		'Frozennode\Administrator\AdministratorServiceProvider',
+		'DayOne\Admin\AdminServiceProvider',
 	),
 
 	/*
