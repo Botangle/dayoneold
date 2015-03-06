@@ -148,6 +148,7 @@ return array(
         'Msurguy\Honeypot\HoneypotServiceProvider',
 
 		'Frozennode\Administrator\AdministratorServiceProvider',
+		'DayOne\Admin\AdminServiceProvider',
 	),
 
 	/*
