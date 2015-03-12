@@ -10,10 +10,17 @@ Route::when('*', 'secure');
 /**
  * Pages controller
  */
+
 Route::get('/', array(
-        'as' => 'home',
-        'uses' => 'PageController@getIndex',
-    ));
+	'as' => 'home',
+	'uses' => 'NewPageController@getIndex',
+));
+
+
+//Route::get('/', array(
+//        'as' => 'home',
+//        'uses' => 'PageController@getIndex',
+//    ));
 Route::get('/about', array(
         'as'        => 'about',
         'uses'      => 'PageController@getAbout',

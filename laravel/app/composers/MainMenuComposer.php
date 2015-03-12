@@ -14,63 +14,68 @@ class MainMenuComposer implements Composer
 {
     public function compose($view)
     {
-        $menu = \Menu::handler('main', array('class' => 'nav navbar-nav navbar-right'));
-
-        $menu
-            ->add(route('home'), trans('Home'))
-            ->add(route('how-it-works'), trans('How it Works'))
-            ->add(route('categories.index'), trans('Categories'))
-            ->add(route('users.topcharts'), trans('Top Charts'))
-            ->add(route('about'), trans('About Us'));
-
-        if(\Auth::check()) {
-            $menu->add(route('user.my-account'), trans('My Account'));
-        } else {
-            $menu->add(route('login'), trans('Sign in'));
-        }
-
-        $menu
-            ->add(route('reportbug'), trans('Report a Bug'))
-            ->getItemsByContentType('Menu\Items\Contents\Link')
-            ->map(function($item)
-                {
-                    $item->getContent()->title = $item->getContent()->getValue();
-
-                    if($item->isActive()) {
-                        $item->getContent()->addClass('active');
-                    }
-
-                    if($item->getContent()->getUrl() == route('home')) {
-                        $item->getContent()->addClass('home');
-                    }
-
-                    if($item->getContent()->getUrl() == route('how-it-works')) {
-                        $item->getContent()->addClass('category');
-                    }
-
-                    if($item->getContent()->getUrl() == route('categories.index')) {
-                        $item->getContent()->addClass('category');
-                    }
-
-                    if($item->getContent()->getUrl() == route('users.topcharts')) {
-                        $item->getContent()->addClass('chart');
-                    }
-
-                    if($item->getContent()->getUrl() == route('about')) {
-                        $item->getContent()->addClass('about');
-                    }
-
-                    if($item->getContent()->getUrl() == route('user.my-account')) {
-                        $item->getContent()->addClass('myaccount');
-                    }
-
-                    if($item->getContent()->getUrl() == route('login')) {
-                        $item->getContent()->addClass('signin');
-                    }
-
-                    if($item->getContent()->getUrl() == route('reportbug')) {
-                        $item->getContent()->addClass('Report_Bug');
-                    }
-                });
+	    $this->registerMainMenu();
+	    $this->registerMainSecondaryMenu();
     }
+
+	public function registerMainMenu()
+	{
+		$menu = \Menu::handler('main', array('class' => 'nav navbar-nav'));
+
+		$menu
+			->add(route('home'), trans('Home'))
+			->add('http://forum.startdayone.com/', trans('Forum'));
+
+		$menu
+			->getItemsByContentType('Menu\Items\Contents\Link')
+			->map(function($item)
+			{
+				$item->getContent()->title = $item->getContent()->getValue();
+
+				if($item->isActive()) {
+					$item->getContent()->addClass('active');
+				}
+
+				if($item->getContent()->getUrl() == route('home')) {
+					$item->getContent()->addClass('home');
+				}
+			});
+	}
+
+	public function registerMainSecondaryMenu()
+	{
+		$menu = \Menu::handler('main-secondary', array('class' => 'nav navbar-nav navbar-right'));
+
+		$menu
+			->add(route('about'), trans('Want to Stream? - get form info from Erik'));
+
+		if(\Auth::check()) {
+			$menu->add(route('user.my-account'), trans('My Account'));
+		} else {
+			$menu->add(route('login'), trans('Start Broadcasting'));
+		}
+
+		$menu
+			->getItemsByContentType('Menu\Items\Contents\Link')
+			->map(function($item)
+			{
+				$item->getContent()->title = $item->getContent()->getValue();
+
+				if($item->isActive()) {
+					$item->getContent()->addClass('active');
+				}
+
+				if($item->getContent()->getUrl() == route('about')) {
+					$item->getContent()->addClass('about');
+				}
+
+				if($item->getContent()->getUrl() == route('user.my-account')) {
+					$item->getContent()->addClass('my-account');
+				}
+
+				if($item->getContent()->getUrl() == route('login')) {
+					$item->getContent()->addClass('login');
+				}
+			});
+	}
 }
