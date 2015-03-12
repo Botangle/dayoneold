@@ -47,7 +47,7 @@ class MainMenuComposer implements Composer
 		$menu = \Menu::handler('main-secondary', array('class' => 'nav navbar-nav navbar-right'));
 
 		$menu
-			->add(route('about'), trans('Want to Stream? - get form info from Erik'));
+			->add('', trans('Want to Stream?'));
 
 		if(\Auth::check()) {
 			$menu->add(route('new.stream.create'), trans('Start Broadcasting'));

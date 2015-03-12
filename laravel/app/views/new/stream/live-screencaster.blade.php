@@ -26,10 +26,10 @@
 		session.publish(publisher);
 	}
 
+	// Erik's ID: ekceebhmfflghhcllmlnaombhgomnkcf
 	OT.registerScreenSharingExtension('chrome', 'gkcgdapfanaaiekajdfdhclhcjhldlco');
 
 	OT.checkScreenSharingCapability(function(response) {
-		console.log(response);
 		if(!response.supported || response.extensionRegistered === false) {
 			// This browser does not support screen sharing.
 			alert("Your browser doesn't support screen sharing");

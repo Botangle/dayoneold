@@ -37,6 +37,7 @@ class StreamController extends BaseController {
         $model = new UserStream;
         $model->fill(Input::all());
         $model->user_id = Auth::user()->id;
+	    $model->state = 1;
 
         if (!$model->validate()){
             return Response::json(array(
@@ -70,7 +71,7 @@ class StreamController extends BaseController {
 	 */
 	public function getLive($id)
 	{
-		$stream = UserStream::find($id);
+		$stream = UserStream::findOrFail($id);
 
 		return View::make('new.stream.live', array(
 			'model'     => $stream,
@@ -85,7 +86,7 @@ class StreamController extends BaseController {
 	 */
 	public function postStop($id)
 	{
-		$stream = UserStream::find($id);
+		$stream = UserStream::findOrFail($id);
 
 		// make sure the user requesting the stream be cancelled is the same user
 		// who started the stream ;-)
@@ -93,12 +94,15 @@ class StreamController extends BaseController {
 			// @TODO: throw an exception
 		}
 
+		// then we'll turn off our live broadcast flag
+		$stream->state = 0;
+
 		// if this works, then we'll start streaming
 		if ($stream->save()) {
 			Event::fire('stream.stopped', array($stream, Auth::user()));
 
 			return Redirect::intended( URL::route( 'home' ) )
-			               ->with( 'flash_success', trans( "Thanks for broadcasting with us!" ) );
+			               ->with( 'flash_success', trans( "Ok, we've completed your broadcast.  Thanks for broadcasting with us!" ) );
 		}
 
 		// @TODO: if it's JSON, that's not going to work well for us

@@ -1,3 +1,5 @@
+{{ Html::script('//static.opentok.com/v2/js/opentok.min.js') }}
+
 @extends('new.user.layout')
 
 @section('page-content')
@@ -13,11 +15,9 @@
 		<div class="col-md-3 pull-right">
 			{{ Former::open()
 						->method('POST')
-						->action(route('new.stream.stop'))
+						->action(route('new.stream.stop', ['id' => $model->id]))
 						->class('form-horizontal')
 						}}
-
-			{{ Form::hidden('id', $model->id) }}
 
 			<button class="btn btn-lg btn-danger btn-block" type="submit">Stop Broadcasting</button>
 

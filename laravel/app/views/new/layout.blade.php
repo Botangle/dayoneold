@@ -12,10 +12,6 @@
 	@section('head')
 		<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.2/readable/bootstrap.min.css" rel="stylesheet">
 		<link href="/css/new.css" rel="stylesheet">
-
-		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
 	@show
 </head>
 <body>
@@ -44,6 +40,12 @@
 			</div>
 		@endif
 
+			@if(Session::has('flash_notice'))
+				<div class="alert alert-info">
+					{{ Session::get('flash_notice') }}
+				</div>
+			@endif
+
 		@if(Session::has('flash_success'))
 			<div class="alert alert-success">
 				{{ Session::get('flash_success') }}
@@ -65,6 +67,8 @@
 
 
 @section('jsFiles')
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	{{--<script type='text/javascript'>
 		window.__wtw_lucky_site_id = 34581;
 

@@ -2,6 +2,8 @@
 
 @section('head')
 @parent
+{{-- we register up here because things die if we reference an opentok library below without it --}}
+{{ Html::script('//static.opentok.com/v2/js/opentok.min.js') }}
 @stop
 
 @section('header')
@@ -17,7 +19,7 @@
 			<div class="row panel panel-default">
 				<div class="panel-body">
 				<div class="col-md-6">
-					<img src="http://placehold.it/450x250">
+					@include('new.page.home.watch-screencast', array('model' => $stream))
 				</div>
 				<div class="col-md-6">
 					<div class="row">
@@ -27,7 +29,8 @@
 						<p class="col-md-12">{{ $stream->description }}</p>
 					</div>
 					<div class="row">
-						<p class="col-md-12 text-muted">Broadcaster: {{ $stream->full_name }}, <a href="#">{{ $stream->twitter }}</a></p>
+						<p class="col-md-12 text-muted">Broadcaster: {{ $stream->user->full_name }}</p>
+							{{-- <a href="#">{{ $stream->twitter }}</a> --}}
 					</div>
 				</div>
 				</div>
