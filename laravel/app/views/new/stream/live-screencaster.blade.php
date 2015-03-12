@@ -26,8 +26,7 @@
 		session.publish(publisher);
 	}
 
-	// Erik's ID: ekceebhmfflghhcllmlnaombhgomnkcf
-	OT.registerScreenSharingExtension('chrome', 'gkcgdapfanaaiekajdfdhclhcjhldlco');
+	OT.registerScreenSharingExtension('chrome', '{{ Config::get('services.chromeWebstore.extensionId') }}');
 
 	OT.checkScreenSharingCapability(function(response) {
 		if(!response.supported || response.extensionRegistered === false) {

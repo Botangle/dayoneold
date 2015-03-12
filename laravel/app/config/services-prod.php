@@ -17,6 +17,10 @@ return array(
 	| need to know them.
 	*/
 
+	'chromeWebstore' => [
+		'extensionId' => '',
+	],
+
 	'mailgun' => array(
 		'domain' => '',
 		'secret' => '',
