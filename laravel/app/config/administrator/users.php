@@ -81,7 +81,7 @@ return array(
 	 * The editable fields
 	 */
 	'edit_fields' => array(
-		'active' => [
+		'status' => [
 			'title' => 'Active',
 			'type'  => 'bool',
 			'visible' => function($model) {

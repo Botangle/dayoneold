@@ -12,11 +12,41 @@ use Coderabbi\Virtuoso\Composer;
 
 class UserMenuComposer implements Composer
 {
-    public function compose($view)
+	public function compose($view)
+	{
+		$this->sidebar();
+		$this->oldSidebar();
+	}
+
+	public function sidebar()
+	{
+		$menu = \Menu::handler('new-user-sidebar');
+
+		$menu->add('#', trans('My Account'));
+//		$menu->add(route('new.user.my-account'), trans('My Account'));
+//		if(\Auth::user()->isTutor()) {
+//			$menu->add(
+//				action(
+//					'UserController@getView',
+//					array(
+//						'username' => \Auth::user()->username,
+//					)
+//				),
+//				trans('My Profile')
+//			);
+//		}
+//
+//		$menu->add(route('user.messages'), trans('Messages'));
+//		$menu->add(route('user.lessons'), trans('Lessons'));
+//		$menu->add(route('user.billing'), trans('Billing'));
+//		$menu->add(route('user.credit'), trans('Credits'));
+	}
+
+    public function oldSidebar()
     {
         $menu = \Menu::handler('user-sidebar');
 
-        $menu->add(route('user.my-account'), trans('My Account'));
+        $menu->add(route('new.user.my-account'), trans('My Account'));
         if(\Auth::user()->isTutor()) {
             $menu->add(
                 action(
