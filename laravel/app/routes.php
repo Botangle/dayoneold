@@ -16,6 +16,24 @@ Route::get('/', array(
 	'uses' => 'NewPageController@getIndex',
 ));
 
+/**
+ * Login/logout
+ */
+Route::get('/login', array(
+	'as'        => 'login',
+	'uses'      => 'NewUserController@getLogin',
+));
+Route::post('/login', array(
+	'uses'      => 'NewUserController@postLogin',
+));
+
+Route::group(array('before' => 'auth'), function(){
+	Route::get('/logout', array('as' => 'logout', function(){
+		Auth::logout();
+		return Redirect::home()
+		               ->with('flash_notice', 'You are successfully logged out.');
+	}));
+});
 
 //Route::get('/', array(
 //        'as' => 'home',
@@ -84,26 +102,6 @@ Route::post('/categories/request', [
         'uses'  => 'CategoryController@postRequestNew',
         'as'    => 'categories.requestNew',
     ]);
-
-
-/**
- * Login/logout
- */
-Route::get('/login', array(
-        'as'        => 'login',
-        'uses'      => 'UserController@getLogin',
-    ));
-Route::post('/login', array(
-        'uses'      => 'UserController@postLogin',
-    ));
-
-Route::group(array('before' => 'auth'), function(){
-        Route::get('/logout', array('as' => 'logout', function(){
-                Auth::logout();
-                return Redirect::home()
-                    ->with('flash_notice', 'You are successfully logged out.');
-            }));
-    });
 
 /**
  * News controller (used for viewing info about our news items)

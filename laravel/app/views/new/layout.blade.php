@@ -11,7 +11,9 @@
 
 	@section('head')
 		<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.2/readable/bootstrap.min.css" rel="stylesheet">
+		<link href="/css/new.css" rel="stylesheet">
 
+		<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 	@show
@@ -23,7 +25,7 @@
 @show
 
 @section('breadcrumbs')
-{{ Breadcrumbs::renderIfExists() }}
+{{-- Breadcrumbs::renderIfExists() --}}
 @show
 
 <div id="main-content">

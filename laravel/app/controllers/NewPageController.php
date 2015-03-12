@@ -2,7 +2,7 @@
 
 class NewPageController extends BaseController
 {
-	protected $layout = 'newlayout';
+	protected $layout = 'new.layout';
 
 	public function getIndex()
 	{
@@ -27,7 +27,7 @@ class NewPageController extends BaseController
 			$ryan
 		];
 
-		return View::make( 'newpage.home', array(
+		return View::make( 'new.page.home', array(
 			'liveStreams' => $liveStreams,
 		) );
 	}
