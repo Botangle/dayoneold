@@ -50,7 +50,8 @@ class MainMenuComposer implements Composer
 			->add(route('about'), trans('Want to Stream? - get form info from Erik'));
 
 		if(\Auth::check()) {
-			$menu->add(route('user.my-account'), trans('My Account'));
+			$menu->add(route('new.stream.create'), trans('Start Broadcasting'));
+			$menu->add(route('logout'), trans('Logout'));
 		} else {
 			$menu->add(route('login'), trans('Start Broadcasting'));
 		}
@@ -69,7 +70,7 @@ class MainMenuComposer implements Composer
 					$item->getContent()->addClass('about');
 				}
 
-				if($item->getContent()->getUrl() == route('user.my-account')) {
+				if($item->getContent()->getUrl() == route('new.user.my-account')) {
 					$item->getContent()->addClass('my-account');
 				}
 

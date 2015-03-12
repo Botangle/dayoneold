@@ -58,7 +58,7 @@
 <div id="footer">
     <div class="container">
         <div class="row">
-            <div class="col-md-5 textleft"> &copy; {{ date('Y'); }}. All right reserved. botangle.com </div>
+            <div class="col-md-5 textleft"> &copy; {{ date('Y'); }}. All right reserved. startdayone.com </div>
         </div>
     </div>
 </div>

@@ -49,10 +49,6 @@ class NewUserController extends BaseController
 			if ($user) {
 				Event::fire( 'user.login-attempt-failed', array( $user ) );
 			}
-//            if($this->RequestHandler->isXml()) {
-//                return $this->sendXmlError(1, "The password you entered is incorrect");
-//            } else {
-//            }
 
 			return Redirect::route( 'login' )
 			               ->with( 'flash_error', trans( 'Your username or password is incorrect.' ) )
@@ -84,105 +80,97 @@ class NewUserController extends BaseController
 			}
 		}
 
-		return Redirect::intended( URL::route( 'user.my-account' ) )
-		               ->with( 'flash_success', trans( 'Logged in successfully. Welcome back to Botangle.' ) );
-
-		// API: handle our API info and send back info
-//            if($this->RequestHandler->isXml()) {
-//                $user = $this->Session->read('Auth.User');
-//
-//                // we'll translate a bit between what we've got and our system
-//                $this->set('id', $user['id']);
-//                $this->set('role', $user['Role']['alias']);
-//                $this->set('firstname', $user['name']);
-//                $this->set('lastname', $user['lname']);
-//                $this->set('profilepic', $user['profilepic']);
-//                $this->set('_rootNode', 'user');
-//                $this->set('_serialize', array('id', 'role', 'firstname', 'lastname', 'profilepic'));
-//            } else {
-//            }
+		return Redirect::intended( URL::route( 'new.stream.create' ) )
+		               ->with( 'flash_success', trans( "Fill out the below and you'll be on the air!" ) );
 	}
 
 	public function getMyAccount()
 	{
-		if (Auth::user()->isTutor() || Auth::user()->isAdmin()) {
-			$mode = 'expert';
-		} else {
-			$mode = 'student';
-		}
-		return View::make( 'user.account.my-account', array(
+		return View::make( 'new.user.account.stream', array(
 			'user' => Auth::user(),
-			'mode' => $mode,
 		) );
+
+//		if (Auth::user()->isTutor() || Auth::user()->isAdmin()) {
+//			$mode = 'expert';
+//		} else {
+//			$mode = 'student';
+//		}
+//
+//		$mode = 'expert';
+//
+//		return View::make( 'new.user.account.my-account', array(
+//			'user' => Auth::user(),
+//			'mode' => $mode,
+//		) );
 	}
 
 	public function postMyAccount()
 	{
-		$userId = Input::get( 'id' );
-		if (Auth::user()->id != $userId && ! Auth::user()->isAdmin()) {
+//		$userId = Input::get( 'id' );
+//		if (Auth::user()->id != $userId && ! Auth::user()->isAdmin()) {
 			App::abort( '404', 'You are not authorized to update this user account.' );
-		}
-		$user = User::findOrFail( $userId );
-
-		// Copy the inputs to $inputs for later use if file upload occurs
-		$inputs = Input::all();
-
-		// Set the base context (the student account is a subset of the tutor)
-		$user->addContext( 'student-save' );
-
-		// If the user is a tutor, there are more fields to be validated and saved
-		if ($user->isTutor() || $user->isAdmin()) {
-			$user->addContext( 'tutor-save' );
-		}
-		// Only validate profilepic if a new file has been uploaded
-		if (Input::hasFile( 'profilepic' )) {
-			$user->addContext( 'profile-pic-upload' );
-		}
-		if (isset( $inputs['subject'] )) {
-			Category::resetUserCountCaches( explode( ", ", $user->subject ), $inputs['subject'] );
-			$inputs['subject'] = implode( ", ", $inputs['subject'] );
-		} else {
-			Category::resetUserCountCaches( explode( ", ", $user->subject ), [ ] );
-		}
-		$user->fill( $inputs );
-
-		if ( ! $user->validate()) {
-			if (isset( $inputs['profilepic'] )) {
-				unset( $inputs['profilepic'] );
-			}
-			return Redirect::route( 'user.my-account' )
-			               ->withInput( $inputs )
-			               ->withErrors( $user->errors() )
-			               ->with( 'flash_error', trans( "Your information could not be updated. Please try again." ) );
-		}
-
-		/* Profilepic upload to Amazon S3 */
-		if (Input::hasFile( 'profilepic' )) {
-			try {
-				$user->profilepic = $this->uploadProfilePicToS3();
-			} catch ( Exception $e ) {
-				Log::error( $e );
-				unset( $inputs['profilepic'] );
-				return Redirect::route( 'user.my-account' )
-				               ->withInput( $inputs )
-				               ->with( 'flash_error',
-					               trans( "There was a problem with your Profile Picture. Please try again." ) );
-			}
-
-			// Need to stop save validating the S3 filename, which will fail Laravel's image validation.
-			//  Note: the original uploaded file has already passed Laravel's validation above
-			$user->removeContext( 'profile-pic-upload' );
-		}
-
-		if ($user->save()) {
-			Event::fire( 'user.account-updated', array( Auth::user() ) );
-			return Redirect::route( 'user.my-account' )
-			               ->with( 'flash_success', trans( "Your information has been updated" ) );
-		} else {
-			return Redirect::route( 'user.my-account' )
-			               ->withInput( Input::all() )
-			               ->withErrors( $user->errors() )
-			               ->with( 'flash_error', trans( "Your information could not be updated. Please try again." ) );
-		}
+//		}
+//		$user = User::findOrFail( $userId );
+//
+//		// Copy the inputs to $inputs for later use if file upload occurs
+//		$inputs = Input::all();
+//
+//		// Set the base context (the student account is a subset of the tutor)
+//		$user->addContext( 'student-save' );
+//
+//		// If the user is a tutor, there are more fields to be validated and saved
+//		if ($user->isTutor() || $user->isAdmin()) {
+//			$user->addContext( 'tutor-save' );
+//		}
+//		// Only validate profilepic if a new file has been uploaded
+//		if (Input::hasFile( 'profilepic' )) {
+//			$user->addContext( 'profile-pic-upload' );
+//		}
+//		if (isset( $inputs['subject'] )) {
+//			Category::resetUserCountCaches( explode( ", ", $user->subject ), $inputs['subject'] );
+//			$inputs['subject'] = implode( ", ", $inputs['subject'] );
+//		} else {
+//			Category::resetUserCountCaches( explode( ", ", $user->subject ), [ ] );
+//		}
+//		$user->fill( $inputs );
+//
+//		if ( ! $user->validate()) {
+//			if (isset( $inputs['profilepic'] )) {
+//				unset( $inputs['profilepic'] );
+//			}
+//			return Redirect::route( 'user.my-account' )
+//			               ->withInput( $inputs )
+//			               ->withErrors( $user->errors() )
+//			               ->with( 'flash_error', trans( "Your information could not be updated. Please try again." ) );
+//		}
+//
+//		/* Profilepic upload to Amazon S3 */
+//		if (Input::hasFile( 'profilepic' )) {
+//			try {
+//				$user->profilepic = $this->uploadProfilePicToS3();
+//			} catch ( Exception $e ) {
+//				Log::error( $e );
+//				unset( $inputs['profilepic'] );
+//				return Redirect::route( 'user.my-account' )
+//				               ->withInput( $inputs )
+//				               ->with( 'flash_error',
+//					               trans( "There was a problem with your Profile Picture. Please try again." ) );
+//			}
+//
+//			// Need to stop save validating the S3 filename, which will fail Laravel's image validation.
+//			//  Note: the original uploaded file has already passed Laravel's validation above
+//			$user->removeContext( 'profile-pic-upload' );
+//		}
+//
+//		if ($user->save()) {
+//			Event::fire( 'user.account-updated', array( Auth::user() ) );
+//			return Redirect::route( 'user.my-account' )
+//			               ->with( 'flash_success', trans( "Your information has been updated" ) );
+//		} else {
+//			return Redirect::route( 'user.my-account' )
+//			               ->withInput( Input::all() )
+//			               ->withErrors( $user->errors() )
+//			               ->with( 'flash_error', trans( "Your information could not be updated. Please try again." ) );
+//		}
 	}
 }
