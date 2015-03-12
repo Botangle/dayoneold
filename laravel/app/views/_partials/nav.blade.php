@@ -1,13 +1,20 @@
-<div class="navbar navbar-default navbar-fixed-top  cbp-af-header" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <div class="Beta-tag">&nbsp;</div>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-            <a href="{{{ route('home') }}}" class="navbar-brand" title="{{{ trans('Home') }}}"><img src="/img/logo.png" alt="{{{ trans('Home') }}}"></a>
-        </div>
-        <div class="navbar-collapse collapse">
-            {{ Menu::handler('main')->render() }}
-        </div>
-        <!--/.nav-collapse -->
-    </div>
-</div>
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="{{{ route('home') }}}" title="{{{ trans('Home') }}}">DayOne</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			{{ Menu::handler('main')->render() }}
+			{{ Menu::handler('main-secondary')->render() }}
+		</div><!-- /.navbar-collapse -->
+	</div><!-- /.container-fluid -->
+</nav>

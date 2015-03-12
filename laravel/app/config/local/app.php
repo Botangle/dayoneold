@@ -17,4 +17,7 @@ return array(
 
     'url' => 'http://localhost',
 
+	'providers' => [
+//		'Barryvdh\Debugbar\ServiceProvider',
+	],
 );

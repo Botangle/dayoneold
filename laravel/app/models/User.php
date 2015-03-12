@@ -162,7 +162,12 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
         return $this->hasMany('Message', 'send_to');
     }
 
-    /**
+	public function role()
+	{
+		return $this->belongsTo('Role');
+	}
+
+	/**
      * Scopes our users down to just active users
      *
      * @param $query
@@ -259,8 +264,56 @@ class User extends MagniloquentContextsPlus implements UserInterface, Remindable
      */
     public function getFullNameAttribute()
     {
-        return ucfirst($this->name) . ' ' . ucfirst($this->lname);
+        return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
     }
+
+	/**
+	 * Returns our last name (using a different DB column)
+	 *
+	 * @TODO: replace things throughout the system to use the new DB naming system
+	 *
+	 * @return mixed|string
+	 */
+	public function getFirstNameAttribute()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * Sets our first name DB attribute (which is named differently under the hood)
+	 *
+	 * @TODO: replace things throughout the system to use the new DB naming system
+	 *
+	 * @param $value
+	 */
+	public function setFirstNameAttribute($value)
+	{
+		$this->attributes['name'] = $value;
+	}
+
+	/**
+	 * Returns our last name (using a different DB column)
+	 *
+	 * @TODO: replace things throughout the system to use the new DB naming system
+	 *
+	 * @return mixed|string
+	 */
+	public function getLastNameAttribute()
+	{
+		return $this->lname;
+	}
+
+	/**
+	 * Sets our first name DB attribute (which is named differently under the hood)
+	 *
+	 * @TODO: replace things throughout the system to use the new DB naming system
+	 *
+	 * @param $value
+	 */
+	public function setLastNameAttribute($value)
+	{
+		$this->attributes['lname'] = $value;
+	}
 
     /**
      * @return bool

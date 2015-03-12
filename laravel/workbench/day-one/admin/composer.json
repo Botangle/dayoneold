@@ -1,0 +1,23 @@
+{
+    "name": "day-one/admin",
+    "description": "",
+    "authors": [
+        {
+            "name": "David Baker",
+            "email": "dbaker@acorncomputersolutions.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+	    "classmap": [
+			"src/controllers"
+	    ],
+        "psr-0": {
+            "DayOne\\Admin": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

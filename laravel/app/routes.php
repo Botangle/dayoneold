@@ -10,10 +10,59 @@ Route::when('*', 'secure');
 /**
  * Pages controller
  */
+
 Route::get('/', array(
-        'as' => 'home',
-        'uses' => 'PageController@getIndex',
-    ));
+	'as' => 'home',
+	'uses' => 'NewPageController@getIndex',
+));
+
+/**
+ * Login/logout
+ */
+Route::get('/login', array(
+	'as'        => 'login',
+	'uses'      => 'NewUserController@getLogin',
+));
+Route::post('/login', array(
+	'uses'      => 'NewUserController@postLogin',
+));
+
+Route::group(array('before' => 'auth'), function(){
+	Route::get('/logout', array('as' => 'logout', function(){
+		Auth::logout();
+		return Redirect::home()
+		               ->with('flash_notice', 'You are successfully logged out.');
+	}));
+
+
+	Route::get('/user/my-account', [
+		'as'        => 'new.user.my-account',
+		'uses'      => 'NewUserController@getMyAccount',
+	]);
+
+	Route::get('/stream/create', [
+		'as'        => 'new.stream.create',
+		'uses'      => 'StreamController@getCreate',
+	]);
+	Route::post('/stream/create', [
+		'as'        => 'new.stream.create',
+		'uses'      => 'StreamController@postCreate',
+	]);
+	Route::get('/stream/live/{id}', [
+		'as'        => 'new.stream.live',
+		'uses'      => 'StreamController@getLive',
+	]);
+	Route::post('/stream/stop/{id}', [
+		'as'        => 'new.stream.stop',
+		'uses'      => 'StreamController@postStop',
+	]);
+});
+
+
+//Route::get('/', array(
+//        'as' => 'home',
+//        'uses' => 'PageController@getIndex',
+//    ));
 Route::get('/about', array(
         'as'        => 'about',
         'uses'      => 'PageController@getAbout',
@@ -78,26 +127,6 @@ Route::post('/categories/request', [
         'as'    => 'categories.requestNew',
     ]);
 
-
-/**
- * Login/logout
- */
-Route::get('/login', array(
-        'as'        => 'login',
-        'uses'      => 'UserController@getLogin',
-    ));
-Route::post('/login', array(
-        'uses'      => 'UserController@postLogin',
-    ));
-
-Route::group(array('before' => 'auth'), function(){
-        Route::get('/logout', array('as' => 'logout', function(){
-                Auth::logout();
-                return Redirect::home()
-                    ->with('flash_notice', 'You are successfully logged out.');
-            }));
-    });
-
 /**
  * News controller (used for viewing info about our news items)
  */
@@ -127,11 +156,11 @@ Route::controller('users', 'UsersController', array(
  * User controller (used for private handling of an individual user account and info)
  * Also used for viewing an individual's profile
  */
-Route::get('/user/my-account', array(
-        'as'        => 'user.my-account',
-        'uses'      => 'UserController@getMyAccount',
-    ));
-Route::post('/user/my-account', 'UserController@postMyAccount');
+//Route::get('/user/my-account', array(
+//        'as'        => 'user.my-account',
+//        'uses'      => 'UserController@getMyAccount',
+//    ));
+//Route::post('/user/my-account', 'UserController@postMyAccount');
 
 Route::get('/user/search/{searchText?}', array(
         'as'        => 'user.search',
