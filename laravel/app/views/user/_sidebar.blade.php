@@ -2,7 +2,7 @@
 /**
  * _sidebar.blade.php
  *
- * @author: David Baker <dbaker@acorncomputersolutions.com
+ * @author: David
  * Date: 7/8/14
  * Time: 10:11 AM
  */

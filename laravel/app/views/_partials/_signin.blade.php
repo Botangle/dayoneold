@@ -2,7 +2,7 @@
 /**
  * _siginin.blade.php
  *
- * @author: Martyn Ling <mling@str8-4ward.com>
+ * @author: Martyn
  * Date: 8/25/14
  * Time: 10:56 AM
  */

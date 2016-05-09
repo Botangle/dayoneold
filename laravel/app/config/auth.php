@@ -78,6 +78,6 @@ return array(
 	*/
 
     'cake' => array(
-        'salt' => 'b2fe62bbe5ca814148f164ef10e89cb5350808bf',
+        'salt' => 'randomsaltgoeshere',
     ),
 );

@@ -2,9 +2,9 @@
 /**
  * TransactionHandler.php
  *
- * @author: Martyn Ling <mling@str8-4ward.com>
+ * @author: Martyn
  * Adapted from TransactionListener.php which was part of the Botangle CakePHP project
- * that David Baker <dbaker@acorncomputersolutions.com added Paypal payments into.
+ * that David added Paypal payments into.
  * Date: 9/17/14
  * Time: 10:43AM
  */
