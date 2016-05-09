@@ -2,7 +2,7 @@
 /**
  * UsersJoined.php
  *
- * @author: David Baker <dbaker@acorncomputersolutions.com
+ * @author: David
  * Date: 7/7/14
  * Time: 10:42 AM
  */

@@ -56,8 +56,7 @@ class UserMessageController extends BaseController {
 
         // Mark any messages sent to Auth::user as read (would be better to set that after they've actually
         //  been read.
-        // This is rather crude, but is an improvement on the CakePHP Botangle version.
-        //  TODO: consider finding a better solution to marking messages as read
+        // This is rather crude, but is an improvement over what we used to do
         foreach($messages as $message){
             if ($message->readmessage){
                 continue;

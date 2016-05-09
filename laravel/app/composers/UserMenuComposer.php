@@ -2,7 +2,7 @@
 /**
  * UserMenuComposer.php
  *
- * @author: David Baker <dbaker@acorncomputersolutions.com
+ * @author: David
  * Date: 7/8/14
  * Time: 10:17 AM
  */

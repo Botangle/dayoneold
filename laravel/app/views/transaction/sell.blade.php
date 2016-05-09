@@ -2,8 +2,8 @@
 /**
  * _create.php.ctp
  *
- * @author: David Baker <dbaker@acorncomputersolutions.com
- * @adapted for Laravel: Martyn Ling <mling@str8-4ward.com>
+ * @author: David
+ * @adapted for Laravel: Martyn
  * Date: 7/18/14
  * Time: 11:29 AM
  */

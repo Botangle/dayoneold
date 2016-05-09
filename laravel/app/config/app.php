@@ -24,8 +24,8 @@ return array(
     |
     */
     'admins' => [
-        'mling@str8-4ward.com',
-        'jsashi@wakedocuments.com',
+        'test@user1.com',
+        'test@user2.com',
     ],
 
 	/*
@@ -91,7 +91,7 @@ return array(
 	|
 	*/
 
-	'key' => 'wvUg7hfgOsIfeDyy7LhYt61dijPF9Ohy',
+	'key' => 'randomkeygoeshere',
 
 	'cipher' => MCRYPT_RIJNDAEL_128,
 

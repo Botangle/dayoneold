@@ -23,7 +23,7 @@ return array(
 	),
 
 	'mandrill' => array(
-        'secret'    => '6yZHPi6pRMW5deO5L3MRcA',
+        'secret'    => 'password-here',
         'subaccount'   => 'development', // subaccount isn't yet supported in Laravel 4.2
 	),
 
@@ -35,7 +35,7 @@ return array(
     's3' => array(
         'accessKey'         => '', // Set according to environment e.g. in local/services.php (not in repo)
         'secretKey'         => '', // Set according to environment e.g. in local/services.php (not in repo)
-        'bucket'            => 'botangleassets',
+        'bucket'            => 'amazon-bucket',
         'region'            => Aws\Common\Enum\Region::US_EAST_1,
         'url'               => "https://s3.amazonaws.com",
         'profilepicFolder'  => 'profilepic',

@@ -2,8 +2,8 @@
 /**
  * OpenTok.php
  *
- * @author: Martyn Ling <mling@str8-4ward.com>
- * @adapted from code by David Baker <dbaker@acorncomputersolutions.com
+ * @author: Martyn
+ * @adapted from code by David
  * Date: 3/27/14
  * Time: 5:34 PM
  */

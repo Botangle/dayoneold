@@ -1,6 +1,6 @@
 <?php
 /**
- * User: martyn ling <mling@str8-4ward.com>
+ * User: martyn
  * Date: 04/09/14
  * Time: 10:12
  */
